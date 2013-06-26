@@ -1,18 +1,29 @@
-{{#author.avatar}}
-<a class="content-author-avatar">
-    <img src="{{ author.avatar }}" />
-</a>
-{{/author.avatar}}
+<div class="content-header">
+    {{#author.avatar}}
+        <a class="content-author-avatar">
+            <img src="{{ author.avatar }}" />
+        </a>
+    {{/author.avatar}}
 
-<div class="content-main">
     <div class="content-byline">
-        <a class="content-author-name" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.displayName }}</a>
         <a class="content-source-logo" href="https://twitter.com/statuses/{{tweetId}}/" target="_blank"></a>
-        <div class="content-created-at">{{{formattedCreatedAt}}}</div>
+        <div class="content-author-name">
+            <a href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.displayName }}</a>
+        </div>
+        <a class="content-author-username" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.twitterUsername }}@testname</a>
     </div>
-    <div class="content-body">
-        {{{ body }}}
-    </div>
+</div>
+
+<div class="content-attachments">
+    {{#attachments}}
+        <div class="content-attachment">
+            {{{renderAttachment}}}
+        </div>
+    {{/attachments}}
+</div>
+
+<div class="content-body">
+    {{{ body }}}
 </div>
 
 <ul class="content-actions">
@@ -33,10 +44,6 @@
     </li>
 </ul>
 
-<div class="content-attachments">
-{{#attachments}}
-    <div class="content-attachment">
-        {{{renderAttachment}}}
-    </div>
-{{/attachments}}
+<div class="content-meta">
+    <div class="content-created-at"><!--{{{formattedCreatedAt}}}-->2h</div>
 </div>
