@@ -1,22 +1,25 @@
 <div class="content-header">
-    {{#author.avatar}}
-        <a class="content-author-avatar">
-            <img src="{{ author.avatar }}" />
-        </a>
-    {{/author.avatar}}
+    <div class="content-header-inner">
+        {{#author.avatar}}
+            <a class="content-author-avatar" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">
+                <img src="{{ author.avatar }}" />
+            </a>
+        {{/author.avatar}}
 
-    <div class="content-byline">
-        <a class="content-source-logo" href="https://twitter.com/statuses/{{tweetId}}/" target="_blank"></a>
-        <div class="content-author-name">
-            <a href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.displayName }}</a>
+        <div class="content-byline">
+            <a class="hub-tooltip-link tooltip-twitter content-source-logo" href="https://twitter.com/statuses/{{tweetId}}/" target="_blank" title="View on Twitter"></a>
+            <div class="content-author-name">
+                <a href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.displayName }}</a>
+            </div>
+            <a class="content-author-username" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.twitterUsername }}@testname</a>
         </div>
-        <a class="content-author-username" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.twitterUsername }}@testname</a>
     </div>
 </div>
 
 <div class="content-attachments">
     {{#attachments}}
         <div class="content-attachment">
+            <div class="content-attachment-frame"></div>
             {{{renderAttachment}}}
         </div>
     {{/attachments}}
@@ -28,17 +31,17 @@
 
 <ul class="content-actions">
     <li class="content-action" data-content-action="reply">
-        <a href="https://twitter.com/intent/tweet?in_reply_to={{tweetId}}" title="Reply">
+        <a class="hub-tooltip-link" href="https://twitter.com/intent/tweet?in_reply_to={{tweetId}}" title="Reply">
             <span>Reply</span>
         </a>
     </li>
     <li class="content-action" data-content-action="retweet">
-        <a href="https://twitter.com/intent/retweet?tweet_id={{tweetId}}" title="Retweet">
+        <a class="hub-tooltip-link" href="https://twitter.com/intent/retweet?tweet_id={{tweetId}}" title="Retweet">
             <span>Retweet</span>
         </a>
     </li>
     <li class="content-action" data-content-action="favorite">
-        <a href="https://twitter.com/intent/favorite?tweet_id={{tweetId}}" title="Favorite">
+        <a class="hub-tooltip-link" href="https://twitter.com/intent/favorite?tweet_id={{tweetId}}" title="Favorite">
             <span>Favorite</span>
         </a>
     </li>

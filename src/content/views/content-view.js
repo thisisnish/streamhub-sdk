@@ -61,7 +61,9 @@ define([
             context.formattedCreatedAt = Util.formatDate(this.content.createdAt);
         }
         this.el.innerHTML = this.template(context);
-
+        if (this.content.attachments && this.content.attachments.length > 0) {
+            this.$el.addClass('content-with-attachments');
+        }
         // handle oembed loading gracefully
         var self = this;
         var newImg = $(this.el).find('.content-attachments img').last();
@@ -69,6 +71,7 @@ define([
         newImg.on('load', function() {
             newImg.fadeIn();
             $(self.el).trigger('imageLoaded');
+            $(this).parents('article').addClass('content-with-image');
         });
         newImg.on('error', function() {
             self.content.attachments.pop();
