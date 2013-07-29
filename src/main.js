@@ -1,6 +1,7 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/auth',
+    'streamhub-sdk/debug',
     'streamhub-sdk/event-emitter',
     'streamhub-sdk/storage',
     'streamhub-sdk/stream',
@@ -27,6 +28,7 @@ define([
 ], function(
     $,
     Auth,
+    debug,
     EventEmitter,
     Storage,
     Stream,
@@ -52,6 +54,7 @@ define([
     VersionInfo
 ) {
     var Hub = {};
+    Hub.debug = debug;
     Hub.Auth = Auth;
     Hub.EventEmitter = EventEmitter;
     Hub.Storage = Storage;
