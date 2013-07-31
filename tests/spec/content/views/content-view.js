@@ -33,7 +33,7 @@ function ($, jasmine, jasmineJquery, Content, LivefyreContent, ContentView) {
             var content = new Content('what'),
                 contentView = new ContentView({ content: content });
             contentView.render();
-            it('has .content-with-image', function() {
+            it('does not have .content-with-image', function() {
                 expect(contentView.el).not.toHaveClass('content-with-image');
             });
         });
