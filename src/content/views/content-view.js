@@ -71,13 +71,12 @@ define([
         newImg.on('load', function() {
             newImg.fadeIn();
             $(self.el).trigger('imageLoaded');
-            $(this).parents('article').addClass('content-with-image');
+            self.$el.addClass('content-with-image');
         });
         newImg.on('error', function() {
             self.content.attachments.pop();
             newImg.remove();
-            // todo: (gene) review this line...
-            self.render();
+            self.$el.removeClass('content-with-image');
         });
 
         return this;
