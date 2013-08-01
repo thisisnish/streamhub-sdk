@@ -77,7 +77,7 @@ define([
         });
         newImg.on('error', function() {
             self.content.attachments.pop();
-            newImg.remove();
+            self.$el.find('.content-attachments').empty();
             self.$el.removeClass('content-with-image');
         });
 
