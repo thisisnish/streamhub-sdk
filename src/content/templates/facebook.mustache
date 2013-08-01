@@ -6,11 +6,15 @@
             </a>
         {{/author.avatar}}
         <div class="content-byline">
-            <a class="tooltip-link content-source-logo" href="https://twitter.com/statuses/{{tweetId}}/" target="_blank" title="View on Facebook"></a>
+            {{#permalink}}
+                <a class="hub-tooltip-link tooltip-link content-source-logo" href="{{ permalink }}" target="_blank" title="View on Facebook"></a>
+            {{/permalink}}
+            {{^permalink}}
+                <span class="content-source-logo"></span>
+            {{/permalink}}
             <div class="content-author-name">
                 <a href="{{author.profileUrl}}" target="_blank">{{ author.displayName }}</a>
             </div>
-            <a class="content-author-username" href="" target="_blank">userurl</a>
         </div>
     </div>
 </div>
@@ -30,6 +34,13 @@
 
 <div class="content-meta">
     {{#formattedCreatedAt}}
-    <div class="content-created-at"><!--{{{formattedCreatedAt}}}-->2h</div>
+    <div class="content-created-at">
+        {{#permalink}}
+            <a href="{{ permalink }}" target="_blank">{{{formattedCreatedAt}}}</a>
+        {{/permalink}}
+        {{^permalink}}
+            {{{formattedCreatedAt}}}
+        {{/permalink}}
+    </div>
     {{/formattedCreatedAt}}
 </div>

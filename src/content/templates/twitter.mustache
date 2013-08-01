@@ -11,7 +11,7 @@
             <div class="content-author-name">
                 <a href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.displayName }}</a>
             </div>
-            <a class="content-author-username" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">{{ author.twitterUsername }}@testname</a>
+            <a class="content-author-username" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">@{{ author.twitterUsername }}</a>
         </div>
     </div>
 </div>
@@ -49,6 +49,6 @@
 
 <div class="content-meta">
     {{#formattedCreatedAt}}
-    <div class="content-created-at"><!--{{{formattedCreatedAt}}}-->2h</div>
+    <div class="content-created-at"><a href="https://twitter.com/statuses/{{tweetId}}/" target="_blank">{{{formattedCreatedAt}}}</a></div>
     {{/formattedCreatedAt}}
 </div>
