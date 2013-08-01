@@ -46,7 +46,7 @@ function($, View, ContentView) {
      * @param content {Content} A Content model to add to the ListView
      * @return the newly created ContentView
      */
-    ListView.prototype.add = function(content, stream) {
+    ListView.prototype.add = function(content) {
         var contentView = this.getContentView(content);
 
         if (contentView) {
