@@ -99,7 +99,6 @@ define([
             var tooltipWidth = $currentTooltip.outerWidth();
             var tooltipHeight = $currentTooltip.outerHeight();
 
-            console.log(position.left, positionWidth, tooltipWidth);
             $currentTooltip.css({
                 "left": position.left + (positionWidth / 2) - (tooltipWidth / 2) + 5,
                 "top":  position.top - tooltipHeight - 2
