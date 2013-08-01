@@ -63,9 +63,7 @@ define([
             context.formattedCreatedAt = Util.formatDate(this.content.createdAt);
         }
         this.el.innerHTML = this.template(context);
-        if (this.content.attachments && this.content.attachments.length > 0) {
-            this.$el.addClass('content-with-attachments');
-        }
+
         // handle oembed loading gracefully
         var self = this;
         var newImg = $(this.el).find('.content-attachments img').last();
