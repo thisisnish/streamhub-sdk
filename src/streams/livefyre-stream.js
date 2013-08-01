@@ -232,14 +232,13 @@ define([
      */
     LivefyreStream.createContent = function(state) {
         var sourceName = LivefyreContent.SOURCES[state.source];
-
         if (state.type === 3) {
             return new LivefyreOembed(state);
         } else if (sourceName === 'twitter') {
             return new LivefyreTwitterContent(state);
         } else if (sourceName === 'facebook') {
             return new LivefyreFacebookContent(state);
-        } else if (sourceName === 'livefyre') {
+        } else if (['livefyre','feed'].indexOf(sourceName) !== -1) {
             return new LivefyreContent(state);
         }
     };
