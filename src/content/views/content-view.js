@@ -72,7 +72,7 @@ define([
         newImg.hide();
         newImg.on('load', function() {
             newImg.fadeIn();
-            $(self.el).trigger('imageLoaded');
+            self.$el.trigger('imageLoaded');
             self.$el.addClass('content-with-image');
         });
         newImg.on('error', function() {
@@ -91,18 +91,17 @@ define([
             var position = $(this).position();
             var positionWidth = $(this).width();
 
-            var tooltip = "<div class=\"hub-current-tooltip content-action-tooltip\"><div class=\"content-action-tooltip-bubble\">" + title + "</div><div class=\"content-action-tooltip-tail\"></div></div>";
-            $(this).parent().append(tooltip);
+            var $currentTooltip = $("<div class=\"hub-current-tooltip content-action-tooltip\"><div class=\"content-action-tooltip-bubble\">" + title + "</div><div class=\"content-action-tooltip-tail\"></div></div>");
+            $(this).parent().append($currentTooltip);
 
             var tooltipOffset = $(this).offset();
 
-            var $currentTooltip = self.$el.find('.hub-current-tooltip');
+            var tooltipWidth = $currentTooltip.outerWidth();
+            var tooltipHeight = $currentTooltip.outerHeight();
 
-            var tooltipWidth = $currentTooltip.width();
-            var tooltipHeight = $currentTooltip.height();
-
+            console.log(position.left, positionWidth, tooltipWidth);
             $currentTooltip.css({
-                "left": position.left + (positionWidth / 2) - (tooltipWidth / 2),
+                "left": position.left + (positionWidth / 2) - (tooltipWidth / 2) + 5,
                 "top":  position.top - tooltipHeight - 2
             });
 
