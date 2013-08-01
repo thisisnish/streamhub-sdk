@@ -65,7 +65,9 @@ function ($, jasmine, jasmineJquery, Content, LivefyreContent, ContentView) {
                 it('does not have .content-with-image', function() {
                     expect(contentView.el).not.toHaveClass('content-with-image');
                 });
-
+                it('.content-attachments does not have child nodes', function() {
+                    expect(contentView.$el.find('.content-attachments')).toBeEmpty();
+                });
             });
         });
     });
