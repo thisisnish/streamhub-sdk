@@ -72,7 +72,8 @@ define(['streamhub-sdk/jquery'], function ($) {
         'Jan', 'Feb', 'Mar', 'Apr',
         'May', 'Jun','Jul', 'Aug',
         'Sep', 'Oct', 'Nov', 'Dec'];
-    exports.formatDate = function(date, relativeTo) {
+
+    exports.formatDate = function (date, relativeTo) {
         relativeTo = relativeTo || new Date();
         var diffMs = date.getTime() - relativeTo.getTime();
         // Future
