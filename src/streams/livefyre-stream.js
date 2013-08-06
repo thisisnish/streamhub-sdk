@@ -7,6 +7,7 @@ define([
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/types/livefyre-twitter-content',
     'streamhub-sdk/content/types/livefyre-facebook-content',
+    'streamhub-sdk/content/types/livefyre-instagram-content',
     'streamhub-sdk/content/types/livefyre-oembed',
     'streamhub-sdk/storage'
 ], function(
@@ -18,6 +19,7 @@ define([
     LivefyreContent,
     LivefyreTwitterContent,
     LivefyreFacebookContent,
+    LivefyreInstagramContent,
     LivefyreOembed,
     Storage
 ) {
@@ -42,6 +44,24 @@ define([
         this.contentBeingWritten = {};
     };
     $.extend(LivefyreStream.prototype, Stream.prototype);
+
+    /**
+     * The StreamHub APIs use enumerations to define
+     * the type of message sent down the wire. All types
+     * should be in this enumeration.
+     * @enum types
+     * @property {string} types.CONTENT - The good stuff. Juicy Content
+     * like comments
+     * @property {string} types.OPINE - A user's opinion or something
+     * @property {string} types.SHARE - TODO: I don't know yet.
+     * @property {string} types.OEMBED - A new attachment
+     */
+    LivefyreStream.prototype.messageTypes = {
+        'CONTENT': '0',
+        'OPINE':   '1',
+        'SHARE':   '2',
+        'OEMBED':  '3'
+    };
     
     /**
      * Streams data from the Livefyre stream endpoint until an error occurs.
@@ -144,7 +164,7 @@ define([
                    Storage.set('children_' + state.content.parentId, allChildren);
                 }
             }
-            if (state.type === 0) {
+            if (state.type === this.messageType.CONTENT) {
                 if (content.id) {
                     // check to see if we've previously received children for this content
                     var children = Storage.get('children_' + content.id);
@@ -242,13 +262,19 @@ define([
      */
     LivefyreStream.createContent = function(state) {
         var sourceName = LivefyreContent.SOURCES[state.source];
-        if (state.type === 3) {
+        if (state.type === this.messageType.OEMBED) {
             return new LivefyreOembed(state);
         } else if (sourceName === 'twitter') {
             return new LivefyreTwitterContent(state);
         } else if (sourceName === 'facebook') {
             return new LivefyreFacebookContent(state);
-        } else if (['livefyre','feed'].indexOf(sourceName) !== -1) {
+        } else if (sourceName === 'feed') {
+            var contentType = LivefyreContent;
+            if (state.content.feedEntry.transformer === 'lfcore.v2.procurement.feed.transformer.instagram') {
+                contentType = LivefyreInstagramContent;
+            }
+            return new contentType(state);
+        } else if (['livefyre'].indexOf(sourceName) !== -1) {
             return new LivefyreContent(state);
         }
     };
