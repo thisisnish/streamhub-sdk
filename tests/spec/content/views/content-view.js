@@ -5,8 +5,9 @@ define([
     'streamhub-sdk/util',
     'streamhub-sdk/content/content',
     'streamhub-sdk/content/types/livefyre-content',
-    'streamhub-sdk/content/views/content-view'],
-function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView) {
+    'streamhub-sdk/content/views/content-view',
+    'streamhub-sdk/content/views/attachments-view'],
+function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView, AttachmentsView) {
     describe('Default ContentView', function () {
         
         describe('when constructed', function () {
@@ -58,11 +59,17 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
                         type: "photo",
                         url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg"
                     },
-                    content = new Content({ body: 'what', attachments: [attachment] }),
-                    contentView = new ContentView({ content: content });
+                    content = new Content({ body: 'what' }),
+                    contentView = new ContentView({ content: content, attachmentsView: new AttachmentsView() });
                 contentView.render();
+                content.addAttachment(attachment);
                 it('has .content-with-image', function() {
-                    expect(contentView.el).toHaveClass('content-with-image');
+                    waitsFor(function () {
+                        return contentView.$el.hasClass('content-with-image');
+                    });
+                    runs(function() {
+                        expect(contentView.el).toHaveClass('content-with-image');
+                    });
                 });
             });
 

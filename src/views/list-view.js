@@ -1,5 +1,5 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/view', 'streamhub-sdk/content/views/content-view'],
-function($, View, ContentView) {
+define(['streamhub-sdk/jquery', 'streamhub-sdk/view', 'streamhub-sdk/content/content-view-factory'],
+function($, View, ContentViewFactory) {
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -14,9 +14,13 @@ function($, View, ContentView) {
 
         $(this.el).addClass('streamhub-list-view');
 
+        this.contentViewFactory = new ContentViewFactory();
         this.contentViews = [];
 
         var self = this;
+        $(this.el).on('removeContent.hub', function(e, content) {
+            self.remove(content);
+        });
     };
     $.extend(ListView.prototype, View.prototype);
 
@@ -69,7 +73,7 @@ function($, View, ContentView) {
      * @returns {boolean} true if Content was removed, else false
      */
     ListView.prototype.remove = function (content) {
-        var contentView = content instanceof ContentView ? content : this.getContentView(content);
+        var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
         if (! contentView) {
             return false;
         }
@@ -123,6 +127,10 @@ function($, View, ContentView) {
             }
         }
         return null;
+    };
+
+    ListView.prototype.createContentView = function(content) {
+        return this.contentViewFactory.createContentView(content);
     };
 
     return ListView;

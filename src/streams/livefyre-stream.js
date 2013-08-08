@@ -164,7 +164,7 @@ define([
                    Storage.set('children_' + state.content.parentId, allChildren);
                 }
             }
-            if (state.type === this.messageType.CONTENT) {
+            if (state.type === this.messageTypes.CONTENT) {
                 if (content.id) {
                     // check to see if we've previously received children for this content
                     var children = Storage.get('children_' + content.id);
@@ -262,7 +262,7 @@ define([
      */
     LivefyreStream.createContent = function(state) {
         var sourceName = LivefyreContent.SOURCES[state.source];
-        if (state.type === this.messageType.OEMBED) {
+        if (state.type === this.messageTypes.OEMBED) {
             return new LivefyreOembed(state);
         } else if (sourceName === 'twitter') {
             return new LivefyreTwitterContent(state);

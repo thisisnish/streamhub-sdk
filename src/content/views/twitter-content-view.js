@@ -11,7 +11,7 @@ function (ContentView, TwitterContentTemplate, $) {
      * @constructor
      */
 
-	var TwitterContentView = function TwitterContentView (opts) {
+	var TwitterContentView = function (opts) {
 		ContentView.call(this, opts);
 	};
 	
@@ -28,6 +28,15 @@ function (ContentView, TwitterContentTemplate, $) {
         var context = ContentView.prototype.getTemplateContext.call(this);
         context.author.twitterUsername = context.author.profileUrl.split('/').pop();
         return context;
+    };
+
+    TwitterContentView.prototype.attachHandlers = function () {
+        ContentView.prototype.attachHandlers.call(this);
+
+        var self = this;
+        this.$el.on('imageError.hub', function(e, oembed) {
+            self.$el.removeClass('content-with-image');
+        });
     };
 
 	return TwitterContentView;

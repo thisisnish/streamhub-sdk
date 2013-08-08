@@ -20,6 +20,7 @@ define([
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/content/views/facebook-content-view',
     'streamhub-sdk/content/views/twitter-content-view',
+    'streamhub-sdk/content/views/instagram-content-view',
     'streamhub-sdk/streams/livefyre-stream',
     'streamhub-sdk/streams/livefyre-reverse-stream',
     'streamhub-sdk/stream-helpers/livefyre-helper',

@@ -6,12 +6,10 @@
             </a>
         {{/author.avatar}}
         <div class="content-byline">
-            {{#author.url}}
-                <a class="content-author-name" href="{{ author.url }}" target="_blank">{{ author.displayName }}</a>
-            {{/author.url}}
-            {{^author.url}}
-                <span class="content-author-name">{{ author.displayName }}</span>
-            {{/author.url}}
+            <span class="content-source-logo"></span>
+            {{#author.displayName}}
+                <a class="content-author-name" href="http://instagram.com/{{ author.displayName }}" target="_blank">{{ author.displayName }}</a>
+            {{/author.displayName}}
         </div>
     </div>
 </div>

@@ -127,7 +127,7 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
                 it("returns > 0 if a.content.createdAt is before b.createdAt", function () {
                     b.createdAt = laterDate;
                     expect(listView.comparator(a, b)).toBeGreaterThan(0);
-                })
+                });
             });
             
         });

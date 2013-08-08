@@ -19,24 +19,28 @@ define([
         // store construction time to use for ordering if this.content has no dates
         this.createdAt = new Date();
 
+        this.template = opts.template || this.template;
+        this.setElement(opts.el || document.createElement(this.elTag));
+        this.attachmentsView = opts.attachmentsView;
+
         if (this.content) {
             var self = this;
-            this.content.on("attachment", function(content) {
+            this.content.on("attachment", function(attachment) {
                 self.render();
+                if (self.attachmentsView) {
+                    self.attachmentsView.add(attachment);
+                }
             });
             this.content.on("reply", function(content) {
                 self.render();
             });
         }
-
-        this.template = opts.template || this.template;
-        
-        this.setElement(opts.el || document.createElement(this.elTag));
     };
     
     ContentView.prototype.elTag = 'article';
     ContentView.prototype.elClass = 'content';
     ContentView.prototype.tooltipElSelector = '.hub-tooltip-link';
+    ContentView.prototype.attachmentsElSelector = '.content-attachments';
     ContentView.prototype.template = ContentTemplate;
     ContentView.prototype.formatDate = Util.formatDate;
 
@@ -65,26 +69,20 @@ define([
         }
         this.el.innerHTML = this.template(context);
 
-        // handle oembed loading gracefully
-        var self = this;
-        var newImg = $(this.el).find('.content-attachments img').last();
-        newImg.hide();
-        newImg.on('load', function() {
-            newImg.fadeIn();
-            self.$el.trigger('imageLoaded');
-            self.$el.addClass('content-with-image');
-        });
-        newImg.on('error', function() {
-            self.content.attachments.pop();
-            self.$el.find('.content-attachments').empty();
-            self.$el.removeClass('content-with-image');
-        });
+        if (this.attachmentsView) {
+            this.attachmentsView.setElement(this.$el.find(this.attachmentsElSelector)[0]);
+        }
 
         return this;
     };
 
     ContentView.prototype.attachHandlers = function () {
         var self = this;
+        
+        this.$el.on('imageLoaded.hub', function(e) {
+            self.$el.addClass('content-with-image');
+        });
+
         this.$el.on('mouseenter', this.tooltipElSelector, function (e) {
             var title = $(this).attr('title');
             var position = $(this).position();
@@ -125,37 +123,14 @@ define([
      */  
     ContentView.prototype.getTemplateContext = function () {
         var context = $.extend({}, this.content);
-        context.renderAttachment = this.renderAttachment;
         return context;
     };
 
-    ContentView.prototype.renderAttachment = function () {
-        var linkHtml;
-        switch (this.type) {
-            case 'photo':
-                return '<img src="{url}" />'.replace('{url}', this.url);
-            case 'video':
-                return this.html;
-            case 'link':
-                /** @todo show thumbnails */
-                linkHtml = '<a href="{href}">{body}</a>'
-                    .replace("{href}", this.url)
-                    .replace("{body}", linkAttachmentBody(this));
-                return linkHtml;
-            case 'rich':
-                return this.html;
-            default:
-                return '';
-        }
+    ContentView.prototype.remove = function() {
+        this.$el.trigger('removeContent.hub', this.content);
+        this.$el.remove();
+        delete this;
     };
-
-    function linkAttachmentBody (oembed) {
-        var body = oembed.title;
-        if (oembed.thumbnail_url) {
-            body = '<img src="'+oembed.thumbnail_url+'" />';
-        }
-        return body;
-    }
     
     return ContentView;
 });
