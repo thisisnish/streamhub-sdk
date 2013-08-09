@@ -52,7 +52,7 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
      */
     exports.outerWidth = function(el) {
         log('Deprecated: util.outerWidth');
-        return $(el).outerWidth();
+        return $(el).outerWidth(true);
     };
 
     /**
@@ -61,7 +61,7 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
      */
     exports.outerHeight = function(el) {
         log('Deprecated: util.outerHeight');
-        return $(el).outerHeight();
+        return $(el).outerHeight(true);
     };
 
     /**
