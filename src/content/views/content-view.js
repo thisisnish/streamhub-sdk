@@ -29,9 +29,6 @@ define([
                 self.render();
                 if (self.attachmentsView) {
                     self.attachmentsView.add(attachment);
-                    self.attachmentsView.add(attachment);
-                    self.attachmentsView.add(attachment);
-                    self.attachmentsView.add(attachment);
                 }
             });
             this.content.on("reply", function(content) {
