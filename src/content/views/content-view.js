@@ -29,6 +29,9 @@ define([
                 self.render();
                 if (self.attachmentsView) {
                     self.attachmentsView.add(attachment);
+                    self.attachmentsView.add(attachment);
+                    self.attachmentsView.add(attachment);
+                    self.attachmentsView.add(attachment);
                 }
             });
             this.content.on("reply", function(content) {
@@ -97,7 +100,7 @@ define([
             var tooltipHeight = $currentTooltip.outerHeight();
 
             $currentTooltip.css({
-                "left": position.left + (positionWidth / 2) - (tooltipWidth / 2) + 5,
+                "left": position.left + (positionWidth / 2) - (tooltipWidth / 2),
                 "top":  position.top - tooltipHeight - 2
             });
 

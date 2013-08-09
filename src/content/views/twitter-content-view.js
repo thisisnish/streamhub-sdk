@@ -35,7 +35,10 @@ function (ContentView, TwitterContentTemplate, $) {
 
         var self = this;
         this.$el.on('imageError.hub', function(e, oembed) {
-            self.$el.removeClass('content-with-image');
+            self.attachmentsView.remove(oembed);
+            if (!self.attachmentsView.count()) {
+                self.$el.removeClass('content-with-image');
+            }
         });
     };
 

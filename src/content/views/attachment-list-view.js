@@ -8,14 +8,13 @@ function($, OembedView) {
      * @exports streamhub-sdk/views/list-view
      * @constructor
      */
-    var AttachmentsView = function(opts) {
+    var AttachmentListView = function(opts) {
         opts = opts || {};
-        this.attachments = opts.attachments || [];
         this.setElement(opts.el || document.createElement(this.elTag));
         this.oembedViews = [];
     };
 
-    AttachmentsView.prototype.elTag = 'div';
+    AttachmentListView.prototype.elTag = 'div';
     
     /**
      * Set the element for the view to render in.
@@ -24,41 +23,65 @@ function($, OembedView) {
      * @return this
      * @param
      */
-    AttachmentsView.prototype.setElement = function (element) {
+    AttachmentListView.prototype.setElement = function (element) {
         this.el = element;
         this.$el = $(element);
 
         return this;
     };
 
-    AttachmentsView.prototype.count = function() {
+    AttachmentListView.prototype.count = function() {
         return this.oembedViews.length;
     };
 
-    AttachmentsView.prototype.render = function() {
-        this.$el[0].className = 'content-attachments';
+    AttachmentListView.prototype.render = function() {
+        var tiledAttachmentsEl = this.$el.find('.content-attachments-tiled');
+        tiledAttachmentsEl[0].className = 'content-attachments-tiled';
         var attachmentsCount = this.count();
         if (attachmentsCount) {
-            this.$el.addClass('content-attachments-' + attachmentsCount);
+            tiledAttachmentsEl.addClass('content-attachments-' + attachmentsCount);
+        }
+
+        // Position images to be centered within their tile
+        var fullWidth = this.$el.parents('.content').width();
+        var halfWidth = fullWidth/2;
+        if (this.count() > 1) {
+            tiledAttachmentsEl.find('.content-attachment').css('height', halfWidth + 'px');
+        } else {
+            tiledAttachmentsEl.find('.content-attachment')
+                .css('width', fullWidth + 'px')
+                .css('height', fullWidth + 'px');
         }
     };
 
     /**
      * Add a Oembed attachment to the Attachments view. 
      * @param oembed {Oembed} A Oembed instance to render in the View
-     * @returns {AttachmentsView} By convention, return this instance for chaining
+     * @returns {AttachmentListView} By convention, return this instance for chaining
      */
-    AttachmentsView.prototype.add = function(oembed) { 
-        var oembedEl = $('<div></div>');
-        this.$el.append(oembedEl);
+    AttachmentListView.prototype.add = function(oembed) { 
+        var oembedView = this.createAttachmentView(oembed);
+        oembedView.render();
+        this.render();
+        return this;
+    };
+
+    /**
+     * Creates the view to render the oembed content object
+     * @param oembed {Oembed} A Oembed instance to render in the View
+     * @returns {OembedView} 
+     */
+    AttachmentListView.prototype.createAttachmentView = function(oembed) {
         var oembedView = new OembedView({
-            el: oembedEl,
             oembed: oembed     
         });
+        if (oembed.type == 'photo' || oembed.type == 'video') {
+            oembedView.$el.appendTo(this.$el.find('.content-attachments-tiled'));
+        } else {
+            oembedView.$el.appendTo(this.$el.find('.content-attachments-stacked'));
+        }
         this.oembedViews.push(oembedView);
-        this.render();
-        oembedView.render();
-        return this;
+        return oembedView;
     };
 
     /**
@@ -66,16 +89,15 @@ function($, OembedView) {
      * @param content {Content|ContentView} The ContentView or Content to be removed
      * @returns {boolean} true if Content was removed, else false
      */
-    AttachmentsView.prototype.remove = function (oembed) {
+    AttachmentListView.prototype.remove = function (oembed) {
         var oembedView = oembed.el ? oembed : this.getOembedView(oembed); //duck type for ContentView
         if (! oembedView) {
             return false;
         }
         oembedView.$el.remove();
-        // Remove from this.contentViews[]
+        // Remove from this.oembedViews[]
         this.oembedViews.splice(this.oembedViews.indexOf(oembedView), 1);
         this.render();
-        oembedView.render();
         return true;
     };
 
@@ -85,7 +107,7 @@ function($, OembedView) {
      * @param newContent {Content} The piece of content to find the view for.
      * @returns {ContentView | null} The contentView for the content, or null.
      */
-    AttachmentsView.prototype.getOembedView = function (newOembed) {
+    AttachmentListView.prototype.getOembedView = function (newOembed) {
         var existingOembedView;
         for (var i=0; i < this.oembedViews.length; i++) {
             var oembedView = this.oembedViews[i];
@@ -100,10 +122,10 @@ function($, OembedView) {
      * Gets the template rendering context. By default, returns "this.content".
      * @return {Content} The content object this view was instantiated with.
      */  
-    AttachmentsView.prototype.getTemplateContext = function () {
+    AttachmentListView.prototype.getTemplateContext = function () {
         var context = $.extend({}, this);
         return context;
     };
 
-    return AttachmentsView;
+    return AttachmentListView;
 });

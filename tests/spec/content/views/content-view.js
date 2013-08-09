@@ -6,8 +6,8 @@ define([
     'streamhub-sdk/content/content',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/views/content-view',
-    'streamhub-sdk/content/views/attachments-view'],
-function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView, AttachmentsView) {
+    'streamhub-sdk/content/views/attachment-list-view'],
+function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView, AttachmentListView) {
     describe('Default ContentView', function () {
         
         describe('when constructed', function () {
@@ -60,7 +60,7 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
                         url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg"
                     },
                     content = new Content({ body: 'what' }),
-                    contentView = new ContentView({ content: content, attachmentsView: new AttachmentsView() });
+                    contentView = new ContentView({ content: content, attachmentsView: new AttachmentListView() });
                 contentView.render();
                 content.addAttachment(attachment);
                 it('has .content-with-image', function() {
