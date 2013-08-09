@@ -81,9 +81,9 @@ function($, View, ContentView) {
 
 
     /**
-     * @private
      * Insert a contentView into the ListView's .el
      * Get insertion index based on this.comparator
+     * @private
      */
     ListView.prototype._insert = function (contentView) {
         var newContentViewIndex,
