@@ -35,6 +35,16 @@ define(['streamhub-sdk/jquery'], function ($) {
         return Constructor;
     };
 
+    /**
+     * Prototype inheritance utility
+     */
+    exports.inherits = function(a, b){
+        var fn = function(){};
+        fn.prototype = b.prototype;
+        a.prototype = new fn;
+        a.prototype.constructor = a;
+    };
+
     exports.outerWidth = function(el) {
         return parseInt(el.css('width'), 10) +
             parseInt(el.css('padding-left'), 10) +

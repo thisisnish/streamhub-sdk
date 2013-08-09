@@ -1,6 +1,6 @@
 define([
-    'streamhub-sdk/content/types/livefyre-content'],
-function(LivefyreContent) {
+    'streamhub-sdk/content/types/livefyre-content', 'streamhub-sdk/util'],
+function(LivefyreContent, util) {
 
     /**
      * An instagram Content constructed from a StreamHub state of of 'feed' type
@@ -12,7 +12,7 @@ function(LivefyreContent) {
     var LivefyreInstagramContent = function(json) {
         LivefyreContent.call(this, json);
     };
-    LivefyreInstagramContent.prototype = LivefyreContent.prototype;
+    util.inherits(LivefyreInstagramContent, LivefyreContent);
 
     return LivefyreInstagramContent;
  });

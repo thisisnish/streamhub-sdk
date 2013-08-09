@@ -3,9 +3,10 @@ define([
     'hgn!streamhub-sdk/content/templates/oembed-photo',
     'hgn!streamhub-sdk/content/templates/oembed-video',
     'hgn!streamhub-sdk/content/templates/oembed-link',
-    'hgn!streamhub-sdk/content/templates/oembed-rich'
+    'hgn!streamhub-sdk/content/templates/oembed-rich',
+    'streamhub-sdk/util'
 ],
-function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate) {
+function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate, util) {
 
     var OembedView = function(opts) {
         View.call(this);
@@ -15,7 +16,7 @@ function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, Oem
         }
         this.setElement(opts.el || document.createElement(this.elTag));
     };
-    OembedView.prototype = View.prototype;
+    util.inherits(OembedView, View);
 
     OembedView.prototype.OEMBED_TEMPLATES = {
         'photo': OembedPhotoTemplate,

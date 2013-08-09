@@ -9,7 +9,8 @@ define([
     'streamhub-sdk/content/types/livefyre-facebook-content',
     'streamhub-sdk/content/types/livefyre-instagram-content',
     'streamhub-sdk/content/types/livefyre-oembed',
-    'streamhub-sdk/storage'
+    'streamhub-sdk/storage',
+    'streamhub-sdk/util'
 ], function(
     $,
     Stream,
@@ -21,7 +22,8 @@ define([
     LivefyreFacebookContent,
     LivefyreInstagramContent,
     LivefyreOembed,
-    Storage
+    Storage,
+    util
 ) {
     /**
      * Defines a livefyre stream that is readable and writable from and to a livefyre conversation.
@@ -43,7 +45,7 @@ define([
         this._pushReplies = opts.replies || false;
         this.contentBeingWritten = {};
     };
-    $.extend(LivefyreStream.prototype, Stream.prototype);
+    util.inherits(LivefyreStream, Stream);
 
     /**
      * The StreamHub APIs use enumerations to define

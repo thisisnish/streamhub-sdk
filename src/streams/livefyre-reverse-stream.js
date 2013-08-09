@@ -7,7 +7,8 @@ define([
     'streamhub-sdk/content/types/livefyre-twitter-content',
     'streamhub-sdk/content/types/livefyre-facebook-content',
     'streamhub-sdk/content/types/oembed',
-    'streamhub-sdk/storage'
+    'streamhub-sdk/storage',
+    'streamhub-sdk/util'
 ], function(
     $, 
     Stream, 
@@ -17,7 +18,8 @@ define([
     LivefyreTwitterContent, 
     LivefyreFacebookContent, 
     Oembed, 
-    Storage
+    Storage,
+    util
 ) {
 
     /**
@@ -44,7 +46,7 @@ define([
             this._setInitData(opts.initData);
         }
     };
-    $.extend(LivefyreReverseStream.prototype, Stream.prototype);
+    util.inherits(LivefyreReverseStream, Stream);
 
     /**
      * Reads data from a Livefyre bootstrap page endpoint.

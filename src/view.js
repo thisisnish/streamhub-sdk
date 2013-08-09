@@ -5,7 +5,7 @@ define([
 ], function(
     $,
     EventEmitter,
-    Util
+    util
 ) {
 
     /**
@@ -27,7 +27,7 @@ define([
         this.setElement(opts.el || document.createElement(this.elTag));
         this.initialize.apply(this, arguments);
     };
-    $.extend(View.prototype, EventEmitter.prototype);
+    util.inherits(View, EventEmitter);
 
     /** The HTMLElement tag to use if this View creates its own element */
     View.prototype.elTag = 'div';
@@ -60,7 +60,7 @@ define([
      * Create an extended subclass of View
      * @param prototypeExtension {Object} Properties to add to the subclass's prototype
      */
-    View.extend = Util.extend;
+    View.extend = util.extend;
 
     /**
      * Initializes the View after construction. Subclasses can implement this

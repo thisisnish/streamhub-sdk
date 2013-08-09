@@ -1,5 +1,5 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/view', 'streamhub-sdk/content/content-view-factory'],
-function($, View, ContentViewFactory) {
+define(['streamhub-sdk/jquery', 'streamhub-sdk/view', 'streamhub-sdk/content/content-view-factory', 'streamhub-sdk/util'],
+function($, View, ContentViewFactory, util) {
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -22,7 +22,7 @@ function($, View, ContentViewFactory) {
             self.remove(content);
         });
     };
-    $.extend(ListView.prototype, View.prototype);
+    util.inherits(ListView, View);
 
 
     /**

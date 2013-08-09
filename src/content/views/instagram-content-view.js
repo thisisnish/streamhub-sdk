@@ -1,7 +1,8 @@
 define([
 	'streamhub-sdk/content/views/content-view',
-	'hgn!streamhub-sdk/content/templates/instagram'],
-function (ContentView, InstagramContentTemplate) {
+	'hgn!streamhub-sdk/content/templates/instagram',
+    'streamhub-sdk/util'],
+function (ContentView, InstagramContentTemplate, util) {
 	
     /**
      * A view for rendering instagram content into an element.
@@ -13,8 +14,7 @@ function (ContentView, InstagramContentTemplate) {
 	var InstagramContentView = function (opts) {
 		ContentView.call(this, opts);
 	};
-	
-	InstagramContentView.prototype = new ContentView();
+    util.inherits(InstagramContentView, ContentView);
 	
 	InstagramContentView.prototype.elClass += ' content-instagram ';
 	InstagramContentView.prototype.template = InstagramContentTemplate;
