@@ -48,7 +48,8 @@ function($, OembedView) {
             .removeClass('content-attachments-3')
             .removeClass('content-attachments-4');
         var attachmentsCount = this.count();
-        if (attachmentsCount) {
+        if (attachmentsCount <= 4) {
+            // Only tile for <= 4 photo or video attachments
             tiledAttachmentsEl.addClass('content-attachments-' + attachmentsCount);
         }
 
@@ -70,7 +71,7 @@ function($, OembedView) {
      * @returns {AttachmentListView} By convention, return this instance for chaining
      */
     AttachmentListView.prototype.add = function(oembed) { 
-        var oembedView = this.createAttachmentView(oembed);
+        var oembedView = this.createOembedView(oembed);
         oembedView.render();
         this.render();
         return this;
@@ -81,7 +82,7 @@ function($, OembedView) {
      * @param oembed {Oembed} A Oembed instance to render in the View
      * @returns {OembedView} 
      */
-    AttachmentListView.prototype.createAttachmentView = function(oembed) {
+    AttachmentListView.prototype.createOembedView = function(oembed) {
         var oembedView = new OembedView({
             oembed: oembed     
         });
@@ -126,15 +127,6 @@ function($, OembedView) {
             }
         }
         return null;
-    };
-
-    /**
-     * Gets the template rendering context. By default, returns "this.content".
-     * @return {Content} The content object this view was instantiated with.
-     */  
-    AttachmentListView.prototype.getTemplateContext = function () {
-        var context = $.extend({}, this);
-        return context;
     };
 
     return AttachmentListView;
