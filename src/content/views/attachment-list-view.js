@@ -15,7 +15,9 @@ function($, OembedView) {
 
         var self = this;
         $(window).resize(function(e) {
-            self.render();
+            if (self.count() && self.$el.find('.content-attachments-tiled').length) {
+                self.render();
+            }
         });
     };
 
