@@ -170,7 +170,7 @@ define([
             } else {
                 content.addReply(childContent);
             }
-        };
+        }
 
         return content;
     };
