@@ -24,6 +24,8 @@ define([
     /**
      * Defines a livefyre stream that is readable and writable from and to a livefyre conversation.
      * @param opts {Object} A set of options to config the stream client with
+     * @param [opts.replies=false] {boolean} Whether the stream should emit Content that is in reply to
+     *     other Content.
      * @exports streamhub-sdk/streams/livefyre-stream
      * @constructor
      */
