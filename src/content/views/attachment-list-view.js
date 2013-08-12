@@ -36,7 +36,10 @@ function($, OembedView) {
 
     AttachmentListView.prototype.render = function() {
         var tiledAttachmentsEl = this.$el.find('.content-attachments-tiled');
-        tiledAttachmentsEl[0].className = 'content-attachments-tiled';
+        tiledAttachmentsEl.removeClass('content-attachments-1')
+            .removeClass('content-attachments-2')
+            .removeClass('content-attachments-3')
+            .removeClass('content-attachments-4');
         var attachmentsCount = this.count();
         if (attachmentsCount) {
             tiledAttachmentsEl.addClass('content-attachments-' + attachmentsCount);
