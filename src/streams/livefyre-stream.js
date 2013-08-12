@@ -36,6 +36,7 @@ define([
         this.environment = opts.environment;
         this.followers = opts.followers || [];
         this.articleId = opts.articleId || "";
+        this._pushReplies = opts.replies || false;
         this.contentBeingWritten = {};
     };
     $.extend(LivefyreStream.prototype, Stream.prototype);
@@ -52,7 +53,6 @@ define([
             commentId: this.commentId,
             environment: this.environment
         };
-        
         LivefyreStreamClient.getContent(opts, function(err, data) {
             if (err && err != "Timeout") {
                 self.emit('error', err);
@@ -105,8 +105,10 @@ define([
         var self = this,
             content,
             thisContentBeingWritten,
-            allChildren;
+            allChildren,
+            isReply;
         if (state.content && state.content.authorId) {
+            isReply = state.content.parentId;
             state.author = authors[state.content.authorId];
             content = LivefyreStream.createContent(state);
             thisContentBeingWritten = self.contentBeingWritten[state.content.id];
@@ -126,7 +128,7 @@ define([
                    allChildren.push(content);
                    Storage.set('children_' + state.content.targetId, allChildren); 
                 }
-            } else if (state.content.parentId) {
+            } else if (isReply) {
                 if (Storage.get(state.content.parentId)) {
                     parentContent = Storage.get(state.content.parentId);
                     parentContent.addReply(content);
@@ -136,7 +138,8 @@ define([
                    allChildren.push(content);
                    Storage.set('children_' + state.content.parentId, allChildren);
                 }
-            } else if (state.type === 0) {
+            }
+            if (state.type === 0) {
                 if (content.id) {
                     // check to see if we've previously received children for this content
                     var children = Storage.get('children_' + content.id);
@@ -149,7 +152,9 @@ define([
                     }
                     Storage.set('children_' + content.id, []);
                 }
-                self._push(content);
+                if ( ! isReply || (isReply && self._pushReplies) ) {
+                    self._push(content);
+                }
             }
 
             if (content && content.id) {
