@@ -55,6 +55,9 @@ define([
             commentId: this.commentId,
             environment: this.environment
         };
+        if (self._isReading === false) {
+            return;
+        }
         LivefyreStreamClient.getContent(opts, function(err, data) {
             if (err && err != "Timeout") {
                 self.emit('error', err);
