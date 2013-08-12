@@ -12,6 +12,11 @@ function($, OembedView) {
         opts = opts || {};
         this.setElement(opts.el || document.createElement(this.elTag));
         this.oembedViews = [];
+
+        var self = this;
+        $(window).resize(function(e) {
+            self.render();
+        });
     };
 
     AttachmentListView.prototype.elTag = 'div';
