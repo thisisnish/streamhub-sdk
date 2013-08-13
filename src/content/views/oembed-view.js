@@ -45,7 +45,6 @@ function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, Oem
             }
         }
         var context = $.extend({}, this.oembed);
-        context.renderAttachment = this.renderAttachment;
         this.$el.html(this.template(context));
 
         if (this.oembed.type != 'photo' && this.oembed.type != 'video') {
@@ -68,34 +67,6 @@ function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, Oem
             self.$el.trigger('imageError.hub', self.oembed);
         });
     };
-
-    OembedView.prototype.renderAttachment = function () {
-        var linkHtml;
-        switch (this.type) {
-            case 'photo':
-                return '<img src="{url}" />'.replace('{url}', this.url);
-            case 'video':
-                return this.html;
-            case 'link':
-                /** @todo show thumbnails */
-                linkHtml = '<a href="{href}">{body}</a>'
-                    .replace("{href}", this.url)
-                    .replace("{body}", linkAttachmentBody(this));
-                return linkHtml;
-            case 'rich':
-                return this.html;
-            default:
-                return '';
-        }
-    };
-
-    function linkAttachmentBody (oembed) {
-        var body = oembed.title;
-        if (oembed.thumbnail_url) {
-            body = '<img src="'+oembed.thumbnail_url+'" />';
-        }
-        return body;
-    }
 
     return OembedView;
 });
