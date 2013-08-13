@@ -264,7 +264,7 @@ define([
      */
     LivefyreStream.createContent = function(state) {
         var sourceName = LivefyreContent.SOURCES[state.source];
-        if (state.type === this.messageTypes.OEMBED) {
+        if (state.type === LivefyreStream.prototype.messageTypes.OEMBED) {
             return new LivefyreOembed(state);
         } else if (sourceName === 'twitter') {
             return new LivefyreTwitterContent(state);
