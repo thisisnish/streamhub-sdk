@@ -129,6 +129,12 @@ function($, View, ContentViewFactory, util) {
         return null;
     };
 
+    /**
+     * Creates a content view from the given piece of content, by looking in this view's
+     * content registry for the supplied content type.
+     * @param content {Content} A content object to create the corresponding view for.
+     * @returns {ContentView} A new content view object for the given piece of content.
+     */
     ListView.prototype.createContentView = function(content) {
         return this.contentViewFactory.createContentView(content);
     };

@@ -28,7 +28,6 @@ function($, OembedView) {
      * You will probably want to call .render() after this, but not always.
      * @param element {HTMLElement} The element to render this View in
      * @return this
-     * @param
      */
     AttachmentListView.prototype.setElement = function (element) {
         this.el = element;
@@ -37,10 +36,17 @@ function($, OembedView) {
         return this;
     };
 
+    /**
+     * A count of the number of attachments for this conten item
+     * @returns {int} The number of attachments for this content item
+     */
     AttachmentListView.prototype.count = function() {
         return this.oembedViews.length;
     };
 
+    /**
+     * Renders the template and appends itself to this.el
+     */
     AttachmentListView.prototype.render = function() {
         var tiledAttachmentsEl = this.$el.find('.content-attachments-tiled');
         tiledAttachmentsEl.removeClass('content-attachments-1')
@@ -115,8 +121,8 @@ function($, OembedView) {
     /**
      * Given a new Content instance, return an existing contentView that
      * should be used to update the content (based on identity or content.id).
-     * @param newContent {Content} The piece of content to find the view for.
-     * @returns {ContentView | null} The contentView for the content, or null.
+     * @param newOembed {Content} The piece of content to find the view for.
+     * @returns {OembedView | null} The oembedView for the content, or null.
      */
     AttachmentListView.prototype.getOembedView = function (newOembed) {
         var existingOembedView;

@@ -8,6 +8,14 @@ define([
 ],
 function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate, util) {
 
+	/**
+	 * A view that renders oembed attachments
+     * @param opts {Object} A set of options to config the view with
+     * @param opts.el {HTMLElement} The element in which to render the streamed content
+     * @param opts.oembed {Object} The oembed attachment object to display
+	 * @exports streamhub-sdk/content/views/oembed-view
+     * @constructor
+	 */
     var OembedView = function(opts) {
         View.call(this);
         this.oembed = opts.oembed || {};
@@ -18,6 +26,9 @@ function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, Oem
     };
     util.inherits(OembedView, View);
 
+	/**
+	 * A mapping of oembed type to its mustache template for rendering 
+	 */
     OembedView.prototype.OEMBED_TEMPLATES = {
         'photo': OembedPhotoTemplate,
         'video': OembedVideoTemplate,
@@ -34,8 +45,16 @@ function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, Oem
         this.$el = $(el);
     };
 
+     /**
+     * The default element tag name to use for the containing element of this
+     * view
+     */
     OembedView.prototype.elTag = 'div';
 
+    /**
+     * Renders the template and appends itself to this.el
+     * For oembed types with thumbnails attach image load/error handlers
+     */
     OembedView.prototype.render = function() {
         this.template = this.OEMBED_TEMPLATES[this.oembed.type];
         if (this.oembed.provider_name == 'YouTube') {

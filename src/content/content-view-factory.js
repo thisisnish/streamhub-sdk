@@ -24,6 +24,11 @@ define([
     InstagramContentView
 ) {
 
+    /**
+     * A module to create instances of ContentView for a given Content instance.
+     * @exports streamhub-sdk/content/content-view-factory
+     * @constructor
+     */
     var ContentViewFactory = function() {
         this.contentRegistry = this.contentRegistry.slice(0);
     };
