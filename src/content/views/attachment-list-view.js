@@ -31,6 +31,12 @@ function($, OembedView, AttachmentListTemplate) {
         return this;
     };
 
+    AttachmentListView.prototype.tiledAttachmentsSelector = '.content-attachments-tiled';
+    AttachmentListView.prototype.stackedAttachmentsSelector = '.content-attachments-stacked';
+    AttachmentListView.prototype.squareTileClassName = 'content-attachment-square-tile';
+    AttachmentListView.prototype.horizontalTileClassName = 'content-attachment-horizontal-tile';
+    AttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
+
     /**
      * A count of the number of attachments for this content item
      * @returns {int} The number of attachments for this content item
@@ -54,19 +60,19 @@ function($, OembedView, AttachmentListTemplate) {
             tiledAttachmentsEl.addClass('content-attachments-' + attachmentsCount);
         }
 
-        tiledAttachmentsEl.find('.content-attachment').addClass('content-attachment-square-tile');
+        tiledAttachmentsEl.find(this.contentAttachmentSelector).addClass(this.squareTileClassName);
         if (attachmentsCount == 3) {
-            tiledAttachmentsEl.find('.content-attachment:first')
-                .removeClass('content-attachment-square-tile')
-                .addClass('content-attachment-horizontal-tile');
+            tiledAttachmentsEl.find(this.contentAttachmentSelector + ':first')
+                .removeClass(this.squareTileClassName)
+                .addClass(this.horizontalTileClassName);
         } else if (attachmentsCount > 4) {
-            tiledAttachmentsEl.find('.content-attachment')
-                .removeClass('content-attachment-square-tile')
-                .addClass('content-attachment-horizontal-tile');
+            tiledAttachmentsEl.find(this.contentAttachmentSelector)
+                .removeClass(this.squareTileClassName)
+                .addClass(this.horizontalTileClassName);
         } else {
-            tiledAttachmentsEl.find('.content-attachment')
-                .removeClass('content-attachment-horizontal-tile')
-                .addClass('content-attachment-square-tile');
+            tiledAttachmentsEl.find(this.contentAttachmentSelector)
+                .removeClass(this.horizontalTileClassName)
+                .addClass(this.squareTileClassName);
         }
     };
 
@@ -78,11 +84,11 @@ function($, OembedView, AttachmentListTemplate) {
     AttachmentListView.prototype.add = function(oembed) { 
         var oembedView = this.createOembedView(oembed);
 
-        var tiledAttachmentsEl = this.$el.find('.content-attachments-tiled');
+        var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
         if (oembed.type == 'photo' || oembed.type == 'video') {
             oembedView.$el.appendTo(tiledAttachmentsEl);
         } else {
-            oembedView.$el.appendTo(this.$el.find('.content-attachments-stacked'));
+            oembedView.$el.appendTo(this.$el.find(this.stackedAttachmentsSelector));
         }
 
         oembedView.render();
