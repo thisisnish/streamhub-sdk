@@ -1,5 +1,5 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/content/views/oembed-view'],
-function($, OembedView) {
+define(['streamhub-sdk/jquery', 'streamhub-sdk/content/views/oembed-view', 'hgn!streamhub-sdk/content/templates/attachment-list'],
+function($, OembedView, AttachmentListTemplate) {
     
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -12,16 +12,10 @@ function($, OembedView) {
         opts = opts || {};
         this.setElement(opts.el || document.createElement(this.elTag));
         this.oembedViews = [];
-
-        var self = this;
-        $(window).resize(function(e) {
-            if (self.count() && self.$el.find('.content-attachments-tiled').length) {
-                self.render();
-            }
-        });
     };
 
     AttachmentListView.prototype.elTag = 'div';
+    AttachmentListView.prototype.template = AttachmentListTemplate;
     
     /**
      * Set the element for the view to render in.
@@ -32,12 +26,13 @@ function($, OembedView) {
     AttachmentListView.prototype.setElement = function (element) {
         this.el = element;
         this.$el = $(element);
+        this.$el.html(this.template());
 
         return this;
     };
 
     /**
-     * A count of the number of attachments for this conten item
+     * A count of the number of attachments for this content item
      * @returns {int} The number of attachments for this content item
      */
     AttachmentListView.prototype.count = function() {
@@ -59,15 +54,19 @@ function($, OembedView) {
             tiledAttachmentsEl.addClass('content-attachments-' + attachmentsCount);
         }
 
-        // Position images to be centered within their tile
-        var fullWidth = this.$el.parents('.content').width();
-        var halfWidth = fullWidth/2;
-        if (this.count() > 1) {
-            tiledAttachmentsEl.find('.content-attachment').css('height', halfWidth + 'px');
+        tiledAttachmentsEl.find('.content-attachment').addClass('content-attachment-square-tile');
+        if (attachmentsCount == 3) {
+            tiledAttachmentsEl.find('.content-attachment:first')
+                .removeClass('content-attachment-square-tile')
+                .addClass('content-attachment-horizontal-tile');
+        } else if (attachmentsCount > 4) {
+            tiledAttachmentsEl.find('.content-attachment')
+                .removeClass('content-attachment-square-tile')
+                .addClass('content-attachment-horizontal-tile');
         } else {
             tiledAttachmentsEl.find('.content-attachment')
-                .css('width', fullWidth + 'px')
-                .css('height', fullWidth + 'px');
+                .removeClass('content-attachment-horizontal-tile')
+                .addClass('content-attachment-square-tile');
         }
     };
 
@@ -78,8 +77,17 @@ function($, OembedView) {
      */
     AttachmentListView.prototype.add = function(oembed) { 
         var oembedView = this.createOembedView(oembed);
+
+        var tiledAttachmentsEl = this.$el.find('.content-attachments-tiled');
+        if (oembed.type == 'photo' || oembed.type == 'video') {
+            oembedView.$el.appendTo(tiledAttachmentsEl);
+        } else {
+            oembedView.$el.appendTo(this.$el.find('.content-attachments-stacked'));
+        }
+
         oembedView.render();
         this.render();
+
         return this;
     };
 
@@ -92,11 +100,6 @@ function($, OembedView) {
         var oembedView = new OembedView({
             oembed: oembed     
         });
-        if (oembed.type == 'photo' || oembed.type == 'video') {
-            oembedView.$el.appendTo(this.$el.find('.content-attachments-tiled'));
-        } else {
-            oembedView.$el.appendTo(this.$el.find('.content-attachments-stacked'));
-        }
         this.oembedViews.push(oembedView);
         return oembedView;
     };
