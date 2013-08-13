@@ -127,9 +127,8 @@ define([
     };
 
     ContentView.prototype.remove = function() {
-        this.$el.trigger('removeContent.hub', this.content);
+        this.$el.trigger('removeContentView.hub', this.content);
         this.$el.remove();
-        delete this;
     };
     
     return ContentView;

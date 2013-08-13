@@ -18,7 +18,7 @@ function($, View, ContentViewFactory, util) {
         this.contentViews = [];
 
         var self = this;
-        $(this.el).on('removeContent.hub', function(e, content) {
+        $(this.el).on('removeContentView.hub', function(e, content) {
             self.remove(content);
         });
     };

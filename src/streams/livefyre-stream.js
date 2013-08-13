@@ -276,7 +276,7 @@ define([
                 contentType = LivefyreInstagramContent;
             }
             return new contentType(state);
-        } else if (['livefyre'].indexOf(sourceName) !== -1) {
+        } else if (sourceName === 'livefyre') {
             return new LivefyreContent(state);
         }
     };
