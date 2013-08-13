@@ -15,9 +15,12 @@ define([
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/types/livefyre-facebook-content',
     'streamhub-sdk/content/types/livefyre-twitter-content',
+    'streamhub-sdk/content/types/livefyre-instagram-content',
     'streamhub-sdk/content/types/oembed',
     'streamhub-sdk/content/types/twitter-content',
+    'streamhub-sdk/content/views/attachment-list-view',
     'streamhub-sdk/content/views/content-view',
+    'streamhub-sdk/content/views/oembed-view',
     'streamhub-sdk/content/views/facebook-content-view',
     'streamhub-sdk/content/views/twitter-content-view',
     'streamhub-sdk/content/views/instagram-content-view',
@@ -43,11 +46,15 @@ define([
     LivefyreContent,
     LivefyreFacebookContent,
     LivefyreTwitterContent,
+    LivefyreInstagramContent,
     Oembed,
     TwitterContent,
+    AttachmentListView,
     ContentView,
+    OembedView,
     FacebookContentView,
     TwitterContentView,
+    InstagramContentView,
     LivefyreStream,
     LivefyreReverseStream,
     LivefyreHelper,
@@ -75,13 +82,17 @@ define([
     Hub.Content.Types.LivefyreContent = LivefyreContent;
     Hub.Content.Types.LivefyreFacebookContent = LivefyreFacebookContent;
     Hub.Content.Types.LivefyreTwitterContent = LivefyreTwitterContent;
+    Hub.Content.Types.LivefyreInstagramContent = LivefyreInstagramContent;
     Hub.Content.Types.Oembed = Oembed;
     Hub.Content.Types.TwitterContent = TwitterContent;
 
     Hub.Content.Views = {};
+    Hub.Content.Views.AttachmentListView = AttachmentListView;
     Hub.Content.Views.ContentView = ContentView;
+    Hub.Content.Views.OembedView = OembedView;
     Hub.Content.Views.FacebookContentView = FacebookContentView;
     Hub.Content.Views.TwitterContentView = TwitterContentView;
+    Hub.Content.Views.InstagramContentView = InstagramContentView;
     
     Hub.Streams = {};
     Hub.Streams.LivefyreStream = LivefyreStream;
