@@ -10,8 +10,17 @@ function($, OembedView, AttachmentListTemplate) {
      */
     var AttachmentListView = function(opts) {
         opts = opts || {};
+        this.content = opts.content;
+        if (!this.content) {
+            return;
+        }
         this.setElement(opts.el || document.createElement(this.elTag));
         this.oembedViews = [];
+
+        var self = this;
+        this.content.on('attachment', function(attachment) {
+            self.add(attachment);
+        });
     };
 
     AttachmentListView.prototype.elTag = 'div';
