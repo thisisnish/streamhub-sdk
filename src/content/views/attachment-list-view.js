@@ -53,6 +53,16 @@ function($, OembedView, AttachmentListTemplate) {
         return this.oembedViews.length;
     };
 
+    AttachmentListView.prototype.tileableCount = function() {
+        var attachmentsCount = 0;
+        for (var i=0; i < this.oembedViews.length; i++) {
+            if (this.isAttachmentTileable(this.oembedViews[i])) {
+                attachmentsCount++;
+            }
+        }
+        return attachmentsCount;
+    }
+
     /**
      * Renders the template and appends itself to this.el
      */
@@ -62,12 +72,11 @@ function($, OembedView, AttachmentListTemplate) {
             .removeClass('content-attachments-2')
             .removeClass('content-attachments-3')
             .removeClass('content-attachments-4');
-        var attachmentsCount = this.count();
-        if (attachmentsCount <= 4) {
+        var attachmentsCount = this.tileableCount();
+        if (attachmentsCount && attachmentsCount <= 4) {
             // Only tile for <= 4 photo or video attachments
             tiledAttachmentsEl.addClass('content-attachments-' + attachmentsCount);
         }
-
         tiledAttachmentsEl.find(this.contentAttachmentSelector).addClass(this.squareTileClassName);
         if (attachmentsCount == 3) {
             tiledAttachmentsEl.find(this.contentAttachmentSelector + ':first')
@@ -93,8 +102,11 @@ function($, OembedView, AttachmentListTemplate) {
         var oembedView = this.createOembedView(oembed);
 
         var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
-        if (oembed.type == 'photo' || oembed.type == 'video') {
+        if (this.isAttachmentTileable(oembed)) {
             oembedView.$el.appendTo(tiledAttachmentsEl);
+            oembedView.$el.on('click', function(e) {
+                $(e.target).trigger('focusAttachment.hub', oembedView.oembed);
+            });
         } else {
             oembedView.$el.appendTo(this.$el.find(this.stackedAttachmentsSelector));
         }
@@ -133,6 +145,17 @@ function($, OembedView, AttachmentListTemplate) {
         this.oembedViews.splice(this.oembedViews.indexOf(oembedView), 1);
         this.render();
         return true;
+    };
+
+    AttachmentListView.prototype.isAttachmentTileable = function (oembed) {
+        var oembedView = oembed.el ? oembed : this.getOembedView(oembed); //duck type for ContentView
+        if (! oembedView) {
+            return false;
+        }
+        if (oembedView.oembed.type === 'photo' || oembedView.oembed.type === 'video') {
+            return true;
+        }
+        return false;
     };
 
     /**
