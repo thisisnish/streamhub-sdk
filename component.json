@@ -15,6 +15,7 @@
     "almond": "~0.2.5",
     "hogan": "latest",
     "requirejs-hogan-plugin": "git://github.com/millermedeiros/requirejs-hogan-plugin.git#~0.2.1",
-    "stream": "https://github.com/Livefyre/stream.git"
+    "stream": "https://github.com/Livefyre/stream.git",
+    "event-emitter": "https://github.com/Livefyre/event-emitter.git"
   }
 }

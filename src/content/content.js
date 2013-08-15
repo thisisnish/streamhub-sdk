@@ -1,6 +1,6 @@
 define([
     'streamhub-sdk/jquery',
-    'streamhub-sdk/event-emitter'
+    'event-emitter'
 ], function($, EventEmitter) {
 
     /**
