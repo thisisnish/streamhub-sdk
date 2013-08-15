@@ -49,7 +49,7 @@ LivefyreStream, LivefyreReverseStream) {
             sm.start();
             sm.start();
 
-            expect(LivefyreBootstrapClient.getContent).toHaveBeenCalled()
+            expect(LivefyreBootstrapClient.getContent).toHaveBeenCalled();
             expect(LivefyreBootstrapClient.getContent.callCount).toBe(1);
         });
 

@@ -109,7 +109,7 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
                 it("returns > 0 if a.createdAt is before b.content.createdAt", function () {
                     a.createdAt = earlierDate;
                     expect(listView.comparator(a, b)).toBeGreaterThan(0);
-                })
+                });
             });
 
             describe("and b.content has no .createdAt and a.content does", function () {
@@ -127,7 +127,7 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
                 it("returns > 0 if a.content.createdAt is before b.createdAt", function () {
                     b.createdAt = laterDate;
                     expect(listView.comparator(a, b)).toBeGreaterThan(0);
-                })
+                });
             });
             
         });
@@ -196,8 +196,8 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
 
         describe("when constructed", function () {
             it ("uses a <article> tag for .el", function () {
-                expect(contentView.el).toBe('article')
-            })
+                expect(contentView.el).toBe('article');
+            });
         });
     });
 });

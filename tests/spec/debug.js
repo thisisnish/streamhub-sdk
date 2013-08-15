@@ -15,6 +15,6 @@ define(['jasmine', 'streamhub-sdk/debug'], function (jasmine, debug) {
 					log('my message');
 				}).not.toThrow();
 			});
-		})
+		});
 	});
 });

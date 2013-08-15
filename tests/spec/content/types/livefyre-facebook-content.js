@@ -11,12 +11,12 @@ function ($, jasmine, LivefyreFacebookContent) {
         
         it('can be constructed with an html .bodyHtml', function () {
             var mock = new LivefyreFacebookContent(mockData.htmlBootstrapContent);
-            expect(mock.body).toBe(mockData.htmlBootstrapContent.content.bodyHtml)
+            expect(mock.body).toBe(mockData.htmlBootstrapContent.content.bodyHtml);
         });
 
         it('can be constructed with non-html .bodyHtml', function () {
             var mock = new LivefyreFacebookContent(mockData.plaintextBootstrapContent);
             expect(mock.body).toBe(mockData.plaintextBootstrapContent.content.bodyHtml);
-        })
+        });
     });
 });

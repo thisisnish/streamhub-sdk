@@ -2,7 +2,7 @@ define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/stream',
     'streamhub-sdk/content/content',
-    'streamhub-sdk/content/types/livefyre-content',
+    'streamhub-sdk/content/types/livefyre-content'
 ], function ($, Stream, Content, LivefyreContent) {
 
     /**
@@ -35,7 +35,9 @@ define([
                 id: Math.floor(999999999 * Math.random())
             });
             self._push(content);
-            onWritten && onWritten.call(self, null, content);
+            if (onWritten) {
+                onWritten.call(self, null, content);
+            }
         }
         if (this.writeLatency) {
             setTimeout(write, this.writeLatency);

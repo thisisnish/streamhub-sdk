@@ -139,7 +139,7 @@ function ($, jasmine, Hub, jasminejquery, JasmineSpyStream, MockStream) {
                 waits(readableStream);
                 expect(readableStream.read()).toBeDefined();
             });
-        })
+        });
 
     });
 });

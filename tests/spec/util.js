@@ -28,7 +28,7 @@ function ($, jasmine, Util) {
                 relativeTo.setHours(0);
                 relativeTo.setMinutes(1);
                 relativeTo.setSeconds(1);
-            })
+            });
             it('renders empty string if content is from the future', function () {
                 createdAt = addSeconds(1, relativeTo);
                 expect(Util.formatDate(createdAt, relativeTo)).toBe('');
@@ -40,7 +40,7 @@ function ($, jasmine, Util) {
             it('renders like 58s if content is from 58s ago', function () {
                 createdAt = addSeconds(-58, relativeTo);
                 expect(Util.formatDate(createdAt, relativeTo)).toBe('58s');
-            })
+            });
             it('renders like 1m if content is from 1:01m ago', function () {
                 createdAt = addSeconds(-61, relativeTo);
                 expect(Util.formatDate(createdAt, relativeTo)).toBe('1m');
