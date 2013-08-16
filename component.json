@@ -10,7 +10,7 @@
     "requirejs-text": "~2.0.5",
     "jasmine": "*",
     "jasmine-jquery": "*",
-    "base64": "~0.1.1",
+    "base64": "d62adce581aa5fafac3138ef8c6dbaa41579a325",
     "streamhub-zepto": "git://github.com/genehallman/streamhub-zepto.git",
     "almond": "~0.2.5",
     "hogan": "latest",
