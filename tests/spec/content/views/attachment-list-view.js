@@ -191,6 +191,165 @@ function($, jasmine, jasminejQuery, Content, AttachmentListView, OembedView) {
                 });
             });
         });
+
+        describe('when clicking an attachment tile', function() {
+            
+            var attachmentListView,
+                tiledAttachmentEl,
+                attachmentListViewOpts = { content: content };
+
+            it('emits focusAttachment.hub event', function() {
+                attachmentListView = new AttachmentListView(attachmentListViewOpts);
+                attachmentListView.setElement($('<div></div>'));
+                oembedAttachment.type = 'photo';
+                for (var i=0; i < 3; i++) {
+                    attachmentListView.add(oembedAttachment);
+                }
+                tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
+
+                var spyFocusAttachmentEvent = spyOnEvent(tiledAttachmentEl[0], 'focusAttachment.hub');
+                var tileClicked = false;
+                attachmentListView.$el.on('focusAttachment.hub', function() {
+                    tileClicked = true;
+                });
+
+                tiledAttachmentEl.trigger('click');
+                expect(spyFocusAttachmentEvent).toHaveBeenTriggered();
+                expect(tileClicked).toBe(true);
+            });
+
+            it('calls .focusAttachment, when opts.focusAttachment is not specified', function() {
+                attachmentListView = new AttachmentListView(attachmentListViewOpts);
+                attachmentListView.setElement($('<div></div>'));
+                oembedAttachment.type = 'photo';
+                for (var i=0; i < 3; i++) {
+                    attachmentListView.add(oembedAttachment);
+                }
+                tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
+
+                spyOn(attachmentListView, 'focusAttachment');
+                tiledAttachmentEl.trigger('click');
+
+                expect(attachmentListView.focusAttachment).toHaveBeenCalled();
+            });
+
+            it('calls opts.focusAttachment, when opts.focusAttachment is specified', function() {
+                attachmentListViewOpts.focusAttachment = function() {};
+                attachmentListView = new AttachmentListView(attachmentListViewOpts);
+                attachmentListView.setElement($('<div></div>'));
+                oembedAttachment.type = 'photo';
+                for (var i=0; i < 3; i++) {
+                    attachmentListView.add(oembedAttachment);
+                }
+                tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
+
+                spyOn(attachmentListViewOpts, 'focusAttachment');
+                tiledAttachmentEl.trigger('click');
+
+                expect(attachmentListViewOpts.focusAttachment).toHaveBeenCalled();
+            });
+        });
+
+        describe('when focusing a tiled attachment', function() {
+
+            var attachmentListView,
+                tiledAttachmentEl;
+
+            beforeEach(function() {
+                attachmentListView = new AttachmentListView({ content: content });
+                attachmentListView.setElement($('<div></div>'));
+                oembedAttachment.type = 'photo';
+                for (var i=0; i < 4; i++) {
+                    var attachment = $.extend({}, oembedAttachment);
+                    attachment.id = i;
+                    attachmentListView.add(attachment);
+                }
+                tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
+            });
+
+            it('hides the .content-attachments-tiled element', function() {
+                expect(tiledAttachmentsEl).not.toBeHidden();
+                tiledAttachmentEl.trigger('click');
+                var tiledAttachmentsEl = attachmentListView.$el.find('.content-attachments-tiled');
+                expect(tiledAttachmentsEl).toBeHidden();
+            });
+
+            it('appends the .content-attachments-gallery element', function() {
+                tiledAttachmentEl.trigger('click');
+                var focusedAttachmentsEl = attachmentListView.$el.find('.content-attachments-gallery');
+                expect(focusedAttachmentsEl).toBe('div');
+            });
+
+            it('contains the same number of gallery thumbnails as .content-attachment-tiled contains', function() {
+                tiledAttachmentEl.trigger('click');
+                var focusedThumbnailEls = attachmentListView.$el.find('.content-attachments-thumbnails');
+                var tiledAttachmentsCount = attachmentListView.$el.find('.content-attachments-tiled .content-attachment').length;
+                expect(focusedThumbnailEls.find('.content-attachment').length).toBe(tiledAttachmentsCount);
+            });
+        });
+
+        describe ('when focusing a tiled video attachment', function() {
+            var oembedVideoAttachment = {
+                provider_name: "YouTube",
+                provider_url: "http://youtube.com",
+                type: "video",
+                thumbnail_url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg",
+                html: "<iframe>here's your video player</iframe>"
+            },
+            attachmentListView,
+            tiledAttachmentEl;
+           
+            beforeEach(function() {
+                attachmentListView = new AttachmentListView({ content: content });
+                attachmentListView.setElement($('<div></div>'));
+                for (var i=0; i < 4; i++) {
+                    var attachment = $.extend({}, oembedVideoAttachment);
+                    attachment.id = i;
+                    attachmentListView.add(attachment);
+                }
+                tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
+            });
+
+            it('hides the .content-attachments-tiled element', function() {
+                expect(tiledAttachmentsEl).not.toBeHidden();
+                tiledAttachmentEl.trigger('click');
+                var tiledAttachmentsEl = attachmentListView.$el.find('.content-attachments-tiled');
+                expect(tiledAttachmentsEl).toBeHidden();
+            });
+
+            it('shows the video player as the focused attachment', function() {
+                tiledAttachmentEl.trigger('click');
+                var focusedAttachmentsEl = attachmentListView.$el.find('.content-attachments-gallery');
+                var focusedVideoAttachmentEl = focusedAttachmentsEl.find('.content-attachment:first .content-attachment-video');
+                expect(focusedVideoAttachmentEl).not.toBeEmpty();
+                expect(focusedVideoAttachmentEl).toHaveHtml($('<div></div>').append($(oembedVideoAttachment.html).css({'width': '100%', 'height': '100%'})).html());
+                expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
+            });
+        });
+
+        describe('when focusing gallery thumbnail', function() {
+
+            var attachmentListView,
+                tiledAttachmentEl,
+                focusedAttachmentsEl;
+
+            beforeEach(function() {
+                attachmentListView = new AttachmentListView({ content: content });
+                attachmentListView.setElement($('<div></div>'));
+                oembedAttachment.type = 'photo';
+                for (var i=0; i < 4; i++) {
+                    var attachment = $.extend({}, oembedAttachment);
+                    attachment.id = i;
+                    attachmentListView.add(attachment);
+                }
+                tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
+                tiledAttachmentEl.trigger('click');
+                focusedAttachmentsEl = attachmentListView.$el.find('.content-attachments-gallery');
+            });
+
+            it('the clicked thumbnail becomes the focused attachment', function() {
+            });
+        });
     });
 
 });

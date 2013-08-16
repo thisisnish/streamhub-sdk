@@ -78,7 +78,8 @@ define([
         });
         this.$el.on('imageError.hub', function(e, oembed) {
             self.attachmentsView.remove(oembed);
-            if (!self.attachmentsView.count()) {
+            debugger;
+            if (!self.attachmentsView.tileableCount()) {
                 self.$el.removeClass('content-with-image');
             }
         });
