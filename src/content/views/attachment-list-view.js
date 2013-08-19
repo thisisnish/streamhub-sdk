@@ -1,5 +1,11 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/content/views/oembed-view', 'hgn!streamhub-sdk/content/templates/attachment-list'],
-function($, OembedView, AttachmentListTemplate) {
+define([
+    'streamhub-sdk/jquery',
+    'streamhub-sdk/view',
+    'streamhub-sdk/content/views/oembed-view',
+    'streamhub-sdk/views/modal-view',
+    'hgn!streamhub-sdk/content/templates/attachment-list',
+    'streamhub-sdk/util'],
+function($, View, OembedView, ModalView, AttachmentListTemplate, util) {
     
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -11,20 +17,38 @@ function($, OembedView, AttachmentListTemplate) {
     var AttachmentListView = function(opts) {
         opts = opts || {};
         this.content = opts.content;
-        this.setElement(opts.el || document.createElement(this.elTag));
         this.oembedViews = [];
+        if (opts.oembedViews) {
+            for (var i=0; i < opts.oembedViews.length; i++) {
+                this.add(opts.oembedViews[i].oembed);
+            }
+        }
 
+        View.call(this, opts);
+        this.modalView;
+    };
+    util.inherits(AttachmentListView, View);
+
+    AttachmentListView.prototype.initialize = function() {
         var self = this;
         if (this.content) {
             this.content.on('attachment', function(attachment) {
                 self.add(attachment);
+                if (! self.modalView) {
+                    self.modalView = new ModalView();
+                }
             });
         }
     };
 
-    AttachmentListView.prototype.elTag = 'div';
     AttachmentListView.prototype.template = AttachmentListTemplate;
-    
+
+    AttachmentListView.prototype.tiledAttachmentsSelector = '.content-attachments-tiled';
+    AttachmentListView.prototype.stackedAttachmentsSelector = '.content-attachments-stacked';
+    AttachmentListView.prototype.squareTileClassName = 'content-attachment-square-tile';
+    AttachmentListView.prototype.horizontalTileClassName = 'content-attachment-horizontal-tile';
+    AttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
+
     /**
      * Set the element for the view to render in.
      * You will probably want to call .render() after this, but not always.
@@ -35,15 +59,8 @@ function($, OembedView, AttachmentListTemplate) {
         this.el = element;
         this.$el = $(element);
         this.$el.html(this.template());
-
         return this;
     };
-
-    AttachmentListView.prototype.tiledAttachmentsSelector = '.content-attachments-tiled';
-    AttachmentListView.prototype.stackedAttachmentsSelector = '.content-attachments-stacked';
-    AttachmentListView.prototype.squareTileClassName = 'content-attachment-square-tile';
-    AttachmentListView.prototype.horizontalTileClassName = 'content-attachment-horizontal-tile';
-    AttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
 
     /**
      * A count of the number of attachments for this content item
@@ -62,6 +79,17 @@ function($, OembedView, AttachmentListTemplate) {
         }
         return attachmentsCount;
     }
+
+    AttachmentListView.prototype.isAttachmentTileable = function (oembed) {
+        var oembedView = oembed.el ? oembed : this.getOembedView(oembed); //duck type for ContentView
+        if (! oembedView) {
+            return false;
+        }
+        if (oembedView.oembed.type === 'photo' || oembedView.oembed.type === 'video') {
+            return true;
+        }
+        return false;
+    };
 
     /**
      * Renders the template and appends itself to this.el
@@ -118,19 +146,6 @@ function($, OembedView, AttachmentListTemplate) {
     };
 
     /**
-     * Creates the view to render the oembed content object
-     * @param oembed {Oembed} A Oembed instance to render in the View
-     * @returns {OembedView} 
-     */
-    AttachmentListView.prototype.createOembedView = function(oembed) {
-        var oembedView = new OembedView({
-            oembed: oembed     
-        });
-        this.oembedViews.push(oembedView);
-        return oembedView;
-    };
-
-    /**
      * Remove a piece of Content from this ListView
      * @param content {Content|ContentView} The ContentView or Content to be removed
      * @returns {boolean} true if Content was removed, else false
@@ -147,15 +162,17 @@ function($, OembedView, AttachmentListTemplate) {
         return true;
     };
 
-    AttachmentListView.prototype.isAttachmentTileable = function (oembed) {
-        var oembedView = oembed.el ? oembed : this.getOembedView(oembed); //duck type for ContentView
-        if (! oembedView) {
-            return false;
-        }
-        if (oembedView.oembed.type === 'photo' || oembedView.oembed.type === 'video') {
-            return true;
-        }
-        return false;
+    /**
+     * Creates the view to render the oembed content object
+     * @param oembed {Oembed} A Oembed instance to render in the View
+     * @returns {OembedView} 
+     */
+    AttachmentListView.prototype.createOembedView = function(oembed) {
+        var oembedView = new OembedView({
+            oembed: oembed     
+        });
+        this.oembedViews.push(oembedView);
+        return oembedView;
     };
 
     /**

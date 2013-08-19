@@ -36,12 +36,6 @@ function(View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, Oem
         'rich':  OembedRichTemplate
     };
 
-     /**
-     * The default element tag name to use for the containing element of this
-     * view
-     */
-    OembedView.prototype.elTag = 'div';
-
     /**
      * Renders the template and appends itself to this.el
      * For oembed types with thumbnails attach image load/error handlers
