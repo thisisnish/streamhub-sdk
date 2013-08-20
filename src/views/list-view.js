@@ -3,8 +3,9 @@ define([
     'streamhub-sdk/view',
     'streamhub-sdk/content/content-view-factory',
     'streamhub-sdk/modal/views/attachment-gallery-modal',
-    'streamhub-sdk/util'],
-function($, View, ContentViewFactory, AttachmentGalleryModal, util) {
+    'inherits',
+    'stream/writable'],
+function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, Writable) {
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -16,7 +17,9 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, util) {
      */
     var ListView = function(opts) {
         opts = opts || {};
+
         this.modal = opts.modal === undefined ? new AttachmentGalleryModal() : opts.modal;
+
         View.call(this, opts);
 
         $(this.el).addClass('streamhub-list-view');
@@ -34,14 +37,28 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, util) {
                 if (contentView &&
                     contentView.attachmentsView &&
                     typeof contentView.attachmentsView.focus === 'function') {
-                    contentView.attachmentsView.focus(context.attachmentToFocus)
+                    contentView.attachmentsView.focus(context.attachmentToFocus);
                 }
                 return;
             }
             self.modal.show(context.content, { attachment: context.attachmentToFocus });
         });
+
+        Writable.call(this, opts);
     };
-    util.inherits(ListView, View);
+
+    inherits(ListView, View);
+    inherits.parasitically(ListView, Writable);
+
+
+    /**
+     * Called automatically by the Writable base class
+     */
+    ListView.prototype._write = function (content, errback) {
+        this.add(content);
+        errback();
+    };
+
 
     /**
      * Comparator function to determine ordering of ContentViews.
