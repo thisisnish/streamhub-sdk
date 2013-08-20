@@ -12,6 +12,7 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function ($, EventEmitter) {
         streamObj = streamObj || {};
         this._streams = {};
         this._views = [];
+        this._doneStreaming = {};
         this.isStarted = false;
         var self = this;
         this.on('readable', function(stream) {
@@ -28,7 +29,11 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function ($, EventEmitter) {
 
             function readStreams2 (stream) {
                 var content;
+                if (self._doneStreaming[stream]) {
+                    return;
+                }
                 while (content = stream.read()) {
+                    self._doneStreaming[stream] = true;
                     add(content);
                 }
             }
@@ -144,7 +149,9 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function ($, EventEmitter) {
             if (typeof stream.start === 'function') {
                 stream.start();
             } else if (stream.readable) {
+                this._doneStreaming[stream] = false;
                 stream.read(0);
+                stream.emit('readable');
             }
         });
         this.isStarted = true;
