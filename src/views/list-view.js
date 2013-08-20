@@ -1,5 +1,10 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/view', 'streamhub-sdk/content/views/content-view'],
-function($, View, ContentView) {
+define([
+    'inherits',
+    'stream/writable',
+    'streamhub-sdk/view',
+    'streamhub-sdk/jquery',
+    'streamhub-sdk/content/views/content-view'],
+function(inherits, Writable, View, $, ContentView) {
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -10,15 +15,26 @@ function($, View, ContentView) {
      */
     var ListView = function(opts) {
         opts = opts || {};
-        View.call(this, opts);
 
         $(this.el).addClass('streamhub-list-view');
 
         this.contentViews = [];
 
-        var self = this;
+        View.call(this, opts);
+        Writable.call(this, opts);
     };
-    $.extend(ListView.prototype, View.prototype);
+
+    inherits(ListView, View);
+    inherits.parasitically(ListView, Writable);
+
+
+    /**
+     * Called automatically by the Writable base class
+     */
+    ListView.prototype._write = function (content, errback) {
+        this.add(content);
+        errback();
+    };
 
 
     /**
