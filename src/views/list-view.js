@@ -93,6 +93,10 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, Writable
         }
 
         contentView = this.createContentView(content);
+        if ( ! contentView) {
+            return;
+        }
+
         contentView.render();
 
         // Push and sort. #TODO Insert in sorted order
