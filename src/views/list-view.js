@@ -70,6 +70,10 @@ function(inherits, Writable, View, $, ContentView) {
         }
 
         contentView = this.createContentView(content);
+        if ( ! contentView) {
+            return;
+        }
+
         contentView.render();
 
         // Add to DOM
