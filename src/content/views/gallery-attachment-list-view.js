@@ -14,28 +14,20 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
         if (opts.toFocus) {
             this._focusedOembedView = opts.toFocus.el ? opts.toFocus : new OembedView({ oembed: opts.toFocus });
         }
+        this.tile = false;
         this.pageButtons = opts.pageButtons || true;
         this.pageCount = opts.pageCount || true;
         this.thumbnails = opts.thumbnails || false;
         this.focusedIndex = 0;
-
         this.oembedViews = [];
-        if (opts.oembedViews) {
-            for (var i=0; i < opts.oembedViews.length; i++) {
-                this.add(opts.oembedViews[i].oembed);
-            }
-        }
 
         View.call(this, opts);
 
-        var self = this;
-        this.$el.on('focusAttachment.hub', function(e, focusedAttachment, attachmentViews) {
-            if (attachmentViews) {
-                self.oembedViews = attachmentViews;
+        if (this.content) {
+            for (var i=0; i < this.content.attachments.length; i++) {
+                this.add(this.content.attachments[i]);
             }
-            self.focusedOembedView = focusedAttachment;
-            self.render();
-        });
+        }
     };
     util.inherits(GalleryAttachmentListView, View);
     $.extend(GalleryAttachmentListView.prototype, AttachmentListView.prototype);
@@ -44,6 +36,11 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
     GalleryAttachmentListView.prototype.attachmentsGallerySelector = '.content-attachments-gallery';
     GalleryAttachmentListView.prototype.focusedAttachmentsSelector = '.content-attachments-gallery-focused';
     GalleryAttachmentListView.prototype.galleryThumbnailsSelector = '.content-attachments-gallery-thumbnails';
+    GalleryAttachmentListView.prototype.galleryPrevSelector = '.content-attachments-gallery-prev';
+    GalleryAttachmentListView.prototype.galleryNextSelector = '.content-attachments-gallery-next';
+    GalleryAttachmentListView.prototype.galleryCloseSelector = '.content-attachments-gallery-close';
+    GalleryAttachmentListView.prototype.galleryCurrentPageSelector = '.content-attachments-gallery-current-page';
+    GalleryAttachmentListView.prototype.galleryTotalPagesSelector = '.content-attachments-gallery-total-pages';
 
     GalleryAttachmentListView.prototype.initialize = function() {
         var self = this;
@@ -53,6 +50,20 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
                 self.render();
             });
         }
+
+        this.$el.on('focusContent.hub', function(e, context) {
+            if (context.content) {
+                for (var i=0; i < context.content.attachments; i++) {
+                    self.add(context.content.attachments[i]);
+                }
+            }
+            self._focusedOembedView = context.focusedAttachmentView;
+            self.render();
+        });
+
+        $(window).on('resize', function(e) {
+            self.resizeFocusedAttachment();
+        });
     };
 
     GalleryAttachmentListView.prototype.render = function() {
@@ -81,7 +92,7 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
         var self = this;
         $(galleryOembedViews).each(function(i, oembedView) {
             oembedView.$el.on('click', function(e) {
-                $(e.target).trigger('focusAttachment.hub', oembedView.oembed);
+                $(e.target).trigger('focusContent.hub', self.content, oembedView);
             });
             oembedView.render();
             oembedView.$el.appendTo(attachmentsGalleryEl.find(self.galleryThumbnailsSelector));
@@ -89,18 +100,20 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
 
         var attachmentsCount = this.tileableCount();
         var thumbnailsEl = attachmentsGalleryEl.find(this.galleryThumbnailsSelector);
-        thumbnailsEl.removeClass('content-attachments-1')
-            .removeClass('content-attachments-2')
-            .removeClass('content-attachments-3')
-            .removeClass('content-attachments-4');
-        thumbnailsEl.addClass('content-attachments-'+attachmentsCount);
-        if (attachmentsCount == 1 || attachmentsCount == 2) {
-            thumbnailsEl.find('.content-attachment').addClass(this.horizontalTileClassName);
-            thumbnailsEl.find('.content-attachment:first')
-                .removeClass(this.horizontalTileClassName)
-                .addClass(this.squareTileClassName);
-        } else {
-            thumbnailsEl.find('.content-attachment').addClass(this.squareTileClassName);
+        if (this.tile) {
+            thumbnailsEl.removeClass('content-attachments-1')
+                .removeClass('content-attachments-2')
+                .removeClass('content-attachments-3')
+                .removeClass('content-attachments-4');
+            thumbnailsEl.addClass('content-attachments-'+attachmentsCount);
+            if (attachmentsCount == 1 || attachmentsCount == 2) {
+                thumbnailsEl.find('.content-attachment').addClass(this.horizontalTileClassName);
+                thumbnailsEl.find('.content-attachment:first')
+                    .removeClass(this.horizontalTileClassName)
+                    .addClass(this.squareTileClassName);
+            } else {
+                thumbnailsEl.find('.content-attachment').addClass(this.squareTileClassName);
+            }
         }
 
         // Render focused oembed view
@@ -108,18 +121,43 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
         if (this._focusedOembedView) {
             this._focusedOembedView.render();
             var focusedEl = this._focusedOembedView.$el.clone();
-            focusedEl.appendTo(focusedAttachmentsEl)
-                .find('.content-attachment').addClass(this.squareTileClassName);
+            focusedEl.appendTo(focusedAttachmentsEl);
+            if (this.tile) {
+                focusedEl.find('.content-attachment').addClass(this.squareTileClassName);
+            }
             if (this._focusedOembedView.oembed.type === 'video') {
                 var playButtonEl = focusedEl.find('.content-attachment-controls-play');
                 playButtonEl.hide();
                 focusedEl.find('.content-attachment-photo').hide();
                 var videoContentEl = focusedEl.find('.content-attachment-video');
                 videoContentEl.html(this._focusedOembedView.oembed.html);
-                videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
+                if (this.tile) {
+                    videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
+                }
                 videoContentEl.show();
             }
         }
+
+        // Update page count
+        if (this.pageCount) {
+            for (var i=0; i < this.oembedViews.length; i++) {
+                if (this.oembedViews[i].oembed == this._focusedOembedView.oembed) {
+                    this.focusedIndex = i;
+                    break;
+                }
+            }
+            this.$el.find(this.galleryCurrentPageSelector).html(this.focusedIndex + 1);
+            this.$el.find(this.galleryTotalPagesSelector).html(attachmentsCount);
+        }
+
+        // Update gallery size
+        this.resizeFocusedAttachment();
+    };
+
+    GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {
+        var height = this.$el.height();
+        this.$el.find('.content-attachments-gallery-focused .content-attachment')
+            .css({ 'height': height+'px', 'line-height': height+'px'});
     };
 
     /**

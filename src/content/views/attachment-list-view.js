@@ -2,10 +2,9 @@ define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/view',
     'streamhub-sdk/content/views/oembed-view',
-    'streamhub-sdk/views/modal-view',
     'hgn!streamhub-sdk/content/templates/attachment-list',
     'streamhub-sdk/util'],
-function($, View, OembedView, ModalView, AttachmentListTemplate, util) {
+function($, View, OembedView, AttachmentListTemplate, util) {
     
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -18,14 +17,14 @@ function($, View, OembedView, ModalView, AttachmentListTemplate, util) {
         opts = opts || {};
         this.content = opts.content;
         this.oembedViews = [];
-        if (opts.oembedViews) {
-            for (var i=0; i < opts.oembedViews.length; i++) {
-                this.add(opts.oembedViews[i].oembed);
+        View.call(this, opts);
+
+        if (this.content) {
+            for (var i=0; i < this.content.attachments.length; i++) {
+                this.add(this.content.attachments[i]);
             }
         }
 
-        View.call(this, opts);
-        this.modalView;
     };
     util.inherits(AttachmentListView, View);
 
@@ -33,16 +32,13 @@ function($, View, OembedView, ModalView, AttachmentListTemplate, util) {
         var self = this;
         if (this.content) {
             this.content.on('attachment', function(attachment) {
+                self.$el.trigger('initModal.hub');
                 self.add(attachment);
-                if (! self.modalView) {
-                    self.modalView = new ModalView();
-                }
             });
         }
     };
 
     AttachmentListView.prototype.template = AttachmentListTemplate;
-
     AttachmentListView.prototype.tiledAttachmentsSelector = '.content-attachments-tiled';
     AttachmentListView.prototype.stackedAttachmentsSelector = '.content-attachments-stacked';
     AttachmentListView.prototype.squareTileClassName = 'content-attachment-square-tile';
@@ -130,10 +126,11 @@ function($, View, OembedView, ModalView, AttachmentListTemplate, util) {
         var oembedView = this.createOembedView(oembed);
 
         var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
+        var self = this;
         if (this.isAttachmentTileable(oembed)) {
             oembedView.$el.appendTo(tiledAttachmentsEl);
             oembedView.$el.on('click', function(e) {
-                $(e.target).trigger('focusAttachment.hub', oembedView.oembed);
+                $(e.target).trigger('focusContent.hub', { content: self.content, focusedAttachmentView: oembedView });
             });
         } else {
             oembedView.$el.appendTo(this.$el.find(this.stackedAttachmentsSelector));

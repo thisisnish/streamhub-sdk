@@ -105,7 +105,7 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
                 content = new Content(),
                 attachmentListViewOpts = { content: content, toFocus: oembedAttachment};
 
-            it('emits focusAttachment.hub event', function() {
+            it('emits focusContent.hub event', function() {
                 galleryAttachmentListView = new GalleryAttachmentListView(attachmentListViewOpts);
                 galleryAttachmentListView.setElement($('<div></div>'));
                 oembedAttachment.type = 'photo';
@@ -116,9 +116,9 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
                 }
                 tiledAttachmentEl = galleryAttachmentListView.$el.find('.content-attachments-gallery-thumbnails .content-attachment:first');
 
-                var spyFocusAttachmentEvent = spyOnEvent(tiledAttachmentEl[0], 'focusAttachment.hub');
+                var spyFocusAttachmentEvent = spyOnEvent(tiledAttachmentEl[0], 'focusContent.hub');
                 var tileClicked = false;
-                galleryAttachmentListView.$el.on('focusAttachment.hub', function() {
+                galleryAttachmentListView.$el.on('focusContent.hub', function() {
                     tileClicked = true;
                 });
 

@@ -1,5 +1,11 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/view', 'streamhub-sdk/content/content-view-factory', 'streamhub-sdk/util'],
-function($, View, ContentViewFactory, util) {
+define([
+    'streamhub-sdk/jquery',
+    'streamhub-sdk/view',
+    'streamhub-sdk/content/content-view-factory',
+    'streamhub-sdk/views/modal-view',
+    'streamhub-sdk/content/views/gallery-attachment-list-view',
+    'streamhub-sdk/util'],
+function($, View, ContentViewFactory, ModalView, GalleryAttachmentListView, util) {
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -14,12 +20,31 @@ function($, View, ContentViewFactory, util) {
 
         $(this.el).addClass('streamhub-list-view');
 
+        this.modalContentView = opts.modalContentView || GalleryAttachmentListView;
+
         this.contentViewFactory = new ContentViewFactory();
         this.contentViews = [];
+        this.modalView;
 
         var self = this;
         $(this.el).on('removeContentView.hub', function(e, content) {
             self.remove(content);
+        });
+        $(this.el).on('initModal.hub', function(e) {
+            self.initModalView();
+        });
+        $(this.el).on('focusContent.hub', function(e, context) {
+            if (!self.modalView) {
+                return;
+            }
+            self.modalView.render();
+            self.modalView.show();
+            var modalContentView = new self.modalContentView({
+                el: self.modalView.$el.find('.hub-modal-content'),
+                content: context.content,
+                toFocus: context.focusedAttachmentView
+            });
+            modalContentView.render();
         });
     };
     util.inherits(ListView, View);
@@ -137,6 +162,13 @@ function($, View, ContentViewFactory, util) {
      */
     ListView.prototype.createContentView = function(content) {
         return this.contentViewFactory.createContentView(content);
+    };
+
+    ListView.prototype.initModalView = function() {
+        if (this.modalView) {
+            return;
+        }
+        this.modalView = new ModalView();
     };
 
     return ListView;

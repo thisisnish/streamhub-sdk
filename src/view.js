@@ -57,12 +57,6 @@ define([
     };
 
     /**
-     * Create an extended subclass of View
-     * @param prototypeExtension {Object} Properties to add to the subclass's prototype
-     */
-    View.extend = util.extend;
-
-    /**
      * Initializes the View after construction. Subclasses can implement this
      */
     View.prototype.initialize = function () {};

@@ -44,11 +44,12 @@ function($, jasmine, jasminejQuery, Content, AttachmentListView, OembedView) {
                 expect(attachmentListView.count()).toBe(1);
             });
 
-            it('instantiates a ModalView', function() {
+            it('emits the "initModal.hub" event', function() {
                 var content = new Content();
                 var attachmentListView = new AttachmentListView({ content: content });
+                var spyFocusInitModalEvent = spyOnEvent(attachmentListView.$el[0], 'initModal.hub');
                 content.addAttachment(oembedAttachment);
-                expect(attachmentListView.modalView).toBeDefined();
+                expect(spyFocusInitModalEvent).toHaveBeenTriggered();
             });
 
             describe('creates an attachment view', function() {
@@ -213,7 +214,7 @@ function($, jasmine, jasminejQuery, Content, AttachmentListView, OembedView) {
                 tiledAttachmentEl,
                 attachmentListViewOpts = { content: content };
 
-            it('emits focusAttachment.hub event', function() {
+            it('emits focusContent.hub event', function() {
                 attachmentListView = new AttachmentListView(attachmentListViewOpts);
                 attachmentListView.setElement($('<div></div>'));
                 oembedAttachment.type = 'photo';
@@ -222,9 +223,9 @@ function($, jasmine, jasminejQuery, Content, AttachmentListView, OembedView) {
                 }
                 tiledAttachmentEl = attachmentListView.$el.find('.content-attachment:first');
 
-                var spyFocusAttachmentEvent = spyOnEvent(tiledAttachmentEl[0], 'focusAttachment.hub');
+                var spyFocusAttachmentEvent = spyOnEvent(tiledAttachmentEl[0], 'focusContent.hub');
                 var tileClicked = false;
-                attachmentListView.$el.on('focusAttachment.hub', function() {
+                attachmentListView.$el.on('focusContent.hub', function() {
                     tileClicked = true;
                 });
 
