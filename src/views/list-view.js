@@ -44,7 +44,6 @@ function($, View, ContentViewFactory, ModalView, GalleryAttachmentListView, util
                 content: context.content,
                 toFocus: context.focusedAttachmentView
             });
-            modalContentView.render();
         });
     };
     util.inherits(ListView, View);

@@ -41,6 +41,7 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
     GalleryAttachmentListView.prototype.galleryCloseSelector = '.content-attachments-gallery-close';
     GalleryAttachmentListView.prototype.galleryCurrentPageSelector = '.content-attachments-gallery-current-page';
     GalleryAttachmentListView.prototype.galleryTotalPagesSelector = '.content-attachments-gallery-total-pages';
+    GalleryAttachmentListView.prototype.focusedAttachmentClassName = 'content-attachments-focused';
 
     GalleryAttachmentListView.prototype.initialize = function() {
         var self = this;
@@ -122,14 +123,17 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             this._focusedOembedView.render();
             var focusedEl = this._focusedOembedView.$el.clone();
             focusedEl.appendTo(focusedAttachmentsEl);
+            var photoContentEl = focusedEl.find('.content-attachment-photo');
+            photoContentEl.addClass(this.focusedAttachmentClassName);
             if (this.tile) {
                 focusedEl.find('.content-attachment').addClass(this.squareTileClassName);
             }
             if (this._focusedOembedView.oembed.type === 'video') {
                 var playButtonEl = focusedEl.find('.content-attachment-controls-play');
                 playButtonEl.hide();
-                focusedEl.find('.content-attachment-photo').hide();
+                photoContentEl.hide().removeClass(this.focusedAttachmentClassName);
                 var videoContentEl = focusedEl.find('.content-attachment-video');
+                videoContentEl.addClass(this.focusedAttachmentClassName);
                 videoContentEl.html(this._focusedOembedView.oembed.html);
                 if (this.tile) {
                     videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
@@ -156,8 +160,52 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
 
     GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {
         var height = this.$el.height();
-        this.$el.find('.content-attachments-gallery-focused .content-attachment')
-            .css({ 'height': height+'px', 'line-height': height+'px'});
+        var width = this.$el.width();
+
+        var contentGalleryEl = this.$el.find('.content-attachments-gallery');
+        var modalVerticalWhitespace = parseInt(contentGalleryEl.css('margin-top')) + parseInt(contentGalleryEl.css('margin-bottom'));
+        var modalHorizontalWhitespace = parseInt(contentGalleryEl.css('margin-left')) + parseInt(contentGalleryEl.css('margin-right'));
+
+        var attachmentContainerHeight = height - modalVerticalWhitespace;
+        var attachmentContainerWidth = width - modalHorizontalWhitespace;
+        contentGalleryEl.height(attachmentContainerHeight);
+        contentGalleryEl.width(attachmentContainerWidth);
+
+        var contentAttachmentEl = this.$el.find('.content-attachments-gallery-focused .content-attachment');
+        contentAttachmentEl.css({ 'height': attachmentContainerHeight+'px', 'line-height': attachmentContainerHeight+'px'});
+
+        var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName + '> *');
+        // Reset attachment dimensions
+        if (focusedAttachmentEl.attr('width')) {
+            focusedAttachmentEl.css({ 'width': parseInt(focusedAttachmentEl.attr('width'))+'px' });
+        } else {
+            focusedAttachmentEl.css({ 'width': 'auto'});
+        }
+        if (focusedAttachmentEl.attr('height')) {
+            focusedAttachmentEl.css({ 'height': parseInt(focusedAttachmentEl.attr('height'))+'px' });
+        } else {
+            focusedAttachmentEl.css({ 'height': 'auto', 'line-height': 'inherits'});
+        }
+
+        // Scale to fit testing against modal dimensions
+        if (focusedAttachmentEl.height() + modalVerticalWhitespace >= height || focusedAttachmentEl.height() == 0) {
+            focusedAttachmentEl.css({ 'height': attachmentContainerHeight+'px', 'line-height': attachmentContainerHeight+'px'});
+            if (focusedAttachmentEl.attr('width')) {
+                var newWidth = Math.min(parseInt(focusedAttachmentEl.attr('width')), focusedAttachmentEl.width());
+                focusedAttachmentEl.css({ 'width': newWidth+'px' });
+            } else {
+                focusedAttachmentEl.css({ 'width': 'auto' });
+            }
+        } 
+        if (focusedAttachmentEl.width() + modalHorizontalWhitespace >= width || focusedAttachmentEl.width() == 0) {
+            focusedAttachmentEl.css({ 'width': attachmentContainerWidth+'px'});
+            if (focusedAttachmentEl.attr('height')) {
+                var newHeight = Math.min(parseInt(focusedAttachmentEl.attr('height')), focusedAttachmentEl.height()); 
+                focusedAttachmentEl.css({ 'height': newHeight+'px' });
+            } else {
+                focusedAttachmentEl.css({ 'height': 'auto', 'line-height': 'inherits'});
+            }
+        }
     };
 
     /**
@@ -167,7 +215,6 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
      */
     GalleryAttachmentListView.prototype.add = function(oembed) { 
         var oembedView = this.createOembedView(oembed);
-
         oembedView.render();
         this.render();
 
