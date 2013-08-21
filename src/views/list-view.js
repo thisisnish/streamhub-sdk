@@ -1,10 +1,12 @@
 define([
     'inherits',
+    'streamhub-sdk/debug',
     'stream/writable',
     'streamhub-sdk/view',
     'streamhub-sdk/jquery',
     'streamhub-sdk/content/views/content-view'],
-function(inherits, Writable, View, $, ContentView) {
+function(inherits, debug, Writable, View, $, ContentView) {
+    var log = debug('streamhub-sdk/views/list-view');
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
@@ -18,6 +20,8 @@ function(inherits, Writable, View, $, ContentView) {
 
         $(this.el).addClass('streamhub-list-view');
 
+        // Default to 50 initial items
+        this._newContentGoal = opts.initial || 50;
         this.contentViews = [];
 
         View.call(this, opts);
@@ -31,9 +35,15 @@ function(inherits, Writable, View, $, ContentView) {
     /**
      * Called automatically by the Writable base class
      */
-    ListView.prototype._write = function (content, errback) {
+    ListView.prototype._write = function (content, requestMore) {
+        log('._write', content);
+        if ( ! this._newContentGoal) {
+            this._requestMoreWrites = requestMore;
+            return;
+        }
         this.add(content);
-        errback();
+        this._newContentGoal--;
+        requestMore();
     };
 
 
@@ -81,6 +91,24 @@ function(inherits, Writable, View, $, ContentView) {
 
         return contentView;
     };
+
+
+    /**
+     * Show More content.
+     * ListView keeps track of an internal ._newContentGoal
+     *     which is how many more items he wishes he had.
+     *     This increases that goal and marks the Writable
+     *     side of ListView as ready for more writes.
+     * @param numToShow {number} The number of items to try to add
+     */
+    ListView.prototype.showMore = function (numToShow) {
+        var requestMoreWrites = this._requestMoreWrites;
+        this._newContentGoal += numToShow;
+        if (typeof requestMoreWrites === 'function') {
+            this._requestMoreWrites = null;
+            requestMoreWrites();
+        }
+    }
 
 
     /**
