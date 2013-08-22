@@ -171,6 +171,9 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
 
         // Update gallery size
         var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName + '> *')
+        if (!focusedAttachmentEl.length) {
+            return;
+        }
         if (focusedAttachmentEl[0].tagName == 'IMG') {
             focusedAttachmentEl.on('load', function(e) {
                 self.resizeFocusedAttachment();
