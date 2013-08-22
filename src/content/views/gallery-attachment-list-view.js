@@ -74,6 +74,12 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             [this.attachmentMetaSelector, this.galleryNextSelector, this.galleryPrevSelector, this.actualImageSelector].join(','),
             function(e) {
                 e.stopPropagation();
+                if ($(e.currentTarget).hasClass(self.galleryNextSelector.substring(1))) {
+                    console.warn('next');
+                    self.next();
+                } else if ($(e.currentTarget).hasClass(self.galleryPrevSelector.substring(1))) {
+                    self.prev();
+                }
             }
         );
     };
@@ -249,6 +255,38 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             } else {
                 focusedAttachmentEl.css({ 'height': 'auto', 'line-height': 'inherits'});
             }
+        }
+    };
+
+    GalleryAttachmentListView.prototype.next = function() {
+        var tileableIndex = 0;
+        for (var i=0; i < this.oembedViews.length; i++) {
+            if (!this.isAttachmentTileable(this.oembedViews[i])) {
+                continue;
+            }
+            if (this.focusedIndex+1 == tileableIndex) {
+                this.focusedIndex = tileableIndex;
+                this._focusedOembedView = this.oembedViews[i];
+                this.render();
+                break;
+            }
+            tileableIndex++;
+        }
+    };
+
+    GalleryAttachmentListView.prototype.prev = function() {
+        var tileableIndex = 0;
+        for (var i=0; i < this.oembedViews.length; i++) {
+            if (!this.isAttachmentTileable(this.oembedViews[i])) {
+                continue;
+            }
+            if (this.focusedIndex-1 == tileableIndex) {
+                this.focusedIndex = tileableIndex;
+                this._focusedOembedView = this.oembedViews[i];
+                this.render();
+                break;
+            }
+            tileableIndex++;
         }
     };
 
