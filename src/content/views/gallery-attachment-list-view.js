@@ -170,7 +170,14 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
         contentMetaEl.append(ContentBylineTemplate(this.content));
 
         // Update gallery size
-        this.resizeFocusedAttachment();
+        var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName + '> *')
+        if (focusedAttachmentEl[0].tagName == 'IMG') {
+            focusedAttachmentEl.on('load', function(e) {
+                self.resizeFocusedAttachment();
+            });
+        } else {
+            this.resizeFocusedAttachment();
+        }
     };
 
     GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {

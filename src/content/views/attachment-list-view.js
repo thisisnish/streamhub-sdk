@@ -74,7 +74,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
             }
         }
         return attachmentsCount;
-    }
+    };
 
     AttachmentListView.prototype.isAttachmentTileable = function (oembed) {
         var oembedView = oembed.el ? oembed : this.getOembedView(oembed); //duck type for ContentView
