@@ -158,7 +158,7 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
                 var focusedAttachmentsEl = galleryAttachmentListView.$el.find('.content-attachments-gallery');
                 var focusedVideoAttachmentEl = focusedAttachmentsEl.find('.content-attachment:first .content-attachment-video');
                 expect(focusedVideoAttachmentEl).not.toBeEmpty();
-                expect(focusedVideoAttachmentEl).toHaveHtml($('<div></div>').append($(oembedVideoAttachment.html).css({'width': '100%', 'height': '100%'})).html());
+                expect(focusedVideoAttachmentEl).toHaveHtml($('<div></div>').append($(oembedVideoAttachment.html).css({'width': 'auto', 'height': 'auto'})).html());
                 expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
             });
         });
