@@ -7,7 +7,8 @@ define([
     'streamhub-sdk/debug',
     'stream/writable',
     'streamhub-sdk/content/views/content-view',
-    'stream/transform'],
+    'stream/transform',
+    'streamhub-sdk/streams/more'],
 function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, Writable, ContentView, Transform) {
 
     var log = debug('streamhub-sdk/views/list-view');
@@ -37,7 +38,6 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
 
         this.contentViews = [];
 
-        var self = this;
         $(this.el).on('removeContentView.hub', function(e, content) {
             self.remove(content);
         });
@@ -61,6 +61,9 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
         })
 
         Writable.call(this, opts);
+
+        this.more = opts.more || this._createMoreStream(opts);
+        this.more.pipe(this);
     };
 
     inherits(ListView, View);
@@ -71,23 +74,20 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
      * Called automatically by the Writable base class
      */
     ListView.prototype._write = function (content, requestMore) {
-        log('._write', content);
-        var writeResult = this._showMoreBuffer.write(content);
-        if (writeResult) {
-            more();
-        } else {
-            this._showMoreBuffer.on('drain', more);
-        }
-        function more () {
-            log("_write calling requestMore")
-            requestMore()
-        }
+        this.add(content);
+        requestMore();
     };
 
 
-    ListView.prototype._createShowMoreBuffer = function (opts) {
+    /**
+     * @private
+     * Create a Stream that extra content can be written into.
+     * This will be used if an opts.moreBuffer is not provided on construction.
+     * By default, this creates a streamhub-sdk/streams/more
+     */
+    ListView.prototype._createMoreStream = function (opts) {
         opts = opts || {};
-        return new ShowMoreBuffer({
+        return new More({
             highWaterMark: 0,
             goal: opts.initial || 50
         });
@@ -156,7 +156,7 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
      * @param numToShow {number} The number of items to try to add
      */
     ListView.prototype.showMore = function (numToShow) {
-        this._showMoreBuffer.addToGoal(numToShow);
+        this.more.get(numToShow);
     }
 
 
@@ -240,46 +240,6 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
         return this.contentViewFactory.createContentView(content);
     };
 
-    var showMoreBufferLog = debug('ShowMoreBuffer');
-
-    function ShowMoreBuffer (opts) {
-        opts = opts || {};
-        this._goal = opts.goal;
-        Transform.call(this, opts);
-    }
-
-    inherits(ShowMoreBuffer, Transform);
-
-
-    ShowMoreBuffer.prototype._transform = function (chunk, requestMore) {
-        showMoreBufferLog('_transform');
-        if ( ! this._goal) {
-            this._requestMoreWrites = requestMore;
-            return;
-        }
-        this._goal--;
-        this.push(chunk);
-        requestMore(null, chunk);
-    };
-
-
-    ShowMoreBuffer.prototype.setGoal = function (newGoal) {
-        var requestMore = this._requestMoreWrites;
-
-        this._goal = newGoal;
-        if (typeof requestMore === 'function') {
-            this._requestMoreWrites = null;
-            requestMore();
-        }
-    };
-
-
-    ShowMoreBuffer.prototype.addToGoal = function (goalIncrement) {
-        return this.setGoal(this._goal + goalIncrement);
-    };
-
-
-    ListView.ShowMoreBuffer = ShowMoreBuffer;
 
     return ListView;
 });
