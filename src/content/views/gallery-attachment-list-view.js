@@ -4,8 +4,9 @@ define([
     'streamhub-sdk/content/views/attachment-list-view',
     'streamhub-sdk/content/views/oembed-view',
     'hgn!streamhub-sdk/content/templates/gallery-attachment-list',
+    'hgn!streamhub-sdk/content/templates/content-byline',
     'streamhub-sdk/util'],
-function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate, util) {
+function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentBylineTemplate, util) {
 
     var GalleryAttachmentListView = function(opts) {
         opts = opts || {};
@@ -42,6 +43,8 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
     GalleryAttachmentListView.prototype.galleryCurrentPageSelector = '.content-attachments-gallery-current-page';
     GalleryAttachmentListView.prototype.galleryTotalPagesSelector = '.content-attachments-gallery-total-pages';
     GalleryAttachmentListView.prototype.focusedAttachmentClassName = 'content-attachments-focused';
+    GalleryAttachmentListView.prototype.attachmentMetaSelector = '.content-attachments-meta';
+    GalleryAttachmentListView.prototype.actualImageSelector = '.content-attachment-actual-image';
 
     GalleryAttachmentListView.prototype.initialize = function() {
         var self = this;
@@ -65,6 +68,14 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
         $(window).on('resize', function(e) {
             self.resizeFocusedAttachment();
         });
+
+        this.$el.on(
+            'click',
+            [this.attachmentMetaSelector, this.galleryNextSelector, this.galleryPrevSelector, this.actualImageSelector].join(','),
+            function(e) {
+                e.stopPropagation();
+            }
+        );
     };
 
     GalleryAttachmentListView.prototype.render = function() {
@@ -153,6 +164,10 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             this.$el.find(this.galleryCurrentPageSelector).html(this.focusedIndex + 1);
             this.$el.find(this.galleryTotalPagesSelector).html(attachmentsCount);
         }
+
+        // Meta
+        var contentMetaEl = this.$el.find(this.attachmentMetaSelector);
+        contentMetaEl.append(ContentBylineTemplate(this.content));
 
         // Update gallery size
         this.resizeFocusedAttachment();

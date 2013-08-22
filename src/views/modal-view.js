@@ -14,7 +14,21 @@ define([
     ModalView.prototype.template = ModalTemplate;
 
     ModalView.prototype.initialize = function() {
+        var self = this;
+        // Escape
+        $(document).keyup(function(e) {
+            if (e.keyCode == 27 && self.visible) {
+                self.hide();
+            }
+        });
+
+        // Close click
+        this.$el.on('click', '.hub-modal', function(e) {
+            self.hide();
+        });
     };
+
+    ModalView.prototype.closeButtonSelector = '.hub-modal-close';
 
     ModalView.prototype.render = function () {
         if (! this.isInitialized()) {
@@ -29,10 +43,13 @@ define([
 
     ModalView.prototype.show = function() {
         this.$el.find('.hub-modal').show();
+        this.visible = true;
     };
 
     ModalView.prototype.hide = function() {
         this.$el.find('.hub-modal').hide();
+        this.$el.find('.hub-modal .hub-modal-content').empty();
+        this.visible = false;
     };
 
     ModalView.prototype.isInitialized = function() {
