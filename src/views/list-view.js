@@ -6,8 +6,9 @@ define([
     'inherits',
     'streamhub-sdk/debug',
     'stream/writable',
-    'streamhub-sdk/content/views/content-view'],
-function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, Writable, ContentView) {
+    'streamhub-sdk/content/views/content-view',
+    'stream/transform'],
+function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, Writable, ContentView, Transform) {
 
     var log = debug('streamhub-sdk/views/list-view');
 
@@ -20,6 +21,7 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
      * @constructor
      */
     var ListView = function(opts) {
+        var self = this;
         opts = opts || {};
 
         this.modal = opts.modal === undefined ? new AttachmentGalleryModal() : opts.modal;
@@ -52,6 +54,12 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
             self.modal.show(context.content, { attachment: context.attachmentToFocus });
         });
 
+        this._showMoreBuffer = opts.ShowMoreBuffer || this._createShowMoreBuffer(opts);
+        this._showMoreBuffer.on('data', function (content) {
+            log('_showMoreBuffer on data. Adding to view', content);
+            self.add(content);
+        })
+
         Writable.call(this, opts);
     };
 
@@ -64,13 +72,25 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
      */
     ListView.prototype._write = function (content, requestMore) {
         log('._write', content);
-        if ( ! this._newContentGoal) {
-            this._requestMoreWrites = requestMore;
-            return;
+        var writeResult = this._showMoreBuffer.write(content);
+        if (writeResult) {
+            more();
+        } else {
+            this._showMoreBuffer.on('drain', more);
         }
-        this.add(content);
-        this._newContentGoal--;
-        requestMore();
+        function more () {
+            log("_write calling requestMore")
+            requestMore()
+        }
+    };
+
+
+    ListView.prototype._createShowMoreBuffer = function (opts) {
+        opts = opts || {};
+        return new ShowMoreBuffer({
+            highWaterMark: 0,
+            goal: opts.initial || 50
+        });
     };
 
 
@@ -136,12 +156,7 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
      * @param numToShow {number} The number of items to try to add
      */
     ListView.prototype.showMore = function (numToShow) {
-        var requestMoreWrites = this._requestMoreWrites;
-        this._newContentGoal += numToShow;
-        if (typeof requestMoreWrites === 'function') {
-            this._requestMoreWrites = null;
-            requestMoreWrites();
-        }
+        this._showMoreBuffer.addToGoal(numToShow);
     }
 
 
@@ -214,6 +229,7 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
         return null;
     };
 
+
     /**
      * Creates a content view from the given piece of content, by looking in this view's
      * content registry for the supplied content type.
@@ -223,6 +239,47 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
     ListView.prototype.createContentView = function (content) {
         return this.contentViewFactory.createContentView(content);
     };
+
+    var showMoreBufferLog = debug('ShowMoreBuffer');
+
+    function ShowMoreBuffer (opts) {
+        opts = opts || {};
+        this._goal = opts.goal;
+        Transform.call(this, opts);
+    }
+
+    inherits(ShowMoreBuffer, Transform);
+
+
+    ShowMoreBuffer.prototype._transform = function (chunk, requestMore) {
+        showMoreBufferLog('_transform');
+        if ( ! this._goal) {
+            this._requestMoreWrites = requestMore;
+            return;
+        }
+        this._goal--;
+        this.push(chunk);
+        requestMore(null, chunk);
+    };
+
+
+    ShowMoreBuffer.prototype.setGoal = function (newGoal) {
+        var requestMore = this._requestMoreWrites;
+
+        this._goal = newGoal;
+        if (typeof requestMore === 'function') {
+            this._requestMoreWrites = null;
+            requestMore();
+        }
+    };
+
+
+    ShowMoreBuffer.prototype.addToGoal = function (goalIncrement) {
+        return this.setGoal(this._goal + goalIncrement);
+    };
+
+
+    ListView.ShowMoreBuffer = ShowMoreBuffer;
 
     return ListView;
 });
