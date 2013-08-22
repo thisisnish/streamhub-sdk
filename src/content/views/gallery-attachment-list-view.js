@@ -13,7 +13,7 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
 
         this.content = opts.content;
         if (opts.toFocus) {
-            this._focusedOembedView = opts.toFocus.el ? opts.toFocus : new OembedView({ oembed: opts.toFocus });
+            this._focusedOembedView = opts.toFocus.el ? new OembedView({ oembed: opts.toFocus.oembed }) : new OembedView({ oembed: opts.toFocus });
         }
         this.tile = false;
         this.pageButtons = opts.pageButtons || true;
@@ -153,21 +153,40 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             }
         }
 
-        // Update page count
+        // Update page count and focused index
         if (this.pageCount) {
+            var newIndex = 0;
             for (var i=0; i < this.oembedViews.length; i++) {
                 if (this.oembedViews[i].oembed == this._focusedOembedView.oembed) {
-                    this.focusedIndex = i;
+                    this.focusedIndex = newIndex;
                     break;
+                }
+                if (this.isAttachmentTileable(this.oembedViews[i])) {
+                    newIndex++;
                 }
             }
             this.$el.find(this.galleryCurrentPageSelector).html(this.focusedIndex + 1);
             this.$el.find(this.galleryTotalPagesSelector).html(attachmentsCount);
         }
 
+        // Prev/Next buttons
+        if (attachmentsCount == 1) {
+            this.$el.find(this.galleryPrevSelector).hide();
+            this.$el.find(this.galleryNextSelector).hide();
+        } else if (this.focusedIndex + 1 == attachmentsCount) {
+            this.$el.find(this.galleryPrevSelector).show();
+            this.$el.find(this.galleryNextSelector).hide();
+        } else if (this.focusedIndex == 0) {
+            this.$el.find(this.galleryPrevSelector).hide();
+            this.$el.find(this.galleryNextSelector).show();
+        } else {
+            this.$el.find(this.galleryPrevSelector).show();
+            this.$el.find(this.galleryNextSelector).show();
+        }
+
         // Meta
         var contentMetaEl = this.$el.find(this.attachmentMetaSelector);
-        contentMetaEl.append(ContentBylineTemplate(this.content));
+        contentMetaEl.html(ContentBylineTemplate(this.content));
 
         // Update gallery size
         var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName + '> *')
