@@ -32,7 +32,7 @@ define([
 
         this.$el.on('click', this.headerElSelector, function(e) {
             var headerEl = $(e.currentTarget)
-            var frameEl = self.$el.find(self.attachmentFrameElSelector);
+            var frameEl = self.$el.find('.content-attachments-tiled ' + self.attachmentFrameElSelector);
             headerEl.hide();
             frameEl.hide();
 
