@@ -22,9 +22,9 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
             });
         });
 
-        describe ("when constructed", function () {
+        describe("when constructed", function () {
 
-            it ("is instanceof ListView", function () {
+            it("is instanceof ListView", function () {
                 expect(listView instanceof ListView).toBe(true);
             });
 
@@ -46,11 +46,42 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
                 it ("should have .el set to opts.el", function () {
                     expect(listView.el).toBe(el);
                 });
-
             });
         });
 
-        describe("when the default comparator is pased ContentViews a, b", function () {
+        describe('handles initModal.hub event', function () {
+
+            it('calls the .initModalView method', function() {
+                spyOn(listView, 'initModalView');
+                listView.$el.trigger('initModal.hub');
+                expect(listView.initModalView).toHaveBeenCalled();
+            });
+        });
+
+        describe('handles focusContent.hub event', function () {
+
+            it('renders and shows the modal view', function() {
+                listView.initModalView();
+                spyOn(listView.modalView, 'render');
+                spyOn(listView.modalView, 'show');
+                listView.$el.trigger('focusContent.hub', { content: new Content() });
+                expect(listView.modalView.render).toHaveBeenCalled();
+                expect(listView.modalView.show).toHaveBeenCalled();
+            });
+        });
+
+        describe('handles removeContentView.hub event', function() {
+
+            it('calls the .remove method', function() {
+                var content = new Content();
+                listView.add(content);
+                spyOn(listView, 'remove');
+                listView.$el.trigger('removeContentView.hub', content);
+                expect(listView.remove).toHaveBeenCalled();
+            });
+        });
+
+        describe("when the default comparator is passed ContentViews a, b", function () {
             var baseDate = new Date(),
                 earlierDate = new Date(),
                 laterDate = new Date();
