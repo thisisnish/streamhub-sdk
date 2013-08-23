@@ -75,13 +75,23 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             function(e) {
                 e.stopPropagation();
                 if ($(e.currentTarget).hasClass(self.galleryNextSelector.substring(1))) {
-                    console.warn('next');
                     self.next();
                 } else if ($(e.currentTarget).hasClass(self.galleryPrevSelector.substring(1))) {
                     self.prev();
                 }
             }
         );
+
+        $(window).on('keyup', function(e) {
+            e.preventDefault();
+            if (e.keyCode == 37) {
+                // left arrow
+                self.prev();
+            } else if (e.keyCode == 39) {
+                // right arrow
+                self.next();
+            }
+        });
     };
 
     GalleryAttachmentListView.prototype.render = function() {
