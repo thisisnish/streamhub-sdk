@@ -41,6 +41,49 @@ define([
             it('has an element to contain the content of the modal', function() {
                 expect(modalView.$el.find('.hub-modal-content')).toBe('div');
             });
+
+            it('.isInitialized() is true', function() {
+                expect(modalView.isInitialized()).toBe(true);
+            });
+        });
+
+        describe('when showing', function() {
+
+            var modalView;
+
+            beforeEach(function() {
+                modalView = new ModalView();
+                modalView.render();
+            });
+
+            afterEach(function() {
+                $('body > .hub-modal').remove();
+            });
+
+            it('the .visible property is true', function() {
+                modalView.show();
+                expect(modalView.visible).toBe(true);
+            });
+        });
+
+        describe('when hiding', function() {
+
+            var modalView;
+
+            beforeEach(function() {
+                modalView = new ModalView();
+                modalView.render();
+            });
+
+            afterEach(function() {
+                $('body > .hub-modal').remove();
+            });
+
+            it('the .visible property is true', function() {
+                modalView.show();
+                modalView.hide();
+                expect(modalView.visible).toBe(false);
+            });
         });
     });
 });
