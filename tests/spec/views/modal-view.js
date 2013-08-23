@@ -57,6 +57,7 @@ define([
             });
 
             afterEach(function() {
+                modalView.hide();
                 $('body > .hub-modal').remove();
             });
 
@@ -76,6 +77,7 @@ define([
             });
 
             afterEach(function() {
+                modalView.hide();
                 $('body > .hub-modal').remove();
             });
 
