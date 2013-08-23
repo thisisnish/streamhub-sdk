@@ -26,6 +26,12 @@ define([
         this.$el.on('click', '.hub-modal', function(e) {
             self.hide();
         });
+
+        $(window).on('mousewheel', function(e) {
+            if (self.visible) {
+                e.preventDefault();
+            }
+        });
     };
 
     ModalView.prototype.closeButtonSelector = '.hub-modal-close';
