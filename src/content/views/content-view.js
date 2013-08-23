@@ -23,18 +23,33 @@ define([
         this.setElement(opts.el || document.createElement(this.elTag));
         this.attachmentsView = opts.attachmentsView;
 
+        var self = this;
         if (this.content) {
-            var self = this;
             this.content.on("reply", function(content) {
                 self.render();
             });
         }
+
+        this.$el.on('click', this.headerElSelector, function(e) {
+            var headerEl = $(e.currentTarget)
+            var frameEl = self.$el.find(self.attachmentFrameElSelector);
+            headerEl.hide();
+            frameEl.hide();
+
+            var targetEl = document.elementFromPoint(e.clientX, e.clientY);
+            $(targetEl).trigger('click');
+
+            frameEl.show();
+            headerEl.show();
+        });
     };
     
     ContentView.prototype.elTag = 'article';
     ContentView.prototype.elClass = 'content';
     ContentView.prototype.tooltipElSelector = '.hub-tooltip-link';
     ContentView.prototype.attachmentsElSelector = '.content-attachments';
+    ContentView.prototype.headerElSelector = '.content-header';
+    ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
     ContentView.prototype.template = ContentTemplate;
     ContentView.prototype.formatDate = Util.formatDate;
 
