@@ -124,8 +124,13 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function ($, EventEmitter) {
      * @returns {StreamManager} "this", useful for chaining.
      */
     StreamManager.prototype.bind = function(view) {
-       this._views.push(view);
-       return this;
+        var reverseStream = this.get('reverse');
+        this._views.push(view);
+        debugger;
+        if (reverseStream && view.more) {
+            reverseStream.pipe(view.more);
+        }
+        return this;
     };
 
     /**
