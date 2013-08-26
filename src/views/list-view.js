@@ -156,7 +156,7 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, W
      * @param numToShow {number} The number of items to try to add
      */
     ListView.prototype.showMore = function (numToShow) {
-        this.more.get(numToShow);
+        this.more.setGoal(numToShow);
     }
 
 
