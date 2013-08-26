@@ -235,23 +235,6 @@ define([
         });
     };
 
-    /**
-     * Creates the correct content type given the supplied "state".
-     * @param state {Object} The livefyre content "state" as received by the client.
-     * @return {LivefyreContent} A new, correctly typed, content object. 
-     */
-    LivefyreStream.createContent = function(state) {
-        var sourceName = LivefyreContent.SOURCES[state.source];
-        if (state.type === 3) {
-            return new LivefyreOembed(state);
-        } else if (sourceName === 'twitter') {
-            return new LivefyreTwitterContent(state);
-        } else if (sourceName === 'facebook') {
-            return new LivefyreFacebookContent(state);
-        } else if (['livefyre','feed'].indexOf(sourceName) !== -1) {
-            return new LivefyreContent(state);
-        }
-    };
 
     return LivefyreStream;
 });
