@@ -257,44 +257,5 @@ define([
         });
     };
 
-    /**
-     * Creates the correct content type given the supplied "state".
-     * @param state {Object} The livefyre content "state" as received by the client.
-     * @return {LivefyreContent} A new, correctly typed, content object. 
-     */
-    LivefyreStream.createContent = function(state) {
-        var sourceName = LivefyreContent.SOURCES[state.source];
-        if (state.type === LivefyreStream.prototype.messageTypes.OEMBED) {
-            return new LivefyreOembed(state);
-        } else if (sourceName === 'twitter') {
-            return new LivefyreTwitterContent(state);
-        } else if (sourceName === 'facebook') {
-            return new LivefyreFacebookContent(state);
-        } else if (sourceName === 'feed') {
-            var contentType = LivefyreContent;
-            if (isInstagramState(state)) {
-                contentType = LivefyreInstagramContent;
-            }
-            return new contentType(state);
-        } else if (sourceName === 'livefyre') {
-            return new LivefyreContent(state);
-        }
-    };
-
-
-    /**
-     * Return whether a state represents Instagram Content
-     * @param state {object} A state object from Livefyre APIs
-     * @return {boolean}
-     */
-    function isInstagramState (state) {
-        var pattern = /\/\/instagram\.com/i;
-        try {
-            return state.content.feedEntry.channelId.match(pattern);
-        } catch (err) {
-            return false;
-        }
-    }
-
     return LivefyreStream;
 });
