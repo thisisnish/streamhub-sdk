@@ -62,13 +62,11 @@ function (jasmine, jasminejquery, $, ListView, ModalView, Content, ContentView, 
             });
 
             it('renders and shows the modal view', function() {
-                //spyOn(listView.modal, 'createModalContentView');
-                //spyOn(listView.modal, 'render');
-                //spyOn(listView.modal, 'show');
-                //listView.$el.trigger('focusContent.hub', { content: new Content() });
-                //expect(listView.modal.createModalContentView).toHaveBeenCalled();
-                //expect(listView.modal.render).toHaveBeenCalled();
-                //expect(listView.modal.show).toHaveBeenCalled();
+                spyOn(listView.modal, 'setFocus');
+                spyOn(listView.modal, 'show');
+                listView.$el.trigger('focusContent.hub', { content: new Content() });
+                expect(listView.modal.setFocus).toHaveBeenCalled();
+                expect(listView.modal.show).toHaveBeenCalled();
             });
         });
 
