@@ -29,19 +29,6 @@ define([
                 self.render();
             });
         }
-
-        this.$el.on('click', this.headerElSelector, function(e) {
-            var headerEl = $(e.currentTarget)
-            var frameEl = self.$el.find('.content-attachments-tiled ' + self.attachmentFrameElSelector);
-            headerEl.hide();
-            frameEl.hide();
-
-            var targetEl = document.elementFromPoint(e.clientX, e.clientY);
-            $(targetEl).trigger('click');
-
-            frameEl.show();
-            headerEl.show();
-        });
     };
     
     ContentView.prototype.elTag = 'article';
@@ -99,6 +86,18 @@ define([
             }
         });
 
+        this.$el.on('click', this.headerElSelector, function(e) {
+            var headerEl = $(e.currentTarget)
+            var frameEl = self.$el.find('.content-attachments-tiled ' + self.attachmentFrameElSelector);
+            headerEl.hide();
+            frameEl.hide();
+
+            var targetEl = document.elementFromPoint(e.clientX, e.clientY);
+            $(targetEl).trigger('click');
+
+            frameEl.show();
+            headerEl.show();
+        });
         this.$el.on('mouseenter', this.tooltipElSelector, function (e) {
             var title = $(this).attr('title');
             var position = $(this).position();
