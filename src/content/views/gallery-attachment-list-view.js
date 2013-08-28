@@ -65,6 +65,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         var self = this;
         this.$el.on('click', function () {
+            self.$el.hide();
             self.$el.trigger('hideModal.hub');
         });
         this.$el.on(

@@ -49,9 +49,10 @@ define([
     ModalView.prototype.initModal = function () {
         var modalEl = $(this.modalElSelector, 'body');
         if (! modalEl.length) {
-            modalEl = this.modalEl = $(this.template());
+            modalEl = $(this.template());
             $('body').append(modalEl);
         }
+        this.modalEl = modalEl;
         this.modalContainerEl = modalEl.find(this.containerElSelector);
 
         var self = this;
@@ -83,7 +84,7 @@ define([
     };
 
     ModalView.prototype.render = function () {
-        if (! this.modalContainerEl) {
+        if (! this.modalEl) {
             this.initModal();
         }
         if (! this.modalContentView) {
@@ -95,6 +96,7 @@ define([
 
     ModalView.prototype.show = function() {
         this.render();
+        this.modalContentView.$el.show();
         this.modalEl.show();
         this.visible = true;
     };
