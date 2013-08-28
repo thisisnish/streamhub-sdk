@@ -1,30 +1,26 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/view',
+    'streamhub-sdk/content/views/gallery-attachment-list-view',
     'hgn!streamhub-sdk/views/templates/modal-view',
     'streamhub-sdk/util'
-], function($, View, ModalTemplate, util) {
+], function($, View, GalleryAttachmentListView, ModalTemplate, util) {
 
-    var ModalView = function() {
+    var ModalView = function (opts) {
+        opts = opts || {};
         this.visible = false;
-        View.call(this, { el: $('body')[0] });
-    };
-    util.inherits(ModalView, View);
+        if (opts.modal) {
+            this.createModalContentView = opts.modal;
+        }
 
-    ModalView.prototype.template = ModalTemplate;
+        View.call(this);
 
-    ModalView.prototype.initialize = function() {
         var self = this;
-        // Escape
-        $(document).keyup(function(e) {
+        $(window).keyup(function(e) {
+            // Escape
             if (e.keyCode == 27 && self.visible) {
                 self.hide();
             }
-        });
-
-        // Close click
-        this.$el.on('click', '.hub-modal', function(e) {
-            self.hide();
         });
 
         $(window).on('mousewheel', function(e) {
@@ -33,36 +29,79 @@ define([
             }
         });
     };
+    util.inherits(ModalView, View);
 
+    ModalView.prototype.template = ModalTemplate;
+
+    ModalView.prototype.modalElSelector = '.hub-modal';
     ModalView.prototype.closeButtonSelector = '.hub-modal-close';
+    ModalView.prototype.containerElSelector = '.hub-modal-content';
 
-    ModalView.prototype.render = function () {
-        if (! this.isInitialized()) {
-            this.$el.append(this.template());
+    ModalView.prototype.setElement = function (element) {
+        View.prototype.setElement.call(this, element);
+
+        var self = this;
+        this.$el.on('hideModal.hub', function (e) {
+            self.hide();
+        });
+    };
+
+    ModalView.prototype.initModal = function () {
+        var modalEl = $(this.modalElSelector, 'body');
+        if (! modalEl.length) {
+            modalEl = this.modalEl = $(this.template());
+            $('body').append(modalEl);
+        }
+        this.modalContainerEl = modalEl.find(this.containerElSelector);
+
+        var self = this;
+        modalEl.on('click', this.closeButtonSelector, function (e) {
+            self.hide();
+        });
+
+        this.setElement(this.modalContainerEl);
+    };
+
+    ModalView.prototype.setFocus = function (content, opts) {
+        opts = opts || {};
+        if (! this.modalContentView) {
+            this.modalContentView = this.createModalContentView();
+        }
+        this.modalContentView.setContent(content);
+        if (opts.attachment) {
+            this.modalContentView.setFocusedAttachment(opts.attachment);
         }
     };
 
-    ModalView.prototype.toggle = function() {
-        this.visible ? this.hide() : this.show();
-        this.visible = !this.visible;
+    ModalView.prototype.createModalContentView = function (content, opts) {
+        opts = opts || {};
+        var modalContentView = new GalleryAttachmentListView({
+            content: content,
+            attachmentToFocus: opts.attachment
+        });
+        return modalContentView;
+    };
+
+    ModalView.prototype.render = function () {
+        if (! this.modalContainerEl) {
+            this.initModal();
+        }
+        if (! this.modalContentView) {
+            this.modalContentView = this.createModalContentView();
+        }
+        this.modalContentView.$el.appendTo(this.modalContainerEl);
+        this.modalContentView.render(); 
     };
 
     ModalView.prototype.show = function() {
-        this.$el.find('.hub-modal').show();
+        this.render();
+        this.modalEl.show();
         this.visible = true;
     };
 
     ModalView.prototype.hide = function() {
-        this.$el.find('.hub-modal').hide();
-        this.$el.find('.hub-modal .hub-modal-content').empty();
+        this.modalEl.hide();
         this.visible = false;
-    };
-
-    ModalView.prototype.isInitialized = function() {
-        if ($('body > .hub-modal').length) {
-            return true;
-        }
-        return false;
     };
 
     return ModalView;

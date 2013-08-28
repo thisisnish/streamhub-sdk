@@ -80,6 +80,7 @@ define([
 
         if (this.attachmentsView) {
             this.attachmentsView.setElement(this.$el.find(this.attachmentsElSelector)[0]);
+            this.attachmentsView.render();
         }
 
         return this;
@@ -93,7 +94,7 @@ define([
         });
         this.$el.on('imageError.hub', function(e, oembed) {
             self.attachmentsView.remove(oembed);
-            if (!self.attachmentsView.tileableCount()) {
+            if (self.attachmentsView.tileableCount && !self.attachmentsView.tileableCount()) {
                 self.$el.removeClass('content-with-image');
             }
         });

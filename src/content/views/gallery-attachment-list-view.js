@@ -1,37 +1,46 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/view',
-    'streamhub-sdk/content/views/attachment-list-view',
+    'streamhub-sdk/content/views/tiled-attachment-list-view',
     'streamhub-sdk/content/views/oembed-view',
     'hgn!streamhub-sdk/content/templates/gallery-attachment-list',
     'hgn!streamhub-sdk/content/templates/content-byline',
     'streamhub-sdk/util'],
-function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentBylineTemplate, util) {
+function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentBylineTemplate, util) {
 
     var GalleryAttachmentListView = function(opts) {
         opts = opts || {};
 
-        this.content = opts.content;
-        if (opts.toFocus) {
-            this._focusedOembedView = opts.toFocus.el ? new OembedView({ oembed: opts.toFocus.oembed }) : new OembedView({ oembed: opts.toFocus });
-        }
-        this.tile = false;
         this.pageButtons = opts.pageButtons || true;
         this.pageCount = opts.pageCount || true;
         this.thumbnails = opts.thumbnails || false;
         this.focusedIndex = 0;
         this.oembedViews = [];
+        this.setContent(opts.content);
+        if (opts.attachmentToFocus) {
+            this.setFocusedAttachment(opts.attachmentToFocus);
+        }
 
         View.call(this, opts);
 
-        if (this.content) {
-            for (var i=0; i < this.content.attachments.length; i++) {
-                this.add(this.content.attachments[i]);
+        var self = this;
+        $(window).on('resize', function(e) {
+            self.resizeFocusedAttachment();
+        });
+
+        $(window).on('keyup', function(e) {
+            e.preventDefault();
+            if (e.keyCode == 37) {
+                // left arrow
+                self.prev();
+            } else if (e.keyCode == 39) {
+                // right arrow
+                self.next();
             }
-        }
+        });
     };
     util.inherits(GalleryAttachmentListView, View);
-    $.extend(GalleryAttachmentListView.prototype, AttachmentListView.prototype);
+    $.extend(GalleryAttachmentListView.prototype, TiledAttachmentListView.prototype);
 
     GalleryAttachmentListView.prototype.template = GalleryAttachmentListTemplate;
     GalleryAttachmentListView.prototype.attachmentsGallerySelector = '.content-attachments-gallery';
@@ -46,35 +55,24 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
     GalleryAttachmentListView.prototype.attachmentMetaSelector = '.content-attachments-meta';
     GalleryAttachmentListView.prototype.actualImageSelector = '.content-attachment-actual-image';
 
-    GalleryAttachmentListView.prototype.initialize = function() {
+    GalleryAttachmentListView.prototype.setFocusedAttachment = function (attachment) {
+        attachment = attachment.el ? attachment.oembed : attachment;
+        this._focusedAttachment = attachment;
+    };
+
+    GalleryAttachmentListView.prototype.setElement = function (el) {
+        View.prototype.setElement.call(this, el);
+
         var self = this;
-        if (this.content) {
-            this.content.on('attachment', function(attachment) {
-                self.add(attachment);
-                self.render();
-            });
-        }
-
-        this.$el.on('focusContent.hub', function(e, context) {
-            if (context.content) {
-                for (var i=0; i < context.content.attachments; i++) {
-                    self.add(context.content.attachments[i]);
-                }
-            }
-            self._focusedOembedView = context.focusedAttachmentView;
-            self.render();
+        this.$el.on('click', function () {
+            self.$el.trigger('hideModal.hub');
         });
-
-        $(window).on('resize', function(e) {
-            self.resizeFocusedAttachment();
-        });
-
         this.$el.on(
             'click',
             [this.attachmentMetaSelector, this.galleryNextSelector, this.galleryPrevSelector, this.actualImageSelector].join(','),
-            function(e) {
+            function (e) {
                 e.stopPropagation();
-                if ($(e.currentTarget).hasClass(self.galleryNextSelector.substring(1))) {
+                if ($(e.currentTarget).hasClass(self.galleryNextSelector.substring(1)) || $(e.currentTarget).hasClass(self.actualImageSelector.substring(1))) {
                     self.next();
                 } else if ($(e.currentTarget).hasClass(self.galleryPrevSelector.substring(1))) {
                     self.prev();
@@ -82,102 +80,91 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
             }
         );
 
-        $(window).on('keyup', function(e) {
-            e.preventDefault();
-            if (e.keyCode == 37) {
-                // left arrow
-                self.prev();
-            } else if (e.keyCode == 39) {
-                // right arrow
-                self.next();
+        this.$el.on('focusContent.hub', function(e, context) {
+            if (context.content) {
+                for (var i=0; i < context.content.attachments; i++) {
+                    self.add(context.content.attachments[i]);
+                }
             }
+            self.setFocusedAttachment(context.attachmentToFocus);
+            self.render();
         });
     };
 
-    GalleryAttachmentListView.prototype.render = function() {
+    GalleryAttachmentListView.prototype.render = function () {
+        TiledAttachmentListView.prototype.render.call(this);
+
         var attachmentsGalleryEl = this.$el.find(this.attachmentsGallerySelector);
+        for (var i=0; i < this.oembedViews.length; i++) {
+            this.oembedViews[i].$el.appendTo(attachmentsGalleryEl.find(this.galleryThumbnailsSelector));
+            this.oembedViews[i].render();
+        }
+        this.focus();
+    };
+
+    /**
+     * Add a Oembed attachment to the Attachments view. 
+     * @param oembed {Oembed} A Oembed instance to render in the View
+     * @returns {AttachmentListView} By convention, return this instance for chaining
+     */
+    GalleryAttachmentListView.prototype.add = function (oembed) {
+        if (! this.isTileableAttachment(oembed)) {
+            return this;
+        }
+        var oembedView = this._insert(oembed);
+
+        var attachmentsGalleryEl = this.$el.find(this.attachmentsGallerySelector);
+
+        // Render gallery thumbnails
+        oembedView.$el.on('click', function(e) {
+            $(e.target).trigger('focusContent.hub', { content: self.content, attachmentToFocus: oembedView.oembed });
+        });
+        oembedView.$el.appendTo(attachmentsGalleryEl.find(this.galleryThumbnailsSelector));
+        oembedView.render();
+
+        this.focus();
+    };
+
+    GalleryAttachmentListView.prototype.focus = function (oembed) {
+        if (!oembed && !this.oembedViews.length) {
+            return;
+        }
+        oembed = oembed ? oembed : this._focusedAttachment || this.oembedViews[0].oembed;
+
+        // Render focused attachment
         var focusedAttachmentsEl = this.$el.find(this.focusedAttachmentsSelector);
         focusedAttachmentsEl.empty();
 
-        var galleryOembedViews = [];
-        for (var i=0; i < this.oembedViews.length; i++) {
-            if (!this.isAttachmentTileable(this.oembedViews[i])) {
-                continue;
-            }
+        oembedView = new OembedView({ oembed: oembed });
+        oembedView.render();
+        var focusedEl = oembedView.$el.clone();
+        focusedEl.appendTo(focusedAttachmentsEl);
 
-            var oembedView = new OembedView({
-                oembed: this.oembedViews[i].oembed
-            });
-
-            if (oembedView.oembed == this._focusedOembedView.oembed) {
-                this._focusedOembedView = oembedView;
-            }
-            galleryOembedViews.push(oembedView);
-        }
-
-        // Render gallery thumbnails
-        attachmentsGalleryEl.find(this.galleryThumbnailsSelector).empty();
-        var self = this;
-        $(galleryOembedViews).each(function(i, oembedView) {
-            oembedView.$el.on('click', function(e) {
-                $(e.target).trigger('focusContent.hub', self.content, oembedView);
-            });
-            oembedView.render();
-            oembedView.$el.appendTo(attachmentsGalleryEl.find(self.galleryThumbnailsSelector));
-        });
-
-        var attachmentsCount = this.tileableCount();
-        var thumbnailsEl = attachmentsGalleryEl.find(this.galleryThumbnailsSelector);
-        if (this.tile) {
-            thumbnailsEl.removeClass('content-attachments-1')
-                .removeClass('content-attachments-2')
-                .removeClass('content-attachments-3')
-                .removeClass('content-attachments-4');
-            thumbnailsEl.addClass('content-attachments-'+attachmentsCount);
-            if (attachmentsCount == 1 || attachmentsCount == 2) {
-                thumbnailsEl.find('.content-attachment').addClass(this.horizontalTileClassName);
-                thumbnailsEl.find('.content-attachment:first')
-                    .removeClass(this.horizontalTileClassName)
-                    .addClass(this.squareTileClassName);
-            } else {
-                thumbnailsEl.find('.content-attachment').addClass(this.squareTileClassName);
-            }
-        }
-
-        // Render focused oembed view
-        this._focusedOembedView = this._focusedOembedView || this.oembedViews[0];
-        if (this._focusedOembedView) {
-            this._focusedOembedView.render();
-            var focusedEl = this._focusedOembedView.$el.clone();
-            focusedEl.appendTo(focusedAttachmentsEl);
-            var photoContentEl = focusedEl.find('.content-attachment-photo');
-            photoContentEl.addClass(this.focusedAttachmentClassName);
+        var photoContentEl = focusedEl.find('.content-attachment-photo');
+        photoContentEl.addClass(this.focusedAttachmentClassName);
+        if (this._focusedAttachment.type === 'video') {
+            var playButtonEl = focusedEl.find('.content-attachment-controls-play');
+            playButtonEl.hide();
+            photoContentEl.hide().removeClass(this.focusedAttachmentClassName);
+            var videoContentEl = focusedEl.find('.content-attachment-video');
+            videoContentEl.addClass(this.focusedAttachmentClassName);
+            videoContentEl.html(this._focusedAttachment.html);
             if (this.tile) {
-                focusedEl.find('.content-attachment').addClass(this.squareTileClassName);
+                videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
             }
-            if (this._focusedOembedView.oembed.type === 'video') {
-                var playButtonEl = focusedEl.find('.content-attachment-controls-play');
-                playButtonEl.hide();
-                photoContentEl.hide().removeClass(this.focusedAttachmentClassName);
-                var videoContentEl = focusedEl.find('.content-attachment-video');
-                videoContentEl.addClass(this.focusedAttachmentClassName);
-                videoContentEl.html(this._focusedOembedView.oembed.html);
-                if (this.tile) {
-                    videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
-                }
-                videoContentEl.show();
-            }
+            videoContentEl.show();
         }
 
         // Update page count and focused index
+        var attachmentsCount = this.tileableCount();
         if (this.pageCount) {
             var newIndex = 0;
             for (var i=0; i < this.oembedViews.length; i++) {
-                if (this.oembedViews[i].oembed == this._focusedOembedView.oembed) {
+                if (this.oembedViews[i].oembed == this._focusedAttachment) {
                     this.focusedIndex = newIndex;
                     break;
                 }
-                if (this.isAttachmentTileable(this.oembedViews[i])) {
+                if (this.isTileableAttachment(this.oembedViews[i].oembed)) {
                     newIndex++;
                 }
             }
@@ -205,6 +192,7 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
         contentMetaEl.html(ContentBylineTemplate(this.content));
 
         // Update gallery size
+        var self = this;
         var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName + '> *')
         if (!focusedAttachmentEl.length) {
             return;
@@ -271,12 +259,12 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
     GalleryAttachmentListView.prototype.next = function() {
         var tileableIndex = 0;
         for (var i=0; i < this.oembedViews.length; i++) {
-            if (!this.isAttachmentTileable(this.oembedViews[i])) {
+            if (!this.isTileableAttachment(this.oembedViews[i].oembed)) {
                 continue;
             }
             if (this.focusedIndex+1 == tileableIndex) {
                 this.focusedIndex = tileableIndex;
-                this._focusedOembedView = this.oembedViews[i];
+                this._focusedAttachment = this.oembedViews[i].oembed;
                 this.render();
                 break;
             }
@@ -287,30 +275,17 @@ function($, View, AttachmentListView, OembedView, GalleryAttachmentListTemplate,
     GalleryAttachmentListView.prototype.prev = function() {
         var tileableIndex = 0;
         for (var i=0; i < this.oembedViews.length; i++) {
-            if (!this.isAttachmentTileable(this.oembedViews[i])) {
+            if (!this.isTileableAttachment(this.oembedViews[i].oembed)) {
                 continue;
             }
             if (this.focusedIndex-1 == tileableIndex) {
                 this.focusedIndex = tileableIndex;
-                this._focusedOembedView = this.oembedViews[i];
+                this._focusedAttachment = this.oembedViews[i].oembed;
                 this.render();
                 break;
             }
             tileableIndex++;
         }
-    };
-
-    /**
-     * Add a Oembed attachment to the Attachments view. 
-     * @param oembed {Oembed} A Oembed instance to render in the View
-     * @returns {AttachmentListView} By convention, return this instance for chaining
-     */
-    GalleryAttachmentListView.prototype.add = function(oembed) { 
-        var oembedView = this.createOembedView(oembed);
-        oembedView.render();
-        this.render();
-
-        return this;
     };
 
     return GalleryAttachmentListView;

@@ -3,11 +3,12 @@ define([
     'jasmine-jquery',
     'streamhub-sdk/jquery',
     'streamhub-sdk/views/list-view',
+    'streamhub-sdk/views/modal-view',
     'streamhub-sdk/content/content',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/stream',
     'streamhub-sdk-tests/mocks/jasmine-spy-stream'],
-function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, JasmineSpyStream) {
+function (jasmine, jasminejquery, $, ListView, ModalView, Content, ContentView, Stream, JasmineSpyStream) {
     describe('A ListView', function () {
         var fixtureId = 'sandbox',
             listView,
@@ -49,24 +50,25 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
             });
         });
 
-        describe('handles initModal.hub event', function () {
-
-            it('calls the .initModalView method', function() {
-                spyOn(listView, 'initModalView');
-                listView.$el.trigger('initModal.hub');
-                expect(listView.initModalView).toHaveBeenCalled();
-            });
-        });
-
         describe('handles focusContent.hub event', function () {
 
+            beforeEach(function() {
+                listView = new ListView({
+                    streams: {
+                        main: new JasmineSpyStream()
+                    },
+                    modal: new ModalView()
+                });
+            });
+
             it('renders and shows the modal view', function() {
-                listView.initModalView();
-                spyOn(listView.modalView, 'render');
-                spyOn(listView.modalView, 'show');
-                listView.$el.trigger('focusContent.hub', { content: new Content() });
-                expect(listView.modalView.render).toHaveBeenCalled();
-                expect(listView.modalView.show).toHaveBeenCalled();
+                //spyOn(listView.modal, 'createModalContentView');
+                //spyOn(listView.modal, 'render');
+                //spyOn(listView.modal, 'show');
+                //listView.$el.trigger('focusContent.hub', { content: new Content() });
+                //expect(listView.modal.createModalContentView).toHaveBeenCalled();
+                //expect(listView.modal.render).toHaveBeenCalled();
+                //expect(listView.modal.show).toHaveBeenCalled();
             });
         });
 

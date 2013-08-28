@@ -34,7 +34,7 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
                 });
             });
 
-            describe('with opts.pageButons', function() {
+            describe('with opts.pageButtons', function() {
                 var galleryAttachmentListView = new GalleryAttachmentListView({ pageButtons: true });
                 it('is instance of GalleryAttachmentListView', function() {
                     expect(galleryAttachmentListView).toBeDefined();
@@ -63,7 +63,7 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
 
             it('focuses the specified attachment', function() {
                 var content = new Content();
-                var galleryAttachmentListView = new GalleryAttachmentListView({ content: content, toFocus: oembedAttachment });
+                var galleryAttachmentListView = new GalleryAttachmentListView({ content: content, attachmentToFocus: oembedAttachment });
                 content.addAttachment(oembedAttachment);
                 galleryAttachmentListView.render();
                 expect(galleryAttachmentListView.$el.find('.content-attachments-gallery-focused')).toBe('div');
@@ -92,7 +92,7 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
                 var galleryAttachmentListView = new GalleryAttachmentListView({ pageCount: true });
                 galleryAttachmentListView.render();
 
-                it('has a page count (e.g. 1 of 5)', function() {
+                it('has a page count (e.g. "1 of 5")', function() {
                     expect(galleryAttachmentListView.$el.find('.content-attachments-gallery-count')).toBe('div');
                 });
             });
@@ -103,26 +103,27 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
             var galleryAttachmentListView,
                 tiledAttachmentEl,
                 content = new Content(),
-                attachmentListViewOpts = { content: content, toFocus: oembedAttachment};
+                attachmentListViewOpts = { content: content, attachmentToFocus: oembedAttachment};
 
             it('emits focusContent.hub event', function() {
                 galleryAttachmentListView = new GalleryAttachmentListView(attachmentListViewOpts);
                 galleryAttachmentListView.setElement($('<div></div>'));
+                galleryAttachmentListView.render();
                 oembedAttachment.type = 'photo';
                 for (var i=0; i < 3; i++) {
                     var attachment = $.extend({}, oembedAttachment);
                     attachment.id = i;
                     content.addAttachment(attachment);
                 }
-                tiledAttachmentEl = galleryAttachmentListView.$el.find('.content-attachments-gallery-thumbnails .content-attachment:first');
+                thumbnailAttachmentEl = galleryAttachmentListView.$el.find('.content-attachments-gallery-thumbnails .content-attachment:first');
 
-                var spyFocusAttachmentEvent = spyOnEvent(tiledAttachmentEl[0], 'focusContent.hub');
+                var spyFocusAttachmentEvent = spyOnEvent(thumbnailAttachmentEl[0], 'focusContent.hub');
                 var tileClicked = false;
                 galleryAttachmentListView.$el.on('focusContent.hub', function() {
                     tileClicked = true;
                 });
 
-                tiledAttachmentEl.trigger('click');
+                thumbnailAttachmentEl.trigger('click');
                 expect(tileClicked).toBe(true);
                 expect(spyFocusAttachmentEvent).toHaveBeenTriggered();
             });
@@ -142,9 +143,10 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
            
             beforeEach(function() {
                 content = new Content();
-                galleryAttachmentListView = new GalleryAttachmentListView({ content: content, toFocus: oembedVideoAttachment });
+                galleryAttachmentListView = new GalleryAttachmentListView({ content: content, attachmentToFocus: oembedVideoAttachment });
 
                 galleryAttachmentListView.setElement($('<div></div>'));
+                galleryAttachmentListView.render();
                 for (var i=0; i < 4; i++) {
                     var attachment = $.extend({}, oembedVideoAttachment);
                     attachment.id = i;
@@ -162,6 +164,68 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
                 expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
             });
         });
+        
+        describe('when attachment is focused', function() {
+            
+            var galleryAttachmentListView,
+                tiledAttachmentEl,
+                content = new Content(),
+                attachmentListViewOpts = { content: content, attachmentToFocus: oembedAttachment};
+
+            beforeEach(function() {
+                galleryAttachmentListView = new GalleryAttachmentListView(attachmentListViewOpts);
+                galleryAttachmentListView.setElement($('<div></div>'));
+                galleryAttachmentListView.render();
+                oembedAttachment.type = 'photo';
+                for (var i=0; i < 3; i++) {
+                    var attachment = $.extend({}, oembedAttachment);
+                    attachment.id = i;
+                    content.addAttachment(attachment);
+                }
+            });
+
+            it('the focused element displayed', function() {
+                expect(galleryAttachmentListView.$el.find(galleryAttachmentListView.focusedAttachmentsSelector)).toBe('div');
+            });
+
+            it('displays the next attachment when right arrow key is pressed', function() {
+                spyOn(galleryAttachmentListView, 'next');
+                $(window).trigger($.Event('keyup', {keyCode: 39}));
+                expect(galleryAttachmentListView.next).toHaveBeenCalled();
+            });
+
+            it('displays the next attachment when next button is clicked', function() {
+                spyOn(galleryAttachmentListView, 'next');
+                galleryAttachmentListView.$el.find(galleryAttachmentListView.galleryNextSelector).trigger('click');
+                expect(galleryAttachmentListView.next).toHaveBeenCalled();
+            });
+
+            it('displays the next attachment when the focused attachment is clicked', function() {
+
+            });
+
+            it('displays the previous attachment when left arrow key is pressed', function() {
+                spyOn(galleryAttachmentListView, 'prev');
+                $(window).trigger($.Event('keyup', {keyCode: 37}));
+                expect(galleryAttachmentListView.prev).toHaveBeenCalled();
+
+            });
+
+            it('displays the previous attachment when previous button is clicked', function() {
+                spyOn(galleryAttachmentListView, 'prev');
+                galleryAttachmentListView.$el.find(galleryAttachmentListView.galleryPrevSelector).trigger('click');
+                expect(galleryAttachmentListView.prev).toHaveBeenCalled();
+            });
+
+            it('does not show the page count when there is 1 attachment', function() {
+
+            });
+
+            it('shows the page count when there are > 1 attachment', function() {
+
+            });
+        });
+
     });
 
 });

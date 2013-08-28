@@ -25,7 +25,6 @@ define([
         this.opts = opts;
 
         this.setElement(opts.el || document.createElement(this.elTag));
-        this.initialize.apply(this, arguments);
     };
     util.inherits(View, EventEmitter);
 
@@ -55,11 +54,6 @@ define([
             this.el.innerHTML = this.template(this);
         }
     };
-
-    /**
-     * Initializes the View after construction. Subclasses can implement this
-     */
-    View.prototype.initialize = function () {};
 
     /**
      * Add a piece of Content to the View. Subclasses should implement this
