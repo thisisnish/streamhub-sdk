@@ -9,10 +9,12 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
     
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
+     *
      * @param opts {Object} A set of options to config the view with
      * @param opts.el {HTMLElement} The element in which to render the streamed content
      * @param opts.content {Content} The content instance with which to display its attachments
-     * @exports streamhub-sdk/views/attachment-list-view
+     * @fires TiledAttachmentListView#focusContent.hub
+     * @exports streamhub-sdk/views/tiled-attachment-list-view
      * @constructor
      */
     var TiledAttachmentListView = function (opts) {
@@ -35,7 +37,7 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
      * Set the element for the view to render in.
      * You will probably want to call .render() after this, but not always.
      * @param element {HTMLElement} The element to render this View in
-     * @return this
+     * @returns this
      */
     TiledAttachmentListView.prototype.setElement = function (element) {
         this.el = element;
@@ -51,6 +53,10 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
         return this.oembedViews.length;
     };
 
+    /**
+     * Checks whether attachment is tileable
+     * @returns {boolean} Whether an attachment is tileable
+     */
     TiledAttachmentListView.prototype.isTileableAttachment = function (oembed) {
         if (oembed.type === 'photo' || oembed.type === 'video') {
             return true;
@@ -58,6 +64,10 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
         return false;
     };
 
+    /**
+     * A count of the number of tileable attachments for this content item
+     * @returns {boolean} The number of tileable attachments for this content item
+     */
     TiledAttachmentListView.prototype.tileableCount = function () {
         var attachmentsCount = 0;
 
@@ -66,7 +76,6 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
                 attachmentsCount++;
             }
         }
-
         return attachmentsCount;
     };
 
@@ -85,6 +94,10 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
         if (this.isTileableAttachment(oembedView.oembed)) {
             oembedView.$el.appendTo(tiledAttachmentsEl);
             oembedView.$el.on('click', function(e) {
+                /**
+                 * Focus content
+                 * @event TiledAttachmentListView#focusContent.hub
+                 */
                 $(e.target).trigger('focusContent.hub', { content: self.content, attachmentToFocus: oembedView.oembed });
             });
         } else {
@@ -96,11 +109,18 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
         return this;
     };
 
+    /**
+     * Removes a Oembed attachment from the Attachments view. 
+     * @param oembed {Oembed} A Oembed instance to remove
+     */
     TiledAttachmentListView.prototype.remove = function (oembed) {
         AttachmentListView.prototype.remove.call(this, oembed);
         this.retile();
     };
 
+    /**
+     * Retiles all attachments of the content 
+     */
     TiledAttachmentListView.prototype.retile = function () {
         var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
 

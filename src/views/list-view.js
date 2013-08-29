@@ -7,6 +7,7 @@ function($, View, ContentViewFactory, util) {
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
+     *
      * @param opts {Object} A set of options to config the view with
      * @param opts.el {HTMLElement} The element in which to render the streamed content
      * @exports streamhub-sdk/views/list-view
@@ -43,7 +44,7 @@ function($, View, ContentViewFactory, util) {
      *     in descending order (new first)
      * @param a {ContentView}
      * @param b {ContentView}
-     * @return {Number} < 0 if a before b, 0 if same ordering, > 0 if b before a
+     * @returns {Number} < 0 if a before b, 0 if same ordering, > 0 if b before a
      */
     ListView.prototype.comparator = function (a, b) {
         var aDate = a.content.createdAt || a.createdAt,
@@ -59,7 +60,7 @@ function($, View, ContentViewFactory, util) {
      *     render the newContentView
      *     insert the newContentView into this.el according to this.comparator
      * @param content {Content} A Content model to add to the ListView
-     * @return the newly created ContentView
+     * @returns the newly created ContentView
      */
     ListView.prototype.add = function(content) {
         var contentView = this.getContentView(content);

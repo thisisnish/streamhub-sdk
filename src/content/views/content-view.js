@@ -7,9 +7,11 @@ define([
     /**
      * Defines the base class for all content-views. Handles updates to attachments
      * and loading of images.
+     *
      * @param opts {Object} The set of options to configure this view with.
      * @param opts.content {Content} The content object to use when rendering. 
      * @param opts.el {?HTMLElement} The element to render this object in.
+     * @fires ContentView#removeContentView.hub
      * @exports streamhub-sdk/content/views/content-view
      * @constructor
      */
@@ -43,6 +45,7 @@ define([
      /**
      * Set the .el DOMElement that the ContentView should render to
      * @param el {DOMElement} The new element the ContentView should render to
+     * @returns {ContentView}
      */
     ContentView.prototype.setElement = function (el) {
         this.el = el;
@@ -57,6 +60,7 @@ define([
     
     /**
      * Render the content inside of the ContentView's element.
+     * @returns {ContentView}
      */
     ContentView.prototype.render = function () {
         var context = this.getTemplateContext();
@@ -72,7 +76,11 @@ define([
 
         return this;
     };
-
+    
+    /**
+     * Binds event handlers on this.el
+     * @returns {ContentView}
+     */
     ContentView.prototype.attachHandlers = function () {
         var self = this;
 
@@ -134,14 +142,23 @@ define([
     
     /**
      * Gets the template rendering context. By default, returns "this.content".
-     * @return {Content} The content object this view was instantiated with.
+     * @returns {Content} The content object this view was instantiated with.
      */  
     ContentView.prototype.getTemplateContext = function () {
         var context = $.extend({}, this.content);
         return context;
     };
 
+    /**
+     * Removes the content view element, and triggers 'removeContentView.hub'
+     * event for the instance to be removed from its associated ListView.
+     */
     ContentView.prototype.remove = function() {
+        /**
+         * removeContentView.hub
+         * @event ContentView#removeContentView.hub
+         * @type {Content}
+         */
         this.$el.trigger('removeContentView.hub', this.content);
         this.$el.remove();
     };

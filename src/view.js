@@ -36,7 +36,6 @@ define([
      * You will probably want to call .render() after this, but not always.
      * @param element {HTMLElement} The element to render this View in
      * @return this
-     * @param
      */
     View.prototype.setElement = function (element) {
         this.el = element;

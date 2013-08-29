@@ -8,6 +8,20 @@ define([
     'streamhub-sdk/util'],
 function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentBylineTemplate, util) {
 
+    /**
+     * A view that displays a content's attachments as a gallery
+     *
+     * @param opts {Object} A set of options to config the view with
+     * @param opts.el {HTMLElement} The element in which to render the streamed content
+     * @param opts.content {Content} The content containing attachments to display as a gallery
+     * @param opts.attachmentToFocus {Oembed} The attachment to focus in the gallery
+     * @param opts.pageButtons {boolean} Whether to display next/previous page buttons
+     * @param opts.pageCount {boolean} Whether to display the page count/index
+     * @param opts.thumbnails {boolean} Whether to display the thumbnails of all attachments
+     * @fires GalleryAttachmentListView#hideModal.hub
+     * @exports streamhub-sdk/views/gallery-attachment-list-view
+     * @constructor
+     */
     var GalleryAttachmentListView = function(opts) {
         opts = opts || {};
 
@@ -55,17 +69,31 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     GalleryAttachmentListView.prototype.attachmentMetaSelector = '.content-attachments-meta';
     GalleryAttachmentListView.prototype.actualImageSelector = '.content-attachment-actual-image';
 
+    /**
+     * Set the attachment instance to be displayed as the focused item in the gallery
+     * @param element {Oembed} The attachment to focus in the gallery
+     */
     GalleryAttachmentListView.prototype.setFocusedAttachment = function (attachment) {
         attachment = attachment.el ? attachment.oembed : attachment;
         this._focusedAttachment = attachment;
     };
 
-    GalleryAttachmentListView.prototype.setElement = function (el) {
-        View.prototype.setElement.call(this, el);
+    /**
+     * Set the element for the view to render in.
+     * You will probably want to call .render() after this, but not always.
+     * @param element {HTMLElement} The element to render this View in
+     * @returns this
+     */
+    GalleryAttachmentListView.prototype.setElement = function (element) {
+        View.prototype.setElement.call(this, element);
 
         var self = this;
         this.$el.on('click', function () {
             self.$el.hide();
+            /**
+             * Hide modal
+             * @event GalleryAttachmentListView#hideModal.hub
+             */
             self.$el.trigger('hideModal.hub');
         });
         this.$el.on(
@@ -90,8 +118,13 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             self.setFocusedAttachment(context.attachmentToFocus);
             self.render();
         });
+
+        return this;
     };
 
+    /**
+     * Creates DOM structure of gallery to be displayed
+     */
     GalleryAttachmentListView.prototype.render = function () {
         TiledAttachmentListView.prototype.render.call(this);
 
@@ -126,6 +159,11 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         this.focus();
     };
 
+    /**
+     * Displays the focused attachment in the gallery, updates
+     * page count/index, and prev/next button visibility.
+     * @param oembed {Oembed} A Oembed instance to render in the View
+     */
     GalleryAttachmentListView.prototype.focus = function (oembed) {
         if (!oembed && !this.oembedViews.length) {
             return;
@@ -207,6 +245,9 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         }
     };
 
+    /**
+     * Resizes the focused attachment according to the viewport size
+     */
     GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {
         var height = this.$el.height();
         var width = this.$el.width();
@@ -257,6 +298,9 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         }
     };
 
+    /**
+     * Focuses the next attachment if it is not the last attachment
+     */
     GalleryAttachmentListView.prototype.next = function() {
         var tileableIndex = 0;
         for (var i=0; i < this.oembedViews.length; i++) {
@@ -273,6 +317,9 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         }
     };
 
+    /**
+     * Focuses the previous attachment if it is not the first attachment
+     */
     GalleryAttachmentListView.prototype.prev = function() {
         var tileableIndex = 0;
         for (var i=0; i < this.oembedViews.length; i++) {

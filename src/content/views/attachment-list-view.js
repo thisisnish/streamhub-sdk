@@ -26,6 +26,11 @@ function($, View, OembedView, AttachmentListTemplate, util) {
     AttachmentListView.prototype.stackedAttachmentsSelector = '.content-attachments-stacked';
     AttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
 
+    /**
+     * Set the element for the view to render in.
+     * You will probably want to call .render() after this, but not always.
+     * @param content {HTMLElement} The element to render this View in
+     */
     AttachmentListView.prototype.setContent = function (content) {
         if (! content) {
             return;
@@ -50,7 +55,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
      * Set the element for the view to render in.
      * You will probably want to call .render() after this, but not always.
      * @param element {HTMLElement} The element to render this View in
-     * @return this
+     * @returns this
      */
     AttachmentListView.prototype.setElement = function (element) {
         this.el = element;
@@ -73,6 +78,11 @@ function($, View, OembedView, AttachmentListTemplate, util) {
         this.$el.html(this.template());
     };
 
+    /**
+     * Appends a new OembedView given an Oembed instance to the view
+     * @param oembed {Oembed} A Oembed instance to insert into the view
+     * @returns {OembedView} The OembedView associated with the newly inserted oembed
+     */
     AttachmentListView.prototype._insert = function (oembed) {
         var oembedView = this.createOembedView(oembed);
         this.oembedViews.push(oembedView);

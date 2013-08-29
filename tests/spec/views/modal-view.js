@@ -34,8 +34,8 @@ define([
                 it('is an instance of ModalView', function() {
                     expect(modalView instanceof ModalView).toBe(true);
                 });
-                it('the .createModalContentView method is the same as opts.modal', function() {
-                    expect(modalView.createModalContentView).toBe(myCreateModalContentView);
+                it('the ._createModalContentView method is the same as opts.modal', function() {
+                    expect(modalView._createModalContentView).toBe(myCreateModalContentView);
                 });
             });
         });
