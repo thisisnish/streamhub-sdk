@@ -28,6 +28,7 @@ define([
     'streamhub-sdk/streams/livefyre-reverse-stream',
     'streamhub-sdk/stream-helpers/livefyre-helper',
     'streamhub-sdk/views/list-view',
+    'streamhub-sdk/modal/modal-view',
     'text!streamhub-sdk/version.txt'
 ], function(
     $,
@@ -59,6 +60,7 @@ define([
     LivefyreReverseStream,
     LivefyreHelper,
     ListView,
+    ModalView,
     VersionInfo
 ) {
     var Hub = {};
@@ -103,6 +105,9 @@ define([
 
     Hub.Views = {};
     Hub.Views.ListView = ListView;
+
+    Hub.Modal = {};
+    Hub.Modal.ModalView = ModalView;
     
     Hub.version = $.trim(VersionInfo);
 

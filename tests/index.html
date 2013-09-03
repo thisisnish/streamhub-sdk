@@ -60,7 +60,10 @@
                 specs.push('tests/spec/content/views/oembed-view');
                 specs.push('tests/spec/content/views/attachment-list-view');
                 specs.push('tests/spec/content/views/tiled-attachment-list-view');
-                
+
+                specs.push('tests/spec/modal/modal-view');
+                specs.push('tests/spec/modal/views/gallery-attachment-list-view');
+
                 $(function(){
                     require(specs, function(){
                         jasmineEnv.execute();
