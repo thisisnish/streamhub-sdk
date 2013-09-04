@@ -119,23 +119,23 @@ define([
      * Creates DOM structure of gallery to be displayed
      */
     ModalView.prototype.render = function () {
-        if (! this.modalEl) {
-            this.initModal();
-        }
         if (! this.modalContentView) {
             this.modalContentView = this._createModalContentView();
         }
         this.modalContentView.$el.appendTo(this.modalContainerEl);
         this.modalContentView.render(); 
+        this.modalContentView.$el.show();
     };
 
     /**
      * Makes the modal and its content visible
      */
     ModalView.prototype.show = function() {
-        this.render();
-        this.modalContentView.$el.show();
+        if (! this.modalEl) {
+            this.initModal();
+        }
         this.modalEl.show();
+        this.render();
         this.visible = true;
     };
 
