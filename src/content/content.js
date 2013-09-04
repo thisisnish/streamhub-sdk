@@ -8,6 +8,8 @@ define([
      * A piece of Web Content
      * @param body {String|Object} A string of HTML, the Content body.
      *     If an object, it should have a .body property
+     * @fires Content#attachment
+     * @fires Content#removeAttachment
      * @exports streamhub-sdk/content/content
      * @constructor
      */
