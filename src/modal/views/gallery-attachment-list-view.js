@@ -15,9 +15,11 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
      * @param opts.el {HTMLElement} The element in which to render the streamed content
      * @param opts.content {Content} The content containing attachments to display as a gallery
      * @param opts.attachmentToFocus {Oembed} The attachment to focus in the gallery
+     * @param opts.userInfo {boolean} Whether to display the user info
      * @param opts.pageButtons {boolean} Whether to display next/previous page buttons
      * @param opts.pageCount {boolean} Whether to display the page count/index
      * @param opts.thumbnails {boolean} Whether to display the thumbnails of all attachments
+     * @param opts.proportionalThumbnails {boolean} Whether the thumbnail widths are proportional to the gallery container
      * @fires GalleryAttachmentListView#hideModal.hub
      * @exports streamhub-sdk/views/gallery-attachment-list-view
      * @constructor
@@ -25,9 +27,11 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     var GalleryAttachmentListView = function(opts) {
         opts = opts || {};
 
-        this.pageButtons = opts.pageButtons || true;
-        this.pageCount = opts.pageCount || true;
-        this.thumbnails = opts.thumbnails || false;
+        this.userInfo = opts.userInfo === undefined ? true : opts.userInfo;
+        this.pageButtons = opts.pageButtons === undefined ? true : opts.pageButtons;
+        this.pageCount = opts.pageCount === undefined ? true : opts.pageCount;
+        this.thumbnails = opts.thumbnails === undefined ? false : opts.thumbnails;
+        this.proportionalThumbnails = opts.proportionalThumbnails === undefined ? false : opts.proportionalThumbnails;
         this.focusedIndex = 0;
         this.oembedViews = [];
         this.setContent(opts.content);
@@ -44,6 +48,9 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         $(window).on('keyup', function(e) {
             e.preventDefault();
+            if (!self.pageButtons) {
+                return;
+            }
             if (e.keyCode == 37) {
                 // left arrow
                 self.prev();
@@ -89,8 +96,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         View.prototype.setElement.call(this, element);
 
         var self = this;
-        this.$el.on('click', function () {
-            self.$el.hide();
+        this.$el.on('click', function (e) {
             /**
              * Hide modal
              * @event GalleryAttachmentListView#hideModal.hub
@@ -102,6 +108,9 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             [this.attachmentMetaSelector, this.galleryNextSelector, this.galleryPrevSelector, this.actualImageSelector].join(','),
             function (e) {
                 e.stopPropagation();
+                if (!self.pageButtons) {
+                    return;
+                }
                 if ($(e.currentTarget).hasClass(self.galleryNextSelector.substring(1)) || $(e.currentTarget).hasClass(self.actualImageSelector.substring(1))) {
                     self.next();
                 } else if ($(e.currentTarget).hasClass(self.galleryPrevSelector.substring(1))) {
@@ -131,11 +140,46 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         this.$el.html(this.template());
         var attachmentsGalleryEl = this.$el.find(this.attachmentsGallerySelector);
-        for (var i=0; i < this.oembedViews.length; i++) {
-            this.oembedViews[i].$el.appendTo(attachmentsGalleryEl.find(this.galleryThumbnailsSelector));
-            this.oembedViews[i].render();
+        var self = this;
+        $.each(this.oembedViews, function (i, oembedView) {
+            oembedView.$el.appendTo(attachmentsGalleryEl.find(self.galleryThumbnailsSelector));
+            oembedView.$el.on('click', function(e) {
+                $(e.target).trigger('focusContent.hub', { content: self.content, attachmentToFocus: oembedView.oembed });
+            });
+            oembedView.render();
+        });
+
+        var contentMetaEl = this.$el.find(this.attachmentMetaSelector);
+        this.userInfo ? contentMetaEl.show() : contentMetaEl.hide();
+
+        var pageButtonEls = this.$el.find([this.galleryPrevSelector, this.galleryNextSelector].join(','));
+        this.pageButtons ? pageButtonEls.show() : pageButtonEls.hide();
+
+        var pageCountEl = this.$el.find(this.galleryCountSelector);
+        this.pageCount ? pageCountEl.show() : pageCountEl.hide();
+
+        var thumbnailsEl = this.$el.find(this.galleryThumbnailsSelector);
+        this.thumbnails && this.tileableCount() > 1 ?  thumbnailsEl.show() : thumbnailsEl.hide();
+        if (this.proportionalThumbnails) {
+            var thumbnailTileEls = thumbnailsEl.children();
+            for (var i=0; i < thumbnailTileEls.length; i++) {
+                thumbnailTileEls.eq(i).width(attachmentsGalleryEl.width() / thumbnailTileEls.length).height(75);
+            }
         }
+
         this.focus();
+    };
+
+    /**
+     * Appends a new OembedView given an Oembed instance to the view
+     * @param oembed {Oembed} A Oembed instance to insert into the view
+     * @returns {OembedView} The OembedView associated with the newly inserted oembed
+     */
+    GalleryAttachmentListView.prototype._insert = function (oembed) {
+        if (! this.isTileableAttachment(oembed)) {
+            return this;
+        }
+        return TiledAttachmentListView.prototype._insert.call(this, oembed);
     };
 
     /**
@@ -152,10 +196,10 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         var attachmentsGalleryEl = this.$el.find(this.attachmentsGallerySelector);
 
         // Render gallery thumbnails
+        oembedView.$el.appendTo(attachmentsGalleryEl.find(this.galleryThumbnailsSelector));
         oembedView.$el.on('click', function(e) {
             $(e.target).trigger('focusContent.hub', { content: self.content, attachmentToFocus: oembedView.oembed });
         });
-        oembedView.$el.appendTo(attachmentsGalleryEl.find(this.galleryThumbnailsSelector));
         oembedView.render();
 
         this.focus();
@@ -267,7 +311,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         contentGalleryEl.width(attachmentContainerWidth);
 
         var contentAttachmentEl = this.$el.find('.content-attachments-gallery-focused .content-attachment');
-        contentAttachmentEl.css({ 'height': attachmentContainerHeight+'px', 'line-height': attachmentContainerHeight+'px'});
+        contentAttachmentEl.css({ 'height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px', 'line-height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px'});
 
         var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName + '> *');
         // Reset attachment dimensions
@@ -284,7 +328,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         // Scale to fit testing against modal dimensions
         if (focusedAttachmentEl.height() + modalVerticalWhitespace >= height || focusedAttachmentEl.height() == 0) {
-            focusedAttachmentEl.css({ 'height': attachmentContainerHeight+'px', 'line-height': attachmentContainerHeight+'px'});
+            focusedAttachmentEl.css({ 'height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px', 'line-height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px'});
             if (focusedAttachmentEl.attr('width')) {
                 var newWidth = Math.min(parseInt(focusedAttachmentEl.attr('width')), focusedAttachmentEl.width());
                 focusedAttachmentEl.css({ 'width': newWidth+'px' });

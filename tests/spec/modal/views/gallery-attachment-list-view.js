@@ -174,7 +174,7 @@ function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView, OembedVi
 
             beforeEach(function() {
                 content = new Content();
-                attachmentListViewOpts = { content: content, attachmentToFocus: oembedAttachment};
+                attachmentListViewOpts = { content: content, attachmentToFocus: oembedAttachment };
                 galleryAttachmentListView = new GalleryAttachmentListView(attachmentListViewOpts);
                 galleryAttachmentListView.setElement($('<div></div>'));
                 galleryAttachmentListView.render();

@@ -1,8 +1,9 @@
 define([
     'streamhub-sdk/jquery',
+    'streamhub-sdk/modal/views/gallery-attachment-list-view',
     'hgn!streamhub-sdk/content/templates/content',
     'streamhub-sdk/util'
-], function ($, ContentTemplate, Util) {
+], function ($, GalleryAttachmentListView, ContentTemplate, Util) {
     
     /**
      * Defines the base class for all content-views. Handles updates to attachments
@@ -37,6 +38,8 @@ define([
     ContentView.prototype.elClass = 'content';
     ContentView.prototype.tooltipElSelector = '.hub-tooltip-link';
     ContentView.prototype.attachmentsElSelector = '.content-attachments';
+    ContentView.prototype.tiledAttachmentsElSelector = '.content-attachments-tiled';
+    ContentView.prototype.attachmentsGalleryElSelector = '.content-attachments-interactive-gallery';
     ContentView.prototype.headerElSelector = '.content-header';
     ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
     ContentView.prototype.template = ContentTemplate;
@@ -88,7 +91,8 @@ define([
             self.$el.addClass('content-with-image');
         });
         this.$el.on('imageError.hub', function(e, oembed) {
-            self.attachmentsView.remove(oembed);
+            self.content.removeAttachment(oembed);
+
             if (self.attachmentsView.tileableCount && !self.attachmentsView.tileableCount()) {
                 self.$el.removeClass('content-with-image');
             }
@@ -97,14 +101,14 @@ define([
         this.$el.on('click', this.headerElSelector, function(e) {
             var headerEl = $(e.currentTarget)
             var frameEl = self.$el.find('.content-attachments-tiled ' + self.attachmentFrameElSelector);
+
             headerEl.hide();
             frameEl.hide();
-
             var targetEl = document.elementFromPoint(e.clientX, e.clientY);
-            $(targetEl).trigger('click');
-
             frameEl.show();
             headerEl.show();
+
+            $(targetEl).trigger('click');
         });
         this.$el.on('mouseenter', this.tooltipElSelector, function (e) {
             var title = $(this).attr('title');
@@ -161,6 +165,24 @@ define([
          */
         this.$el.trigger('removeContentView.hub', this.content);
         this.$el.remove();
+    };
+
+    ContentView.prototype.showAttachmentsGallery = function (attachmentToFocus) {
+        this.$el.find(this.tiledAttachmentsElSelector).hide();
+        var attachmentsGalleryEl = this.$el.find(this.attachmentsGalleryElSelector);
+        var galleryAttachmentListView = new GalleryAttachmentListView({
+            el: attachmentsGalleryEl,
+            content: this.content,
+            attachmentToFocus: attachmentToFocus,
+            userInfo: false,
+            pageCount: false,
+            pageButtons: false,
+            thumbnails: true,
+            proportionalThumbnails: true
+        });
+        galleryAttachmentListView.render();
+        attachmentsGalleryEl.show();
+        this.$el.find(this.headerElSelector).slideUp();
     };
     
     return ContentView;

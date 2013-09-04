@@ -28,11 +28,21 @@ define([
     /**
      * Attach an Oembed to the Content
      * @param obj {Oembed} An Oembed Content instance to attach
-     * @fires Content#addAttachment
+     * @fires Content#attachment
      */
     Content.prototype.addAttachment = function(obj) {
         this.attachments.push(obj);
         this.emit('attachment', obj);
+    };
+
+    /**
+     * Remove an Oembed from the Content
+     * @param obj {Oembed} An Oembed Content instance to attach
+     * @fires Content#removeAttachment
+     */
+    Content.prototype.removeAttachment = function(obj) {
+        this.attachments.splice(this.attachments.indexOf(obj), 1);
+        this.emit('removeAttachment', obj);
     };
 
     /**

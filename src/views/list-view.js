@@ -30,6 +30,8 @@ function($, View, ContentViewFactory, ModalView, util) {
         });
         $(this.el).on('focusContent.hub', function(e, context) {
             if (!self.modal) {
+                var contentView = self.getContentView(context.content);
+                contentView.showAttachmentsGallery(context.attachmentToFocus);
                 return;
             }
             self.modal.setFocus(context.content, { attachment: context.attachmentToFocus });
@@ -148,7 +150,7 @@ function($, View, ContentViewFactory, ModalView, util) {
      * @param content {Content} A content object to create the corresponding view for.
      * @returns {ContentView} A new content view object for the given piece of content.
      */
-    ListView.prototype.createContentView = function(content) {
+    ListView.prototype.createContentView = function (content) {
         return this.contentViewFactory.createContentView(content);
     };
 

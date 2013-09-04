@@ -46,8 +46,11 @@ function($, View, OembedView, AttachmentListTemplate, util) {
             this._insert(this.content.attachments[i]);
         }
 
-        this.content.on('attachment', function(attachment) {
+        this.content.on('attachment', function (attachment) {
             self.add(attachment);
+        });
+        this.content.on('removeAttachment', function (attachment) {
+            self.remove(attachment);
         });
     };
 

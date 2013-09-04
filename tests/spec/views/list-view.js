@@ -51,12 +51,37 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
 
         describe('handles focusContent.hub event', function () {
 
+            var content;
+
             beforeEach(function() {
                 listView = new ListView({
                     streams: {
                         main: new JasmineSpyStream()
                     }
                 });
+
+                content = new Content();
+                listView.add(content);
+            });
+
+            it('shows the modal when a modal is set on the ListView instance', function () {
+                spyOn(listView.modal, 'setFocus');
+                spyOn(listView.modal, 'show');
+
+                listView.$el.trigger('focusContent.hub', { content: content });
+
+                expect(listView.modal.setFocus).toHaveBeenCalled();
+                expect(listView.modal.show).toHaveBeenCalled();
+            });
+
+            it('shows finds the correct ContentView instance and invokes .showAttachmentsGallery when no modal is set on the ListView instance', function () {
+                listView.modal = false;
+                var targetContentView = listView.getContentView(content);
+                spyOn(targetContentView, 'showAttachmentsGallery');
+
+                listView.$el.trigger('focusContent.hub', { content: content });
+
+                expect(targetContentView.showAttachmentsGallery).toHaveBeenCalled();
             });
         });
 
