@@ -22,13 +22,12 @@
 .content .content-attachments-2>*,.content .content-attachments-3>*:nth-child(2),.content .content-attachments-3>*:nth-child(3),.content .content-attachments-4>*{width:50%;display:inline-block;vertical-align:bottom}
 .content .content-attachments-3>*:nth-child(n+2) .content-attachment img,.content .content-attachments-3>*:nth-child(n+2) .content-attachment .content-attachment-photo,.content .content-attachments-4>*:nth-child(n+3) .content-attachment img,.content .content-attachments-4>*:nth-child(n+3) .content-attachment .content-attachment-photo{border-radius:0}
 .content .content-attachments-3>*:nth-child(1){height:50%;overflow:hidden;display:block}
-.content .content-attachments-stacked .content-attachment-link{min-height:88px;border-bottom:1px solid rgba(0,0,0,0.15)}
+.content .content-attachments-stacked .content-attachment-link{min-height:88px;border-bottom:1px solid rgba(0,0,0,0.15);background-color:#f7f7f7}
 .content .content-attachments-stacked .content-attachment-link:nth-child(1){border-top:1px solid rgba(0,0,0,0.15)}
 .content .content-attachments-stacked .content-attachment iframe{margin:0 auto}
 .content .content-attachment>.content-attachment-link-thumbnail,.content.content-with-image>.content-attachment-link-thumbnail{display:block;position:absolute;border-radius:3px;margin:10px 10px 10px 20px;width:66px;height:auto}
 .content .content-attachment-link-body{display:block;padding-left:80px;margin:10px 20px}.content .content-attachment-link-body a{font-weight:bold}
 .content .content-attachment-link-body .content-attachment-provider{margin-top:3px;font-size:12px;color:#b2b2b2}
-.content .content-attachments-stacked>div{background-color:#f7f7f7}
 .content .content-attachments-stacked .content-attachment-frame,.content .content-attachments-interactive-gallery .content-attachment-frame{display:none}
 .content .content-actions{list-style-type:none;padding:0;margin:0;margin-top:19px;font-size:12px;float:right}.content .content-actions img{vertical-align:bottom;margin-right:2px}
 .content .content-actions a{color:#999}
