@@ -209,15 +209,19 @@
     }
 
     // Stacked attachments
-    .content-attachments-stacked > *{
+    .content-attachments-stacked .content-attachment-link {
         min-height: 88px;
         border-bottom: 1px solid rgba(0,0,0,0.15);
-    }
-    .content-attachments-stacked > *:nth-child(1) {
+     }
+    .content-attachments-stacked .content-attachment-link:nth-child(1) {
         border-top: 1px solid rgba(0,0,0,0.15);
     }
+    .content-attachments-stacked .content-attachment iframe {
+        margin: 0 auto;
+    }
+
     .content-attachment > .content-attachment-link-thumbnail,
-    &.content-with-image .content-attachment > .content-attachment-link-thumbnail {
+    &.content-with-image  > .content-attachment-link-thumbnail {
         display: block;
         position: absolute;
 	    border-radius: 3px;
