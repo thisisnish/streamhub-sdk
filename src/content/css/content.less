@@ -68,6 +68,7 @@
 
         .content-header-inner {
             padding: 20px 20px 10px 20px;
+            min-height: 35px;
         }
     }
     
@@ -308,6 +309,12 @@
         width: 22px;    
     }
 
+    &.content-instagram {
+        .content-source-logo {
+            background-position: -45px 0;
+        }
+    }
+
     &.content-tweet {
 	    .content-author-avatar + .content-main {
 	        min-height: 34px;
@@ -449,6 +456,12 @@
                     transition: opacity 0.25s linear;
                     opacity: 1;
                 }
+            }
+        }
+
+        &.content-instagram {
+            .content-source-logo {
+                background-position: -45px -24px;
             }
         }
 
