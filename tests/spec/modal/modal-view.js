@@ -23,18 +23,18 @@ define([
                 });
             });
 
-            describe('with opts.modal', function () {
+            describe('with opts.createContentView', function () {
 
                 afterEach(function() {
                     $('body > .hub-modal').remove();
                 });
 
                 var myCreateModalContentView = function () {};
-                modalView = new ModalView({ modal: myCreateModalContentView });
+                modalView = new ModalView({ createContentView: myCreateModalContentView });
                 it('is an instance of ModalView', function() {
                     expect(modalView instanceof ModalView).toBe(true);
                 });
-                it('the ._createModalContentView method is the same as opts.modal', function() {
+                it('the ._createModalContentView method is the same as opts.createContentView', function() {
                     expect(modalView._createModalContentView).toBe(myCreateModalContentView);
                 });
             });

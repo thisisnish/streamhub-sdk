@@ -10,7 +10,7 @@ define([
      * A view that overlays over the entire viewport to display some content
      *
      * @param opts {Object} A set of options to config the view with
-     * @param opts.modal {Function} A function to create a content view to be displayed within the modal view
+     * @param opts.createContentView {Function} A function to create a content view to be displayed within the modal view
      * @fires GalleryAttachmentListView#hideModal.hub
      * @exports streamhub-modal/modal-view
      * @constructor
@@ -18,8 +18,8 @@ define([
     var ModalView = function (opts) {
         opts = opts || {};
         this.visible = false;
-        if (opts.modal) {
-            this._createModalContentView = opts.modal;
+        if (opts.createContentView) {
+            this._createModalContentView = opts.createContentView;
         }
 
         View.call(this);
@@ -65,8 +65,9 @@ define([
 
     /**
      * Initialize the modal by appending the modal container as a sibling of the body element
+     * @private
      */
-    ModalView.prototype.initModal = function () {
+    ModalView.prototype._initModal = function () {
         var modalEl = $(this.modalElSelector, 'body');
         if (! modalEl.length) {
             modalEl = $(this.template());
@@ -105,6 +106,7 @@ define([
      * @param content {Content} The content to be displayed in the content view by the modal
      * @param opts {Object} The content to be displayed in the content view by the modal
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
+     * @private
      */
     ModalView.prototype._createModalContentView = function (content, opts) {
         opts = opts || {};
@@ -119,6 +121,9 @@ define([
      * Creates DOM structure of gallery to be displayed
      */
     ModalView.prototype.render = function () {
+        if (! this.modalEl) {
+            this._initModal();
+        }
         if (! this.modalContentView) {
             this.modalContentView = this._createModalContentView();
         }
@@ -132,7 +137,7 @@ define([
      */
     ModalView.prototype.show = function() {
         if (! this.modalEl) {
-            this.initModal();
+            this._initModal();
         }
         this.modalEl.show();
         this.render();
