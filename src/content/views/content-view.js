@@ -1,9 +1,8 @@
 define([
     'streamhub-sdk/jquery',
-    'streamhub-sdk/modal/views/gallery-attachment-list-view',
     'hgn!streamhub-sdk/content/templates/content',
     'streamhub-sdk/util'
-], function ($, GalleryAttachmentListView, ContentTemplate, Util) {
+], function ($, ContentTemplate, Util) {
     
     /**
      * Defines the base class for all content-views. Handles updates to attachments

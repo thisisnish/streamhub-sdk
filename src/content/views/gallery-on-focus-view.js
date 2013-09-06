@@ -1,7 +1,7 @@
 define([
 	'streamhub-sdk/util',
 	'streamhub-sdk/view',
-	'streamhub-sdk/modal/views/gallery-attachment-list-view'
+	'streamhub-sdk/content/views/gallery-attachment-list-view'
 ], function (util, View, GalleryAttachmentListView) {
 
 

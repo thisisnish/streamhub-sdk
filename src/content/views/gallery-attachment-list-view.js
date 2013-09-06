@@ -3,7 +3,7 @@ define([
     'streamhub-sdk/view',
     'streamhub-sdk/content/views/tiled-attachment-list-view',
     'streamhub-sdk/content/views/oembed-view',
-    'hgn!streamhub-sdk/modal/views/templates/gallery-attachment-list',
+    'hgn!streamhub-sdk/content/templates/gallery-attachment-list',
     'hgn!streamhub-sdk/content/templates/content-byline',
     'streamhub-sdk/util'],
 function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentBylineTemplate, util) {
