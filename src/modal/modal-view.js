@@ -102,10 +102,7 @@ define([
      */
     ModalView.prototype.setFocus = function (content, opts) {
         opts = opts || {};
-        this.modalContentView.setContent(content);
-        if (opts.attachment) {
-            this.modalContentView.setFocusedAttachment(opts.attachment);
-        }
+        this.modalContentView.setContent(content, opts);
     };
 
 
@@ -145,9 +142,9 @@ define([
     /**
      * Makes the modal and its content visible
      */
-    ModalView.prototype.show = function() {
-        if ( ! this._rendered) {
-            this.render();
+    ModalView.prototype.show = function(content, options) {
+        if (content) {
+            this.setFocus(content, options);
         }
 
         // First hide any other modals
@@ -156,6 +153,9 @@ define([
         });
 
         this.$el.show();
+        if ( ! this._rendered) {
+            this.render();
+        }
         this.visible = true;
     };
 
