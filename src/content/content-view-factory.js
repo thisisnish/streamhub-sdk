@@ -9,7 +9,8 @@ define([
     'streamhub-sdk/content/views/tiled-attachment-list-view',
     'streamhub-sdk/content/views/twitter-content-view',
     'streamhub-sdk/content/views/facebook-content-view',
-    'streamhub-sdk/content/views/instagram-content-view'
+    'streamhub-sdk/content/views/instagram-content-view',
+    'streamhub-sdk/content/views/gallery-on-focus-view'
 ], function(
     Content,
     LivefyreContent,
@@ -21,7 +22,8 @@ define([
     TiledAttachmentListView,
     TwitterContentView,
     FacebookContentView,
-    InstagramContentView
+    InstagramContentView,
+    GalleryOnFocusView
 ) {
 
     /**
@@ -59,6 +61,14 @@ define([
      * @returns {ContentView} A new content view object for the given piece of content.
      */
     ContentViewFactory.prototype.createContentView = function(content) {
+        var ContentViewType = this._getViewTypeForContent(content);
+        var attachmentsView = this._createAttachmentsView(content);
+        var contentView = new ContentViewType({ content : content, attachmentsView: attachmentsView });
+        return contentView;
+    };
+
+
+    ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         for (var i=0; i < this.contentRegistry.length; i++) {
             var current = this.contentRegistry[i];
             if (!(content instanceof current.type)) {
@@ -71,17 +81,16 @@ define([
             } else if (current.viewFunction) {
                 currentType = current.viewFunction(content);
             }
-            var attachmentsView = this._createAttachmentsView(content);
-            var contentView = new currentType({ content : content, attachmentsView: attachmentsView });
-            return contentView;
+            return currentType
         }
     };
 
 
     ContentViewFactory.prototype._createAttachmentsView = function (content) {
-        return new TiledAttachmentListView({
+        var tiledAttachmentListView = new TiledAttachmentListView({
             content: content
         });
+        return new GalleryOnFocusView(tiledAttachmentListView);
     };
 
     return ContentViewFactory;

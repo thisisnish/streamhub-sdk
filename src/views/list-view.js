@@ -31,7 +31,7 @@ function($, View, ContentViewFactory, ModalView, util) {
         $(this.el).on('focusContent.hub', function(e, context) {
             if (!self.modal) {
                 var contentView = self.getContentView(context.content);
-                contentView.showAttachmentsGallery(context.attachmentToFocus);
+                //contentView.showAttachmentsGallery(context.attachmentToFocus);
                 return;
             }
             self.modal.show(context.content, { attachment: context.attachmentToFocus });
