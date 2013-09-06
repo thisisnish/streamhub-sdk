@@ -16,6 +16,7 @@ define([
      * @constructor
      */
     var ModalView = function (opts) {
+        var self = this;
         opts = opts || {};
         this.visible = false;
         this._attached = false;
@@ -29,7 +30,6 @@ define([
 
         View.call(this);
 
-        var self = this;
         $(window).keyup(function(e) {
             // Escape
             if (e.keyCode == 27 && self.visible) {
@@ -48,14 +48,15 @@ define([
     util.inherits(ModalView, View);
 
 
+    // Store all instances of modal to ensure that only one is visible
     ModalView.instances = [];
 
 
-    // Create the singleton container element that will house all modals
+    // A singleton container element houses all modals
     ModalView.$el = $('<div class="hub-modals"></div>')
     ModalView.el = ModalView.$el[0];
 
-
+    // insert it on domReady
     ModalView.insertEl = function () {
         $('body').append(ModalView.el);
     }
@@ -65,6 +66,7 @@ define([
     ModalView.prototype.template = ModalTemplate;
     ModalView.prototype.elClass = ' hub-modal';
 
+
     ModalView.prototype.modalElSelector = '.hub-modal';
     ModalView.prototype.closeButtonSelector = '.hub-modal-close';
     ModalView.prototype.containerElSelector = '.hub-modal-content';
@@ -73,7 +75,8 @@ define([
     /**
      * @private
      * Set the element for the view to render in.
-     * You will probably want to call .render() after this, but not always.
+     * ModalView construction takes care of creating its own element in
+     *     ModalView.el. You probably don't want to call this manually
      * @param element {HTMLElement} The element to render this View in
      * @returns this
      */
@@ -96,12 +99,13 @@ define([
 
 
     /**
+     * @private
      * Sets the content object and optional attachment to be displayed in the content view 
      * @param content {Content} The content to be displayed in the content view by the modal
      * @param opts {Object} The content to be displayed in the content view by the modal
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
      */
-    ModalView.prototype.setFocus = function (content, opts) {
+    ModalView.prototype._setFocus = function (content, opts) {
         opts = opts || {};
         this.modalContentView.setContent(content, opts);
     };
@@ -164,7 +168,7 @@ define([
      */
     ModalView.prototype.show = function(content, options) {
         if (content) {
-            this.setFocus(content, options);
+            this._setFocus(content, options);
         }
 
         if ( ! this._rendered) {

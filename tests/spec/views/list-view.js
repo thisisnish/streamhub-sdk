@@ -65,7 +65,7 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
             });
 
             it('shows the modal when a modal is set on the ListView instance', function () {
-                spyOn(listView.modal, 'setFocus');
+                spyOn(listView.modal, '_setFocus');
                 spyOn(listView.modal, 'show');
 
                 listView.$el.trigger('focusContent.hub', { content: content });

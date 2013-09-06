@@ -57,14 +57,14 @@ define([
 
             it('sets a content instance on the modal content view', function () {
                 var content = new Content({ body: 'what' });
-                modalView.setFocus(content);
+                modalView._setFocus(content);
                 expect(modalView.modalContentView.content).toBe(content);
             });
 
             it('sets the focused attachment on the modal content view', function () {
                 var content = new Content({ body: 'what' });
                 var attachment = new Oembed();
-                modalView.setFocus(content, { attachment: attachment });
+                modalView._setFocus(content, { attachment: attachment });
                 expect(modalView.modalContentView.content).toBe(content);
                 expect(modalView.modalContentView._focusedAttachment).toBe(attachment);
             });
