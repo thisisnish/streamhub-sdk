@@ -73,6 +73,59 @@ define([
 
 
     /**
+     * Makes the modal and its content visible
+     * @param content {Content} The content to be displayed in the content view by the modal
+     * @param opts {Object} The content to be displayed in the content view by the modal
+     * @param opts.attachment {Oembed} The attachment to be focused in the content view
+     */
+    ModalView.prototype.show = function(content, options) {
+        if (content) {
+            this._setFocus(content, options);
+        }
+
+        if ( ! this._rendered) {
+            this.render();
+        }
+
+        // First hide any other modals
+        $.each(ModalView.instances, function (i, modal) {
+            modal.hide();
+        });
+
+        if ( ! this._attached) {
+            this._attach();
+        }
+
+        this.$el.show();
+
+        this.visible = true;
+    };
+
+
+    /**
+     * Makes the modal and its content not visible
+     */
+    ModalView.prototype.hide = function() {
+        this.$el.hide();
+        this._detach();
+        this.visible = false;
+    };
+
+
+    /**
+     * Creates DOM structure of gallery to be displayed
+     */
+    ModalView.prototype.render = function () {
+        View.prototype.render.call(this);
+
+        this.modalContentView.setElement(this.$el.find(this.containerElSelector));
+        this.modalContentView.render(); 
+
+        this._rendered = true;
+    };
+
+
+    /**
      * @private
      * Set the element for the view to render in.
      * ModalView construction takes care of creating its own element in
@@ -130,19 +183,6 @@ define([
 
     /**
      * @private
-     * Creates DOM structure of gallery to be displayed
-     */
-    ModalView.prototype.render = function () {
-        View.prototype.render.call(this);
-
-        this.modalContentView.setElement(this.$el.find(this.containerElSelector));
-        this.modalContentView.render(); 
-
-        this._rendered = true;
-    };
-
-
-    /**
      * Attach .el to the DOM
      */
     ModalView.prototype._attach = function () {
@@ -152,6 +192,7 @@ define([
 
 
     /**
+     * @private
      * Detach .el from the DOM
      * This may be useful when the modal is hidden, so that
      *     the browser doesn't have to lay it out, and it doesn't
@@ -161,43 +202,6 @@ define([
         this.$el.detach();
         this._attached = false;
     }
-
-
-    /**
-     * Makes the modal and its content visible
-     */
-    ModalView.prototype.show = function(content, options) {
-        if (content) {
-            this._setFocus(content, options);
-        }
-
-        if ( ! this._rendered) {
-            this.render();
-        }
-
-        // First hide any other modals
-        $.each(ModalView.instances, function (i, modal) {
-            modal.hide();
-        });
-
-        if ( ! this._attached) {
-            this._attach();
-        }
-
-        this.$el.show();
-
-        this.visible = true;
-    };
-
-
-    /**
-     * Makes the modal and its content not visible
-     */
-    ModalView.prototype.hide = function() {
-        this.$el.hide();
-        this._detach();
-        this.visible = false;
-    };
 
 
     return ModalView;
