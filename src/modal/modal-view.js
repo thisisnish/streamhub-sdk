@@ -22,10 +22,10 @@ define([
         this._rendered = false;
 
         if (opts.createContentView) {
-            this._createModalContentView = opts.createContentView;
+            this._createContentView = opts.createContentView;
         }
 
-        this.modalContentView = this._createModalContentView();
+        this.modalContentView = this._createContentView();
 
         View.call(this);
 
@@ -114,7 +114,7 @@ define([
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
      * @private
      */
-    ModalView.prototype._createModalContentView = function (content, opts) {
+    ModalView.prototype._createContentView = function (content, opts) {
         opts = opts || {};
         var modalContentView = new GalleryAttachmentListView({
             content: content,

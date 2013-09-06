@@ -38,8 +38,8 @@ define([
                 it('is an instance of ModalView', function() {
                     expect(modalView instanceof ModalView).toBe(true);
                 });
-                it('the ._createModalContentView method is the same as opts.createContentView', function() {
-                    expect(modalView._createModalContentView).toBe(myCreateModalContentView);
+                it('the ._createContentView method is the same as opts.createContentView', function() {
+                    expect(modalView._createContentView).toBe(myCreateModalContentView);
                 });
             });
         });
