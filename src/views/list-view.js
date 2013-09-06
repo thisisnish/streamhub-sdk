@@ -29,9 +29,13 @@ function($, View, ContentViewFactory, ModalView, util) {
             self.remove(content);
         });
         $(this.el).on('focusContent.hub', function(e, context) {
-            if (!self.modal) {
-                var contentView = self.getContentView(context.content);
-                //contentView.showAttachmentsGallery(context.attachmentToFocus);
+            var contentView = self.getContentView(context.content);
+            if (! self.modal) {
+                if (contentView &&
+                    contentView.attachmentsView &&
+                    typeof contentView.attachmentsView.focus === 'function') {
+                    contentView.attachmentsView.focus(context.attachmentToFocus)
+                }
                 return;
             }
             self.modal.show(context.content, { attachment: context.attachmentToFocus });

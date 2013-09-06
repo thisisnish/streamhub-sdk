@@ -17,18 +17,6 @@ define([
 	util.inherits(GalleryOnFocusView, View);
 
 
-	GalleryOnFocusView.prototype.setElement = function (element) {
-		var self = this,
-			ret = View.prototype.setElement.apply(this, arguments);
-
-		this.$el.on('focusContent.hub', function (event, context) {
-			return self._onFocusContent(event, context);			
-		});
-
-		return ret;
-	}
-
-
 	GalleryOnFocusView.prototype.render = function () {
 		View.prototype.render.call(this);
 		this._initialView.$el.appendTo(this.$el);
@@ -36,11 +24,14 @@ define([
 	}
 
 
-	GalleryOnFocusView.prototype._onFocusContent = function (event, context) {
+	GalleryOnFocusView.prototype.focus = function (attachment) {
 		if (this._isGallery) {
 			return;
 		}
-		var galleryView = this._createFocusedView(context);
+		var galleryView = this._createFocusedView({
+			content: this._initialView.content,
+			attachmentToFocus: attachment
+		});
 		galleryView.$el.appendTo(this.$el);
 		galleryView.render();
 		this._initialView.$el.hide();
