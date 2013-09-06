@@ -31,8 +31,10 @@ define([
      */
     var ContentViewFactory = function(opts) {
         opts = opts || {};
-        this.attachmentListViewType = opts.attachmentListViewType || TiledAttachmentListView;
         this.contentRegistry = this.contentRegistry.slice(0);
+        if (opts.createAttachmentsView) {
+            this._createAttachmentsView = opts.createAttachmentsView;
+        }
     };
 
     /**
@@ -69,10 +71,17 @@ define([
             } else if (current.viewFunction) {
                 currentType = current.viewFunction(content);
             }
-            var attachmentListView = new this.attachmentListViewType({ content: content });
-            var contentView = new currentType({ content : content, attachmentsView: attachmentListView });
+            var attachmentsView = this._createAttachmentsView(content);
+            var contentView = new currentType({ content : content, attachmentsView: attachmentsView });
             return contentView;
         }
+    };
+
+
+    ContentViewFactory.prototype._createAttachmentsView = function (content) {
+        return new TiledAttachmentListView({
+            content: content
+        });
     };
 
     return ContentViewFactory;
