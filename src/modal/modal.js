@@ -84,20 +84,20 @@ define([
             this._setFocus(content, options);
         }
 
-        if ( ! this._rendered) {
-            this.render();
-        }
-
         // First hide any other modals
         $.each(ModalView.instances, function (i, modal) {
             modal.hide();
         });
 
+        this.$el.show();
+
         if ( ! this._attached) {
             this._attach();
         }
 
-        this.$el.show();
+        if ( ! this._rendered) {
+            this.render();
+        }
 
         this.visible = true;
     };
