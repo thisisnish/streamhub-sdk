@@ -2,7 +2,7 @@ define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/view',
     'streamhub-sdk/content/views/gallery-attachment-list-view',
-    'hgn!streamhub-sdk/modal/templates/modal-view',
+    'hgn!streamhub-sdk/modal/templates/modal',
     'streamhub-sdk/util'
 ], function($, View, GalleryAttachmentListView, ModalTemplate, util) {
 

@@ -4,7 +4,7 @@ define([
     'jasmine-jquery',
     'streamhub-sdk/content/content',
     'streamhub-sdk/content/types/oembed',
-    'streamhub-sdk/modal/modal-view'
+    'streamhub-sdk/modal/modal'
 ], function($, jasmine, jasmineJquery, Content, Oembed, ModalView) {
 
     describe('ModalView', function() {

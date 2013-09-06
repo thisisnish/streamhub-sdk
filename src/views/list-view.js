@@ -2,7 +2,7 @@ define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/view',
     'streamhub-sdk/content/content-view-factory',
-    'streamhub-sdk/modal/modal-view',
+    'streamhub-sdk/modal/modal',
     'streamhub-sdk/util'],
 function($, View, ContentViewFactory, ModalView, util) {
 
