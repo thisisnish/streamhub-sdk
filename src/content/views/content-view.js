@@ -38,7 +38,6 @@ define([
     ContentView.prototype.tooltipElSelector = '.hub-tooltip-link';
     ContentView.prototype.attachmentsElSelector = '.content-attachments';
     ContentView.prototype.tiledAttachmentsElSelector = '.content-attachments-tiled';
-    ContentView.prototype.attachmentsGalleryElSelector = '.content-attachments-interactive-gallery';
     ContentView.prototype.headerElSelector = '.content-header';
     ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
     ContentView.prototype.template = ContentTemplate;
@@ -164,24 +163,6 @@ define([
          */
         this.$el.trigger('removeContentView.hub', this.content);
         this.$el.remove();
-    };
-
-    ContentView.prototype.showAttachmentsGallery = function (attachmentToFocus) {
-        this.$el.find(this.tiledAttachmentsElSelector).hide();
-        var attachmentsGalleryEl = this.$el.find(this.attachmentsGalleryElSelector);
-        var galleryAttachmentListView = new GalleryAttachmentListView({
-            el: attachmentsGalleryEl,
-            content: this.content,
-            attachmentToFocus: attachmentToFocus,
-            userInfo: false,
-            pageCount: false,
-            pageButtons: false,
-            thumbnails: true,
-            proportionalThumbnails: true
-        });
-        galleryAttachmentListView.render();
-        attachmentsGalleryEl.show();
-        this.$el.find(this.headerElSelector).slideUp();
     };
     
     return ContentView;
