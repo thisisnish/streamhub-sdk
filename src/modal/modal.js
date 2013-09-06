@@ -5,6 +5,7 @@ define([
     'hgn!streamhub-sdk/modal/templates/modal',
     'streamhub-sdk/util'
 ], function($, View, GalleryAttachmentListView, ModalTemplate, util) {
+    'use strict';
 
     /**
      * A view that overlays over the entire viewport to display some content
@@ -32,7 +33,7 @@ define([
 
         $(window).keyup(function(e) {
             // Escape
-            if (e.keyCode == 27 && self.visible) {
+            if (e.keyCode === 27 && self.visible) {
                 self.hide();
             }
         });
@@ -53,13 +54,13 @@ define([
 
 
     // A singleton container element houses all modals
-    ModalView.$el = $('<div class="hub-modals"></div>')
+    ModalView.$el = $('<div class="hub-modals"></div>');
     ModalView.el = ModalView.$el[0];
 
     // insert it on domReady
     ModalView.insertEl = function () {
         $('body').append(ModalView.el);
-    }
+    };
     $(document).ready(ModalView.insertEl);
 
 
@@ -119,7 +120,7 @@ define([
         View.prototype.render.call(this);
 
         this.modalContentView.setElement(this.$el.find(this.containerElSelector));
-        this.modalContentView.render(); 
+        this.modalContentView.render();
 
         this._rendered = true;
     };
@@ -188,7 +189,7 @@ define([
     ModalView.prototype._attach = function () {
         this.$el.appendTo(ModalView.$el);
         this._attached = true;
-    }
+    };
 
 
     /**
@@ -201,7 +202,7 @@ define([
     ModalView.prototype._detach = function () {
         this.$el.detach();
         this._attached = false;
-    }
+    };
 
 
     return ModalView;
