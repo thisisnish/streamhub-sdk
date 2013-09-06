@@ -21,6 +21,10 @@ define([
                 it('is an instance of ModalView', function() {
                     expect(modalView instanceof ModalView).toBe(true);
                 });
+
+                it('has a .modalContentView', function () {
+                    expect(modalView.modalContentView).toBeDefined();
+                });
             });
 
             describe('with opts.createContentView', function () {
@@ -51,13 +55,6 @@ define([
                 $('body > .hub-modal').remove();
             });
 
-            it('creates an instance of the modal content view if it does not exist', function () {
-                var content = new Content({ body: 'what' });
-                expect(modalView.modalContentView).toBe(undefined);
-                modalView.setFocus(content);
-                expect(modalView.modalContentView).not.toBe(undefined);
-            });
-
             it('sets a content instance on the modal content view', function () {
                 var content = new Content({ body: 'what' });
                 modalView.setFocus(content);
@@ -86,16 +83,14 @@ define([
                 $('body > .hub-modal').remove();
             });
 
-            it('is appended as a direct child of body element', function() {
-                expect($('body > .hub-modal')).toBe('div');
-            });
-
             it('has a close button', function() {
-                expect($('body > .hub-modal .hub-modal-close')).toBe('div');
+                var $closeButton = modalView.$el.find(modalView.closeButtonSelector);
+                expect($closeButton.length).toBe(1);
             });
 
-            it('has an element to contain the content of the modal', function() {
-                expect($('body > .hub-modal .hub-modal-content')).toBe('div');
+            it('has an element to contain the contentView of the modal', function() {
+                var $contentViewEl = modalView.$el.find(modalView.containerElSelector);
+                expect($contentViewEl.length).toBe(1);
             });
         });
 
@@ -105,12 +100,15 @@ define([
 
             beforeEach(function() {
                 modalView = new ModalView();
-                modalView.render();
+                modalView.show();
             });
 
             afterEach(function() {
                 modalView.hide();
-                $('body > .hub-modal').remove();
+            });
+
+            it('is appended as a direct child of ModalView.el', function() {
+                expect(modalView.$el.parent()).toBe(ModalView.$el);
             });
 
             it('the .visible property is true', function() {
@@ -147,17 +145,15 @@ define([
 
                 beforeEach(function() {
                     modalView = new ModalView();
-                    modalView.render();
                 });
 
                 afterEach(function() {
                     modalView.hide();
-                    $('body > .hub-modal').remove();
                 });
 
                 it('hides the modal', function () {
                     modalView.show();
-                    spyOn(modalView, 'hide');
+                    spyOn(modalView, 'hide').andCallThrough();
                     $(window).trigger($.Event('keyup', { keyCode: 27 }));
                     expect(modalView.hide).toHaveBeenCalled();
                 });
@@ -168,19 +164,17 @@ define([
 
                 beforeEach(function() {
                     modalView = new ModalView();
-                    modalView.render();
                 });
 
                 afterEach(function() {
                     modalView.hide();
-                    $('body > .hub-modal').remove();
                 });
 
                 it('hides the modal', function () {
                     modalView.show();
-                    spyOn(modalView, 'hide');
-                    var closeButtonEl = $('body > .hub-modal .hub-modal-close');
-                    closeButtonEl.trigger('click');
+                    spyOn(modalView, 'hide').andCallThrough();
+                    var $closeButtonEl = modalView.$el.find(modalView.closeButtonSelector);
+                    $closeButtonEl.trigger('click');
                     expect(modalView.hide).toHaveBeenCalled();
                 });
             });

@@ -18,6 +18,7 @@ define([
     var ModalView = function (opts) {
         opts = opts || {};
         this.visible = false;
+        this._attached = false;
         this._rendered = false;
 
         if (opts.createContentView) {
@@ -130,13 +131,32 @@ define([
     ModalView.prototype.render = function () {
         View.prototype.render.call(this);
 
-        this.$el.appendTo(ModalView.$el);
-
         this.modalContentView.setElement(this.$el.find(this.containerElSelector));
         this.modalContentView.render(); 
 
         this._rendered = true;
     };
+
+
+    /**
+     * Attach .el to the DOM
+     */
+    ModalView.prototype._attach = function () {
+        this.$el.appendTo(ModalView.$el);
+        this._attached = true;
+    }
+
+
+    /**
+     * Detach .el from the DOM
+     * This may be useful when the modal is hidden, so that
+     *     the browser doesn't have to lay it out, and it doesn't
+     *     somehow intercept DOM events
+     */
+    ModalView.prototype._detach = function () {
+        this.$el.detach();
+        this._attached = false;
+    }
 
 
     /**
@@ -147,15 +167,21 @@ define([
             this.setFocus(content, options);
         }
 
+        if ( ! this._rendered) {
+            this.render();
+        }
+
         // First hide any other modals
         $.each(ModalView.instances, function (i, modal) {
             modal.hide();
         });
 
-        this.$el.show();
-        if ( ! this._rendered) {
-            this.render();
+        if ( ! this._attached) {
+            this._attach();
         }
+
+        this.$el.show();
+
         this.visible = true;
     };
 
@@ -165,6 +191,7 @@ define([
      */
     ModalView.prototype.hide = function() {
         this.$el.hide();
+        this._detach();
         this.visible = false;
     };
 

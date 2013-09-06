@@ -70,7 +70,6 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
 
                 listView.$el.trigger('focusContent.hub', { content: content });
 
-                expect(listView.modal.setFocus).toHaveBeenCalled();
                 expect(listView.modal.show).toHaveBeenCalled();
             });
 
