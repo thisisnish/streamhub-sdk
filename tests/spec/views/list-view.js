@@ -73,14 +73,14 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView, Stream, Jas
                 expect(listView.modal.show).toHaveBeenCalled();
             });
 
-            it('shows finds the correct ContentView instance and invokes .showAttachmentsGallery when no modal is set on the ListView instance', function () {
+            it('shows finds the correct ContentView instance and invokes .attachmentsView.focus when no modal is set on the ListView instance', function () {
                 listView.modal = false;
                 var targetContentView = listView.getContentView(content);
-                spyOn(targetContentView, 'showAttachmentsGallery');
+                spyOn(targetContentView.attachmentsView, 'focus');
 
                 listView.$el.trigger('focusContent.hub', { content: content });
 
-                expect(targetContentView.showAttachmentsGallery).toHaveBeenCalled();
+                expect(targetContentView.attachmentsView.focus).toHaveBeenCalled();
             });
         });
 
