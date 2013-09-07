@@ -16,6 +16,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
      */
     var AttachmentListView = function(opts) {
         opts = opts || {};
+
         View.call(this, opts);
 
         this.oembedViews = [];
