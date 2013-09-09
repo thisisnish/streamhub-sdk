@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="../lib/jasmine/lib/jasmine-core/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../src/views/css/list-view.css">
-    <link rel="stylesheet" type="text/css" href="../src/content/css/content.css">
+    <link rel="stylesheet" type="text/css" href="/src/css/style.css">
     <style>
     body {
         font-family: sans-serif;
@@ -16,16 +14,8 @@
     #view {
         position:relative;
     }
-    .content, .content[data-content-has-avatar=true] {
-        background-color:white;
-        margin: 10px;
-        padding: 5px;
-        width: 300px;
-        overflow-x: hidden;
-    }
-    .content-attachment > *{
-        max-width: 300px;
-        max-height: 300px;
+    .content {
+        width: 500px;
     }
     #view .content {
       -webkit-transition-duration: 2s;
@@ -50,7 +40,7 @@
         <script src="/streamhub-sdk.min.js" type="text/javascript"></script>
         
         <script type="text/javascript">
-            require(['streamhub-sdk'], function (Hub) {
+            Livefyre.require(['streamhub-sdk'], function (Hub) {
                 var opts = {
                     "network": "labs-t402.fyre.co",
                     "siteId": "303827",
@@ -58,10 +48,12 @@
                     "environment": "t402.livefyre.com"
                 };
                 
-                var view = window.gene = new Hub.Views.MediaWallView({
-                  streams: new Hub.Streams.forCollection(opts).start(),
-                  el: document.getElementById("view")
+                var listView = window.view = new Hub.Views.ListView({
+                    el: document.getElementById("view")
                 });
+
+                var livefyreStreams = window.streamManager = Hub.StreamManager.create.livefyreStreams(opts)
+                livefyreStreams.bind(listView).start();
             });
         </script>
     </body>
