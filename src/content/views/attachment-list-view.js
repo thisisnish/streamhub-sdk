@@ -111,7 +111,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
      * @returns {AttachmentListView} By convention, return this instance for chaining
      */
     AttachmentListView.prototype.add = function(oembed) {
-        var oembedView = this.createOembedView(oembed);
+        var oembedView = this._createOembedView(oembed);
 
         this.oembedViews.push(oembedView);
 
@@ -145,7 +145,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
      * @param oembed {Oembed} A Oembed instance to render in the View
      * @returns {OembedView} 
      */
-    AttachmentListView.prototype.createOembedView = function(oembed) {
+    AttachmentListView.prototype._createOembedView = function(oembed) {
         var oembedView = new OembedView({
             oembed: oembed     
         });

@@ -207,7 +207,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             });
         } else {
             oembedView.$el.appendTo(stackedAttachmentsEl);
-        }  
+        }
 
         return oembedView;
     };
