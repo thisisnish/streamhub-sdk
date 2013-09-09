@@ -87,7 +87,6 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
 
     TiledAttachmentListView.prototype._insert = function (oembedView) {
         var self = this;
-        debugger;
         var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
         var stackedAttachmentsEl = this.$el.find(this.stackedAttachmentsSelector);
         if (this.isTileableAttachment(oembedView.oembed)) {
