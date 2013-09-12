@@ -50,13 +50,26 @@ ContentView, More, ShowMoreButton, ListViewTemplate) {
 
     ListView.prototype.template = ListViewTemplate;
 
+    /**
+     * Class property to add to ListView instances' .el
+     */
     ListView.prototype.elClass = 'streamhub-list-view';
 
+    /**
+     * Selector of .el child that contentViews should be inserted into
+     */
     ListView.prototype.listElSelector = '.content-list';
+    /**
+     * Selector of .el child in which to render a show more button
+     */
     ListView.prototype.showMoreElSelector = '.content-list-more';
 
 
-    ListView.prototype.setElement = function () {
+    /**
+     * Set the element that this ListView renders in
+     * @param element {HTMLElement} The element to render the ListView in
+     */
+    ListView.prototype.setElement = function (element) {
         var self = this;
         View.prototype.setElement.apply(this, arguments);
 
@@ -85,6 +98,9 @@ ContentView, More, ShowMoreButton, ListViewTemplate) {
     };
 
 
+    /**
+     * Render the ListView in its .el, and call .setElement on any subviews
+     */
     ListView.prototype.render = function () {
         View.prototype.render.call(this);
         this.$listEl = this.$el.find(this.listElSelector);
@@ -95,7 +111,11 @@ ContentView, More, ShowMoreButton, ListViewTemplate) {
 
 
     /**
-     * Called automatically by the Writable base class
+     * @private
+     * Called automatically by the Writable base class when .write() is called
+     * @param content {Content} Content to display in the ListView
+     * @param requestMore {function} A function to call when done writing, so
+     *     that _write will be called again with more data
      */
     ListView.prototype._write = function (content, requestMore) {
         this.add(content);
@@ -118,12 +138,19 @@ ContentView, More, ShowMoreButton, ListViewTemplate) {
     };
 
 
+    /**
+     * @private
+     * Create a ShowMoreButton view to be used if one is not passed as
+     *     opts.showMoreButton on construction
+     * @return {ShowMoreButton}
+     */
     ListView.prototype._createShowMoreButton = function (opts) {
         return new ShowMoreButton();
     };
 
 
     /**
+     * @private
      * Comparator function to determine ordering of ContentViews.
      * ContentView elements indexes in this.el will be ordered by this
      * By default, order on contentView.content.createdAt or contentView.createdAt
@@ -202,7 +229,7 @@ ContentView, More, ShowMoreButton, ListViewTemplate) {
         if (! contentView) {
             return false;
         }
-        
+
         // Remove from DOM
         this._extract(contentView);
 
