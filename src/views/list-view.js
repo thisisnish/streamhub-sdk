@@ -102,10 +102,23 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, util) {
         if (! contentView) {
             return false;
         }
-        contentView.$el.remove();
+        
+        // Remove from DOM
+        this._extract(contentView);
+
         // Remove from this.contentViews[]
         this.contentViews.splice(this.contentViews.indexOf(contentView), 1);
         return true;
+    };
+
+
+    /**
+     * @private
+     * Remove a contentView from the DOM. Called by .remove();
+     * @param contentView {ContentView} The ContentView to remove from the DOM
+     */
+    ListView.prototype._extract = function (contentView) {
+        contentView.$el.remove();
     };
 
 
