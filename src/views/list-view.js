@@ -78,6 +78,13 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, util) {
         contentView = this.createContentView(content);
         contentView.render();
 
+        // Push and sort. #TODO Insert in sorted order
+        if (this.contentViews.indexOf(contentView) === -1) {
+            this.contentViews.push(contentView);
+        }
+
+        this.contentViews.sort(this.comparator);
+
         // Add to DOM
         this._insert(contentView);
 
@@ -110,12 +117,6 @@ function($, View, ContentViewFactory, AttachmentGalleryModal, util) {
     ListView.prototype._insert = function (contentView) {
         var newContentViewIndex,
             $previousEl;
-
-        // Push and sort. #TODO Insert in sorted order
-        if (this.contentViews.indexOf(contentView) === -1) {
-            this.contentViews.push(contentView);
-        }
-        this.contentViews.sort(this.comparator);
 
         newContentViewIndex = this.contentViews.indexOf(contentView);
 
