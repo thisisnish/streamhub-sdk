@@ -4,7 +4,7 @@ define([
     'streamhub-sdk/content/content',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/streams/livefyre-reverse-stream',
-    'json!tests/mocks/bootstrap-data.json',
+    'json!streamhub-sdk-tests/mocks/bootstrap-data.json',
     'streamhub-sdk/util'
 ], function ($, Stream, Content, LivefyreContent, LivefyreReverseStream, fixture, util) {
 
