@@ -87,7 +87,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
                 self._insert(oembedView);
             }
         });
-    }
+    };
 
     /**
      * A count of the number of attachments for this content item
@@ -148,7 +148,7 @@ function($, View, OembedView, AttachmentListTemplate, util) {
      */
     AttachmentListView.prototype._createOembedView = function(oembed) {
         var oembedView = new OembedView({
-            oembed: oembed     
+            oembed: oembed
         });
         return oembedView;
     };
@@ -160,7 +160,6 @@ function($, View, OembedView, AttachmentListTemplate, util) {
      * @returns {OembedView | null} The oembedView for the content, or null.
      */
     AttachmentListView.prototype.getOembedView = function (newOembed) {
-        var existingOembedView;
         for (var i=0; i < this.oembedViews.length; i++) {
             var oembedView = this.oembedViews[i];
             if ((newOembed === oembedView.oembed) || (newOembed.id && oembedView.oembed.id === newOembed.id)) {

@@ -25,7 +25,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * @constructor
      */
     var ListView = function(opts) {
-        var self = this;
         opts = opts || {};
 
         View.call(this, opts);
@@ -90,7 +89,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
                 if (contentView &&
                     contentView.attachmentsView &&
                     typeof contentView.attachmentsView.focus === 'function') {
-                    contentView.attachmentsView.focus(context.attachmentToFocus)
+                    contentView.attachmentsView.focus(context.attachmentToFocus);
                 }
                 return;
             }
@@ -179,6 +178,8 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
     ListView.prototype.add = function(content) {
         var contentView = this.getContentView(content);
 
+        log("add", content);
+
         if (contentView) {
             return contentView;
         }
@@ -217,7 +218,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
             numToShow = this._moreAmount;
         }
         this.more.setGoal(numToShow);
-    }
+    };
 
 
     /**
@@ -279,7 +280,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * @returns {ContentView | null} The contentView for the content, or null.
      */
     ListView.prototype.getContentView = function (newContent) {
-        var existingContentView;
         for (var i=0; i < this.contentViews.length; i++) {
             var contentView = this.contentViews[i];
             if ((newContent === contentView.content) || (newContent.id && contentView.content.id === newContent.id)) {
