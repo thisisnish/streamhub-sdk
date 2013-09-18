@@ -25,7 +25,7 @@ define([
 
 
 	GalleryOnFocusView.prototype.focus = function (attachment) {
-		if (this._isGallery) {
+		if (this._isGallery || attachment.type !== 'photo' || attachment.type !== 'video') {
 			return;
 		}
 		var galleryView = this._createFocusedView({
