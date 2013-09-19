@@ -14,7 +14,7 @@
     'streamhub-sdk/modal'
   ],
   stubModules: ['text', 'hgn', 'json'],
-  out: "streamhub-sdk.min.js",
+  out: "../dist/streamhub-sdk.min.js",
   namespace: 'Livefyre',
   pragmasOnSave: {
     excludeHogan: true
