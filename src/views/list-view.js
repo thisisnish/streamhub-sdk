@@ -10,7 +10,7 @@ define([
     'streamhub-sdk/streams/more',
     'streamhub-sdk/views/show-more-button',
     'hgn!streamhub-sdk/views/templates/list-view'],
-function($, View, ContentViewFactory, ModalView, inherits, debug, Writable,
+function($, View, ContentViewFactory, AttachmentGalleryModal, inherits, debug, Writable,
 ContentView, More, ShowMoreButton, ListViewTemplate) {
 
     var log = debug('streamhub-sdk/views/list-view');
