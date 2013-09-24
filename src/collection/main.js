@@ -21,6 +21,7 @@ LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
      */
     var Collection = function (opts) {
         opts = opts || {};
+        this.id = opts.id;
         this.network = opts.network;
         this.siteId = opts.siteId;
         this.articleId = opts.articleId;

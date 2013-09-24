@@ -24,6 +24,13 @@ CollectionWriter, ListView, Content, Auth, Writable, Readable) {
             });
             expect(collection._writer).toBe(writer);
         });
+        it('can be passed opts.id on construction', function () {
+            var myId = '1234';
+            var collection = new Collection({
+                id: myId
+            });
+            expect(collection.id).toBe(myId);
+        });
         describe('instance', function () {
             var opts,
                 collection,
