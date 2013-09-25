@@ -3,7 +3,7 @@ define([
     'jasmine',
     'jasmine-jquery',
     'streamhub-sdk/util',
-    'streamhub-sdk/content/content',
+    'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/content/views/tiled-attachment-list-view'],

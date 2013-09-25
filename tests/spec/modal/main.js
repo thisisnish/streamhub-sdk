@@ -2,7 +2,7 @@ define([
     'streamhub-sdk/jquery',
     'jasmine',
     'jasmine-jquery',
-    'streamhub-sdk/content/content',
+    'streamhub-sdk/content',
     'streamhub-sdk/content/types/oembed',
     'streamhub-sdk/modal',
     'streamhub-sdk/content/views/gallery-attachment-list-view'

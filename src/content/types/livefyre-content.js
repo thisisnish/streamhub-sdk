@@ -1,4 +1,4 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/content/content', 'inherits'], function($, Content, inherits) {
+define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($, Content, inherits) {
     'use strict';
 
     /**

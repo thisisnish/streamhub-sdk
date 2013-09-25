@@ -1,7 +1,7 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/stream',
-    'streamhub-sdk/content/content',
+    'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-content'
 ], function ($, Stream, Content, LivefyreContent) {
 

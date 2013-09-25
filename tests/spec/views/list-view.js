@@ -3,7 +3,7 @@ define([
     'jasmine-jquery',
     'streamhub-sdk/jquery',
     'streamhub-sdk/views/list-view',
-    'streamhub-sdk/content/content',
+    'streamhub-sdk/content',
     'streamhub-sdk/content/views/content-view'],
 function (jasmine, jasminejquery, $, ListView, Content, ContentView) {
     'use strict';

@@ -5,7 +5,7 @@ define([
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
     'streamhub-sdk/views/list-view',
-    'streamhub-sdk/content/content',
+    'streamhub-sdk/content',
     'streamhub-sdk/auth',
     'stream/writable',
     'stream/readable'

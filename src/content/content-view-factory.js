@@ -1,5 +1,5 @@
 define([
-    'streamhub-sdk/content/content',
+    'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/types/livefyre-twitter-content',
     'streamhub-sdk/content/types/livefyre-facebook-content',
@@ -29,7 +29,7 @@ define([
 
     /**
      * A module to create instances of ContentView for a given Content instance.
-     * @exports streamhub-sdk/content/content-view-factory
+     * @exports streamhub-sdk/content-view-factory
      * @constructor
      */
     var ContentViewFactory = function(opts) {

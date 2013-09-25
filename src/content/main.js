@@ -11,7 +11,7 @@ define([
      *     If an object, it should have a .body property
      * @fires Content#attachment
      * @fires Content#removeAttachment
-     * @exports streamhub-sdk/content/content
+     * @exports streamhub-sdk/content
      * @constructor
      */
     var Content = function(bodyOrObj) {

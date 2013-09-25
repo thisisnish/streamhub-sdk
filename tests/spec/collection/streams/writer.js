@@ -1,6 +1,6 @@
 define([
 	'jasmine',
-	'streamhub-sdk/content/content',
+	'streamhub-sdk/content',
 	'streamhub-sdk/collection/streams/writer',
 	'streamhub-sdk-tests/mocks/collection/mock-collection',
 	'streamhub-sdk-tests/mocks/collection/clients/mock-write-client',
