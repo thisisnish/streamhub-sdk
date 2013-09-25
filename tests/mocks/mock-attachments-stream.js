@@ -1,7 +1,7 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/content/state-to-content',
-    'json!tests/mocks/bootstrap-data.json',
+    'json!streamhub-sdk-tests/mocks/bootstrap-data.json',
     'stream/readable',
     'inherits'
 ], function ($, StateToContent, fixture, Readable, inherits) {
