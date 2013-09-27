@@ -64,42 +64,6 @@ Then check out [http://localhost:8080/examples/listview](http://localhost:8080/e
 
 The full jsdoc documentation can be found at http://livefyre.github.io/streamhub-sdk
 
-## Content
-
-`streamhub-sdk/content/content` provides a structured base class to represent any Content on the web. Content must only have a `.body`, which is an HTML string.
-
-    var content = new Content('<p>Hello, world!</p>');
-    c.body; // '<p>Hello, world!</p>';
-
-Content can also have the following properties:
-
-* more Content instances in its Array of `.replies`
-* `streamhub-sdk/content/types/oembed` instances in an array of `.attachments`
-* an `.author` object
-
-Along with the Content base class, this SDK is bundled with:
-
-* `streamhub-sdk/content/types/livefyre-content`: Content sourced from Livefyre StreamHub
-* `streamhub-sdk/content/types/livefyre-twitter-content`: Tweets sourced from Livefyre StreamHub
-* `streamhub-sdk/content/types/livefyre-facebook-content`: Facebook posts sourced from Livefyre StreamHub
-* `streamhub-sdk/content/types/livefyre-oembed`: oEmbed Content sourced from Livefyre StreamHub
-
-### ContentViews
-
-Usually you will want to render Content in a DOMElement using a `streamhub-sdk/content/views/content-view`.
-
-    var contentView = new ContentView({
-        content: new Content('<p>Hello, world!</p>'),
-        el: document.getElementById('example')
-    });
-
-By default, this will render Content using the included `hgn!streamhub-sdk/content/templates/content.mustache` template to show the author's avatar and name with the content `.body` and any `.attachments`.
-
-These other ContentViews are also included:
-
-* `streamhub-sdk/content/views/twitter-content-view`, a ContentView subclass for rendering tweets. This includes the twitter logo and the default template includes twitter's @anywhere intents for viewing the author's twitter profile as well as replying, retweeting, and favoriting the tweet.
-* `streamhub-sdk/content/views/facebook-content-view`, which renders Content with a Facebook logo  
-
 ## Streams
 
 Streams provide a standard interface to remote sources of Content, and behave like [node.js streams3](http://nodejs.org/api/stream.html#stream_compatibility).
@@ -159,21 +123,75 @@ Create a new writer manually
 	writer.write(new Content('Foo!'));
 
 
-## Views
+## ListViews
 
-Views can render a Stream of Content into ContentViews to create real-time social Content experiences.
+ListViews can render a Stream of Content into ContentViews to create real-time social Content experiences.
 
-`streamhub-sdk/views/list-view` provides a basic view that will render a Stream of Content as an unordered list.
+`streamhub-sdk/views/list-view` provides a basic view that will render a Stream of Content as an unordered list. ListViews are subclasses of `stream/writable`, so they can be written and piped to.
 
     var view = new ListView({
-        el: document.getElementById('example');
+        el: document.getElementById('example')
     });
 
-    view.add(new Content('<p>Hello</p>'));
+    view.write(new Content('<p>Hello</p>'));
 
-Views should implement a `.add(content)` method so they can be used with StreamManager's `.bind()`.
+ListViews also have a `.more` property that is a `stream/transform`, and any streams piped to it will be throttled behind a "Show More" button. Piping a `streamhub-sdk/collection` to a ListView automatically pipes an archive to `.more`.
 
-    streamManager.bind(view).start();
+Thus this:
+
+    collection.pipe(view);
+
+Is equivalent to:
+
+    collection.createUpdater().pipe(view);
+    collection.createArhcive().pipe(view.more);
+
+You can configure the "Show More" behavior of ListViews:
+
+    var view = new ListView({
+    	// Number of initial items to display
+        initial: 50,
+        // Number of items to load when the
+        // 'Show More' button is clicked
+        showMore: 50
+    });
+
+## Content
+
+`streamhub-sdk/content/content` provides a structured base class to represent any Content on the web. Content must only have a `.body`, which is an HTML string.
+
+    var content = new Content('<p>Hello, world!</p>');
+    c.body; // '<p>Hello, world!</p>';
+
+Content can also have the following properties:
+
+* more Content instances in its Array of `.replies`
+* `streamhub-sdk/content/types/oembed` instances in an array of `.attachments`
+* an `.author` object
+
+Along with the Content base class, this SDK is bundled with:
+
+* `streamhub-sdk/content/types/livefyre-content`: Content sourced from Livefyre StreamHub
+* `streamhub-sdk/content/types/livefyre-twitter-content`: Tweets sourced from Livefyre StreamHub
+* `streamhub-sdk/content/types/livefyre-facebook-content`: Facebook posts sourced from Livefyre StreamHub
+* `streamhub-sdk/content/types/livefyre-oembed`: oEmbed Content sourced from Livefyre StreamHub
+
+### ContentViews
+
+Usually you will want to render Content in a DOMElement using a `streamhub-sdk/content/views/content-view`.
+
+    var contentView = new ContentView({
+        content: new Content('<p>Hello, world!</p>'),
+        el: document.getElementById('example')
+    });
+
+By default, this will render Content using the included `hgn!streamhub-sdk/content/templates/content.mustache` template to show the author's avatar and name with the content `.body` and any `.attachments`.
+
+These other ContentViews are also included:
+
+* `streamhub-sdk/content/views/twitter-content-view`, a ContentView subclass for rendering tweets. This includes the twitter logo and the default template includes twitter's @anywhere intents for viewing the author's twitter profile as well as replying, retweeting, and favoriting the tweet.
+* `streamhub-sdk/content/views/facebook-content-view`, which renders Content with a Facebook logo.
+
 
 ## CSS
 
@@ -181,4 +199,5 @@ The following CSS files are included as good defaults for your embedded Content 
 
 * `src/content/css/content.less`: CSS for ContentViews
 * `src/views/css/list-view.less`: CSS for ListViews
+* `src/css/style.less`: All SDK CSS (bundles the above)
 
