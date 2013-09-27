@@ -6,19 +6,25 @@ SDK to stream Content from Livefyre's StreamHub platform, create Views to render
 
 To render Content from a StreamHub Collection as a list
 
-    var opts = {
-        "network": "labs-t402.fyre.co",
-        "siteId": "303827",
-        "articleId": "labs_demo_fire",
-        "environment": "t402.livefyre.com"
-    };
+    require([
+    	'streamhub-sdk/collection',
+    	'streamhub-sdk/views/list-view'],
+    function (Collection, ListView) {
     
-    var listView = new ListView({
-        el: document.getElementById("listView")
+	    var collection = new Collection({
+	        "network": "labs-t402.fyre.co",
+	        "siteId": "303827",
+	        "articleId": "xbox-0",
+	        "environment": "t402.livefyre.com"
+	    });
+	    
+	    var listView = new ListView({
+	        el: document.getElementById("listView")
+	    });
+	
+	    collection.pipe(listView);
+	
     });
-
-    var livefyreStreams = Hub.StreamManager.create.livefyreStreams(opts)
-    livefyreStreams.bind(listView).start();
 
 ## Getting Started
 
@@ -32,9 +38,9 @@ To include it in your page from the CDN, add a script tag to your HTML file.
 
 You can also include the default stylesheet
 
-    <link rel="stylesheet" href="http://cdn.livefyre.com/libs/sdk/v1.1.0/streamhub-sdk.gz.css" />
+    <link rel="stylesheet" href="http://cdn.livefyre.com/libs/sdk/v2.0.0-beta.2/builds/251/streamhub-sdk.min.js" />
 
-See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/12/
+See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/13/
 
 ### Local Development
 
@@ -96,49 +102,62 @@ These other ContentViews are also included:
 
 ## Streams
 
-Streams provide a standard interface to remote sources of Content, and behave like [node.js streams2](http://nodejs.org/api/stream.html#stream_compatibility).
+Streams provide a standard interface to remote sources of Content, and behave like [node.js streams3](http://nodejs.org/api/stream.html#stream_compatibility).
 
+The browser-compatible Stream interface is provided by [Livefyre/stream](https://github.com/livefyre/stream)
+
+	// ad-hoc reading from a stream/readable
     stream.on('readable', function () {
         var content = stream.read();
-        content instanceof require('streamhub-sdk/content/content'); //true
-    }).start();
-
-Livefyre StreamHub is a great source of Content, so this SDK includes two Stream subclasses to stream Content from StreamHub:
-
-* `streamhub-sdk/streams/livefyre-stream`: Stream new, real-time Content in a Livefyre Collection
-* `streamhub-sdk/streams/livefyre-reverse-stream`: Stream content from a Livefyre Collection in reverse-chronological order. Useful to load older Content in views of a Collection.
-
-## StreamManager
-
-`streamhub-sdk/stream-manager` exports a StreamManager constructor, instances of which can be used to `.start()` and otherwise manage multiple Streams at once.
-
-    var streamManager = new StreamManager({
-        main: new MockStream(),
-        reverse: new MockStream()
-    }).start();
-
-StreamManagers emit a 'readable' event whenever a stream that it manages is readable, and the readable stream is passed to the event listener.
-
-    streamManager.on('readable', function (stream) {
-        var content = stream.read();
+        content instanceof require('streamhub-sdk/content'); //true
     });
+    
+    // Or if sending to a stream/writable
+    stream.pipe(writable);
 
-StreamManagers can also be bound to Views, and the StreamManager will automatically read from its streams and `.add` the Content to any bound Views.
+## Collections    
 
-    streamManager.bind({
-        add: function (content) {
-            // Called when there's new Content in streamManager's Streams
-        }
-    });
+Livefyre StreamHub Collections are a great source of Content, so this SDK includes Stream subclasses for reading historical Content from Collections and accessing any new Live Updates
 
-`StreamManager.create` provides an extension point for helpers to register methods that will create StreamManagers. `streamhub-sdk/stream-helpers/livefyre-helper` is one such helper and will return a StreamManager managing a LivefyreStream and LivefyreReverseStream for a StreamHub Collection.
+* `streamhub-sdk/collection`: Readable, will emit any new Content added to the Collection in real-time.
+    * If piped to a Writable whose `.more` property is also a Writable (like `streamhub-sdk/views/list-view`), the Collection archive will be piped to `.more`. This sets up 'show more' behavior.
+* `streamhub-sdk/collection/streams/updater`: Readable, streams real-time updates to a Collection.
+* `streamhub-sdk/collection/streams/archive`: Readable, streams historical Content threads in a Collection in descending chronological order
+* `streamhub-sdk/collection/streams/writer`: Writable, written Content will be posted to the Collection
 
-    var livefyreStreamManager = StreamManager.create.livefyreStreams({
-        "network": "labs-t402.fyre.co",
-        "siteId": "303827",
-        "articleId": "labs_demo_fire",
-        "environment": "t402.livefyre.com"
-    });
+Create a Collection
+
+    var collection = new Collection({
+	    "network": "labs-t402.fyre.co",
+	    "siteId": "303827",
+	    "articleId": "xbox-0",
+	    "environment": "t402.livefyre.com"
+	});
+	
+Send real-time updates
+
+	collection.pipe(writable);
+
+Create a new real-time updater manually
+
+	var updater = collection.createUpdater();
+	updater.pipe(writable);
+	
+Create a new archive Stream (historic Content)
+
+	var archive = collection.createArchive();
+	archive.pipe(writable);
+
+Post Content
+
+	require('streamhub-sdk/auth').setToken('lftoken');
+	collection.write(new Content('Foo!'))
+	
+Create a new writer manually
+
+	var writer = collection.createWriter();
+	writer.write(new Content('Foo!'));
+
 
 ## Views
 
