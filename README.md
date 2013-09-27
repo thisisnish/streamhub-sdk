@@ -56,10 +56,6 @@ Run a web server for the project
 
 Then check out [http://localhost:8080/examples/listview](http://localhost:8080/examples/listview) for an example of `streamhub-sdk/views/list-view`
 
-## Design Overview
-
-![streamhub-sdk block diagram](https://drive.google.com/uc?id=0BwAX440-rUypOFJfVU1LTElZUUU "streamhub-sdk block diagram")
-
 ## API Documentation
 
 The full jsdoc documentation can be found at http://livefyre.github.io/streamhub-sdk
