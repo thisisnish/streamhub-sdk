@@ -105,7 +105,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * @param b {view}
      * @returns {Number} < 0 if a before b, 0 if same ordering, > 0 if b before a
      */
-    ListView.prototype.comparator = null
+    ListView.prototype.comparator = null;
 
 
     /**
