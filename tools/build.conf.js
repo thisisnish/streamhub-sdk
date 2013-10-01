@@ -9,6 +9,8 @@
   include: [
     'almond',
     'streamhub-sdk/collection',
+    'streamhub-sdk/content',
+    'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/views/list-view',
     'streamhub-sdk/auth',
     'streamhub-sdk/modal'
