@@ -27,38 +27,18 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
     var ContentListView = function(opts) {
         opts = opts || {};
 
-        this._moreAmount = opts.showMore || 50;
-        this.more = opts.more || this._createMoreStream(opts);
-        this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
-        this.showMoreButton.setMoreStream(this.more);
-
         this.modal = opts.modal === undefined ? new AttachmentGalleryModal() : opts.modal;
         this.contentViewFactory = new ContentViewFactory();
 
         ListView.call(this, opts);
-
-        this.more.pipe(this, { end: false });
     };
 
     inherits(ContentListView, ListView);
 
-
-    ContentListView.prototype.template = ContentListViewTemplate;
-
     /**
      * Class property to add to ListView instances' .el
      */
-    ContentListView.prototype.elClass += ' streamhub-list-view';
-
-    /**
-     * Selector of .el child that contentViews should be inserted into
-     */
-    ContentListView.prototype.listElSelector = '.content-list';
-    /**
-     * Selector of .el child in which to render a show more button
-     */
-    ContentListView.prototype.showMoreElSelector = '.content-list-more';
-
+    ContentListView.prototype.elClass += ' streamhub-content-list-view';
 
     /**
      * Set the element that this ContentListView renders in
@@ -67,11 +47,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
     ContentListView.prototype.setElement = function (element) {
         var self = this;
         ListView.prototype.setElement.apply(this, arguments);
-
-        // .showMoreButton will trigger showMore.hub when it is clicked
-        this.$el.on('showMore.hub', function () {
-            self.showMore();
-        });
 
         this.$el.on('removeContentView.hub', function(e, content) {
             self.remove(content);
@@ -88,44 +63,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
             }
             self.modal.show(context.content, { attachment: context.attachmentToFocus });
         });
-    };
-
-
-    /**
-     * Render the ContentListView in its .el, and call .setElement on any subviews
-     */
-    ContentListView.prototype.render = function () {
-        ListView.prototype.render.call(this);
-        this.$listEl = this.$el.find(this.listElSelector);
-
-        this.showMoreButton.setElement(this.$el.find(this.showMoreElSelector));
-        this.showMoreButton.render();
-    };
-
-
-    /**
-     * @private
-     * Create a Stream that extra content can be written into.
-     * This will be used if an opts.moreBuffer is not provided on construction.
-     * By default, this creates a streamhub-sdk/views/streams/more
-     */
-    ContentListView.prototype._createMoreStream = function (opts) {
-        opts = opts || {};
-        return new More({
-            highWaterMark: 0,
-            goal: opts.initial || 50
-        });
-    };
-
-
-    /**
-     * @private
-     * Create a ShowMoreButton view to be used if one is not passed as
-     *     opts.showMoreButton on construction
-     * @return {ShowMoreButton}
-     */
-    ContentListView.prototype._createShowMoreButton = function (opts) {
-        return new ShowMoreButton();
     };
 
 
@@ -167,22 +104,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         contentView = this.createContentView(content);
 
         return ListView.prototype.add.call(this, contentView);
-    };
-
-
-    /**
-     * Show More content.
-     * ContentListView keeps track of an internal ._newContentGoal
-     *     which is how many more items he wishes he had.
-     *     This increases that goal and marks the Writable
-     *     side of ContentListView as ready for more writes.
-     * @param numToShow {number} The number of items to try to add
-     */
-    ContentListView.prototype.showMore = function (numToShow) {
-        if (typeof numToShow === 'undefined') {
-            numToShow = this._moreAmount;
-        }
-        this.more.setGoal(numToShow);
     };
 
 

@@ -31,16 +31,56 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
 
         View.call(this, opts);
         Writable.call(this, opts);
+
+        this._moreAmount = opts.showMore || 50;
+        this.more = opts.more || this._createMoreStream(opts);
+        this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
+        this.showMoreButton.setMoreStream(this.more);
+
         this.render();
+
+        this._pipeMore();
     };
 
     inherits(ListView, View);
     inherits.parasitically(ListView, Writable);
 
 
+    ListView.prototype.template = ListViewTemplate;
+
+
+    /**
+     * Selector of .el child that contentViews should be inserted into
+     */
+    ListView.prototype.listElSelector = '.hub-list';
+
+
+    /**
+     * Selector of .el child in which to render a show more button
+     */
+    ListView.prototype.showMoreElSelector = '.hub-list-more';
+
+
     ListView.prototype.setElement = function (element) {
+        var self = this;
         View.prototype.setElement.apply(this, arguments);
         this.$listEl = this.$el;
+        // .showMoreButton will trigger showMore.hub when it is clicked
+        this.$el.on('showMore.hub', function () {
+            self.showMore();
+        });
+    };
+
+
+    /**
+     * Render the ListView in its .el, and call .setElement on any subviews
+     */
+    ListView.prototype.render = function () {
+        View.prototype.render.call(this);
+        this.$listEl = this.$el.find(this.listElSelector);
+
+        this.showMoreButton.setElement(this.$el.find(this.showMoreElSelector));
+        this.showMoreButton.render();
     };
 
 
@@ -150,6 +190,65 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
             $previousEl = this.views[newContentViewIndex - 1].$el;
             view.$el.insertAfter($previousEl);
         }
+    };
+
+
+    /**
+     * Show More content.
+     * ContentListView keeps track of an internal ._newContentGoal
+     *     which is how many more items he wishes he had.
+     *     This increases that goal and marks the Writable
+     *     side of ContentListView as ready for more writes.
+     * @param numToShow {number} The number of items to try to add
+     */
+    ListView.prototype.showMore = function (numToShow) {
+        if (typeof numToShow === 'undefined') {
+            numToShow = this._moreAmount;
+        }
+        this.more.setGoal(numToShow);
+    };
+
+
+    /**
+     * @private
+     * Create a Stream that extra content can be written into.
+     * This will be used if an opts.moreBuffer is not provided on construction.
+     * By default, this creates a streamhub-sdk/views/streams/more
+     */
+    ListView.prototype._createMoreStream = function (opts) {
+        opts = opts || {};
+        return new More({
+            highWaterMark: 0,
+            goal: opts.initial || 50
+        });
+    };
+
+
+    /**
+     * @private
+     * Create a ShowMoreButton view to be used if one is not passed as
+     *     opts.showMoreButton on construction
+     * @return {ShowMoreButton}
+     */
+    ListView.prototype._createShowMoreButton = function (opts) {
+        return new ShowMoreButton();
+    };
+
+
+    /**
+     * @private
+     * Register listeners to the .more stream so that the items
+     * it reads out go somewhere useful.
+     * By default, this .add()s the items
+     */
+    ListView.prototype._pipeMore = function () {
+        var self = this;
+        this.more.on('readable', function () {
+            var content;
+            while (content = self.more.read()) {
+                self.add(content);
+            }
+        });
     };
 
 

@@ -63,7 +63,7 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView) {
 
             it('adds class .streamhub-list-view', function () {
                 listView.setElement(newElement);
-                expect($(newElement)).toHaveClass('streamhub-list-view');
+                expect($(newElement)).toHaveClass('streamhub-content-list-view');
             });
         });
 
