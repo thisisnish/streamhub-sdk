@@ -14,7 +14,7 @@ function($, ListView, ContentViewFactory, AttachmentGalleryModal, inherits,
 debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
     'use strict';
 
-    var log = debug('streamhub-sdk/views/list-view');
+    var log = debug('streamhub-sdk/content/views/content-list-view');
 
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
