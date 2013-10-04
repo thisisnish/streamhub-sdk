@@ -33,9 +33,10 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         Writable.call(this, opts);
 
         this._moreAmount = opts.showMore || 50;
-        this.more = opts.more || this._createMoreStream(opts);
+        this.more = opts.more || this._createMoreStream({ initial: 3 });
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
+        this._pipeMore = opts.pipeMore ? opts.pipeMore : this._pipeMore;
 
         this.render();
 
@@ -172,9 +173,10 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
 
 
     /**
+     * @private
      * Insert a contentView into the ListView's .el
      * Get insertion index based on this.comparator
-     * @private
+     * @param contentView {ContentView} The ContentView's element to insert to the DOM
      */
     ListView.prototype._insert = function (view) {
         var newContentViewIndex,
