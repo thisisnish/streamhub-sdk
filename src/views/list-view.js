@@ -33,7 +33,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         Writable.call(this, opts);
 
         this._moreAmount = opts.showMore || 50;
-        this.more = opts.more || this._createMoreStream({ initial: 3 });
+        this.more = opts.more || this._createMoreStream(opts);
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
         this._pipeMore = opts.pipeMore ? opts.pipeMore : this._pipeMore;
