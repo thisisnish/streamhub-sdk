@@ -182,6 +182,23 @@ CollectionWriter, ContentListView, Content, Auth, Writable, Readable) {
                 });
             });
 
+            describe('.createFeatured', function () {
+                it('returns a readable CollectionFeatured Stream', function () {
+                    var featuredStream = collection.createFeatured();
+                    expect(featuredStream instanceof Readable).toBe(true);
+                    var onReadable = jasmine.createSpy('on readable');
+                    featuredStream.on('readable', onReadable);
+                    waitsFor(function () {
+                        return onReadable.callCount;
+                    });
+                    runs(function () {
+                        var content = featuredStream.read();
+                        expect(content instanceof Content).toBe(true);
+                        expect(content.isFeatured()).toBe(true);
+                    });
+                });
+            });
+
             describe('.pipe(writable)', function () {
                 var writable,
                     listView;

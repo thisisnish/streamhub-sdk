@@ -64,5 +64,11 @@ function ($, jasmine, LivefyreContent) {
             expect(content.replies.length).toBe(1);
         });
 
+        describe('.isFeatured()', function () {
+            it('is a method on LivefyreContent', function () {
+                expect(content.isFeatured).toEqual(jasmine.any(Function));
+            });
+        });
+
     });
 });

@@ -67,6 +67,14 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
     };
 
     /**
+     * Return whether this Content is featured in a StreamHub Collection
+     * @return {boolean}
+     */
+    LivefyreContent.prototype.isFeatured = function () {
+        return false;
+    };
+
+    /**
      * The set of sources as defined by Livefyre's Stream API
      */
     LivefyreContent.SOURCES = [
