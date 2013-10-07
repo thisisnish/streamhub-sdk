@@ -23,6 +23,7 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
         this.visibility = json.vis;
         this.parentId = json.content.parentId;
         this.meta = json;
+        this._annotations = json.content.annotations;
     };
     inherits(LivefyreContent, Content);
 
@@ -71,7 +72,8 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      * @return {boolean}
      */
     LivefyreContent.prototype.isFeatured = function () {
-        return false;
+        var featuredAnnotation = this._annotations && this._annotations.featuredmessage;
+        return Boolean(featuredAnnotation);
     };
 
     /**
