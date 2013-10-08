@@ -27,7 +27,6 @@ define([
         var self = this;
         var content = Object.create(this.mocks[Math.floor(Math.random() * this.mocks.length)]);
         content.id = (new Date().getTime());
-        console.log(content.id, content);
         setTimeout(function () {
             self.push(content);
         }, self.interval);

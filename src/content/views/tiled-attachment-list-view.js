@@ -131,7 +131,7 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
             tiledAttachmentsEl.find(this.contentAttachmentSelector + ':first')
                 .removeClass(this.squareTileClassName)
                 .addClass(this.horizontalTileClassName);
-        } else if (attachmentsCount === 2 || attachmentsCount > 4) {
+        } else if (attachmentsCount > 4) {
             tiledAttachmentsEl.find(this.contentAttachmentSelector)
                 .removeClass(this.squareTileClassName)
                 .addClass(this.horizontalTileClassName);

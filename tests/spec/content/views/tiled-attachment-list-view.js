@@ -135,7 +135,7 @@ function($, jasmine, jasminejQuery, Content, TiledAttachmentListView) {
 
                 it('has .content-attachments-2 class name', function() {
                     expect(tiledAttachmentListView.$el.find('.content-attachments-tiled')).toHaveClass('content-attachments-2');
-                    expect(tiledAttachmentListView.$el.find('.content-attachments-tiled .content-attachment')).toHaveClass('content-attachment-horizontal-tile');
+                    expect(tiledAttachmentListView.$el.find('.content-attachments-tiled .content-attachment')).toHaveClass('content-attachment-square-tile');
                 });
             });
 
