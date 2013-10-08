@@ -8,7 +8,7 @@ To render Content from a StreamHub Collection as a list
 
     require([
     	'streamhub-sdk/collection',
-    	'streamhub-sdk/views/list-view'],
+    	'streamhub-sdk/content/views/content-list-view'],
     function (Collection, ListView) {
     
 	    var collection = new Collection({
