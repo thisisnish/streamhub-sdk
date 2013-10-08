@@ -175,7 +175,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * @private
      * Insert a contentView into the ListView's .el
      * Get insertion index based on this.comparator
-     * @param contentView {ContentView} The ContentView's element to insert to the DOM
+     * @param view {View} The view to add to this.el
      */
     ListView.prototype._insert = function (view) {
         var newContentViewIndex,
