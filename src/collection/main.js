@@ -4,12 +4,14 @@ define([
     'streamhub-sdk/collection/streams/writer',
     'stream/duplex',
     'streamhub-sdk/collection/clients/bootstrap-client',
+    'streamhub-sdk/collection/clients/create-client',
     'streamhub-sdk/collection/clients/write-client',
     'streamhub-sdk/auth',
     'inherits',
     'streamhub-sdk/debug'],
 function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
-LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
+        LivefyreBootstrapClient, LivefyreCreateClient, LivefyreWriteClient, Auth,
+        inherits, debug) {
     'use strict';
 
 
@@ -26,8 +28,12 @@ LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
         this.siteId = opts.siteId;
         this.articleId = opts.articleId;
         this.environment = opts.environment;
+        this.collectionMeta = opts.collectionMeta;
+        this.signed = opts.signed;
+        this.autoCreate = opts.autoCreate || true;
 
         this._bootstrapClient = opts.bootstrapClient || new LivefyreBootstrapClient();
+        this._createClient = opts.createClient || new LivefyreCreateClient();
 
         // Internal streams
         this._writer = opts.writer || this.createWriter();
@@ -114,7 +120,7 @@ LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
         if ( ! this._updater) {
             this._updater = this.createUpdater();
         }
-
+debugger
         content = this._updater.read();
 
         if ( ! content) {
@@ -144,9 +150,15 @@ LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
         }
         this._isInitingFromBootstrap = true;
         this._getBootstrapInit(function (err, initData) {
-            var collectionSettings = initData.collectionSettings;
-            self.id = collectionSettings && collectionSettings.collectionId;
             self._isInitingFromBootstrap = false;
+            if (err && this.autoCreate) {
+                this._createCollection(function (err) {
+                    !err && self.initFromBootstrap(errback);
+                });
+            } else {
+                var collectionSettings = initData.collectionSettings;
+                self.id = collectionSettings && collectionSettings.collectionId;
+            }
             self.emit('_initFromBootstrap', err, initData);
         });
     };
@@ -179,6 +191,43 @@ LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
             }
             errback.call(self, err, data);
         });
+    };
+    
+    
+    /**
+     * @private
+     * Request the Create endpoint to create an entirely new collection. This
+     * gets called when Bootstrap initialization fails.
+     * @param errback {function(Object=)=} Optional callback to be passed an object on
+     *      error or undefined on success.
+     */
+    Collection.prototype._createCollection = function (errback) {
+        if (this._isCreatingCollection) {
+            return;
+        }
+        this._isCreatingCollection = true;
+        
+        var self = this;
+        this.autoCreate = false;
+        this.once('_createCollection', errback);
+        var callback = function (err) {
+            self._isCreatingCollection = false;
+            if (err) {
+                log("Error requesting collection creation", err);
+            }
+            self.emit('_createCollection', err);
+        };
+
+        // Use this._createClient to request a collection creation
+        var collectionOpts = {
+            network: this.network,
+            siteId: this.siteId,
+            articleId: this.articleId,
+            environment: this.environment,
+            collectionMeta: this.collectionMeta,
+            signed: this.signed
+        };
+        this._createClient.createCollection(collectionOpts, callback);
     };
 
 

@@ -46,7 +46,7 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
      */
     CollectionArchive.prototype._read = function () {
         var self = this;
-
+debugger
         log('_read', 'Buffer length is ' + this._readableState.buffer.length);
 
         // The first time this is called, we first need to get Bootstrap init

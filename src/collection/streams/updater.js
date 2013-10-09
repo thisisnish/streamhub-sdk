@@ -44,7 +44,7 @@ StateToContent, debug) {
      */
     CollectionUpdater.prototype._read = function () {
         var self = this;
-
+debugger
         log('_read', 'Buffer length is ' + this._readableState.buffer.length);
 
         if ( ! this._latestEvent || ! this._collection.id) {

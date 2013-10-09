@@ -1,4 +1,8 @@
-define(['streamhub-sdk/util', 'streamhub-sdk/jquery', 'base64'], function(util, $) {
+define([
+    'streamhub-sdk/util',
+    'streamhub-sdk/jquery',
+    'base64'],
+    function(util, $) {
     'use strict';
 
     /**
@@ -16,6 +20,9 @@ define(['streamhub-sdk/util', 'streamhub-sdk/jquery', 'base64'], function(util, 
      * @param opts.page {?string} Livefyre page name or number to fetch from bootstrap
      *     (default "init")
      * @param opts.environment {?string} Optional livefyre environment to use dev/prod environment
+     * @param opts.createClient {LivefyreCreateClient} A Client object
+     *     that can create a Livefyre collection.
+     * @param opts.collectionMeta {?Object} Data used to create new collection.
      * @param callback {function} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is "function(error, data)".
      */
@@ -38,7 +45,7 @@ define(['streamhub-sdk/util', 'streamhub-sdk/jquery', 'base64'], function(util, 
             "/",
             typeof opts.page !== 'undefined' ? opts.page+'.json' : "init"
         ].join("");
-
+//debugger
 
         $.ajax({
             type: "GET",
@@ -46,9 +53,15 @@ define(['streamhub-sdk/util', 'streamhub-sdk/jquery', 'base64'], function(util, 
             dataType: $.support.cors ? "json" : "jsonp",
             success: function(data, status, jqXhr) {
                 // todo: (genehallman) check livefyre stream status in data.status
+//                debugger
                 callback(null, data);
             },
             error: function(jqXhr, status, err) {
+//                if (jqXhr.status == 404) {
+//                    var create = opts.createClient || new CreateClient();
+//                    //create.createCollection(opts, callback);
+//                }
+//                
                 callback(err);
             }
         });
