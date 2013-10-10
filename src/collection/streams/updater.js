@@ -44,7 +44,7 @@ StateToContent, debug) {
      */
     CollectionUpdater.prototype._read = function () {
         var self = this;
-debugger
+
         log('_read', 'Buffer length is ' + this._readableState.buffer.length);
 
         if ( ! this._latestEvent || ! this._collection.id) {
@@ -56,7 +56,7 @@ debugger
                 if ( ! self._collection.id) {
                     throw new Error("Couldn't get Collection ID after initFromBootstrap");
                 }
-                if ( ! latestEvent) {
+                if (latestEvent === undefined) {
                     throw new Error("Couldn't get latestEvent after initFromBootstrap");
                 }
                 self._latestEvent = latestEvent;
