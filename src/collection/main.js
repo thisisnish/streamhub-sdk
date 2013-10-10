@@ -120,7 +120,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
         if ( ! this._updater) {
             this._updater = this.createUpdater();
         }
-debugger
+
         content = this._updater.read();
 
         if ( ! content) {
@@ -152,7 +152,7 @@ debugger
         this._getBootstrapInit(function (err, initData) {
             self._isInitingFromBootstrap = false;
             if (err && this.autoCreate) {
-                this._createCollection(function (err) {
+                return this._createCollection(function (err) {
                     !err && self.initFromBootstrap(errback);
                 });
             } else {
