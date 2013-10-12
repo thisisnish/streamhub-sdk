@@ -29,9 +29,6 @@ require.config({
     name: "streamhub-sdk/modal",
     location: "src/modal"
   },{
-    name: "streamhub-sdk/analytics",
-    location: "src/analytics"
-  },{
     name: "streamhub-sdk-tests",
     location: "tests/"
   },{
