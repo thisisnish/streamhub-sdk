@@ -43,7 +43,7 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/util'], function($, util) {
         $.ajax({
             type: "GET",
             url: url,
-            dataType: "json",
+            dataType: $.support.cors ? "json" : "jsonp",
             success: function(data, status, jqXhr) {
                 // todo: (genehallman) check livefyre stream status in data.status
                 if (data.timeout) {

@@ -79,6 +79,9 @@ define(['jquery'], function($) {
                             });
                         };
                         xdr.open(options.type, options.url);
+
+                        xdr.onprogress = function () {};
+
                         //xdr.send(userOptions.data);
                         xdr.send();
                     },
