@@ -151,7 +151,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
         this._isInitingFromBootstrap = true;
         this._getBootstrapInit(function (err, initData) {
             self._isInitingFromBootstrap = false;
-            if (err && this.autoCreate) {
+            if (err == 'Not Found' && this.autoCreate) {
                 return this._createCollection(function (err) {
                     !err && self.initFromBootstrap(errback);
                 });

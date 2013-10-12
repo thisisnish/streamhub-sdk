@@ -1,8 +1,7 @@
 define([
-    'streamhub-sdk/util',
     'streamhub-sdk/jquery',
     'base64'],
-    function(util, $) {
+    function($) {
     'use strict';
 
     /**
@@ -45,7 +44,6 @@ define([
             "/",
             typeof opts.page !== 'undefined' ? opts.page+'.json' : "init"
         ].join("");
-//debugger
 
         $.ajax({
             type: "GET",
@@ -53,15 +51,9 @@ define([
             dataType: $.support.cors ? "json" : "jsonp",
             success: function(data, status, jqXhr) {
                 // todo: (genehallman) check livefyre stream status in data.status
-//                debugger
                 callback(null, data);
             },
             error: function(jqXhr, status, err) {
-//                if (jqXhr.status == 404) {
-//                    var create = opts.createClient || new CreateClient();
-//                    //create.createCollection(opts, callback);
-//                }
-//                
                 callback(err);
             }
         });
