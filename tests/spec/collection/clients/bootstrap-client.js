@@ -99,6 +99,15 @@ function ($, jasmine, LivefyreBootstrapClient, MockBootstrapClient) {
             expect(typeof featured.isComplete === 'boolean').toBe(true);
             expect(featured.size).toEqual(jasmine.any(Number));
         });
+
+        it('returns a suitable response when page is featured-all', function () {
+            var mockBootstrapClient = new MockBootstrapClient();
+            var spy = jasmine.createSpy('on featured-all response');
+            mockBootstrapClient.getContent({
+                page: 'featured-all'
+            }, spy);
+            expect(spy).toHaveBeenCalledWith(null, jasmine.any(Object));
+        });
     });
 
 });

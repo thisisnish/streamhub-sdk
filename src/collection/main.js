@@ -2,7 +2,7 @@ define([
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
-    'streamhub-sdk/collection/streams/featured-contents',
+    'streamhub-sdk/collection/featured-contents',
     'stream/duplex',
     'streamhub-sdk/collection/clients/bootstrap-client',
     'streamhub-sdk/collection/clients/create-client',
@@ -85,14 +85,13 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
 
 
     /**
-     * Create a Readable that will stream the featured Content
-     * in a Collection in descending order of 'featured value'
-     * featured value is createdAt unless you're explicitly changint hat
+     * Create a FeaturedContents object representing the featured
+     * contents in this Collection
      */
-    Collection.prototype.createFeatured = function (opts) {
+    Collection.prototype.createFeaturedContents = function (opts) {
         opts = opts || {};
         opts.collection = this;
-        return new CollectionFeatured(opts);
+        return new FeaturedContents(opts);
     };
 
 

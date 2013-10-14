@@ -1,16 +1,19 @@
 define([
     'jasmine',
     'streamhub-sdk/collection',
+    'streamhub-sdk-tests/mocks/collection/mock-collection',
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
+    'streamhub-sdk/collection/featured-contents',
     'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/content',
     'streamhub-sdk/auth',
     'stream/writable',
     'stream/readable'
-], function (jasmine, Collection, CollectionArchive, CollectionUpdater,
-CollectionWriter, ContentListView, Content, Auth, Writable, Readable) {
+], function (jasmine, Collection, MockCollection, CollectionArchive,
+CollectionUpdater, CollectionWriter, FeaturedContents, ContentListView, Content,
+Auth, Writable, Readable) {
     'use strict';
 
     describe('streamhub-sdk/collection', function () {
@@ -182,20 +185,13 @@ CollectionWriter, ContentListView, Content, Auth, Writable, Readable) {
                 });
             });
 
-            describe('.createFeatured', function () {
-                it('returns a readable CollectionFeatured Stream', function () {
-                    var featuredStream = collection.createFeatured();
-                    expect(featuredStream instanceof Readable).toBe(true);
-                    var onReadable = jasmine.createSpy('on readable');
-                    featuredStream.on('readable', onReadable);
-                    waitsFor(function () {
-                        return onReadable.callCount;
+            describe('.createFeaturedContents', function () {
+                it('returns a FeaturedContents object', function () {
+                    var collection = new MockCollection({
+                        withFeaturedInit: true
                     });
-                    runs(function () {
-                        var content = featuredStream.read();
-                        expect(content instanceof Content).toBe(true);
-                        expect(content.isFeatured()).toBe(true);
-                    });
+                    var featuredContents = collection.createFeaturedContents();
+                    expect(featuredContents instanceof FeaturedContents).toBe(true);
                 });
             });
 
