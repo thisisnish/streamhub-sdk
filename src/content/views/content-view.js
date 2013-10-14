@@ -93,7 +93,7 @@ define([
             self.content.removeAttachment(oembed);
 
             if (self.attachmentsView.tileableCount && !self.attachmentsView.tileableCount()) {
-                self.remove();
+                self.$el.removeClass('content-with-image');
             }
         });
 
