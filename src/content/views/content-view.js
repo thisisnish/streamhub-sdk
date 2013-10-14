@@ -56,7 +56,7 @@ define([
         this.$el = $(el);
         this.$el.addClass(this.elClass);
 
-        if (this.attachmentsView.tileableCount && this.attachmentsView.tileableCount()) {
+        if (this.attachmentsView && this.attachmentsView.tileableCount && this.attachmentsView.tileableCount()) {
             this.$el.addClass(this.imageLoadingClass);
         }
 
@@ -102,7 +102,7 @@ define([
         this.$el.on('imageError.hub', function(e, oembed) {
             self.content.removeAttachment(oembed);
 
-            if (self.attachmentsView.tileableCount && !self.attachmentsView.tileableCount()) {
+            if (self.attachmentsView && self.attachmentsView.tileableCount && !self.attachmentsView.tileableCount()) {
                 self.$el.removeClass(self.contentWithImageClass);
                 self.$el.removeClass(self.imageLoadingClass);
             }
