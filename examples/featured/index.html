@@ -38,13 +38,9 @@
 
             var collection = window.collection =  new Collection(opts);
 
-            var featuredContents = collection.createFeatured();
-            featuredContents.on('data', function (content) {
-                console.log('featured', content._annotations.featuredmessage.value);
-            })
-            featuredContents.pipe(listView.more);
-            //collection.pipe(listView);
+            var featuredContents = collection.createFeaturedContents();
 
+            featuredContents.createArchive().pipe(listView.more);
         });
         </script>
     </body>
