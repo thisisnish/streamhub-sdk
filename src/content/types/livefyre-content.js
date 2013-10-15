@@ -77,6 +77,15 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
     };
 
     /**
+     * Return the featured value for this Content, if it is featured
+     * @return {Number|undefined} The featured value, if featured, else undefined
+     */
+    LivefyreContent.prototype.getFeaturedValue = function () {
+        var featuredAnnotation = this._annotations && this._annotations.featuredmessage;
+        return featuredAnnotation ? featuredAnnotation.value : undefined;
+    };
+
+    /**
      * The set of sources as defined by Livefyre's Stream API
      */
     LivefyreContent.SOURCES = [

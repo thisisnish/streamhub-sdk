@@ -97,5 +97,19 @@ function ($, jasmine, LivefyreContent) {
             });
         });
 
+        describe('.getFeaturedValue', function () {
+            it('is a method on LivefyreContent', function () {
+                expect(content.getFeaturedValue).toEqual(jasmine.any(Function));
+            });
+            it('returns Number if LivefyreContent constructed from featured bootstrap state', function () {
+                var featuredContent = new LivefyreContent(mockData.featuredBootstrapContent);
+                expect(featuredContent.getFeaturedValue()).toEqual(jasmine.any(Number));
+            });
+            it('returns undefined if LivefyreContent constructed from non-featured bootstrap state', function () {
+                var nonFeaturedContent = new LivefyreContent(mockData.livefyreBootstrapContent);
+                expect(nonFeaturedContent.getFeaturedValue()).toBe(undefined);
+            });
+        });
+
     });
 });
