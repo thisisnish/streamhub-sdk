@@ -13,15 +13,10 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
 
     /**
-     * A Readable Stream that emits Content for a Livefyre Collection as
-     *     sourced from StreamHub's Bootstrap APIs. This Stream emits Content
-     *     in descending order by bootstrap page
+     * A Readable Stream that emits Featured Content for a Livefyre Collection.
+     *     This Stream emits Content in descending order by featured value.
      * @param opts {object} Configuration options
-     * @param opts.network {string} The StreamHub Network of the Collection
-     * @param opts.siteId {string} The StreamHub Site ID of the Collection
-     * @param opts.articleId {string} The StreamHub Aritcle ID of the Collection
-     * @param [opts.environment] {string} If not production, the hostname of the
-     *     StreamHub environment the Collection resides on
+     * @param opts.collection {string} The Collection to get Featured Content for
      * @param [opts.bootstrapClient] {LivefyreBootstrapClient} A Client object
      *     that can request StreamHub's Bootstrap web service
      */

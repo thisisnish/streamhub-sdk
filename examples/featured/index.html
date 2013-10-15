@@ -36,6 +36,21 @@
                 el: document.getElementById("listView")
             });
 
+            // Show the featuredValue in the content body to verify sort order
+            var ogAdd = listView.add;
+            listView.add = function (content) {
+                content.body = String(content.getFeaturedValue()) + ' ' + content.body;
+                ogAdd.apply(this, arguments);
+            }
+
+            // Order descending by featuredValue
+            listView.comparator = function (a,b) {
+                return featuredValue(b) - featuredValue(a);
+                function featuredValue (contentView) {
+                    return contentView.content.getFeaturedValue();
+                }
+            };
+
             var collection = window.collection =  new Collection(opts);
 
             var featuredContents = collection.createFeaturedContents();

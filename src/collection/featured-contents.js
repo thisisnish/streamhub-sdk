@@ -7,7 +7,11 @@ function (FeaturedArchive, debug) {
     var log = debug('streamhub-sdk/collection/featured-contents');
 
     /**
-     * An Object that represents a hosted StreamHub Collection
+     * An Object that represents the featured Contents in a StreamHub
+     * Collection
+     * @param opts {object} Options
+     * @param opts.collection {streamhub-sdk/collection} The Collection in which
+     *     you care about featured Content
      */
     var FeaturedContents = function (opts) {
         opts = opts || {};
