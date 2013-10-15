@@ -1,10 +1,7 @@
 define([
-    'streamhub-sdk/collection/streams/featured-archive',
-    'streamhub-sdk/debug'],
-function (FeaturedArchive, debug) {
+    'streamhub-sdk/collection/streams/featured-archive'],
+function (FeaturedArchive) {
     'use strict';
-
-    var log = debug('streamhub-sdk/collection/featured-contents');
 
     /**
      * An Object that represents the featured Contents in a StreamHub

@@ -5,6 +5,8 @@ define([
     'streamhub-sdk/content',
     'stream/readable'
 ], function (jasmine, FeaturedContents, MockCollection, Content, Readable) {
+    'use strict';
+
     describe('streamhub-sdk/collection/featured-contents', function () {
         var collection;
         var featuredContents;

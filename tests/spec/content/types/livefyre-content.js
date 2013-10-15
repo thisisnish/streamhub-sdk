@@ -29,7 +29,7 @@ function ($, jasmine, LivefyreContent) {
             "source": 1,
             "type": 0,
             "event": 1.3808485590543e+15
-        }
+        };
         var mock, content;
 
         describe("when constructed from bootstrap", function () {

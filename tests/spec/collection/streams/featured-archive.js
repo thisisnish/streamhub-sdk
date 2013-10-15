@@ -76,7 +76,7 @@ function (jasmine, FeaturedArchive, MockCollection, Readable) {
 
             var featuredCount = null;
             collection.on('_initFromBootstrap', function (err, initData) {
-                featuredCount = initData.featured.size
+                featuredCount = initData.featured.size;
             });
 
             var featuredContents = new FeaturedArchive({
@@ -125,7 +125,7 @@ function (jasmine, FeaturedArchive, MockCollection, Readable) {
 
             var featuredCount = null;
             collection.on('_initFromBootstrap', function (err, initData) {
-                featuredCount = initData.featured.size
+                featuredCount = initData.featured.size;
             });
 
             var featuredContents = new FeaturedArchive({
