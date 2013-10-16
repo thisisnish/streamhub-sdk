@@ -16,12 +16,9 @@ define([
      * @param opts.network {string} The name of the network in the livefyre platform
      * @param opts.siteId {string} The livefyre siteId for the conversation
      * @param opts.articleId {string} The livefyre articleId for the conversation
-     * @param opts.page {?string} Livefyre page name or number to fetch from bootstrap
+     * @param [opts.page] {string} Livefyre page name or number to fetch from bootstrap
      *     (default "init")
-     * @param opts.environment {?string} Optional livefyre environment to use dev/prod environment
-     * @param opts.createClient {LivefyreCreateClient} A Client object
-     *     that can create a Livefyre collection.
-     * @param opts.collectionMeta {?Object} Data used to create new collection.
+     * @param [opts.environment] {string} Optional livefyre environment to use dev/prod environment
      * @param callback {function} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is "function(error, data)".
      */

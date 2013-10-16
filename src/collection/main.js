@@ -28,9 +28,9 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
         this.siteId = opts.siteId;
         this.articleId = opts.articleId;
         this.environment = opts.environment;
-        this.collectionMeta = opts.collectionMeta;
-        this.signed = opts.signed;
-        this.autoCreate = opts.autoCreate || true;
+        this._collectionMeta = opts.collectionMeta;
+        this._signed = opts.signed;
+        this._autoCreate = opts.autoCreate || true;
 
         this._bootstrapClient = opts.bootstrapClient || new LivefyreBootstrapClient();
         this._createClient = opts.createClient || new LivefyreCreateClient();
@@ -151,14 +151,16 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
         this._isInitingFromBootstrap = true;
         this._getBootstrapInit(function (err, initData) {
             self._isInitingFromBootstrap = false;
-            if (err == 'Not Found' && this.autoCreate) {
-                return this._createCollection(function (err) {
-                    !err && self.initFromBootstrap(errback);
+            if (err === 'Not Found' && this._autoCreate) {
+                this._createCollection(function (err) {
+                    if (!err) {
+                        self.initFromBootstrap(errback);
+                    }
                 });
-            } else {
-                var collectionSettings = initData.collectionSettings;
-                self.id = collectionSettings && collectionSettings.collectionId;
+                return;
             }
+            var collectionSettings = initData.collectionSettings;
+            self.id = collectionSettings && collectionSettings.collectionId;
             self.emit('_initFromBootstrap', err, initData);
         });
     };
@@ -203,12 +205,12 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
      */
     Collection.prototype._createCollection = function (errback) {
         if (this._isCreatingCollection) {
-            return;
+            throw 'Attempting to create a collection more than once.';
         }
         this._isCreatingCollection = true;
         
         var self = this;
-        this.autoCreate = false;
+        this._autoCreate = false;
         this.once('_createCollection', errback);
         var callback = function (err) {
             self._isCreatingCollection = false;
@@ -224,8 +226,8 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
             siteId: this.siteId,
             articleId: this.articleId,
             environment: this.environment,
-            collectionMeta: this.collectionMeta,
-            signed: this.signed
+            collectionMeta: this._collectionMeta,
+            signed: this._signed
         };
         this._createClient.createCollection(collectionOpts, callback);
     };

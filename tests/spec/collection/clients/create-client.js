@@ -74,6 +74,7 @@ function ($, jasmine, LivefyreCreateClient) {
                     opts.success({});
                 });
             });
+            
             it("requests the correct create collection URL for localdev", function () {
                 createClient.createCollection(opts, callback);
                 var requestedUrl = $.ajax.mostRecentCall.args[0].url;

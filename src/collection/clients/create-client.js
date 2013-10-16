@@ -8,6 +8,21 @@ define(['streamhub-sdk/jquery'], function($) {
     var LivefyreCreateClient = function () {};
 
     /**
+     * @callback createCollectionCallback
+     * @param [error] {Object|string} 
+     * @param [data] {Object}
+     */
+    
+    /**
+     * @typedef CollectionMeta {(Object|string)} This is an object or a token string
+     *          (per https://github.com/Livefyre/livefyre-docs/wiki/StreamHub-Integration-Guide)
+     *          that contains data required for creating a collection.
+     * @property [title] {string} Optional title for the new collection.
+     * @property url {string} Required when not signed. URL of the page creating the collection.
+     * @property [tags] {string} Optional comma separated tag names.
+     */
+    
+    /**
      * Fetches data from the livefyre bootstrap service with the arguments given.
      * @param opts {Object} The livefyre collection options.
      * @param opts.network {string} The name of the network in the livefyre platform
@@ -16,17 +31,31 @@ define(['streamhub-sdk/jquery'], function($) {
      * @param opts.environment {?string} Optional livefyre environment to use dev/prod environment
      * @param opts.signed {?boolean} Specified true when collectionMeta is a token string.
      * @param opts.checksum {?string} Required if collectionMeta is a token string.
-     * @param opts.collectionMeta {Object|string} This is an object or a token string.
-     *          (per https://github.com/Livefyre/livefyre-docs/wiki/StreamHub-Integration-Guide)
-     *          that contains data required for creating a collection.
-     * @param opts.collectionMeta.url {?string} Required when not signed. URL of the page creating the collection.
-     * @param opts.collectionMeta.title {?string} Optional title for the new collection.
-     * @param opts.collectionMeta.tags {?string} Optional comma separated tag names.
-     * @param callback {function(?Object, Object=)} A callback that is called upon success/failure of the
+     * @param opts.collectionMeta {CollectionMeta} The required meta for creating the collection
+     * @param callback {createCollectionCallback} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is "function(error, data)".
      */
     LivefyreCreateClient.prototype.createCollection = function(opts, callback) {
         callback = callback || function() {};
+        if (Array.isArray(opts)) {
+            var tmp = {"signed": false, "collection": null},
+                props = ['environment', 'network', 'siteId', 'articleId', 'title', 'url', 'tags'],
+                l = props.length,
+                i;
+            for (i = 0; i < l; i++) {
+                if (i < 4) {
+                    tmp[props[i]] = opts[i];
+                } else {
+                    tmp.collection[props[i]] = opts[i];
+                }
+            }
+            if (!tmp.collection.url) {
+            //No URL because the title is really a collection meta hash
+                tmp.collection = tmp.collection.title;
+                tmp.signed = true;
+            }
+            opts = tmp;
+        }
 
         var url = [
         //api/v3.0/site/<siteId>/collection/create
@@ -39,16 +68,21 @@ define(['streamhub-sdk/jquery'], function($) {
         
         var collectionMeta = opts.collectionMeta;
         if (!collectionMeta) {
-            callback({'responseText': 'User error: Missing collectionMeta.'});
-            return;
+            throw 'User error: Missing collectionMeta.';
         }
         
         var postData = {
                 'collectionMeta': collectionMeta,
             };
-        (typeof(opts.signed) == 'boolean') && (postData.signed = opts.signed);
-        !postData.signed && (postData.collectionMeta.articleId = opts.articleId);
-        opts.checksum && (postData.checksum = opts.checksum);
+        if (typeof(opts.signed) === 'boolean') {
+            postData.signed = opts.signed;
+        }
+        if (!postData.signed) {
+            postData.collectionMeta.articleId = opts.articleId;
+        }
+        if (opts.checksum) {
+            postData.checksum = opts.checksum;
+        }
         postData = JSON.stringify(postData);
         
         $.ajax({
@@ -56,7 +90,6 @@ define(['streamhub-sdk/jquery'], function($) {
             url: url,
             data: postData,
             success: function(data, status, jqXhr) {
-                // todo: (genehallman) check livefyre stream status in data.status
                 callback(null, data);
             },
             error: function(jqXhr, status, err) {
