@@ -25,7 +25,7 @@
     "test-jenkins": "node tests/runner.js > tests.log",
     "build-version": "node tools/build_version.js",
     "lessc": "./node_modules/less/bin/lessc --yui-compress src/css/style.{less,css} && ./node_modules/less/bin/lessc --yui-compress src/content/css/content.{less,css} && ./node_modules/less/bin/lessc --yui-compress src/views/css/list-view.{less,css}",
-    "jsdoc": "rm -rf docs/api && ./node_modules/jsdoc/jsdoc -c tools/jsdoc.conf.json"
+    "jsdoc": "rm -rf docs/api && ./node_modules/jsdoc/jsdoc README.md -c tools/jsdoc.conf.json"
   },
   "devDependencies": {
     "jshint": "~2.1.0",

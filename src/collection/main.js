@@ -153,10 +153,10 @@ LivefyreBootstrapClient, LivefyreWriteClient, Auth, inherits, debug) {
 
 
     /**
-     * @private
      * Request the Bootstrap init endpoint for the Collection to learn about
      * what pages of Content there are. This gets called the first time Stream
      * base calls _read().
+     * @private
      * @param errback {function} A callback to be passed (err|null, the number
      *     of pages of content in the collection, the headDocument containing
      *     the latest data)
