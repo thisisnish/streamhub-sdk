@@ -197,10 +197,16 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
     
     
     /**
+     * @callback optionalObjectCallback
+     * @param [error] {Object} 
+     */
+    
+    
+    /**
      * @private
      * Request the Create endpoint to create an entirely new collection. This
      * gets called when Bootstrap initialization fails.
-     * @param errback {function(Object=)=} Optional callback to be passed an object on
+     * @param errback {optionalObjectCallback} Optional callback to be passed an object on
      *      error or undefined on success.
      */
     Collection.prototype._createCollection = function (errback) {

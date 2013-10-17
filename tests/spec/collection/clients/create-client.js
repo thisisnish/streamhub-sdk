@@ -29,7 +29,7 @@ function ($, jasmine, LivefyreCreateClient) {
                         "collectionMeta": {
                             "title": 'Media Wall Example',
                             "url": 'http://www.fake.com',
-                            "tags": "test,wall"
+                            "tags": ['test', 'wall']
                         },
                         "signed": false
                 };
@@ -39,7 +39,7 @@ function ($, jasmine, LivefyreCreateClient) {
                 expect(createClient instanceof LivefyreCreateClient).toBe(true);
             });
 
-            it ("should return a confirmation when createCollection is called", function () {        
+            it("should return a confirmation when createCollection is called", function () {        
                 createClient.createCollection(opts, callback);
         
                 waitsFor(function() {
@@ -53,6 +53,42 @@ function ($, jasmine, LivefyreCreateClient) {
                     expect(callback.mostRecentCall.args[1]).toBe(mockSuccessResponse);
                 });                            
             });
+            
+            it("has the correct post data", function () {
+                createClient.createCollection(opts, callback);
+                var requestType = $.ajax.mostRecentCall.args[0].type;
+                var requestData = $.ajax.mostRecentCall.args[0].data;
+                expect(requestType).toBe('POST');
+                expect(requestData).toBe('{"collectionMeta":{"title":"Media Wall Example","url":"http://www.fake.com","tags":"test,wall","articleId":"1111123"},"signed":false}');
+            });
+            
+            it("requests the correct URL", function () {
+                createClient.createCollection(opts, callback);
+                var requestUrl = $.ajax.mostRecentCall.args[0].url;
+                expect(requestUrl).toBe('http://quill.labs-t402.fyre.co/api/v3.0/site/286470/collection/create');
+            });
+        });
+        
+        describe("when constructed with a token", function () {
+            beforeEach(function() {
+                opts = {"environment": "t402.livefyre.com",
+                        "network": "labs-t402.fyre.co",
+                        "siteId": "286470",
+                        "articleId": "1111123",
+                        "collectionMeta": "tokenstring",
+                        "signed": true,
+                        "checksum": "check"
+                };
+            });
+
+            it("has the correct post data", function () {
+                createClient.createCollection(opts, callback);
+                var requestType = $.ajax.mostRecentCall.args[0].type;
+                var requestData = $.ajax.mostRecentCall.args[0].data;
+                expect(requestType).toBe('POST');
+                expect(requestData).toBe('{"collectionMeta":"tokenstring","signed":true,"checksum":"check"}');
+            });
+            
         });
         
         describe("when configured with environment='fyre'", function () {
@@ -65,7 +101,7 @@ function ($, jasmine, LivefyreCreateClient) {
                         "collectionMeta": {
                             "title": 'Media Wall Example',
                             "url": 'http://www.fake.com',
-                            "tags": "test,wall"
+                            "tags": ['test', 'wall']
                         },
                         "signed": false
                 };

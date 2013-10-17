@@ -19,7 +19,7 @@ define(['streamhub-sdk/jquery'], function($) {
      *          that contains data required for creating a collection.
      * @property [title] {string} Optional title for the new collection.
      * @property url {string} Required when not signed. URL of the page creating the collection.
-     * @property [tags] {string} Optional comma separated tag names.
+     * @property [tags] {Array.<string>} Optional list of tag names.
      */
     
     /**
@@ -28,35 +28,15 @@ define(['streamhub-sdk/jquery'], function($) {
      * @param opts.network {string} The name of the network in the livefyre platform
      * @param opts.siteId {string} The livefyre siteId for the conversation
      * @param opts.articleId {string} The livefyre articleId for the conversation
-     * @param opts.environment {?string} Optional livefyre environment to use dev/prod environment
-     * @param opts.signed {?boolean} Specified true when collectionMeta is a token string.
-     * @param opts.checksum {?string} Required if collectionMeta is a token string.
+     * @param [opts.environment] {string} Optional livefyre environment to use dev/prod environment
+     * @param [opts.signed] {boolean} Specified true when collectionMeta is a token string.
+     * @param [opts.checksum] {string} Required if collectionMeta is a token string.
      * @param opts.collectionMeta {CollectionMeta} The required meta for creating the collection
      * @param callback {createCollectionCallback} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is "function(error, data)".
      */
     LivefyreCreateClient.prototype.createCollection = function(opts, callback) {
         callback = callback || function() {};
-        if (Array.isArray(opts)) {
-            var tmp = {"signed": false, "collection": null},
-                props = ['environment', 'network', 'siteId', 'articleId', 'title', 'url', 'tags'],
-                l = props.length,
-                i;
-            for (i = 0; i < l; i++) {
-                if (i < 4) {
-                    tmp[props[i]] = opts[i];
-                } else {
-                    tmp.collection[props[i]] = opts[i];
-                }
-            }
-            if (!tmp.collection.url) {
-            //No URL because the title is really a collection meta hash
-                tmp.collection = tmp.collection.title;
-                tmp.signed = true;
-            }
-            opts = tmp;
-        }
-
         var url = [
         //api/v3.0/site/<siteId>/collection/create
             'http://quill.',
@@ -64,7 +44,7 @@ define(['streamhub-sdk/jquery'], function($) {
             '/api/v3.0/site/',
             opts.siteId,
             '/collection/create'
-        ].join("");
+        ].join('');
         
         var collectionMeta = opts.collectionMeta;
         if (!collectionMeta) {
@@ -79,6 +59,9 @@ define(['streamhub-sdk/jquery'], function($) {
         }
         if (!postData.signed) {
             postData.collectionMeta.articleId = opts.articleId;
+            if (opts.collectionMeta.tags) {
+                postData.collectionMeta.tags = opts.collectionMeta.tags.join(',');
+            }
         }
         if (opts.checksum) {
             postData.checksum = opts.checksum;
