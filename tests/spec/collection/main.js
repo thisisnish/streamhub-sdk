@@ -137,7 +137,9 @@ CollectionWriter, ContentListView, Content, Auth, Writable, Readable) {
                 
                 it('reads from existing collections', function () {
                     spyOn(collection._bootstrapClient, "getContent").andCallFake(fnSuccessfulInit);
+                    
                     collection.initFromBootstrap(fnCallback);
+                    
                     expect(collection._bootstrapClient.getContent).toHaveBeenCalled();
                     expect(fnCallback).toHaveBeenCalledWith(null, mockInitResponse);
                 });
@@ -148,18 +150,23 @@ CollectionWriter, ContentListView, Content, Auth, Writable, Readable) {
                         spyGetContent.andCallFake(fnSuccessfulInit);
                         fnSuccessfulCreate(opts, errback);
                     });
+                    
                     collection.initFromBootstrap(fnCallback);
+                    
                     expect(collection._bootstrapClient.getContent.calls.length).toEqual(2);
                     expect(collection._createClient.createCollection).toHaveBeenCalled();
                     expect(fnCallback).toHaveBeenCalledWith(null, mockInitResponse);
                 });
                 
-                it('doesn\'t try to create a collection when services are failing', function () {
+                it('throws error when services are failing, without making more calls than necessary', function () {
                     spyOn(collection._bootstrapClient, "getContent").andCallFake(fnServerError);
                     spyOn(collection._createClient, "createCollection").andCallFake(function (opts, errback) {
                         return;
                     });
-                    expect(function () {collection.initFromBootstrap(fnCallback)}).toThrow('Fatal collection connection error');
+                    
+                    expect(function () {
+                        collection.initFromBootstrap(fnCallback);
+                    }).toThrow('Fatal collection connection error');
                     expect(collection._bootstrapClient.getContent.calls.length).toEqual(1);
                     expect(collection._createClient.createCollection).not.toHaveBeenCalled();
                 });
@@ -167,7 +174,9 @@ CollectionWriter, ContentListView, Content, Auth, Writable, Readable) {
                 it('fails when there isn\'t an existing collection and a new collection can\'t be made', function () {
                     spyOn(collection._bootstrapClient, "getContent").andCallFake(fnFailedInit);
                     spyOn(collection._createClient, "createCollection").andCallFake(fnFailedCreate);
+                    
                     collection.initFromBootstrap(fnCallback);
+                    
                     expect(collection._bootstrapClient.getContent.calls.length).toEqual(1);
                     expect(collection._createClient.createCollection.calls.length).toEqual(1);
                 });
