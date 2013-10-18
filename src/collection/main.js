@@ -2,6 +2,7 @@ define([
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
+    'streamhub-sdk/collection/featured-contents',
     'stream/duplex',
     'streamhub-sdk/collection/clients/bootstrap-client',
     'streamhub-sdk/collection/clients/create-client',
@@ -9,9 +10,9 @@ define([
     'streamhub-sdk/auth',
     'inherits',
     'streamhub-sdk/debug'],
-function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
-        LivefyreBootstrapClient, LivefyreCreateClient, LivefyreWriteClient, Auth,
-        inherits, debug) {
+function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
+        Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyreWriteClient,
+        Auth, inherits, debug) {
     'use strict';
 
 
@@ -78,10 +79,19 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
 
     Collection.prototype.createWriter = function (opts) {
         opts = opts || {};
-        return new CollectionWriter({
-            collection: this,
-            writeClient: opts.writeClient
-        });
+        opts.collection = this;
+        return new CollectionWriter(opts);
+    };
+
+
+    /**
+     * Create a FeaturedContents object representing the featured
+     * contents in this Collection
+     */
+    Collection.prototype.createFeaturedContents = function (opts) {
+        opts = opts || {};
+        opts.collection = this;
+        return new FeaturedContents(opts);
     };
 
 
