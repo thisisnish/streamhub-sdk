@@ -159,6 +159,9 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
                 });
                 return;
             }
+            if (!initData) {
+                throw 'Fatal collection connection error';
+            }
             var collectionSettings = initData.collectionSettings;
             self.id = collectionSettings && collectionSettings.collectionId;
             self.emit('_initFromBootstrap', err, initData);

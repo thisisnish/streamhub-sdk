@@ -71,6 +71,10 @@ function ($, jasmine, LivefyreCreateClient) {
         
         describe("when constructed with a token", function () {
             beforeEach(function() {
+                spy = spyOn($, "ajax").andCallFake(function(opts) {
+                    return;
+                });
+                
                 opts = {"environment": "t402.livefyre.com",
                         "network": "labs-t402.fyre.co",
                         "siteId": "286470",
