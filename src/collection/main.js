@@ -10,9 +10,9 @@ define([
     'streamhub-sdk/auth',
     'inherits',
     'streamhub-sdk/debug'],
-function (CollectionArchive, CollectionUpdater, CollectionWriter, Duplex,
-        LivefyreBootstrapClient, LivefyreCreateClient, LivefyreWriteClient, Auth,
-        inherits, debug) {
+function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
+        Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyreWriteClient,
+        Auth, inherits, debug) {
     'use strict';
 
 
