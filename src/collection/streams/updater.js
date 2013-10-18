@@ -56,7 +56,7 @@ StateToContent, debug) {
                 if ( ! self._collection.id) {
                     throw new Error("Couldn't get Collection ID after initFromBootstrap");
                 }
-                if ( ! latestEvent) {
+                if (latestEvent === undefined) {
                     throw new Error("Couldn't get latestEvent after initFromBootstrap");
                 }
                 self._latestEvent = latestEvent;
