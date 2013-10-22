@@ -52,7 +52,7 @@ define(['streamhub-sdk/jquery'], function($) {
         }
         
         var postData = {
-                'collectionMeta': collectionMeta,
+                'collectionMeta': collectionMeta
             };
         if (typeof(opts.signed) === 'boolean') {
             postData.signed = opts.signed;
