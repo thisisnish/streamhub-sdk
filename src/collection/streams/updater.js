@@ -86,7 +86,7 @@ StateToContent, debug) {
                 // on the next event loop tick
                 log('long poll timeout, requesting again on next tick');
                 return streamUtil.nextTick(function () {
-                    self._stream();
+                    self.push('');
                 });
             }
             var contents = self._contentsFromStreamData(data);
@@ -97,7 +97,8 @@ StateToContent, debug) {
                 self.push.apply(self, contents);
                 // _read will get called again when more data is needed
             } else {
-                self._stream();
+                // TODO: 
+                self.push('');
             }
         });
     };

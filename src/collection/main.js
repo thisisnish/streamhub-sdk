@@ -121,6 +121,25 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         }
     };
 
+    /**
+     * Pause live updates from this Collection
+     */
+    Collection.prototype.pause = function () {
+        Duplex.prototype.pause.apply(this, arguments);
+        if (this._updater) {
+            this._updater.pause();
+        }
+    };
+
+    /**
+     * Resume live updates from this Collection
+     */
+    Collection.prototype.resume = function () {
+        Duplex.prototype.resume.apply(this, arguments);
+        if (this._updater) {
+            this._updater.resume()
+        }
+    };
 
     Collection.prototype._read = function () {
         var self = this,
