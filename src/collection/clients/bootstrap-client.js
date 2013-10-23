@@ -8,7 +8,10 @@ define([
      * A Client for requesting Livefyre's Bootstrap Service
      * @exports streamhub-sdk/collection/clients/bootstrap-client
      */
-    var LivefyreBootstrapClient = function () {};
+    var LivefyreBootstrapClient = function (opts) {
+        opts = opts || {};
+        this._protocol = opts.protocol || 'http';
+    };
 
     /**
      * Fetches data from the livefyre bootstrap service with the arguments given.
@@ -26,11 +29,11 @@ define([
         var isLocaldev;
         opts = opts || {};
         callback = callback || function() {};
+        opts.environment = opts.environment || 'livefyre.com';
         isLocaldev = opts.environment && opts.environment === 'fyre';
 
         var url = [
-            'http://bootstrap.',
-            (opts.network === 'livefyre.com') ? opts.environment || 'livefyre.com' : opts.network,
+            this._getUrlBase(opts),
             "/bs3/",
             (opts.environment && ! isLocaldev) ? opts.environment + "/" : "",
             opts.network,
@@ -45,7 +48,7 @@ define([
         $.ajax({
             type: "GET",
             url: url,
-            dataType: $.support.cors ? "json" : "jsonp",
+            dataType: this._getDataType(),
             success: function(data, status, jqXhr) {
                 // todo: (genehallman) check livefyre stream status in data.status
                 callback(null, data);
@@ -54,6 +57,43 @@ define([
                 callback(err);
             }
         });
+    };
+
+    /**
+     * Get the $.ajax dataType to use
+     */
+    LivefyreBootstrapClient.prototype._getDataType = function () {
+        if ($.support.cors && this._protocol === 'http') {
+            return 'json';
+        }
+        return 'jsonp';
+    };
+
+    /**
+     * Get the base of the URL (protocol and hostname)
+     */
+    LivefyreBootstrapClient.prototype._getUrlBase = function (opts) {
+        return [
+            this._protocol,
+            '://',
+            this._getHost(opts)
+        ].join('');
+    };
+
+    /**
+     * Get the host of the URL
+     */
+    LivefyreBootstrapClient.prototype._getHost = function (opts) {
+        var isLivefyreNetwork = (opts.network === 'livefyre.com');
+        var host = 'bootstrap.' + (isLivefyreNetwork ? opts.environment : opts.network);
+        var hostParts;
+        if (! isLivefyreNetwork && this._protocol=='https') {
+            hostParts = opts.network.split('.');
+            // Make like 'customer.bootstrap.fyre.co'
+            hostParts.splice(1,0,'bootstrap');
+            host = hostParts.join('.');
+        }
+        return host;
     };
 
     return LivefyreBootstrapClient;

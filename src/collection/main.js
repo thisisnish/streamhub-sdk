@@ -59,7 +59,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         opts = opts || {};
         return new CollectionArchive({
             collection: this,
-            bootstrapClient: opts.bootstrapClient
+            bootstrapClient: opts.bootstrapClient || this._bootstrapClient
         });
     };
 
