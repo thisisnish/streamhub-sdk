@@ -37,7 +37,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this._createClient = opts.createClient || new LivefyreCreateClient();
 
         // Internal streams
-        this._writer = opts.writer || this.createWriter();
+        this._writer = opts.writer || null;
         this._updater = null;
         this._pipedArchives = [];
 

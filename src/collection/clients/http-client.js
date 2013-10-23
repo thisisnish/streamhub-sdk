@@ -8,6 +8,7 @@ define(['streamhub-sdk/jquery'], function($) {
      */
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
+        this._serviceName = opts.serviceName;
         this._protocol = opts.protocol || 'http';
     };
 
@@ -18,7 +19,8 @@ define(['streamhub-sdk/jquery'], function($) {
         $.ajax({
             type: opts.method || 'GET',
             url: opts.url,
-            dataType: this._getDataType(),
+            data: opts.data,
+            dataType: this._getDataType(opts),
             success: function(data, status, jqXhr) {
                 // todo: (genehallman) check livefyre stream status in data.status
                 callback(null, data);
@@ -41,7 +43,10 @@ define(['streamhub-sdk/jquery'], function($) {
     /**
      * Get the $.ajax dataType to use
      */
-    LivefyreHttpClient.prototype._getDataType = function () {
+    LivefyreHttpClient.prototype._getDataType = function (opts) {
+        if (opts.dataType) {
+            return opts.dataType;
+        }
         if ($.support.cors && this._protocol === 'http') {
             return 'json';
         }
@@ -74,12 +79,6 @@ define(['streamhub-sdk/jquery'], function($) {
         }
         return host;
     };
-
-    /**
-     * The Name of the web service that this client should make
-     * requests to
-     */
-    LivefyreHttpClient.prototype._serviceName = 'bootstrap';
 
     // Keep track of whether the page is unloading, so we don't throw exceptions
     // if the XHR fails just because of that.

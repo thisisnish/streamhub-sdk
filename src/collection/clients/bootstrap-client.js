@@ -10,7 +10,9 @@ function(LivefyreHttpClient, inherits, base64) {
      * @exports streamhub-sdk/collection/clients/bootstrap-client
      */
     var LivefyreBootstrapClient = function (opts) {
-        LivefyreHttpClient.apply(this, arguments);
+        opts = opts || {};
+        opts.serviceName = 'bootstrap';
+        LivefyreHttpClient.call(this, opts);
     };
 
     inherits(LivefyreBootstrapClient, LivefyreHttpClient);

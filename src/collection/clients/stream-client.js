@@ -8,8 +8,10 @@ function(LivefyreHttpClient, inherits) {
      * A Client for requesting Livefyre's Stream Service
      * @exports streamhub-sdk/collection/clients/stream-client
      */
-    var LivefyreStreamClient = function () {
-        LivefyreHttpClient.apply(this, arguments);
+    var LivefyreStreamClient = function (opts) {
+        opts = opts || {};
+        opts.serviceName = 'stream1';
+        LivefyreHttpClient.call(this, opts);
     };
 
     inherits(LivefyreStreamClient, LivefyreHttpClient);
