@@ -73,8 +73,7 @@ function(LivefyreHttpClient, inherits) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
-            "http://quill.",
-            opts.network,
+            this._getUrlBase(opts),
             "/api/v3.0/collection/",
             opts.collectionId,
             "/post/tweet/"
@@ -82,26 +81,19 @@ function(LivefyreHttpClient, inherits) {
 
         var postData = {tweet_id: opts.tweetId, lftoken: opts.lftoken};
 
-        $.ajax({
-            type: "POST",
+        this._request({
+            method: 'POST',
             url: url,
-            data: postData,
-            success: function(data, status, jqXhr) {
-                // todo: (genehallman) check livefyre stream status in data.status
-                callback(null, data);
-            },
-            error: function(jqXhr, status, err) {
-                callback(err);
-            }
-        });
+            dataType: 'json',
+            data: postData
+        }, callback);
     };
 
     LivefyreWriteClient.prototype.follow = function(opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
-            "http://quill.",
-            opts.network,
+            this._getUrlBase(opts),
             "/api/v3.0/collection/",
             opts.collectionId,
             "/follow/"
@@ -109,25 +101,19 @@ function(LivefyreHttpClient, inherits) {
 
         var postData = {lftoken: opts.lftoken};
 
-        $.ajax({
-            type: "POST",
+        this._request({
+            method: 'POST',
             url: url,
-            data: postData,
-            success: function(data, status, jqXhr) {
-                callback(null, data);
-            },
-            error: function(jqXhr, status, err) {
-                callback(err);
-            }
-        });
+            dataType: 'json',
+            data: postData
+        }, callback);
     };
 
     LivefyreWriteClient.prototype.unfollow = function(opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
-            "http://quill.",
-            opts.network,
+            this._getUrlBase(opts),
             "/api/v3.0/collection/",
             opts.collectionId,
             "/unfollow/"
@@ -135,19 +121,13 @@ function(LivefyreHttpClient, inherits) {
 
         var postData = {lftoken: opts.lftoken};
 
-        $.ajax({
-            type: "POST",
+        this._request({
+            method: 'POST',
             url: url,
-            data: postData,
-            success: function(data, status, jqXhr) {
-                callback(null, data);
-            },
-            error: function(jqXhr, status, err) {
-                callback(err);
-            }
-        });
+            dataType: 'json',
+            data: postData
+        }, callback);
     };
 
     return LivefyreWriteClient;
-
 });

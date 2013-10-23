@@ -4,7 +4,10 @@ define(['streamhub-sdk/jquery'], function($) {
     /**
      * A Client for requesting Livefyre web services
      * This is private and should not be used or imported directly
-     * @exports streamhub-sdk/collection/clients/bootstrap-client
+     * @private
+     * @param opts {object}
+     * @param opts.serviceName {string} The StreamHub web service to request
+     * @param opts.protocol {string} 'http' or 'https'
      */
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
@@ -14,13 +17,18 @@ define(['streamhub-sdk/jquery'], function($) {
 
     /**
      * Make an HTTP Request
+     * @param opts {object}
+     * @param opts.method {string=GET} HTTP Method
+     * @param opts.url {string} URL to request
+     * @param opts.dataType {string} Data type to expect in response
+     * @param callback {function} A callback to pass (err, data) to
      */
     LivefyreHttpClient.prototype._request = function (opts, callback) {
         $.ajax({
             type: opts.method || 'GET',
             url: opts.url,
             data: opts.data,
-            dataType: this._getDataType(opts),
+            dataType: opts.dataType || this._getDataType(),
             success: function(data, status, jqXhr) {
                 // todo: (genehallman) check livefyre stream status in data.status
                 callback(null, data);
@@ -43,10 +51,7 @@ define(['streamhub-sdk/jquery'], function($) {
     /**
      * Get the $.ajax dataType to use
      */
-    LivefyreHttpClient.prototype._getDataType = function (opts) {
-        if (opts.dataType) {
-            return opts.dataType;
-        }
+    LivefyreHttpClient.prototype._getDataType = function () {
         if ($.support.cors && this._protocol === 'http') {
             return 'json';
         }
@@ -55,6 +60,9 @@ define(['streamhub-sdk/jquery'], function($) {
 
     /**
      * Get the base of the URL (protocol and hostname)
+     * @param opts {object}
+     * @param opts.network {string} StreamHub Network
+     * @param opts.environment {string=} StreamHub environment
      */
     LivefyreHttpClient.prototype._getUrlBase = function (opts) {
         return [
@@ -66,6 +74,9 @@ define(['streamhub-sdk/jquery'], function($) {
 
     /**
      * Get the host of the URL
+     * @param opts {object}
+     * @param opts.network {string} StreamHub Network
+     * @param opts.environment {string=} StreamHub environment
      */
     LivefyreHttpClient.prototype._getHost = function (opts) {
         var isLivefyreNetwork = (opts.network === 'livefyre.com');
