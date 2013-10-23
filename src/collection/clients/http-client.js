@@ -24,6 +24,15 @@ define(['streamhub-sdk/jquery'], function($) {
                 callback(null, data);
             },
             error: function(jqXhr, status, err) {
+                if (windowIsUnloading) {
+                    // Error fires when the user reloads the page during a long poll,
+                    // But we don't want to throw an exception if the page is
+                    // going away anyway.
+                    return;
+                }
+                if ( ! err) {
+                    err = "LivefyreHttpClient Error";
+                }
                 callback(err);
             }
         });
@@ -71,6 +80,13 @@ define(['streamhub-sdk/jquery'], function($) {
      * requests to
      */
     LivefyreHttpClient.prototype._serviceName = 'bootstrap';
+
+    // Keep track of whether the page is unloading, so we don't throw exceptions
+    // if the XHR fails just because of that.
+    var windowIsUnloading = false;
+    $(window).on('beforeunload', function () {
+        windowIsUnloading = true;
+    });
 
     return LivefyreHttpClient;
 

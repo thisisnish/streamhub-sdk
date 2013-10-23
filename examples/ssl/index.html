@@ -23,8 +23,9 @@
             'streamhub-sdk/content/views/content-list-view',
             'streamhub-sdk/collection',
             'streamhub-sdk/content',
-            'streamhub-sdk/collection/clients/bootstrap-client'
-        ],function (ListView, Collection, Content, BootstrapClient) {
+            'streamhub-sdk/collection/clients/bootstrap-client',
+            'streamhub-sdk/collection/clients/stream-client'
+        ],function (ListView, Collection, Content, BootstrapClient, StreamClient) {
             var listView = window.view = new ListView({
                 showMore: 2,
                 el: document.getElementById("listView")
@@ -37,8 +38,17 @@
                 environment: 'qa-ext.livefyre.com',
                 bootstrapClient: new BootstrapClient({
                     protocol: 'https'
-                })
+                }) 
             });
+
+            var createUpdater = collection.createUpdater;
+            collection.createUpdater = function (opts) {
+                opts = opts || {};
+                opts.streamClient = new StreamClient({
+                    protocol: 'https'
+                });
+                return createUpdater.call(this, opts);
+            };
 
             collection.pipe(listView);
 
