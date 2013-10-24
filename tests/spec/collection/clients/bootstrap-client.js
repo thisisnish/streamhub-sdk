@@ -101,7 +101,6 @@ function ($, jasmine, LivefyreBootstrapClient, MockBootstrapClient) {
                     environment: 'qa-ext.livefyre.com'
                 });
                 var ajaxArgs = $.ajax.mostRecentCall.args[0];
-                expect(ajaxArgs.dataType).toBe('jsonp');
                 expect(ajaxArgs.url).toBe('https://backplane-qa.bootstrap.fyre.co/bs3/qa-ext.livefyre.com/backplane-qa.fyre.co/290598/MQ==/init');
             });
             it('makes correct request when opts.environment=fyre', function () {
@@ -114,7 +113,6 @@ function ($, jasmine, LivefyreBootstrapClient, MockBootstrapClient) {
                 });
                 var ajaxArgs = $.ajax.mostRecentCall.args[0];
                 expect(ajaxArgs.url.indexOf('https')).toBe(0);
-                expect(ajaxArgs.dataType).toBe('jsonp');
             });
 
         });
