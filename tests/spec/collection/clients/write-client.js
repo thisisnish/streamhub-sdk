@@ -29,7 +29,7 @@ function ($, jasmine, LivefyreWriteClient) {
                 writeClient = new LivefyreWriteClient({
                     protocol: 'https'
                 });
-            })
+            });
             it('.postContent makes requests to the right https URL', function () {
                 var onResponse = jasmine.createSpy();
                 writeClient.postContent({
@@ -45,7 +45,7 @@ function ($, jasmine, LivefyreWriteClient) {
 
                 runs(function () {
                     var ajaxArgs = $.ajax.mostRecentCall.args[0];
-                    expect(ajaxArgs.url).toBe('https://labs-t402.quill.fyre.co/api/v3.0/collection/33129653/post/')
+                    expect(ajaxArgs.url).toBe('https://labs-t402.quill.fyre.co/api/v3.0/collection/33129653/post/');
                 });
             });
         });

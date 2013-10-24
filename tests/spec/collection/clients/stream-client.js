@@ -47,7 +47,7 @@ function ($, jasmine, LivefyreStreamClient) {
                     network: 'backplane-qa.fyre.co',
                     collectionId: '2486639',
                     environment: 'qa-ext.livefyre.com'
-                }
+                };
                 streamClient.getContent(opts, callback);
                 expect($.ajax.mostRecentCall.args[0].url).toBe("https://backplane-qa.stream1.fyre.co/v3.0/collection/2486639/0/");
             });
