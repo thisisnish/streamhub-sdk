@@ -7,12 +7,15 @@ define(['streamhub-sdk/jquery'], function($) {
      * @private
      * @param opts {object}
      * @param opts.serviceName {string} The StreamHub web service to request
-     * @param opts.protocol {string} 'http' or 'https'
+     * @param opts.protocol {string} 'http:' or 'https:'
      */
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
         this._serviceName = opts.serviceName;
-        this._protocol = opts.protocol || 'http';
+        this._protocol = opts.protocol || document.location.protocol;
+        if (this._protocol.slice(-1) !== ':') {
+            this._protocol += ':';
+        }
     };
 
     /**
@@ -52,7 +55,7 @@ define(['streamhub-sdk/jquery'], function($) {
      * Get the $.ajax dataType to use
      */
     LivefyreHttpClient.prototype._getDataType = function () {
-        if ($.support.cors && this._protocol === 'http') {
+        if ($.support.cors) {
             return 'json';
         }
         return 'jsonp';
@@ -67,7 +70,7 @@ define(['streamhub-sdk/jquery'], function($) {
     LivefyreHttpClient.prototype._getUrlBase = function (opts) {
         return [
             this._protocol,
-            '://',
+            '//',
             this._getHost(opts)
         ].join('');
     };
@@ -82,7 +85,7 @@ define(['streamhub-sdk/jquery'], function($) {
         var isLivefyreNetwork = (opts.network === 'livefyre.com');
         var host = this._serviceName + '.' + (isLivefyreNetwork ? opts.environment : opts.network);
         var hostParts;
-        if ( ! isLivefyreNetwork && this._protocol=='https') {
+        if ( ! isLivefyreNetwork && this._protocol=='https:') {
             hostParts = opts.network.split('.');
             // Make like 'customer.bootstrap.fyre.co'
             hostParts.splice(1, 0, this._serviceName);
