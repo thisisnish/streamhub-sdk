@@ -86,6 +86,29 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient) {
                 }).not.toThrow();
             });
 
+            it(".push()es undefined on stream timeout", function () {
+                updater._streamClient.getContent = function (opts, errback) {
+                    errback(null, { timeout: true });
+                };
+                spyOn(updater, 'push');
+                var onReadableSpy = jasmine.createSpy;
+                updater.on('readable', onReadableSpy);
+                updater.read();
+                spyOn(updater, 'read');
+                waitsFor(function () {
+                    return updater.push.callCount;
+                });
+                runs(function () {
+                    expect(updater.push.mostRecentCall.args[0]).toBe(undefined);
+                });
+                waitsFor(function () {
+                    return updater.read.callCount;
+                });
+                runs(function () {
+                    expect(updater.read).toHaveBeenCalledWith(0);
+                });
+            });
+
             it("should properly attach attachments, even if the attachment is "+
                "received before its target", function () {
                 var parent = {"vis":1,"content":{"replaces":"","bodyHtml":"<a vocab=\"http://schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:14268796\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https://twitter.com/#!/TheRoyalty\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">TheRoyalty</span></a> hoppin on a green frog after the set at <a vocab=\"http://schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:1240466234\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https://twitter.com/#!/Horseshoe_SX13\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">Horseshoe_SX13</span></a> showcase during <a href=\"https://twitter.com/#!/search/realtime/%23sxsw\" class=\"fyre-hashtag\" hashtag=\"sxsw\" rel=\"tag\" target=\"_blank\">#sxsw</a> <a href=\"http://t.co/lUqA5TT7Uy\" target=\"_blank\" rel=\"nofollow\">pic.twitter.com/lUqA5TT7Uy</a>","annotations":{},"authorId":"190737922@twitter.com","parentId":"","updatedAt":1363299774,"id":"tweet-312328006913904641@twitter.com","createdAt":1363299774},"source":1,"lastVis":0,"type":0,"event":1363299777181024};
@@ -117,10 +140,19 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient) {
                     }()))
                 };
 
-                var content = updater.read();
-                expect(content.id).toBe(parent.content.id);
-                expect(content.attachments.length).toBe(1);
-                expect(content.attachments[0].id).toBe(attachment.content.id);
+                var onData = jasmine.createSpy();
+                updater.on('data', onData);
+
+                waitsFor(function () {
+                    return onData.callCount;
+                });
+
+                runs(function () {
+                    var content = onData.mostRecentCall.args[0];
+                    expect(content.id).toBe(parent.content.id);
+                    expect(content.attachments.length).toBe(1);
+                    expect(content.attachments[0].id).toBe(attachment.content.id);
+                });
             });
 
             it("should not emit Content from states that are not visible", function () {
