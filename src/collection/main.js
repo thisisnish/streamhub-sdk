@@ -137,7 +137,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
     Collection.prototype.resume = function () {
         Duplex.prototype.resume.apply(this, arguments);
         if (this._updater) {
-            this._updater.resume()
+            this._updater.resume();
         }
     };
 

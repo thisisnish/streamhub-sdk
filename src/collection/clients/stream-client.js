@@ -40,7 +40,7 @@ function(LivefyreHttpClient, inherits) {
             "/"
         ].join("");
 
-        this._request({
+        return this._request({
             url: url
         }, function (err, data) {
             if (err) {

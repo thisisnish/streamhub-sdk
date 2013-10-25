@@ -27,28 +27,32 @@ define(['streamhub-sdk/jquery'], function($) {
      * @param callback {function} A callback to pass (err, data) to
      */
     LivefyreHttpClient.prototype._request = function (opts, callback) {
-        $.ajax({
+        var xhr = $.ajax({
             type: opts.method || 'GET',
             url: opts.url,
             data: opts.data,
-            dataType: opts.dataType || this._getDataType(),
-            success: function(data, status, jqXhr) {
-                // todo: (genehallman) check livefyre stream status in data.status
-                callback(null, data);
-            },
-            error: function(jqXhr, status, err) {
-                if (windowIsUnloading) {
-                    // Error fires when the user reloads the page during a long poll,
-                    // But we don't want to throw an exception if the page is
-                    // going away anyway.
-                    return;
-                }
-                if ( ! err) {
-                    err = "LivefyreHttpClient Error";
-                }
-                callback(err);
-            }
+            dataType: opts.dataType || this._getDataType()
         });
+
+        xhr.done(function(data, status, jqXhr) {
+            // todo: (genehallman) check livefyre stream status in data.status
+            callback(null, data);
+        });
+
+        xhr.fail(function(jqXhr, status, err) {
+            if (windowIsUnloading) {
+                // Error fires when the user reloads the page during a long poll,
+                // But we don't want to throw an exception if the page is
+                // going away anyway.
+                return;
+            }
+            if ( ! err) {
+                err = "LivefyreHttpClient Error";
+            }
+            callback(err);
+        });
+
+        return xhr;
     };
 
     /**
