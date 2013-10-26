@@ -63,6 +63,22 @@ function ($, jasmine, LivefyreBootstrapClient, MockBootstrapClient) {
                     expect(mostRecentRequest.url).toMatch(/0\.json$/);
                 });
             });
+
+            it("requests correct URL when opts.environment is undefined", function () {
+                var opts = {
+                    network: "playstation.fyre.co",
+                    siteId: "342776",
+                    articleId: "custom-1378951411840"
+                };
+                bootstrapClient.getContent(opts, callback);
+                waitsFor(function() {
+                    return callback.callCount;
+                }, '.getContent to respond');
+                runs(function () {
+                    var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
+                    expect(mostRecentRequest.url).toBe('http://bootstrap.playstation.fyre.co/bs3/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init');
+                });
+            });
         });
 
         describe("when configured with environment='fyre'", function () {

@@ -32,16 +32,15 @@ function(LivefyreHttpClient, inherits, base64) {
      *     bootstrap request. Callback signature is "function(error, data)".
      */
     LivefyreBootstrapClient.prototype.getContent = function(opts, callback) {
-        var isLocaldev;
         opts = opts || {};
         callback = callback || function() {};
-        opts.environment = opts.environment || 'livefyre.com';
-        isLocaldev = opts.environment && opts.environment === 'fyre';
+        var environment = opts.environment || 'livefyre.com';
+        var includeEnvironment = (environment !== 'livefyre.com') && (environment !== 'fyre');
 
         var url = [
             this._getUrlBase(opts),
             "/bs3/",
-            (opts.environment && ! isLocaldev) ? opts.environment + "/" : "",
+            includeEnvironment ? opts.environment + "/" : "",
             opts.network,
             "/",
             opts.siteId,
