@@ -76,7 +76,7 @@ function(LivefyreHttpClient, inherits) {
         }
         postData = JSON.stringify(postData);
 
-        return this._request({
+        this._request({
             method: 'POST',
             url: url,
             dataType: 'json',

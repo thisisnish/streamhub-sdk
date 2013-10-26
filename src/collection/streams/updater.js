@@ -31,6 +31,7 @@ StateToContent, debug) {
         opts = opts || {};
         this._collection = opts.collection;
         this._streamClient = opts.streamClient || new StreamClient();
+        this._request = null;
         Readable.call(this, opts);
     };
 
@@ -75,7 +76,13 @@ StateToContent, debug) {
         var self = this,
             streamClient = this._streamClient,
             streamClientOpts = this._getStreamClientOptions();
-        streamClient.getContent(streamClientOpts, function (err, data) {
+
+        var request = streamClient.getContent(streamClientOpts, function (err, data) {
+            if (err === 'abort') {
+                log('stream request aborted');
+                self.push();
+                return;
+            }
             if (err) {
                 return self.emit('error', err);
             }
@@ -107,6 +114,21 @@ StateToContent, debug) {
                 });
             }
         });
+
+        this._request = request;
+    };
+
+
+    /**
+     * Pause the Updater
+     * Including killing the active stream request
+     */
+    CollectionUpdater.prototype.pause = function () {
+        if (this._request) {
+            this._request.abort();
+            this._request = null;
+        }
+        return Readable.prototype.pause.apply(this, arguments);
     };
 
 
