@@ -5,9 +5,10 @@ define([
     'streamhub-sdk/content/state-to-content',
     'streamhub-sdk-tests/mocks/collection/mock-collection',
     'streamhub-sdk-tests/mocks/collection/clients/mock-bootstrap-client',
-    'streamhub-sdk-tests/mocks/collection/clients/mock-stream-client'],
+    'streamhub-sdk-tests/mocks/collection/clients/mock-stream-client',
+    'streamhub-sdk/jquery'],
 function (jasmine, CollectionUpdater, Readable, StateToContent, MockCollection,
-MockLivefyreBootstrapClient, MockLivefyreStreamClient) {
+MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
     "use strict";
 
     describe('streamhub-sdk/collection/streams/updater', function () {
@@ -27,7 +28,6 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient) {
             });
 
             afterEach(function () {
-                console.log('after');
                 updater.pause();
             });
 
@@ -112,7 +112,7 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient) {
                     });
                     waitsFor(function () {
                         return updater._read.callCount;
-                    })
+                    });
                     updater.read(0);
                 });
             });
