@@ -40,7 +40,7 @@ function(LivefyreHttpClient, inherits) {
             "/"
         ].join("");
 
-        this._request({
+        var request = this._request({
             url: url
         }, function (err, data) {
             if (err) {
@@ -54,6 +54,8 @@ function(LivefyreHttpClient, inherits) {
             }
             callback(null, data.data);
         });
+
+        return request;
     };
 
     return LivefyreStreamClient;

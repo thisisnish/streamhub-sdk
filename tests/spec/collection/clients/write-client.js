@@ -13,8 +13,10 @@ function ($, jasmine, LivefyreWriteClient) {
             writeClient = new LivefyreWriteClient();
             mockData = {"status": "ok", "code": 200, "data": {"messages": [{"content": {"replaces": null, "bodyHtml": "<p>oh hi there 2</p>", "annotations": {"moderator": true}, "source": 0, "authorId": "system@labs-t402.fyre.co", "parentId": null, "mentions": [], "shareLink": "http://t402.livefyre.com/.fyreit/w9lbch.4", "id": "26394571", "createdAt": 1363808885}, "vis": 1, "type": 0, "event": null, "source": 0}], "authors": {"system@labs-t402.fyre.co": {"displayName": "system", "tags": [], "profileUrl": "", "avatar": "http://gravatar.com/avatar/e23293c6dfc25b86762b045336233add/?s=50&d=http://d10g4z0y9q0fip.cloudfront.net/a/anon/50.jpg", "type": 1, "id": "system@labs-t402.fyre.co"}}}};
 
-            spyOn($, "ajax").andCallFake(function(opts) {
-                opts.success(mockData);
+            spyOn(writeClient, '_request').andCallFake(function(opts, errback) {
+                return $.ajax().success(function () {
+                    errback(null, mockData);
+                });
             });
         });
 
@@ -28,6 +30,11 @@ function ($, jasmine, LivefyreWriteClient) {
             beforeEach(function () {
                 writeClient = new LivefyreWriteClient({
                     protocol: 'https'
+                });
+                spyOn(writeClient, '_request').andCallFake(function (opts, errback) {
+                    return $.ajax().success(function (data) {
+                        errback(null, data);
+                    });
                 });
             });
             it('.postContent makes requests to the right https URL', function () {
@@ -44,7 +51,7 @@ function ($, jasmine, LivefyreWriteClient) {
                 });
 
                 runs(function () {
-                    var ajaxArgs = $.ajax.mostRecentCall.args[0];
+                    var ajaxArgs = writeClient._request.mostRecentCall.args[0];
                     expect(ajaxArgs.url).toBe('https://labs-t402.quill.fyre.co/api/v3.0/collection/33129653/post/');
                 });
             });
@@ -64,7 +71,7 @@ function ($, jasmine, LivefyreWriteClient) {
                 return callback.callCount > 0;
             });
             runs(function() {
-                var ajaxArgs = $.ajax.mostRecentCall.args[0];
+                var ajaxArgs = writeClient._request.mostRecentCall.args[0];
                 expect(ajaxArgs.url).toBe("http://quill.labs-t402.fyre.co/api/v3.0/collection/33129653/post/");
                 expect(ajaxArgs.data.body).toBe("oh <strong>hi</strong> there");
                 expect(ajaxArgs.data.lftoken).toBe("my token");
@@ -98,7 +105,7 @@ function ($, jasmine, LivefyreWriteClient) {
                 return callback.callCount > 0;
             });
             runs(function() {
-                var ajaxArgs = $.ajax.mostRecentCall.args[0];
+                var ajaxArgs = writeClient._request.mostRecentCall.args[0];
                 expect(ajaxArgs.url).toBe("http://quill.labs-t402.fyre.co/api/v3.0/collection/33129653/post/");
                 expect(ajaxArgs.data.body).toBe("oh <strong>hi</strong> there");
                 expect(ajaxArgs.data.lftoken).toBe("my token");

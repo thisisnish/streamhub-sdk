@@ -195,6 +195,76 @@ Auth, Writable, Readable) {
                 });
             });
 
+            describe('.pause()', function () {
+                var writable;
+                beforeEach(function () {
+                    writable = new Writable();
+                    collection.createUpdater = function () {
+                        var readable = new Readable();
+                        readable._read = function () { this.push(null); };
+                        return readable;
+                    };
+                    collection.createArchive = function () {
+                        // Use a Dummy BootstrapClient to prevent requests
+                        return Collection.prototype.createArchive.call(this, {
+                            bootstrapClient: {
+                                getContent: function (opts, errback) {
+                                    errback(null, {});
+                                }
+                            }
+                        });
+                    };
+                    writable._write = function (chunk, done) { done(); };
+                });
+                it('should work if called before any pipe', function () {
+                    expect(function () {
+                        collection.pause();
+                    }).not.toThrow();
+                });
+                it('should pause ._updater if collection is piped', function () {
+                    collection.pipe(writable);
+                    expect(collection._updater.readable).toBe(true);
+                    spyOn(collection._updater, 'pause').andCallThrough();
+                    collection.pause();
+                    expect(collection._updater.pause).toHaveBeenCalled();
+                });
+            });
+
+            describe('.resume()', function () {
+                var writable;
+                beforeEach(function () {
+                    writable = new Writable();
+                    collection.createUpdater = function () {
+                        var readable = new Readable();
+                        readable._read = function () { this.push(null); };
+                        return readable;
+                    };
+                    collection.createArchive = function () {
+                        // Use a Dummy BootstrapClient to prevent requests
+                        return Collection.prototype.createArchive.call(this, {
+                            bootstrapClient: {
+                                getContent: function (opts, errback) {
+                                    errback(null, {});
+                                }
+                            }
+                        });
+                    };
+                    writable._write = function (chunk, done) { done(); };
+                });
+                it('should work if called before any pipe', function () {
+                    expect(function () {
+                        collection.resume();
+                    }).not.toThrow();
+                });
+                it('should resume ._updater if collection is piped', function () {
+                    collection.pipe(writable);
+                    expect(collection._updater.readable).toBe(true);
+                    spyOn(collection._updater, 'resume').andCallThrough();
+                    collection.resume();
+                    expect(collection._updater.resume).toHaveBeenCalled();
+                });
+            });
+
             describe('.pipe(writable)', function () {
                 var writable,
                     listView;

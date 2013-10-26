@@ -31,6 +31,7 @@ StateToContent, debug) {
         opts = opts || {};
         this._collection = opts.collection;
         this._streamClient = opts.streamClient || new StreamClient();
+        this._request = null;
         Readable.call(this, opts);
     };
 
@@ -44,7 +45,6 @@ StateToContent, debug) {
      */
     CollectionUpdater.prototype._read = function () {
         var self = this;
-
         log('_read', 'Buffer length is ' + this._readableState.buffer.length);
 
         if ( ! this._latestEvent || ! this._collection.id) {
@@ -76,7 +76,13 @@ StateToContent, debug) {
         var self = this,
             streamClient = this._streamClient,
             streamClientOpts = this._getStreamClientOptions();
-        streamClient.getContent(streamClientOpts, function (err, data) {
+
+        var request = streamClient.getContent(streamClientOpts, function (err, data) {
+            if (err === 'abort') {
+                log('stream request aborted');
+                self.push();
+                return;
+            }
             if (err) {
                 return self.emit('error', err);
             }
@@ -85,9 +91,7 @@ StateToContent, debug) {
                 // was no real-time data. So we should keep streaming
                 // on the next event loop tick
                 log('long poll timeout, requesting again on next tick');
-                return streamUtil.nextTick(function () {
-                    self._stream();
-                });
+                return pollAgain();
             }
             var contents = self._contentsFromStreamData(data);
             // Update _latestEvent so we only get new data
@@ -97,9 +101,34 @@ StateToContent, debug) {
                 self.push.apply(self, contents);
                 // _read will get called again when more data is needed
             } else {
-                self._stream();
+                return pollAgain();
+            }
+
+            function pollAgain() {
+                // Push nothing for now.
+                self.push();
+                // But trigger another _read cycle ASAP
+                // This gives the internals a chance to check paused state
+                streamUtil.nextTick(function () {
+                    self.read(0);
+                });
             }
         });
+
+        this._request = request;
+    };
+
+
+    /**
+     * Pause the Updater
+     * Including killing the active stream request
+     */
+    CollectionUpdater.prototype.pause = function () {
+        if (this._request) {
+            this._request.abort();
+            this._request = null;
+        }
+        return Readable.prototype.pause.apply(this, arguments);
     };
 
 
