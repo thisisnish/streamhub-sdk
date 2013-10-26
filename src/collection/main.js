@@ -37,7 +37,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this._createClient = opts.createClient || new LivefyreCreateClient();
 
         // Internal streams
-        this._writer = opts.writer || this.createWriter();
+        this._writer = opts.writer || null;
         this._updater = null;
         this._pipedArchives = [];
 
@@ -59,7 +59,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         opts = opts || {};
         return new CollectionArchive({
             collection: this,
-            bootstrapClient: opts.bootstrapClient
+            bootstrapClient: opts.bootstrapClient || this._bootstrapClient
         });
     };
 
@@ -121,6 +121,25 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         }
     };
 
+    /**
+     * Pause live updates from this Collection
+     */
+    Collection.prototype.pause = function () {
+        Duplex.prototype.pause.apply(this, arguments);
+        if (this._updater) {
+            this._updater.pause();
+        }
+    };
+
+    /**
+     * Resume live updates from this Collection
+     */
+    Collection.prototype.resume = function () {
+        Duplex.prototype.resume.apply(this, arguments);
+        if (this._updater) {
+            this._updater.resume();
+        }
+    };
 
     Collection.prototype._read = function () {
         var self = this,
@@ -136,7 +155,10 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         if ( ! content) {
             // Wait for Content to be available
             return self._updater.once('readable', function () {
-                self.push(self._updater.read());
+                var content = self._updater.read();
+                if (content) {
+                    self.push(content);
+                }
             });
         }
 

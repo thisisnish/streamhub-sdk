@@ -1,6 +1,6 @@
 {
   "name": "streamhub-sdk",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "main": [
     "./src/main.js"
   ],
@@ -12,7 +12,7 @@
     "requirejs-text": "~2.0.5",
     "requirejs-hogan-plugin": "git://github.com/millermedeiros/requirejs-hogan-plugin.git#~0.2.1",
     "requirejs-plugins": "~1.0.2",
-    "stream": "git://github.com/Livefyre/stream.git",
+    "stream": "git://github.com/Livefyre/stream.git#~0.1",
     "event-emitter": "git://github.com/Livefyre/event-emitter.git",
     "inherits": "git://github.com/Livefyre/inherits.git"
   },
