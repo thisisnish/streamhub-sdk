@@ -147,7 +147,7 @@ StateToContent, debug) {
         stateToContent.on('data', function (content) {
             contents.push(content);
         });
-
+        
         for (var contentId in states) {
             if (states.hasOwnProperty(contentId)) {
                 state = states[contentId];
