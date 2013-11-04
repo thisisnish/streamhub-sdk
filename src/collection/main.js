@@ -238,9 +238,9 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
     
     
     /**
-     * @private
      * Request the Create endpoint to create an entirely new collection. This
      * gets called when Bootstrap initialization fails.
+     * @private
      * @param errback {optionalObjectCallback} Optional callback to be passed an object on
      *      error or undefined on success.
      */

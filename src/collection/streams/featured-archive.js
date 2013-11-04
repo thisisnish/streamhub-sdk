@@ -35,9 +35,9 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
 
     /**
-     * @private
      * Called by Readable base class. Do not call directly
      * Get content from bootstrap and .push() onto the read buffer
+     * @private
      */
     FeaturedArchive.prototype._read = function () {
         var self = this;
@@ -79,10 +79,10 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
 
     /**
-     * @private
      * Read the next Page of data from the Collection
      * And make sure not to emit any state.events that were in the headDocument
      * ._push will eventually be called.
+     * @private
      */
     FeaturedArchive.prototype._readNextPage = function () {
         var self = this,
@@ -109,9 +109,9 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
 
     /**
-     * @private
      * Get options to pass to this._bootstrapClient methods to specify
      * which Collection we care about
+     * @private
      */
     FeaturedArchive.prototype._getBootstrapClientOptions = function () {
         return {
@@ -125,8 +125,8 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
 
     /**
-     * @private
      * Convert a bootstrapDocument to an array of Content models
+     * @private
      * @param bootstrapDocument {object} an object with content and authors keys
      *     e.g. http://bootstrap.livefyre.com/bs3/livefyre.com/4/NTg0/0.json
      * @return {Content[]} An array of Content models

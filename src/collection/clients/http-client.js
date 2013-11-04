@@ -20,8 +20,9 @@ define(['streamhub-sdk/jquery'], function($) {
 
     /**
      * Make an HTTP Request
+     * @private
      * @param opts {object}
-     * @param opts.method {string=GET} HTTP Method
+     * @param [opts.method=GET] {string} HTTP Method
      * @param opts.url {string} URL to request
      * @param opts.dataType {string} Data type to expect in response
      * @param callback {function} A callback to pass (err, data) to
