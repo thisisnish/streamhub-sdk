@@ -65,13 +65,13 @@ define([
         var ContentViewType = this._getViewTypeForContent(content);
         var attachmentsView = this._createAttachmentsView(content);
         var contentView = new ContentViewType({ content : content, attachmentsView: attachmentsView });
-        
+
         return contentView;
     };
 
 
     ContentViewFactory.prototype._getViewTypeForContent = function (content) {
-        for (var i=0; i < this.contentRegistry.length; i++) {
+        for (var i=0, len=this.contentRegistry.length; i < len; i++) {
             var current = this.contentRegistry[i];
             if (!(content instanceof current.type)) {
                 continue;
