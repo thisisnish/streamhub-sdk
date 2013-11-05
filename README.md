@@ -34,11 +34,11 @@ You can use streamhub-sdk either by including a built version from a CDN or usin
 
 To include it in your page from the CDN, add a script tag to your HTML file.
 
-    <script src="http://cdn.livefyre.com/libs/sdk/v2.0.0/builds/253/streamhub-sdk.min.js"></script>
+    <script src="http://cdn.livefyre.com/libs/sdk/v2.2.0/streamhub-sdk.min.js"></script>
 
 You can also include the default stylesheet
 
-    <link rel="stylesheet" href="http://cdn.livefyre.com/libs/sdk/v2.0.0/builds/253/streamhub-sdk.min.css" />
+    <link rel="stylesheet" href="http://cdn.livefyre.com/libs/sdk/v2.2.0/streamhub-sdk.min.css" />
 
 See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/13/
 
