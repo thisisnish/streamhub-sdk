@@ -162,7 +162,6 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         pageCountEl[ this.pageCount ? 'show' : 'hide' ]();
 
         var thumbnailsEl = this.$el.find(this.galleryThumbnailsSelector);
-        thumbnailsEl[this.thumbnails && this.tileableCount() ? 'show' : 'hide']();
 
         if (this.proportionalThumbnails) {
             var thumbnailTileEls = thumbnailsEl.children();

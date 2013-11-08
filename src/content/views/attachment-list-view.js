@@ -18,9 +18,9 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
     var AttachmentListView = function(opts) {
         opts = opts || {};
 
-        View.call(this, opts);
-
         this.oembedViews = [];
+
+        View.call(this, opts);
         
         if (opts.content) {
             this.setContent(opts.content);
@@ -31,6 +31,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
     AttachmentListView.prototype.template = AttachmentListTemplate;
     AttachmentListView.prototype.stackedAttachmentsSelector = '.content-attachments-stacked';
     AttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
+    AttachmentListView.prototype.listLengthAttribute = 'data-hub-list-length';
 
     /**
      * Set the element for the view to render in.
@@ -75,6 +76,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
     AttachmentListView.prototype.setElement = function (element) {
         this.el = element;
         this.$el = $(element);
+        this.$el.attr(this.listLengthAttribute, this.count());
         return this;
     };
 
@@ -120,6 +122,8 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         if (this.el) {
             this._insert(oembedView);
             oembedView.render();
+            // Update list length attribute
+            this.$el.attr(this.listLengthAttribute, this.count());
         }
 
         return oembedView;

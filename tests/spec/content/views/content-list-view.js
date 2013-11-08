@@ -67,6 +67,13 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView) {
             });
         });
 
+        it('uses a modal when constructecd with opts.modal = true', function () {
+            var listView = new ListView({
+                modal: true
+            });
+            expect(typeof listView.modal).toBe('object');
+        });
+
         describe('handles focusContent.hub event', function () {
 
             var content;
