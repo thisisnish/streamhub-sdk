@@ -34,6 +34,19 @@ function($, jasmine, jasminejQuery, Content, AttachmentListView, OembedView) {
                     expect(attachmentListView instanceof AttachmentListView).toBe(true);
                 });
             });
+
+            describe('with existing attachments', function () {
+                var content;
+                beforeEach(function () {
+                    content = new Content('hello world');
+                    content.addAttachment(oembedAttachment);
+                    content.addAttachment(oembedAttachment);
+                });
+                it('increments the list length attribute', function() {
+                    var attachmentListView = new AttachmentListView({ content: content });
+                    expect(attachmentListView.$el.attr(attachmentListView.listLengthAttribute)).toBe('2');
+                });
+            });
         });
 
         describe('when adding an attachment', function() {
@@ -43,6 +56,13 @@ function($, jasmine, jasminejQuery, Content, AttachmentListView, OembedView) {
                 expect(attachmentListView.count()).toBe(0);
                 attachmentListView.add(oembedAttachment);
                 expect(attachmentListView.count()).toBe(1);
+            });
+
+            it('increments the list length attribute', function() {
+                var attachmentListView = new AttachmentListView({ content: content });
+                expect(attachmentListView.$el.attr(attachmentListView.listLengthAttribute)).toBe('0');
+                attachmentListView.add(oembedAttachment);
+                expect(attachmentListView.$el.attr(attachmentListView.listLengthAttribute)).toBe('1');
             });
 
             describe('creates an attachment view', function() {

@@ -154,6 +154,13 @@
                 height: 100%;
             }
         }
+
+        &[data-hub-list-length='1'],
+        &[data-hub-list-length='0'] {
+            .content-attachments-gallery-thumbnails {
+                display: none;
+            }
+        }
     }
     
     // Tiled attachments
