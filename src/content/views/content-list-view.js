@@ -27,7 +27,15 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
     var ContentListView = function(opts) {
         opts = opts || {};
 
-        this.modal = opts.modal === undefined ? new AttachmentGalleryModal() : opts.modal;
+        switch (opts.modal) {
+            case true:
+            case undefined:
+                this.modal = new AttachmentGalleryModal();
+                break;
+            default:
+                this.modal = opts.modal;
+        }
+
         this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
 
         ListView.call(this, opts);
