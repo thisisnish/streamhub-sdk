@@ -65,10 +65,5 @@ define([
         }
     };
 
-    /**
-     * TODO (joao)
-     */
-    View.prototype.remove = function(content) { return null; };
-
     return View;
 });

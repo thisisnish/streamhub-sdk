@@ -72,6 +72,12 @@ function ($, jasmine, LivefyreContent) {
             expect(spy.callCount).toBe(1);
             expect(content.attachments.length).toBe(1);
         });
+        
+        it("has the specified id", function () {
+            var content = new LivefyreContent({body: 'body', id: '123456'});
+            expect(content.id).toBe('123456');
+        });
+        
         it("should not allow duplicate replies to be added", function () {
             var spy = jasmine.createSpy();
             content = new LivefyreContent(mockData.livefyreStreamContent);

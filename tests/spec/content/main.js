@@ -2,9 +2,8 @@ define([
     'streamhub-sdk/jquery',
     'jasmine',
     'streamhub-sdk/content',
-    'streamhub-sdk/content/enums',
     'jasmine-jquery'],
-function ($, jasmine, Content, ENUMS) {
+function ($, jasmine, Content) {
     'use strict';
 
     describe('Content', function () {
@@ -21,16 +20,6 @@ function ($, jasmine, Content, ENUMS) {
                 id: '123456'
             });
             expect(content.body).toBe(body);
-        });
-        
-        it("has the specified id", function () {
-            var content = new Content('body', '123456');
-            expect(content.id).toBe('123456');
-        });
-        
-        it("has an id even when none is specified", function () {
-            var content = new Content('body');
-            expect(content.id).toBe('0');
         });
         
         describe(".set", function () {
@@ -59,18 +48,10 @@ function ($, jasmine, Content, ENUMS) {
                 content.on('change:body', onChange);
                 content.on('change:visibility', onChange);
                 
-                content.set({body: newBody, visibility: ENUMS.VISIBILITY.OWNER});
+                content.set({body: newBody, visibility: 'OWNER'});
                 
                 expect(onChange).toHaveBeenCalledWith(newBody, oldBody);
-                expect(onChange).toHaveBeenCalledWith(ENUMS.VISIBILITY.OWNER, ENUMS.VISIBILITY.EVERYONE);
-            });
-            
-            it("emits 'removed' event when its visibility is set to NONE", function () {
-                content.on('removed', onChange);
-                
-                content.set({visibility: ENUMS.VISIBILITY.NONE});
-                
-                expect(onChange).toHaveBeenCalled();
+                expect(onChange).toHaveBeenCalledWith('OWNER', 'EVERYONE');
             });
         });
     });

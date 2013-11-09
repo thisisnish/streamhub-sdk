@@ -23,6 +23,7 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
             var content,
                 contentView,
                 countListeners = function ($el) {
+                //obj.on('', $el) and not $el.on('', obj); 
                     var obj = $._data($el, 'events');
                     return obj ? Object.getOwnPropertyNames(obj).length : 0;
                 };
@@ -35,7 +36,7 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
             it('can remove its elements from the dom', function () {
                 var $obj = contentView.$el,
                     elem = $obj[0],
-                    doc = document.documentElement;
+                    doc = document.documentElement;//sandbox(); ?
                 $obj.prependTo(doc);
                 expect($.contains(doc, elem)).toBe(true);
                 
@@ -52,10 +53,10 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
                 expect(countListeners(contentView.$el[0])).toBe(0);
             });
             
-            it('is called when its content is \'removed\'', function () {
+            it('is called when its content visibility changes to "NONE"', function () {
                 spyOn(contentView, 'remove').andCallThrough();
                 
-                content.emit('removed');
+                content.set({visibility: 'NONE'});
                 
                 expect(contentView.remove).toHaveBeenCalled();
             });
@@ -68,6 +69,7 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
                 contentView.remove();
                 
                 expect(spy).toHaveBeenCalled();
+                expect(spy.calls[0].args[1]).toEqual({ contentView: contentView });
             });
         });
 

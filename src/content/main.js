@@ -2,20 +2,19 @@ define([
     'streamhub-sdk/jquery',
     'event-emitter',
     'inherits'
-], function($, EventEmitter, inherits) {
+], function($, EventEmitter, inherits, Enums) {
     'use strict';
 
     /**
      * A piece of Web Content
-     * @param body {String|Object} A string of HTML, the Content body.
+     * @param body {!string|{body: string}} A string of HTML, the Content body.
      *     If an object, it should have a .body property
-     * @param [opt_id] {string} An id for this content. Preferably unique.
      * @fires Content#attachment
      * @fires Content#removeAttachment
      * @exports streamhub-sdk/content
      * @constructor
      */
-    var Content = function(bodyOrObj, opt_id) {
+    var Content = function(bodyOrObj) {
         var body = bodyOrObj;
         var obj = {};
         EventEmitter.call(this);
@@ -24,13 +23,11 @@ define([
             obj = bodyOrObj;
         }
         this.body = body;
-        this.id = obj.id || opt_id || '0';//TODO (joao) Maybe Math.floor(Math.random() * 10000000);
-        this.visibility = obj.visibility || obj.vis || 1;
+        var vis = (typeof obj.visibility === 'number') ? obj.visibility :
+            (typeof obj.vis === 'number') ? obj.vis : 1; 
+        this.visibility = Content.enums.visibility[vis];
         this.attachments = obj.attachments || [];
         this.replies = obj.replies || [];
-        this.on('change:visibility', function () {
-            this.emit('removed');
-        }.bind(this));
     };
     inherits(Content, EventEmitter);
 
@@ -75,7 +72,7 @@ define([
         var oldProperties = {};
         var oldVal, newVal, changed;
         for (var key in newProperties) {
-            if (newProperties.hasOwnProperty(key) && key[0] !== '_') {//ignore _listeners and others
+            if (newProperties.hasOwnProperty(key) && key.charAt(0) !== '_') {//ignore _listeners and others
                 oldVal = oldProperties[key] = this[key];
                 newVal = this[key] = newProperties[key];
                 if (newVal !== oldVal) {
@@ -86,11 +83,26 @@ define([
         }
         if (changed) {
             this.emit('change', newProperties, oldProperties);
-            if (this.visibility === 0) {
-                this.emit('removed');
-            }
         }
     };
+    
+    Content.enums = {};
+    /**
+     * The StreamHub APIs use enumerations to define
+     * the visibility of messages sent down the wire. All levels of
+     * visibility should be in this enumeration.
+     * @enum visibility
+     * @property {string} visibility.NONE - Should not be displayed.
+     * @property {string} visibility.EVERYONE - Visible to all.
+     * @property {string} visibility.OWNER - Visible only to the author.
+     * @property {string} visibility.GROUP - Visible to privileged users.
+     */
+    Content.enums.visibility = [
+        'NONE',
+        'EVERYONE',
+        'OWNER',
+        'GROUP'
+    ];
 
     return Content;
 });

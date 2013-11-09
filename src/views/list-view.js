@@ -68,8 +68,8 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         this.$el.on('showMore.hub', function () {
             this.showMore();
         }.bind(this));
-        this.$el.on('removeContentView.hub', function (event, contentView) {
-            this.remove(contentView);
+        this.$el.on('removeView.hub', function (ev, view) {
+            this.remove(view);
         }.bind(this));
     };
 

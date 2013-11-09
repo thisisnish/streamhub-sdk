@@ -24,8 +24,8 @@ function ($, jasmine, Storage, Content) {
                 
             });
             
-            it("adds new contents and emits 'storage.add'", function () {
-                Storage.on('storage.add', onSpy);
+            it("adds new contents and emits 'add'", function () {
+                Storage.on('add', onSpy);
                 
                 Storage.set(contentA.id, contentA);
                 
@@ -33,17 +33,13 @@ function ($, jasmine, Storage, Content) {
                 expect(onSpy).toHaveBeenCalledWith(contentA);
             });
 
-            it("updates existing contents and emits 'storage.change'", function () {
-                Storage.on('storage.change', onSpy);
+            it("updates existing contents and emits 'change'", function () {
+                Storage.on('change', onSpy);
                 
                 Storage.set(contentA.id, contentA);
                 Storage.set(contentA.id, contentB);
                 
-                //TODO (joao) Come up with a better validation
-                //Storage isn't actually supposed to replace the old Content
-                //with the new Content; it's supposed to set the properties
-                //of the new Content on the old Content object.
-                expect(Storage.cache[contentA.id].body).toEqual(contentB.body);
+                expect(Storage.cache[contentA.id]).toEqual(contentB);
                 expect(onSpy).toHaveBeenCalledWith(contentA, contentB);
             });
             

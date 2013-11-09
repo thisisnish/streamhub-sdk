@@ -81,7 +81,6 @@ inherits) {
         // Store content with IDs in case we later get
         // replies or attachments targeting it
         if (content && content.id) {
-            //TODO (joao) Check for existing content before setting.
             var stored = Storage.get(content.id);
             if (stored) {
                 stored.set(content);
@@ -151,7 +150,6 @@ inherits) {
     StateToContent._createContent = function (state, authors) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
-//TODO (joao) Check if state.vis=0, emit 'delete'?
         state.author = authors && authors[state.content.authorId];
 
         if ('OEMBED' === StateToContent.enums.type[state.type]) {
@@ -239,8 +237,8 @@ inherits) {
         'SHARE',
         'OEMBED'
     ];
-
-
+    
+    
     StateToContent.Storage = Storage;
     return StateToContent;
 });

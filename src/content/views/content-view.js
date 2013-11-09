@@ -30,8 +30,8 @@ define([
             this.content.on("reply", function(content) {
                 this.render();
             }.bind(this));
-            this.content.on("removed", function() {
-                this.remove();
+            this.content.on("change:visibility", function(newVis, oldVis) {
+                this._handVisibilityChange(newVis, oldVis);
             }.bind(this));
             this.content.on("change", function() {
                 this.render();
@@ -175,10 +175,22 @@ define([
         /**
          * removeContentView.hub
          * @event ContentView#removeContentView.hub
-         * @type {ContentView}
+         * @type {{contentView: ContentView}}
          */
-        this.$el.trigger('removeContentView.hub', this);
+        this.$el.trigger('removeContentView.hub', { contentView: this });
         this.$el.remove();
+    };
+    
+    /**
+     * Handles changes to the model's visibility.
+     * @param ev
+     * @param oldVis {string} Content.enum.visibility
+     * @param newVis {string} Content.enum.visibility
+     */
+    ContentView.prototype._handVisibilityChange = function(newVis, oldVis) {
+        if (newVis === 'NONE') {
+            this.remove();
+        }
     };
     
     return ContentView;

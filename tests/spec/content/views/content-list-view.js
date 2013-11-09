@@ -186,14 +186,24 @@ function (jasmine, jasminejquery, $, ListView, Content, ContentView) {
             });
         });
 
-        describe('handles removeContentView.hub event', function() {
+        describe('handles removeContentView.hub event and', function() {
+            var list,
+                content,
+                contentView;
+            beforeEach(function () {
+                content = new Content('Body Text', 'id');
+                list = new ListView();
+                contentView = list.add(content);
 
-            it('calls the .remove method', function() {
-                var content = new Content();
-                listView.add(content);
-                spyOn(listView, 'remove');
-                listView.$el.trigger('removeContentView.hub', content);
-                expect(listView.remove).toHaveBeenCalled();
+                expect(list.views.length).toBe(1);
+                expect(list.$listEl[0].children.length).toBe(1);
+            });
+            
+            it("removes content on 'removeContentView.hub'", function () {
+                contentView.remove();
+                
+                expect(list.views.length).toBe(0);
+                expect(list.$listEl[0].children.length).toBe(0);
             });
         });
 

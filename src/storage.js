@@ -34,14 +34,13 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function($, EventEmitter) {
      */
     Storage.set = function(key, value, callback) {
         var obj = this.cache[key];
+        this.cache[key] = value;
         
         if (obj) {
-            this.emit('storage.change', obj, value);
-            //obj.set(value)//TODO (joao) Doesn't work for children stored in array anyways.
+            this.emit('change', obj, value);
         } else {
-            this.emit('storage.add', value);
+            this.emit('add', value);
         }
-        this.cache[key] = value;
         
         if (callback) {
             callback(value);
