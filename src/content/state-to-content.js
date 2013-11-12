@@ -89,6 +89,9 @@ inherits) {
                     // properties that are actually set
                     stored.set(StateToContent._getUpdatedProperties(content));
                 }
+                // Use the stored object, now that its properties have been
+                // updated
+                content = stored;
                 // Don't handle attachment updating.
             } else {
                 Storage.set(content.id, content);

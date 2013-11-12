@@ -3,8 +3,10 @@ define([
     'streamhub-sdk/content/state-to-content',
     'stream/transform',
     'streamhub-sdk/content',
-    'streamhub-sdk/content/types/livefyre-instagram-content'],
-function (jasmine, StateToContent, Transform, Content, LivefyreInstagramContent) {
+    'streamhub-sdk/content/types/livefyre-instagram-content',
+    'json!streamhub-sdk-tests/mocks/bootstrap-data.json'],
+function (jasmine, StateToContent, Transform, Content, LivefyreInstagramContent,
+mockBootstrapData) {
     'use strict';
 
     describe('streamhub-sdk/streams/transforms/state-to-content', function () {
@@ -320,6 +322,14 @@ function (jasmine, StateToContent, Transform, Content, LivefyreInstagramContent)
                 }
                 expect(contents.length).toBe(33);
             });
+        });
+
+        it('can transform the same nested state twice and be returned the same object', function () {
+            var state = mockBootstrapData.content['2 Tiled Attachments'];
+            var content1 = StateToContent.transform(state)[0];
+            var content2 = StateToContent.transform(state)[0];
+            expect(content1.attachments).toBe(content2.attachments);
+            expect(content1).toBe(content2);
         });
 
 
