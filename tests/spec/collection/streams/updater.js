@@ -207,60 +207,35 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
                 expect(content).toBe(null);
             });
 
-            describe('and a .readable listener is added', function () {
-                var onReadableSpy;
-                beforeEach(function () {
-                    onReadableSpy = jasmine.createSpy('CollectionUpdater#onReadable');
-                    updater.on('readable', onReadableSpy);
+            it('emits readable after a .readable listener is added', function () {
+                var onReadableSpy = jasmine.createSpy('CollectionUpdater#onReadable');
+                updater.on('readable', onReadableSpy);
+                waitsFor(function () {
+                    return onReadableSpy.callCount;
                 });
-                it('emits readable', function () {
-                    waitsFor(function () {
-                        return onReadableSpy.callCount;
-                    });
-                    runs(function () {
-                        expect(onReadableSpy).toHaveBeenCalled();
-                    });
+                runs(function () {
+                    expect(onReadableSpy).toHaveBeenCalled();
+                });
+            });
+
+            it('can .read() content from the stream', function () {
+                spyOn(updater, '_read').andCallThrough();
+                var contents = [];
+
+                updater.on('data', function (content) {
+                    contents.push(content);
                 });
 
-                describe('and readable is emitted', function () {
-                    beforeEach(function () {
-                        spyOn(updater, '_read').andCallThrough();
-                        waitsFor(function () {
-                            return onReadableSpy.callCount;
-                        });
-                    });
+                waitsFor(function () {
+                    return contents.length;
+                });
 
-                    it('can .read() content from the stream', function () {
-                        var contents = [],
-                            content;
-
-                        waitsFor(function () {
-                            content = updater.read();
-                            if (content) {
-                                contents.push(content);
-                                // Try to read more data, so that _read is called
-                                // again
-                                updater.read();
-                            }
-                            return contents.length;
-                        });
-
-                        runs(function () {
-                            // There is one attachment state and one content state in the stream,
-                            // so only one content item will be emitted, but it will have an attachment
-                            expect(contents.length).toBe(1);
-                            expect(contents[0].attachments.length).toBe(1);
-                        });
-
-                        waitsFor(function () {
-                            return updater._read.callCount === 2;
-                        }, '_read to be called twice');
-
-                        runs(function () {
-                            updater.pause();
-                            expect(updater._read.callCount).toBe(2);
-                        });
-                    });
+                runs(function () {
+                    updater.pause();
+                    expect(updater._read.callCount).toBe(2);
+                    // There is one attachment state and one content state in the stream,
+                    // so only one content item will be emitted, but it will have an attachment
+                    expect(contents.length).toBe(1);
                 });
             });
         });

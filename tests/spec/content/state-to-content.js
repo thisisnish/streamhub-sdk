@@ -2,8 +2,9 @@ define([
     'jasmine',
     'streamhub-sdk/content/state-to-content',
     'stream/transform',
+    'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-instagram-content'],
-function (jasmine, StateToContent, Transform, LivefyreInstagramContent) {
+function (jasmine, StateToContent, Transform, Content, LivefyreInstagramContent) {
     'use strict';
 
     describe('streamhub-sdk/streams/transforms/state-to-content', function () {
@@ -73,6 +74,60 @@ function (jasmine, StateToContent, Transform, LivefyreInstagramContent) {
                         replies: true
                     });
                     expect(contents.length).toBe(33);
+                });
+            });
+
+            describe('when transforming non-publicly visible states', function () {
+                it('creates content with the proper .visibility property', function () {
+                    var visState = {
+                        "vis": 1,
+                        "collectionId": "10732798",
+                        "content": {
+                          "parentId": "",
+                          "bodyHtml": "<a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:1654035270\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/Spivid\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">Spivid<\/span><\/a> i'm not wasting money on an ugly game and i haven't played xbox in 3 months",
+                          "annotations": {
+                            
+                          },
+                          "authorId": "1859538097@twitter.com",
+                          "updatedAt": 1383774488,
+                          "id": "tweet-398205180132343808@twitter.com",
+                          "createdAt": 1383774488
+                        },
+                        "source": 1,
+                        "type": 0,
+                        "event": 1.3842095032206e+15,
+                        "childContent": []
+                    };
+                    var authors = {
+                        "1859538097@twitter.com": {
+                            "displayName": "reflect",
+                            "tags": [
+                              
+                            ],
+                            "profileUrl": "https:\/\/twitter.com\/#!\/eRaReflect",
+                            "avatar": "http:\/\/pbs.twimg.com\/profile_images\/378800000644211494\/9cb6b3a9424d813fc6f424c69cf1944e_normal.png",
+                            "type": 3,
+                            "id": "1859538097@twitter.com"
+                        }
+                    };
+                    var deleteState = {
+                        "vis": 0,
+                        "collectionId": "10732798",
+                        "content": {
+                          "id": "tweet-398205180132343808@twitter.com"
+                        },
+                        "source": 1,
+                        "lastVis": 1,
+                        "type": 0,
+                        "event": 1.3842088245838e+15
+                    };
+                    var content = StateToContent.transform(visState, authors)[0];
+                    expect(content.author.displayName).toBe('reflect')
+                    // This will mutate the above `content`, but not return anything
+                    var contentAfterDelete = StateToContent.transform(deleteState);
+                    expect(content.visibility).toBe(Content.enums.visibility[deleteState.vis]);
+                    expect(content.author.displayName).toBe('reflect');
+                    expect(content.createdAt).toEqual(jasmine.any(Date));
                 });
             });
         });

@@ -12,7 +12,7 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      * @constructor
      */
     var LivefyreContent = function(json) {
-        Content.call(this, this);
+        Content.call(this);
         if ( ! json) {
             return this;
         }

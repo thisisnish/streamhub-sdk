@@ -31,7 +31,7 @@ define([
                 this.render();
             }.bind(this));
             this.content.on("change:visibility", function(newVis, oldVis) {
-                this._handVisibilityChange(newVis, oldVis);
+                this._handleVisibilityChange(newVis, oldVis);
             }.bind(this));
             this.content.on("change", function() {
                 this.render();
@@ -187,8 +187,8 @@ define([
      * @param oldVis {string} Content.enum.visibility
      * @param newVis {string} Content.enum.visibility
      */
-    ContentView.prototype._handVisibilityChange = function(newVis, oldVis) {
-        if (newVis === 'NONE') {
+    ContentView.prototype._handleVisibilityChange = function(newVis, oldVis) {
+        if (newVis !== 'EVERYONE') {
             this.remove();
         }
     };
