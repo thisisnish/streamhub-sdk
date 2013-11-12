@@ -154,9 +154,10 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
 
         if ( ! content) {
             // Wait for Content to be available
-            return self._updater.once('readable', function () {
+            return self._updater.on('readable', function readAndPush() {
                 var content = self._updater.read();
                 if (content) {
+                    self._updater.removeListener('readable', readAndPush);
                     self.push(content);
                 }
             });

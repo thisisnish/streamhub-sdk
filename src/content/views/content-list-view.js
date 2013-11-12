@@ -53,15 +53,14 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
      * @param element {HTMLElement} The element to render the ContentListView in
      */
     ContentListView.prototype.setElement = function (element) {
-        var self = this;
         ListView.prototype.setElement.apply(this, arguments);
 
-        this.$el.on('removeContentView.hub', function(e, content) {
-            self.remove(content);
-        });
+        this.$el.on('removeContentView.hub', function(e, data) {
+            this.remove(data.contentView.content);
+        }.bind(this));
         this.$el.on('focusContent.hub', function(e, context) {
-            var contentView = self.getContentView(context.content);
-            if (! self.modal) {
+            var contentView = this.getContentView(context.content);
+            if (! this.modal) {
                 if (contentView &&
                     contentView.attachmentsView &&
                     typeof contentView.attachmentsView.focus === 'function') {
@@ -69,8 +68,8 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
                 }
                 return;
             }
-            self.modal.show(context.content, { attachment: context.attachmentToFocus });
-        });
+            this.modal.show(context.content, { attachment: context.attachmentToFocus });
+        }.bind(this));
     };
 
 

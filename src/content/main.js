@@ -2,12 +2,12 @@ define([
     'streamhub-sdk/jquery',
     'event-emitter',
     'inherits'
-], function($, EventEmitter, inherits) {
+], function($, EventEmitter, inherits, Enums) {
     'use strict';
 
     /**
      * A piece of Web Content
-     * @param body {String|Object} A string of HTML, the Content body.
+     * @param body {!string|{body: string}} A string of HTML, the Content body.
      *     If an object, it should have a .body property
      * @fires Content#attachment
      * @fires Content#removeAttachment
@@ -22,7 +22,10 @@ define([
             body = body.body;
             obj = bodyOrObj;
         }
-        this.body = this.body || body;
+        this.body = body;
+        var vis = (typeof obj.visibility === 'number') ? obj.visibility :
+            (typeof obj.vis === 'number') ? obj.vis : 1; 
+        this.visibility = Content.enums.visibility[vis];
         this.attachments = obj.attachments || [];
         this.replies = obj.replies || [];
     };
@@ -67,16 +70,39 @@ define([
     Content.prototype.set = function (newProperties) {
         newProperties = newProperties || {};
         var oldProperties = {};
-        var oldVal, newVal;
+        var oldVal, newVal, changed;
         for (var key in newProperties) {
-            if (newProperties.hasOwnProperty(key)) {
+            if (newProperties.hasOwnProperty(key) && key.charAt(0) !== '_') {//ignore _listeners and others
                 oldVal = oldProperties[key] = this[key];
                 newVal = this[key] = newProperties[key];
-                this.emit('change:'+key, newVal, oldVal);
+                if (newVal !== oldVal) {
+                    this.emit('change:'+key, newVal, oldVal);//Will emit 'change:visibility'
+                    changed = true;
+                }
             }
         }
-        this.emit('change', newProperties, oldProperties);
+        if (changed) {
+            this.emit('change', newProperties, oldProperties);
+        }
     };
+    
+    Content.enums = {};
+    /**
+     * The StreamHub APIs use enumerations to define
+     * the visibility of messages sent down the wire. All levels of
+     * visibility should be in this enumeration.
+     * @enum visibility
+     * @property {string} visibility.NONE - Should not be displayed.
+     * @property {string} visibility.EVERYONE - Visible to all.
+     * @property {string} visibility.OWNER - Visible only to the author.
+     * @property {string} visibility.GROUP - Visible to privileged users.
+     */
+    Content.enums.visibility = [
+        'NONE',
+        'EVERYONE',
+        'OWNER',
+        'GROUP'
+    ];
 
     return Content;
 });

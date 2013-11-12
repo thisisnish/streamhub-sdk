@@ -2,7 +2,7 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function($, EventEmitter) {
     'use strict';
     
 	/**
-	 * A module to use for storing state.
+	 * A module to use for storing Content objects.
 	 * @exports streamhub-sdk/storage
 	 */
     var Storage = {

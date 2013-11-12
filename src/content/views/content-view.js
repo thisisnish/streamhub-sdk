@@ -26,11 +26,16 @@ define([
         this.attachmentsView = opts.attachmentsView;
         this.setElement(opts.el || document.createElement(this.elTag));
 
-        var self = this;
         if (this.content) {
             this.content.on("reply", function(content) {
-                self.render();
-            });
+                this.render();
+            }.bind(this));
+            this.content.on("change:visibility", function(newVis, oldVis) {
+                this._handleVisibilityChange(newVis, oldVis);
+            }.bind(this));
+            this.content.on("change", function() {
+                this.render();
+            }.bind(this));
         }
     };
     
@@ -170,10 +175,22 @@ define([
         /**
          * removeContentView.hub
          * @event ContentView#removeContentView.hub
-         * @type {Content}
+         * @type {{contentView: ContentView}}
          */
-        this.$el.trigger('removeContentView.hub', this.content);
+        this.$el.trigger('removeContentView.hub', { contentView: this });
         this.$el.remove();
+    };
+    
+    /**
+     * Handles changes to the model's visibility.
+     * @param ev
+     * @param oldVis {string} Content.enum.visibility
+     * @param newVis {string} Content.enum.visibility
+     */
+    ContentView.prototype._handleVisibilityChange = function(newVis, oldVis) {
+        if (newVis !== 'EVERYONE') {
+            this.remove();
+        }
     };
     
     return ContentView;

@@ -16,14 +16,12 @@ define([
      */
     var LivefyreTwitterContent = function (json) {
         LivefyreContent.call(this, json);
-        TwitterContent.call(this, json);
         this.tweetId = LivefyreTwitterContent.tweetIdFromLivefyreId(this.id);
         if (this.author) {
             this.author.twitterUserId = LivefyreTwitterContent.twitterUserIdFromLivefyreAuthorId(this.author.id);
         }
     };
     inherits(LivefyreTwitterContent, LivefyreContent);
-    $.extend(LivefyreTwitterContent.prototype, TwitterContent.prototype);
 
     /**
      * Transform a Livefyre Message ID to a Twitter tweet id

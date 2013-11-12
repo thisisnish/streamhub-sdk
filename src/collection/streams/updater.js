@@ -140,18 +140,17 @@ StateToContent, debug) {
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
         var states = streamData.states,
-            stateToContent = new StateToContent(streamData),
             state,
+            transformedContent,
             contents = [];
-
-        stateToContent.on('data', function (content) {
-            contents.push(content);
-        });
 
         for (var contentId in states) {
             if (states.hasOwnProperty(contentId)) {
                 state = states[contentId];
-                stateToContent.write(state);
+                transformedContent = StateToContent.transform(state, streamData.authors);
+                if (transformedContent && transformedContent.length) {
+                    contents.push.apply(contents, transformedContent);
+                }
             }
         }
 

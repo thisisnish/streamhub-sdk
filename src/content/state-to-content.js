@@ -81,7 +81,18 @@ inherits) {
         // Store content with IDs in case we later get
         // replies or attachments targeting it
         if (content && content.id) {
-            Storage.set(content.id, content);
+            var stored = Storage.get(content.id);
+            if (stored) {
+                // If existing content, update properties on existing instance
+                if (isContent) {
+                    // This could be a delete state, so only update
+                    // properties that are actually set
+                    stored.set(StateToContent._getUpdatedProperties(content));
+                }
+                // Don't handle attachment updating.
+            } else {
+                Storage.set(content.id, content);
+            }
             childContent = Storage.get('children_'+content.id) || [];
         }
 
@@ -145,7 +156,6 @@ inherits) {
     StateToContent._createContent = function (state, authors) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
-
         state.author = authors && authors[state.content.authorId];
 
         if ('OEMBED' === StateToContent.enums.type[state.type]) {
@@ -177,6 +187,28 @@ inherits) {
     }
 
 
+    /**
+     * For a piece of Content, get the the properties and values that should
+     * be used to update a previous version of that piece of Content
+     * @param content {Content} A new version of a piece of Content,
+     *     possible generated from a delete state, so it may not have a truthy
+     *     .body and .attachments
+     * @return {Object} A dict containing updated properties and their new value
+     */
+    StateToContent._getUpdatedProperties = function(content) {
+        var updatedProperties = {
+            visibility: content.visibility
+        };
+        if (content.attachments && content.attachments.length) {
+            updatedProperties.attachments = content.attachments;
+        }
+        if (content.body) {
+            updatedProperties.body = content.body;
+        }
+        return updatedProperties;
+    };
+
+
     StateToContent._attachOrStore = function (attachment, targetId) {
         var target = Storage.get(targetId);
         if (target) {
@@ -202,6 +234,7 @@ inherits) {
 
 
     StateToContent._storeChild = function (child, parentId) {
+        //TODO (joao) Make this smart enough to not push duplicates
         var childrenKey = 'children_' + parentId,
             children = Storage.get(childrenKey) || [];
         children.push(child);
@@ -232,8 +265,8 @@ inherits) {
         'SHARE',
         'OEMBED'
     ];
-
-
+    
+    
     StateToContent.Storage = Storage;
     return StateToContent;
 });

@@ -4,8 +4,10 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
     /**
      * Base class for any piece of Livefyre content. Extracts the details of the content
      * from the json object passed in via the Livefyre stream.
-     * @param json {Object} An object obtained via a Livefyre stream that represents the
+     * @param json {!Object} An object obtained via a Livefyre stream that represents the
      *        state of the content.
+     * @param json.body {!string}
+     * @param json.id {!number}
      * @exports streamhub-sdk/content/types/livefyre-content
      * @constructor
      */
@@ -14,13 +16,14 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
         if ( ! json) {
             return this;
         }
+        json.content = json.content || {};
         this.body = json.content.bodyHtml || "";
         this.source = LivefyreContent.SOURCES[json.source];
-        this.id = json.content.id;
+        this.id = json.content.id || json.id;
         this.author = json.author;
         this.createdAt = new Date(1000 * json.content.createdAt);
         this.updatedAt = new Date(1000 * json.content.updatedAt);
-        this.visibility = json.vis;
+        this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
         this._annotations = json.content.annotations;

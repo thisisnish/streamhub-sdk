@@ -18,6 +18,60 @@ function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView
                 expect(contentView.createdAt instanceof Date).toBe(true);
             });
         });
+        
+        describe('.remove', function () {
+            var content,
+                contentView,
+                countListeners = function ($el) {
+                //obj.on('', $el) and not $el.on('', obj); 
+                    var obj = $._data($el, 'events');
+                    return obj ? Object.getOwnPropertyNames(obj).length : 0;
+                };
+            beforeEach(function () {
+                content = new Content('Body Text', 'id');
+                contentView = new ContentView({'content': content});
+                contentView.render();
+            });
+            
+            it('can remove its elements from the dom', function () {
+                var $obj = contentView.$el,
+                    elem = $obj[0],
+                    doc = document.documentElement;//sandbox(); ?
+                $obj.prependTo(doc);
+                expect($.contains(doc, elem)).toBe(true);
+                
+                contentView.remove();
+                
+                expect($.contains(doc, elem)).toBe(false);
+            });
+            
+            it('can remove its listeners', function () {
+                expect(countListeners(contentView.$el[0])).toBeGreaterThan(0);
+                
+                contentView.remove();
+                
+                expect(countListeners(contentView.$el[0])).toBe(0);
+            });
+            
+            it('is called when its content visibility changes to "NONE"', function () {
+                spyOn(contentView, 'remove').andCallThrough();
+                
+                content.set({visibility: 'NONE'});
+                
+                expect(contentView.remove).toHaveBeenCalled();
+            });
+            
+            it('emits \'removeContentView.hub\'', function () {
+                var spy = jasmine.createSpy('removed handler');
+                
+                contentView.$el.on('removeContentView.hub', spy);
+                
+                contentView.remove();
+                
+                expect(spy).toHaveBeenCalled();
+                expect(spy.calls[0].args[1]).toEqual({ contentView: contentView });
+            });
+        });
 
         describe('when viewing LivefyreContent', function () {
             var livefyreContent,
