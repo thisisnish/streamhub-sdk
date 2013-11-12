@@ -141,7 +141,6 @@ StateToContent, debug) {
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
         var states = streamData.states,
             state,
-            content,
             transformedContent,
             contents = [];
 

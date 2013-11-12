@@ -122,9 +122,9 @@ function (jasmine, StateToContent, Transform, Content, LivefyreInstagramContent)
                         "event": 1.3842088245838e+15
                     };
                     var content = StateToContent.transform(visState, authors)[0];
-                    expect(content.author.displayName).toBe('reflect')
+                    expect(content.author.displayName).toBe('reflect');
                     // This will mutate the above `content`, but not return anything
-                    var contentAfterDelete = StateToContent.transform(deleteState);
+                    StateToContent.transform(deleteState);
                     expect(content.visibility).toBe(Content.enums.visibility[deleteState.vis]);
                     expect(content.author.displayName).toBe('reflect');
                     expect(content.createdAt).toEqual(jasmine.any(Date));
