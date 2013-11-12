@@ -12,7 +12,7 @@ define(['streamhub-sdk/jquery'], function($) {
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
         this._serviceName = opts.serviceName;
-        this._protocol = opts.protocol || 'http:';
+        this._protocol = opts.protocol || document.location.protocol;
         if (this._protocol.slice(-1) !== ':') {
             this._protocol += ':';
         }
