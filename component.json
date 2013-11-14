@@ -19,6 +19,7 @@
   "devDependencies": {
     "jasmine": "*",
     "jasmine-jquery": "*",
-    "almond": "~0.2.5"
+    "almond": "~0.2.5",
+    "blanket": "~1.1.5"
   }
 }
