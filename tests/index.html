@@ -94,14 +94,17 @@
                     jasmineEnv.updateInterval = 1000;
                     
                     var htmlReporter = new jasmine.HtmlReporter();
-                    var consoleReporter = new jasmine.XUnitConsoleReporter();
 
                     if ( ! Coverage) {
                         jasmineEnv.addReporter(htmlReporter);
-                        jasmineEnv.addReporter(consoleReporter);
                         jasmineEnv.specFilter = function(spec) {
                             return htmlReporter.specFilter(spec);
                         };
+                    }
+
+                    if ( document.location.search.indexOf('xunit') !== -1) {
+                    var consoleReporter = new jasmine.XUnitConsoleReporter();
+                        jasmineEnv.addReporter(consoleReporter);
                     }
 
                     $(function(){
