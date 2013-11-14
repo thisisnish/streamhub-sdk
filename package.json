@@ -30,6 +30,7 @@
   "devDependencies": {
     "jshint": "~2.1.0",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
-    "ink-docstrap": "git://github.com/michaelward82/docstrap.git#line-number-alignment"
+    "ink-docstrap": "git://github.com/michaelward82/docstrap.git#line-number-alignment",
+    "phantomjs": "~1.9.2-2"
   }
 }
