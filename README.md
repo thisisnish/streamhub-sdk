@@ -1,5 +1,7 @@
 # streamhub-sdk
 
+[![Build Status](https://travis-ci.org/Livefyre/streamhub-sdk.png)](https://travis-ci.org/Livefyre/streamhub-sdk)
+
 SDK to stream Content from Livefyre's StreamHub platform, create Views to render Streams and Content, and build amazing real-time social web applications.
 
 ## Quick Example
