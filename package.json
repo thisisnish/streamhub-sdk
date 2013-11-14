@@ -3,8 +3,8 @@
   "description": "Livefyre Streamhub SDK",
   "author": "Livefyre <support@livefyre.com>",
   "contributors": {
-    "name": "Gene Hallman",
-    "email": "gene@livefyre.com"
+    "name": "Benjamin Goering",
+    "email": "ben@livefyre.com"
   },
   "version": "2.3.1",
   "dependencies": {
