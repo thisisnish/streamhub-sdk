@@ -44,7 +44,7 @@
         line-height:0px;
         float:left;
         display:block;
-        margin: 0 10px 10px 0;
+        margin: 0 10px 0 0;
         img {
             width: 32px;
             height: 32px;
@@ -71,7 +71,7 @@
         -moz-transition-property: background 0.1s ease 0;
 
         .content-header-inner {
-            padding: 20px 20px 10px 20px;
+            padding: 20px 20px 12px 20px;
             clear: both;
         }
     }
@@ -125,8 +125,12 @@
     }
     
     .content-attachments {
-        margin-bottom: 10px;
+        margin-bottom: 16px;
         clear: both;
+
+        &[data-hub-list-length='0'] {
+            margin-bottom: 0;
+        }
     }
 
     .content-attachment {
@@ -264,7 +268,7 @@
         list-style-type:none;
         padding: 0;
         margin: 0;
-        margin-top: 15px;
+        margin-top: 13px;
         font-size: 12px;
         float: right;
         img {
