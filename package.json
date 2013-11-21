@@ -3,8 +3,8 @@
   "description": "Livefyre Streamhub SDK",
   "author": "Livefyre <support@livefyre.com>",
   "contributors": {
-    "name": "Gene Hallman",
-    "email": "gene@livefyre.com"
+    "name": "Benjamin Goering",
+    "email": "ben@livefyre.com"
   },
   "version": "2.3.1",
   "dependencies": {
@@ -21,7 +21,7 @@
     "build-css": "mkdir -p dist && cp src/css/style.css dist/streamhub-sdk.min.css",
     "hint": "./node_modules/jshint/bin/jshint src/ tests/spec; echo",
     "hint-jenkins": "./node_modules/jshint/bin/jshint --reporter=jslint src/**/*.js > lint.log; echo",
-    "test": "node tests/runner.js",
+    "test": "bin/test",
     "test-jenkins": "node tests/runner.js > tests.log",
     "build-version": "node tools/build_version.js",
     "lessc": "./node_modules/less/bin/lessc --yui-compress src/css/style.{less,css} && ./node_modules/less/bin/lessc --yui-compress src/content/css/content.{less,css} && ./node_modules/less/bin/lessc --yui-compress src/views/css/list-view.{less,css}",
@@ -30,6 +30,7 @@
   "devDependencies": {
     "jshint": "~2.1.0",
     "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
-    "ink-docstrap": "git://github.com/michaelward82/docstrap.git#line-number-alignment"
+    "ink-docstrap": "git://github.com/michaelward82/docstrap.git#line-number-alignment",
+    "phantomjs": "~1.9.2-2"
   }
 }

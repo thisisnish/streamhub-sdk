@@ -15,7 +15,7 @@ phantom.create(function(ph) {
             console.log(msg);
         });
         
-        page.open('http://localhost:64646/tests/index.html');
+        page.open('http://localhost:64646/tests/index.html?xunit');
         setTimeout(function() {
             serverProcess.kill();
             process.exit();
