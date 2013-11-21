@@ -37,7 +37,7 @@ function ($, util, Content, LivefyreContent, ContentView, TiledAttachmentListVie
                     doc = document.documentElement;//sandbox(); ?
                 $obj.prependTo(doc);
                 expect($.contains(doc, elem)).toBe(true);
-                
+                debugger; 
                 contentView.remove();
                 
                 expect($.contains(doc, elem)).toBe(false);
