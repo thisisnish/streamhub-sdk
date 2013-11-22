@@ -168,6 +168,7 @@ StateToContent, debug) {
         return {
             collectionId: this._collection.id,
             network: this._collection.network,
+            environment: this._collection.environment,
             commentId: this._latestEvent
         };
     };
