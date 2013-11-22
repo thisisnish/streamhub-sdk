@@ -1,13 +1,11 @@
 define([
     'jquery',
-    'jasmine',
-    'jasmine-jquery',
     'streamhub-sdk/util',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/content/views/tiled-attachment-list-view'],
-function ($, jasmine, jasmineJquery, util, Content, LivefyreContent, ContentView, TiledAttachmentListView) {
+function ($, util, Content, LivefyreContent, ContentView, TiledAttachmentListView) {
     'use strict';
 
     describe('Default ContentView', function () {

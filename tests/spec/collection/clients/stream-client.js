@@ -1,9 +1,7 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
-    'streamhub-sdk/collection/clients/stream-client',
-    'jasmine-jquery'],
-function ($, jasmine, LivefyreStreamClient) {
+    'streamhub-sdk/collection/clients/stream-client'],
+function ($, LivefyreStreamClient) {
     'use strict';
 
     describe('streamhub-sdk/collection/clients/stream-client', function () {

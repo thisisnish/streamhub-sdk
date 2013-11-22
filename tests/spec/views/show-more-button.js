@@ -1,5 +1,5 @@
-define(['jasmine', 'streamhub-sdk/views/show-more-button', 'streamhub-sdk/views/streams/more'],
-function (jasmine, ShowMoreButton, More) {
+define(['streamhub-sdk/views/show-more-button', 'streamhub-sdk/views/streams/more'],
+function (ShowMoreButton, More) {
 	'use strict';
 
 	describe('streamhub-sdk/views/show-more-button', function () {

@@ -1,5 +1,4 @@
 define([
-    'jasmine',
     'streamhub-sdk/collection',
     'streamhub-sdk-tests/mocks/collection/mock-collection',
     'streamhub-sdk/collection/streams/archive',
@@ -11,7 +10,7 @@ define([
     'streamhub-sdk/auth',
     'stream/writable',
     'stream/readable'
-], function (jasmine, Collection, MockCollection, CollectionArchive,
+], function (Collection, MockCollection, CollectionArchive,
 CollectionUpdater, CollectionWriter, FeaturedContents, ContentListView, Content,
 Auth, Writable, Readable) {
     'use strict';

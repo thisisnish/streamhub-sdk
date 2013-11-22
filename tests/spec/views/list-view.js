@@ -1,10 +1,8 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
     'streamhub-sdk/views/list-view',
-    'streamhub-sdk/view',
-    'jasmine-jquery'],
-function ($, jasmine, ListView, View) {
+    'streamhub-sdk/view'],
+function ($, ListView, View) {
     'use strict';
 
     describe('List-View', function () {

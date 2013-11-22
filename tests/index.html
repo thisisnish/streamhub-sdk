@@ -9,6 +9,10 @@
         <script src="/requirejs.conf.js" type="text/javascript"></script>
         
         <script type="text/javascript">
+            requirejs.config({
+                baseUrl: '../'
+            });
+            
             window.addEventListener("load",function () {
                 loaded = true;
             },false);

@@ -1,11 +1,9 @@
 define([
     'jquery',
-    'jasmine',
-    'jasmine-jquery',
     'streamhub-sdk/content',
     'streamhub-sdk/content/views/gallery-attachment-list-view',
     'streamhub-sdk/content/views/oembed-view'],
-function($, jasmine, jasminejQuery, Content, GalleryAttachmentListView) {
+function($, Content, GalleryAttachmentListView) {
     'use strict';
 
     describe('GalleryAttachmentListView', function () {

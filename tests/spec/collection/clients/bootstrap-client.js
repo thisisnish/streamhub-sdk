@@ -1,10 +1,8 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
     'streamhub-sdk/collection/clients/bootstrap-client',
-    'streamhub-sdk-tests/mocks/collection/clients/mock-bootstrap-client',
-    'jasmine-jquery'],
-function ($, jasmine, LivefyreBootstrapClient, MockBootstrapClient) {
+    'streamhub-sdk-tests/mocks/collection/clients/mock-bootstrap-client'],
+function ($, LivefyreBootstrapClient, MockBootstrapClient) {
     'use strict';
 
     describe('A LivefyreBootstrapClient', function () {

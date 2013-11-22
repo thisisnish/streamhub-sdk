@@ -1,11 +1,10 @@
 define([
-    'jasmine',
     'streamhub-sdk/content/state-to-content',
     'stream/transform',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-instagram-content',
     'json!streamhub-sdk-tests/mocks/bootstrap-data.json'],
-function (jasmine, StateToContent, Transform, Content, LivefyreInstagramContent,
+function (StateToContent, Transform, Content, LivefyreInstagramContent,
 mockBootstrapData) {
     'use strict';
 

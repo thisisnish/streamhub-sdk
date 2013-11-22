@@ -1,9 +1,7 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
-    'streamhub-sdk/content',
-    'jasmine-jquery'],
-function ($, jasmine, Content) {
+    'streamhub-sdk/content'],
+function ($, Content) {
     'use strict';
 
     describe('Content', function () {
