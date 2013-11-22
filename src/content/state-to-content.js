@@ -167,6 +167,8 @@ inherits) {
             return new LivefyreTwitterContent(state);
         } else if (sourceName === 'facebook') {
             return new LivefyreFacebookContent(state);
+        } else if (sourceName === 'instagram') {
+            return new LivefyreInstagramContent(state);
         } else if (sourceName === 'feed') {
             ContentType = LivefyreContent;
             // Use specific Content type for states from instagram RSS feeds
