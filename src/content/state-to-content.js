@@ -159,6 +159,10 @@ inherits) {
     StateToContent._createContent = function (state, authors) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
+
+        if (! sourceName) {
+            throw new Error('StateToContent cannot determine source name for source type: '+state.source);
+        }
         state.author = authors && authors[state.content.authorId];
 
         if ('OEMBED' === StateToContent.enums.type[state.type]) {
