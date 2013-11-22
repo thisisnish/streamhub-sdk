@@ -42,14 +42,14 @@ function ($, util, Content, LivefyreContent, ContentView, TiledAttachmentListVie
                 expect($.contains(doc, elem)).toBe(false);
             });
             
-            it('retains its listeners', function () {
-                var listenersCount = countListeners(contentView.$el[0]);
-                expect(countListeners(contentView.$el[0])).toBeGreaterThan(0);
+            //it('retains its listeners', function () {
+            //    var listenersCount = countListeners(contentView.$el[0]);
+            //    expect(countListeners(contentView.$el[0])).toBeGreaterThan(0);
 
-                contentView.remove();
+            //    contentView.remove();
 
-                expect(countListeners(contentView.$el[0])).toBe(listenersCount);
-            });
+            //    expect(countListeners(contentView.$el[0])).toBe(listenersCount);
+            //});
             
             it('is called when its content visibility changes to "NONE"', function () {
                 spyOn(contentView, 'remove').andCallThrough();
