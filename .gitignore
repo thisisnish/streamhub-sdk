@@ -2,7 +2,7 @@
 /dist
 codekit-config.json
 .project
-lib/
+/lib/
 node_modules/
 streamhub-sdk.built*
 streamhub-sdk.min*
