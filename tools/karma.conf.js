@@ -5,7 +5,7 @@ module.exports = function(config) {
   config.set({
 
     // base path, that will be used to resolve files and exclude
-    basePath: '',
+    basePath: '..',
 
 
     // frameworks to use
@@ -15,9 +15,12 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'requirejs.conf.js',
+      // shim for function.bind, needed for phantomjs
+      'tests/lib/function.bind.js',
+      {pattern: 'tests/lib/spec-list.js', included: false},
       {pattern: 'src/**/*.js', included: false},
       {pattern: 'src/**/*.mustache', included: false},
-      {pattern: 'tests/spec/**.js', included: false},
+      {pattern: 'tests/spec/**/*.js', included: false},
       {pattern: 'tests/mocks/**/*.js', included: false},
       {pattern: 'lib/**/*.js', included: false},
       {pattern: 'tests/**/*.json', included: false},
@@ -33,7 +36,7 @@ module.exports = function(config) {
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ['dots', 'junit', 'coverage'],
 
 
     // web server port
@@ -46,7 +49,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_ERROR,
 
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -61,8 +64,21 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome'],
+    browsers: ['PhantomJS'],
 
+    preprocessors: {
+      'src/**/*.js': 'coverage'
+    },
+
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'coverage/'
+    },
+
+    junitReporter: {
+      outputFile: 'tests.log',
+      suite: 'streamhub-sdk'
+    },
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,

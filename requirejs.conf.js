@@ -52,7 +52,7 @@ require.config({
         deps: ['jasmine']
     },
     'jasmine-jquery': {
-        deps: ['jquery', 'jasmine']
+        deps: ['jquery']
     }
   }
 });

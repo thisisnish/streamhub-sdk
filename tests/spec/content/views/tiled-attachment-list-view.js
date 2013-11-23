@@ -1,9 +1,10 @@
 define([
     'jquery',
+    'jasmine-jquery',
     'streamhub-sdk/content',
     'streamhub-sdk/content/views/tiled-attachment-list-view',
     'streamhub-sdk/content/views/oembed-view'],
-function($, Content, TiledAttachmentListView) {
+function($, jasmineJquery, Content, TiledAttachmentListView) {
     'use strict';
 
     describe('TiledAttachmentListView', function () {
