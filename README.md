@@ -1,6 +1,6 @@
 # streamhub-sdk
 
-[![Build Status](https://travis-ci.org/Livefyre/streamhub-sdk.png)](https://travis-ci.org/Livefyre/streamhub-sdk)
+[![Build Status](https://travis-ci.org/Livefyre/streamhub-sdk.png)](https://travis-ci.org/Livefyre/streamhub-sdk) [![Coverage Status](https://coveralls.io/repos/Livefyre/streamhub-sdk/badge.png?branch=karma)](https://coveralls.io/r/Livefyre/streamhub-sdk?branch=karma)
 
 SDK to stream Content from Livefyre's StreamHub platform, create Views to render Streams and Content, and build amazing real-time social web applications.
 
