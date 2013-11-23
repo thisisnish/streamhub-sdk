@@ -16,5 +16,8 @@ requirejs.config({
     deps: tests,
 
     // start test run, once Require.js is done
-    callback: window.__karma__.start
+    callback: function () {
+      console.log("Function.prototype.bind", Function.prototype.bind);
+      window.__karma__.start()
+    }
 });
