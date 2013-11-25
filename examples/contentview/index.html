@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="../lib/jasmine/lib/jasmine-core/jasmine.css">
-    <link rel="stylesheet" type="text/css" href="../src/content/css/content.css">
+    <link rel="stylesheet" type="text/css" href="../../src/content/css/content.css">
     <style>
     body {
         font-family: sans-serif;
@@ -39,6 +38,9 @@
         <script src="/requirejs.conf.js" type="text/javascript"></script>
         
         <script type="text/javascript">
+        requirejs.config({
+            baseUrl: '../../'
+        });
         require([
             'streamhub-sdk/content',
             'streamhub-sdk/content/types/livefyre-twitter-content',
