@@ -159,6 +159,7 @@ inherits) {
     StateToContent._createContent = function (state, authors) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
+
         state.author = authors && authors[state.content.authorId];
 
         if ('OEMBED' === StateToContent.enums.type[state.type]) {
@@ -167,6 +168,8 @@ inherits) {
             return new LivefyreTwitterContent(state);
         } else if (sourceName === 'facebook') {
             return new LivefyreFacebookContent(state);
+        } else if (sourceName === 'instagram') {
+            return new LivefyreInstagramContent(state);
         } else if (sourceName === 'feed') {
             ContentType = LivefyreContent;
             // Use specific Content type for states from instagram RSS feeds
@@ -176,6 +179,8 @@ inherits) {
             return new ContentType(state);
         } else if (sourceName === 'livefyre') {
             return new LivefyreContent(state);
+        } else {
+            log("StateToContent could not create content for state", state);
         }
     };
 

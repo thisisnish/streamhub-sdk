@@ -190,12 +190,21 @@ mockBootstrapData) {
                 expect(bootstrapContent.replies.length).toBe(32);
             });
 
-            it("transforms instagram content states into streamhub-sdk/content/types/livefyre-instagram-content", function () {
+            it("transforms instagram RSS content states into streamhub-sdk/content/types/livefyre-instagram-content", function () {
                 var instagramState = {"childContent":[{"content":{"targetId":"32b64fb7-56b3-4e20-9455-e25c51510bfe","authorId":"-","link":"http://distilleryimage5.ak.instagram.com/1867136018ce11e3995e22000ab5a7b8_7.jpg","oembed":{"provider_url":"http://distilleryimage5.ak.instagram.com","url":"http://distilleryimage5.ak.instagram.com/1867136018ce11e3995e22000ab5a7b8_7.jpg","height":612,"width":612,"version":"1.0","link":"http://distilleryimage5.ak.instagram.com/1867136018ce11e3995e22000ab5a7b8_7.jpg","provider_name":"Instagram","type":"photo"},"position":0,"id":"32b64fb7-56b3-4e20-9455-e25c51510bfe.http://distilleryimage5.ak.instagram.com/1867136018ce11e3995e22000ab5a7b8_7.jpg"},"vis":1,"type":3,"event":1378676100460520,"source":0}],"content":{"feedEntry":{"description":"Another pic! 😉 #bioshockinfinite #bioshock #videogame #game #xbox #pc #ps3 #awesome #picture #like #tap #great #photo #elizabeth #bookerdewitt #falling #sky #clouds #buildings #scary <img src=\"http://distilleryimage5.ak.instagram.com/1867136018ce11e3995e22000ab5a7b8_7.jpg\" />","pubDate":1378676098,"title":"","channelId":"http://instagram.com/tags/xbox/feed/recent.rss","link":"http://distilleryimage5.ak.instagram.com/1867136018ce11e3995e22000ab5a7b8_7.jpg","type":2,"createdAt":1378676098},"bodyHtml":"Another pic!  #bioshockinfinite #bioshock #videogame #game #xbox #pc #ps3 #awesome #picture #like #tap #great #photo #elizabeth #bookerdewitt #falling #sky #clouds #buildings #scary ","id":"32b64fb7-56b3-4e20-9455-e25c51510bfe","authorId":"85761ea656ea4f47e1b4533c656edae9@instagram.com","parentId":"","updatedAt":1378676100,"annotations":{},"createdAt":1378676098},"vis":1,"source":13,"type":0,"event":1378676100460520};
                 var instagramContent;
                 stateToContent.write(instagramState);
                 instagramContent = stateToContent.read();
                 expect(instagramContent instanceof LivefyreInstagramContent).toBe(true);
+            });
+
+            it("transforms native Instagram curate states into streamhub-sdk-content/types/livefyre-instagram-content", function () {
+                var instagramState = {"vis":1,"collectionId":"2486695","content":{"parentId":"","bodyHtml":"#lffun","id":"instagram-587759413215028333_324926208@instagram.com","authorId":"324926208@instagram.com","updatedAt":1384286459,"annotations":{},"createdAt":1384286458},"source":19,"type":0,"event":1.3842864592377e+15,"childContent":[{"content":{"targetId":"instagram-587759413215028333_324926208@instagram.com","authorId":"-","link":"http:\/\/distilleryimage1.s3.amazonaws.com\/0528c7824bd511e39e23126c93c6dca1_8.jpg","oembed":{"provider_url":"http:\/\/instagram.com","title":"#lffun","url":"http:\/\/distilleryimage1.s3.amazonaws.com\/0528c7824bd511e39e23126c93c6dca1_8.jpg","thumbnail_width":150,"height":640,"width":640,"version":"1.0","author_name":"gregoryd33","provider_name":"Instagram","thumbnail_url":"http:\/\/distilleryimage1.s3.amazonaws.com\/0528c7824bd511e39e23126c93c6dca1_5.jpg","type":"photo","thumbnail_height":150,"author_url":"http:\/\/www.instagram.com\/gregoryd33"},"position":0,"id":"instagram-587759413215028333_324926208@instagram.com.http:\/\/distilleryimage1.s3.amazonaws.com\/0528c7824bd511e39e23126c93c6dca1_8.jpg"},"vis":1,"type":3,"event":1.3842864592377e+15,"source":0}]};
+                var instagramContent;
+                stateToContent.write(instagramState);
+                instagramContent = stateToContent.read();
+                expect(instagramContent instanceof LivefyreInstagramContent).toBe(true);
+                expect(instagramContent.attachments.length).toBe(1);
             });
 
             it("can transform a state with an opine childContent", function () {
@@ -331,7 +340,6 @@ mockBootstrapData) {
             expect(content1.attachments).toBe(content2.attachments);
             expect(content1).toBe(content2);
         });
-
 
     });
 });

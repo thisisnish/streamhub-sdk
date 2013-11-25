@@ -99,21 +99,26 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      * The set of sources as defined by Livefyre's Stream API
      */
     LivefyreContent.SOURCES = [
-        "livefyre",
-        "twitter",
-        "twitter",
-        "facebook",
-        "livefyre",
-        "livefyre",
-        "facebook",
-        "twitter",
-        "livefyre",
+        "livefyre",    // 0
+        "twitter",     // 1
+        "twitter",     // 2
+        "facebook",    // 3
+        "livefyre",    // 4
+        "livefyre",    // 5
+        "facebook",    // 6
+        "twitter",     // 7
+        "livefyre",    // 8
         "unknown",
         "unknown",
         "unknown",
         "unknown",
-        "feed",
-        "facebook"
+        "feed",        // 13
+        "facebook",    // 14
+        "unknown",
+        "unknown",
+        "unknown",
+        "unknown",
+        "instagram"    // 19
     ];
 
     return LivefyreContent;
