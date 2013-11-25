@@ -1,8 +1,7 @@
 define([
-    'jasmine',
     'streamhub-sdk/views/streams/more',
     'stream/contrib/readable-array'],
-function (jasmine, More, ReadableArray) {
+function (More, ReadableArray) {
     'use strict';
 
     describe('streamhub-sdk/views/streams/more', function () {
