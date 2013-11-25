@@ -160,9 +160,6 @@ inherits) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
 
-        if (! sourceName) {
-            throw new Error('StateToContent cannot determine source name for source type: '+state.source);
-        }
         state.author = authors && authors[state.content.authorId];
 
         if ('OEMBED' === StateToContent.enums.type[state.type]) {
@@ -182,6 +179,8 @@ inherits) {
             return new ContentType(state);
         } else if (sourceName === 'livefyre') {
             return new LivefyreContent(state);
+        } else {
+            log("StateToContent could not create content for state", state);
         }
     };
 
