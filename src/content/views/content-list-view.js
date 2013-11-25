@@ -8,10 +8,9 @@ define([
     'stream/writable',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/views/streams/more',
-    'streamhub-sdk/views/show-more-button',
-    'hgn!streamhub-sdk/views/templates/list-view'],
+    'streamhub-sdk/views/show-more-button'],
 function($, ListView, ContentViewFactory, AttachmentGalleryModal, inherits,
-debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
+debug, Writable, ContentView, More, ShowMoreButton) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/views/content-list-view');
@@ -65,8 +64,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         ListView.prototype.setElement.apply(this, arguments);
 
         this.$el.on('removeContentView.hub', function(e, data) {
-            this.remove(data.contentView.content);
-            data.contentView.destroy();
+            return ListView.prototype.remove.call(this, data.contentView);
         }.bind(this));
         this.$el.on('focusContent.hub', function(e, context) {
             var contentView = this.getContentView(context.content);
@@ -200,7 +198,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
      */
     ContentListView.prototype.remove = function (content) {
         var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
-        return ListView.prototype.remove.call(this, contentView);
+        contentView.remove();
     };
 
     ContentListView.prototype.showMore = function (numToShow) {
