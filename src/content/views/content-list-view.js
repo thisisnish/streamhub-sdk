@@ -39,7 +39,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         ListView.call(this, opts);
 
         this._stash = opts.stash || this.more;
-        this._maxVisibleItems = opts.maxVisibleItems || 20;
+        this._maxVisibleItems = opts.maxVisibleItems || 50;
         this._endPageIndex = 0;
         this._bound = true;
 
@@ -56,10 +56,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
      * Class property to add to ListView instances' .el
      */
     ContentListView.prototype.elClass += ' streamhub-content-list-view';
-
-    ContentListView.prototype.bounded = function (bounded) {
-        this._bound = bounded;
-    };
 
     /**
      * Set the element that this ContentListView renders in
@@ -103,6 +99,9 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         return bDate - aDate;
     };
 
+    ContentListView.prototype.bounded = function (bound) {
+        this._bound = bound;
+    };
 
     /**
      * Add a piece of Content to the ContentListView
@@ -114,12 +113,12 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
      * @returns the newly created ContentView
      */
     ContentListView.prototype.add = function(content) {
-        var contentView = this.getContentView(content);
+        var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
 
         log("add", content);
 
         if (contentView) {
-            return contentView;
+            return ListView.prototype.add.call(this, contentView);
         }
 
         contentView = this.createContentView(content);
@@ -141,8 +140,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         return ListView.prototype.add.call(this, contentView);
     };
 
-    ContentListView.prototype._insert = function (contentView, opts) { 
-        opts = opts || {};
+    ContentListView.prototype._insert = function (contentView) {
         var newContentViewIndex,
             $previousEl,
             $wrappedEl;
