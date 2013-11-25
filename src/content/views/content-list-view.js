@@ -39,7 +39,6 @@ debug, Writable, ContentView, More, ShowMoreButton) {
 
         this._stash = opts.stash || this.more;
         this._maxVisibleItems = opts.maxVisibleItems || 50;
-        this._endPageIndex = 0;
         this._bound = true;
 
         this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
@@ -121,7 +120,6 @@ debug, Writable, ContentView, More, ShowMoreButton) {
 
         contentView = this.createContentView(content);
 
-        this._endPageIndex++;
         if (! this._hasVisibleVacancy() && this._bound) {
             var viewToRemove = this.views[this.views.length-1];
 
@@ -177,7 +175,7 @@ debug, Writable, ContentView, More, ShowMoreButton) {
      * @returns {Boolean} Whether a content item can be displayed
      */
     ContentListView.prototype._hasVisibleVacancy = function () {
-        if (this._endPageIndex > this._maxVisibleItems) {
+        if (this.views.length > this._maxVisibleItems) {
             return false;
         }
         return true;
