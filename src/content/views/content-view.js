@@ -195,6 +195,11 @@ define([
             this.remove();
         }
     };
+
+    ContentView.prototype.destroy = function () {
+        View.prototype.destroy.call(this);
+        this.content = null;
+    };
     
     return ContentView;
 });
