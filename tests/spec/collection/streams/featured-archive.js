@@ -1,9 +1,8 @@
 define([
-    'jasmine',
     'streamhub-sdk/collection/streams/featured-archive',
     'streamhub-sdk-tests/mocks/collection/mock-collection',
     'stream/readable'],
-function (jasmine, FeaturedArchive, MockCollection, Readable) {
+function (FeaturedArchive, MockCollection, Readable) {
     'use strict';
 
     describe('streamhub-sdk/streams/featured-content', function () {

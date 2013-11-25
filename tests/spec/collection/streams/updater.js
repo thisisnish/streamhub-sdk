@@ -1,5 +1,4 @@
 define([
-    'jasmine',
     'streamhub-sdk/collection/streams/updater',
     'stream/readable',
     'streamhub-sdk/content/state-to-content',
@@ -7,7 +6,7 @@ define([
     'streamhub-sdk-tests/mocks/collection/clients/mock-bootstrap-client',
     'streamhub-sdk-tests/mocks/collection/clients/mock-stream-client',
     'streamhub-sdk/jquery'],
-function (jasmine, CollectionUpdater, Readable, StateToContent, MockCollection,
+function (CollectionUpdater, Readable, StateToContent, MockCollection,
 MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
     "use strict";
 

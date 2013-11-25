@@ -1,7 +1,6 @@
 define([
-    'jasmine',
     'streamhub-sdk/views/streams/more'],
-function (jasmine, More) {
+function (More) {
     'use strict';
 
     describe('streamhub-sdk/views/streams/more', function () {

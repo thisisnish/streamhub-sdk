@@ -1,9 +1,7 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
-    'streamhub-sdk/collection/clients/write-client',
-    'jasmine-jquery'],
-function ($, jasmine, LivefyreWriteClient) {
+    'streamhub-sdk/collection/clients/write-client'],
+function ($, LivefyreWriteClient) {
     'use strict';
 
     describe('streamhub-sdk/collection/clients/write-client', function () {

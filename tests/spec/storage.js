@@ -1,10 +1,8 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
     'streamhub-sdk/storage',
-    'streamhub-sdk/content',
-    'jasmine-jquery'],
-function ($, jasmine, Storage, Content) {
+    'streamhub-sdk/content'],
+function ($, Storage, Content) {
     'use strict';
 
     describe('Storage', function () {

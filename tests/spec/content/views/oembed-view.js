@@ -1,13 +1,12 @@
 define([
     'jquery',
-    'jasmine',
     'jasmine-jquery',
     'streamhub-sdk/content/views/oembed-view',
     'hgn!streamhub-sdk/content/templates/oembed-photo',
     'hgn!streamhub-sdk/content/templates/oembed-video',
     'hgn!streamhub-sdk/content/templates/oembed-link',
     'hgn!streamhub-sdk/content/templates/oembed-rich'],
-function($, jasmine, jasminejQuery, OembedView, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate) {
+function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate) {
     'use strict';
 
     describe('OembedView', function () {

@@ -1,12 +1,11 @@
 define([
     'streamhub-sdk/jquery',
-    'jasmine',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/content/content-view-factory',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/oembed'],
-function($, jasmine, LivefyreContent, ContentView, ContentViewFactory, Content,
+function($, LivefyreContent, ContentView, ContentViewFactory, Content,
 Oembed) {
     'use strict';
 
