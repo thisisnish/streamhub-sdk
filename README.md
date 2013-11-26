@@ -1,6 +1,6 @@
 # streamhub-sdk
 
-[![Build Status](https://travis-ci.org/Livefyre/streamhub-sdk.png)](https://travis-ci.org/Livefyre/streamhub-sdk) [![Coverage Status](https://coveralls.io/repos/Livefyre/streamhub-sdk/badge.png?branch=master)](https://coveralls.io/r/Livefyre/streamhub-sdk?branch=karma)
+[![Build Status](https://travis-ci.org/Livefyre/streamhub-sdk.png)](https://travis-ci.org/Livefyre/streamhub-sdk) [![Coverage Status](https://coveralls.io/repos/Livefyre/streamhub-sdk/badge.png?branch=master)](https://coveralls.io/r/Livefyre/streamhub-sdk?branch=master)
 
 SDK to stream Content from Livefyre's StreamHub platform, create Views to render Streams and Content, and build amazing real-time social web applications.
 
@@ -42,7 +42,7 @@ You can also include the default stylesheet
 
     <link rel="stylesheet" href="http://cdn.livefyre.com/libs/sdk/v2.2.0/streamhub-sdk.min.css" />
 
-See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/13/
+See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/17/
 
 ### Local Development
 
