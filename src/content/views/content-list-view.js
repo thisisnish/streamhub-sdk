@@ -120,7 +120,7 @@ debug, Writable, ContentView, More, ShowMoreButton) {
 
         contentView = this.createContentView(content);
 
-        if (! this._hasVisibleVacancy() && this._bound) {
+        if (this._bound && ! this._hasVisibleVacancy()) {
             var viewToRemove = this.views[this.views.length-1];
 
             // Ensure .more won't let more through right away,
