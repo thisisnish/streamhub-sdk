@@ -5,143 +5,33 @@
     <link rel="stylesheet" type="text/css" href="../lib/jasmine/lib/jasmine-core/jasmine.css">
 </head>
     <body>
+        <script src="lib/function.bind.js"></script>
         <script src="../lib/requirejs/require.js" type="text/javascript"></script>
         <script src="/requirejs.conf.js" type="text/javascript"></script>
         
         <script type="text/javascript">
-            window.addEventListener("load",function () {
-                loaded = true;
-            },false);
-
-            var deps = ['jasmine-html', 'jquery', '/tests/xunit-console-reporter.js'];
-            var Coverage = document.location.search.indexOf('cov') !== -1;
-            if (Coverage) {
-                deps.push('blanket-jasmine');
-            }
-            require(deps, function (jasmine, $, xunit, blanket) {
-                if (blanket) {
-                    blanket.options('ignoreScriptError', true);
-                    blanket.options('antifilter', 'json')
-                    blanket.options('filter', '/\/src\//'); // data-cover-only
-                    blanket.options('branchTracking', true); // one of the data-cover-flags
-                    blanket.options('debug', true);
-                    blanket.beforeStartTestRunner({
-                        bindEvent: function (go) {
-                            if (loaded) {
-                                go();
-                            } else {
-                                window.addEventListener("load", go,false);
-                            }
-                        },
-                        checkRequirejs:true,
-                        condition: function() {
-                            return window.jasmine.getEnv().currentRunner().specs().length > 0 && blanket.requireFilesLoaded();
-                        },
-                        callback:function(){
-                            jasmine.getEnv().addReporter(new jasmine.BlanketReporter());
-                            window.jasmine.getEnv().currentRunner().execute();
-                            jasmine.getEnv().execute = function () {
-                                jasmine.getEnv().currentRunner().execute();   
-                            };  
-                        }
-                    });
-                }
-                var specs = [];
-                specs.push('tests/spec/main');
-                specs.push('tests/spec/debug');
-                specs.push('tests/spec/storage');
-                specs.push('tests/spec/util');
-                specs.push('tests/spec/view');
-
-                specs.push('tests/spec/views/list-view');
-                specs.push('tests/spec/views/show-more-button');
-                specs.push('tests/spec/views/streams/more');
-
-                specs.push('tests/spec/collection/main');
-                specs.push('tests/spec/collection/clients/stream-client');
-                specs.push('tests/spec/collection/clients/bootstrap-client');
-                specs.push('tests/spec/collection/clients/create-client');
-                specs.push('tests/spec/collection/clients/write-client');
-                specs.push('tests/spec/collection/streams/archive');
-                specs.push('tests/spec/collection/streams/updater');
-                specs.push('tests/spec/collection/streams/writer');
-
-                specs.push('tests/spec/collection/featured-contents');
-                specs.push('tests/spec/collection/streams/featured-archive');
-
-                specs.push('tests/spec/auth/main');
-
-                specs.push('tests/spec/content/state-to-content');
-                specs.push('tests/spec/content/main');
-                specs.push('tests/spec/content/types/livefyre-content');
-                specs.push('tests/spec/content/types/livefyre-facebook-content');
-                specs.push('tests/spec/content/types/oembed');
-                specs.push('tests/spec/content/types/livefyre-oembed');
-
-                specs.push('tests/spec/content/content-view-factory');
-                specs.push('tests/spec/content/views/content-view');
-                specs.push('tests/spec/content/views/oembed-view');
-                specs.push('tests/spec/content/views/attachment-list-view');
-                specs.push('tests/spec/content/views/tiled-attachment-list-view');
-                specs.push('tests/spec/content/views/gallery-attachment-list-view');
-                specs.push('tests/spec/content/views/content-list-view');
-
-                specs.push('tests/spec/modal/main');
-                specs.push('tests/spec/modal/views/attachment-gallery-modal');              
-
-                require(specs, function(){
+            requirejs.config({
+                baseUrl: '../'
+            });
+            
+            var deps = ['jasmine-html', 'jquery', 'tests/spec-list'];
+            require(deps, function (jasmine, $, specList) {              
+                require(specList, function(){
                     var jasmineEnv = jasmine.getEnv();
                     jasmineEnv.updateInterval = 1000;
                     
                     var htmlReporter = new jasmine.HtmlReporter();
 
-                    if ( ! Coverage) {
-                        jasmineEnv.addReporter(htmlReporter);
-                        jasmineEnv.specFilter = function(spec) {
-                            return htmlReporter.specFilter(spec);
-                        };
-                    }
-
-                    if ( document.location.search.indexOf('xunit') !== -1) {
-                    var consoleReporter = new jasmine.XUnitConsoleReporter();
-                        jasmineEnv.addReporter(consoleReporter);
-                    }
+                    jasmineEnv.addReporter(htmlReporter);
+                    jasmineEnv.specFilter = function(spec) {
+                        return htmlReporter.specFilter(spec);
+                    };
 
                     $(function(){
                         jasmineEnv.execute();
                     });
                 });
             });
-        </script>
-        <script>
-        /**
-         * Polyfills for phantomjs
-         */
-        // Function.bind
-        // https://github.com/ariya/phantomjs/issues/10522
-        if (!Function.prototype.bind) {
-          Function.prototype.bind = function (oThis) {
-            if (typeof this !== "function") {
-              // closest thing possible to the ECMAScript 5 internal IsCallable function
-              throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
-            }
-
-            var aArgs = Array.prototype.slice.call(arguments, 1), 
-                fToBind = this, 
-                fNOP = function () {},
-                fBound = function () {
-                  return fToBind.apply(this instanceof fNOP && oThis
-                                         ? this
-                                         : oThis,
-                                       aArgs.concat(Array.prototype.slice.call(arguments)));
-                };
-
-            fNOP.prototype = this.prototype;
-            fBound.prototype = new fNOP();
-
-            return fBound;
-          };
-        }
         </script>
     </body>
 </html>

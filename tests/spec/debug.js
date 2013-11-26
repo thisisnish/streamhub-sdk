@@ -1,4 +1,4 @@
-define(['jasmine', 'streamhub-sdk/debug'], function (jasmine, debug) {
+define(['streamhub-sdk/debug'], function (debug) {
     'use strict';
 
 	describe('streamhub-sdk/debug', function () {

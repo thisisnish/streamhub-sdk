@@ -26,7 +26,7 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
         this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
-        this._annotations = json.content.annotations;
+        this._readAnnotations(json.content.annotations || {});
     };
     inherits(LivefyreContent, Content);
 
@@ -75,8 +75,7 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      * @return {boolean}
      */
     LivefyreContent.prototype.isFeatured = function () {
-        var featuredAnnotation = this._annotations && this._annotations.featuredmessage;
-        return Boolean(featuredAnnotation);
+        return Boolean(this.featured);
     };
 
     /**
@@ -84,29 +83,42 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      * @return {Number|undefined} The featured value, if featured, else undefined
      */
     LivefyreContent.prototype.getFeaturedValue = function () {
-        var featuredAnnotation = this._annotations && this._annotations.featuredmessage;
-        return featuredAnnotation ? featuredAnnotation.value : undefined;
+        return this.featured.value;
     };
-
+    
+    /**
+     * Takes an object of annotations and sets properties as directed.
+     * @param anno {!Object} Object of annotations.
+     */
+    LivefyreContent.prototype._readAnnotations = function(anno) {
+        this._annotations = anno;
+        this.featured = anno.featuredmessage || false;
+    };
+    
     /**
      * The set of sources as defined by Livefyre's Stream API
      */
     LivefyreContent.SOURCES = [
-        "livefyre",
-        "twitter",
-        "twitter",
-        "facebook",
-        "livefyre",
-        "livefyre",
-        "facebook",
-        "twitter",
-        "livefyre",
+        "livefyre",    // 0
+        "twitter",     // 1
+        "twitter",     // 2
+        "facebook",    // 3
+        "livefyre",    // 4
+        "livefyre",    // 5
+        "facebook",    // 6
+        "twitter",     // 7
+        "livefyre",    // 8
         "unknown",
         "unknown",
         "unknown",
         "unknown",
-        "feed",
-        "facebook"
+        "feed",        // 13
+        "facebook",    // 14
+        "unknown",
+        "unknown",
+        "unknown",
+        "unknown",
+        "instagram"    // 19
     ];
 
     return LivefyreContent;

@@ -65,5 +65,10 @@ define([
         }
     };
 
+    View.prototype.destroy = function () {
+        this.$el.remove();
+        this.template = null;
+    };
+
     return View;
 });

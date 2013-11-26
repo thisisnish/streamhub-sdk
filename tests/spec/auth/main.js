@@ -1,8 +1,7 @@
 define([
-    'jasmine',
     'streamhub-sdk/auth',
     'event-emitter'],
-function (jasmine, Auth, EventEmitter) {
+function (Auth, EventEmitter) {
     'use strict';
 
     describe('streamhub-sdk/auth', function () {

@@ -1,9 +1,8 @@
 define([
-    'jasmine',
     'streamhub-sdk/collection/streams/featured-archive',
     'streamhub-sdk-tests/mocks/collection/mock-collection',
     'stream/readable'],
-function (jasmine, FeaturedArchive, MockCollection, Readable) {
+function (FeaturedArchive, MockCollection, Readable) {
     'use strict';
 
     describe('streamhub-sdk/streams/featured-content', function () {
@@ -67,7 +66,7 @@ function (jasmine, FeaturedArchive, MockCollection, Readable) {
                 expect(latestBootstrapArgs.page).toBe('featured-all');
             });
         });
-
+        
         it('does not emit duplicates across featured-all and init', function () {
             // This MockCollection has no featured Content
             var collection = new MockCollection({

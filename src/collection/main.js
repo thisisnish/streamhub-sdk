@@ -110,8 +110,6 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             opts.pipeArchiveToMore = true;
         }
 
-        Duplex.prototype.pipe.apply(this, arguments);
-
         // If piped to a ListView (or something with a .more),
         // pipe an archive to .more
         if (opts.pipeArchiveToMore && writable.more && writable.more.writable) {
@@ -119,6 +117,8 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             archive.pipe(writable.more);
             this._pipedArchives.push(archive);
         }
+
+        return Duplex.prototype.pipe.apply(this, arguments);
     };
 
     /**
