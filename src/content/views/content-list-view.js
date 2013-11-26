@@ -150,19 +150,14 @@ debug, Writable, ContentView, More, ShowMoreButton) {
         if (newContentViewIndex === 0) {
             // Beginning!
             $wrappedEl.prependTo(this.$listEl);
-
-            // Wait for the element to be rendered, before removing class which 
-            // transitions the margin-top from -100% to 0
-            setTimeout(function () { $wrappedEl.removeClass(this.insertingClassName); }.bind(this), 0.1);
+            $wrappedEl.css('margin-top', (-1*$wrappedEl.height())+'px');
+            $wrappedEl.removeClass(this.insertingClassName).css('margin-top', '');
         } else {
             // Find it's previous view and insert new view after
             $previousEl = this.views[newContentViewIndex - 1].$el;
             $wrappedEl.removeClass(this.insertingClassName).addClass(this.hiddenClassName);
             $wrappedEl.insertAfter($previousEl.parent('.'+this.contentContainerClassName));
-
-            // Wait for the element to be rendered, before remvoing class which
-            // transitions the opacity from 0 to 1
-            setTimeout(function () { $wrappedEl.removeClass(this.hiddenClassName); }.bind(this), 0.1);
+            $wrappedEl.removeClass(this.hiddenClassName);
         }
     };
 
