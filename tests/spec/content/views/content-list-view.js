@@ -51,56 +51,12 @@ function ($, ListView, Content, ContentView) {
                     expect(listView.el).toBe(el);
                 });
             });
-        });
 
-        describe('.setElement', function () {
-            var newElement;
-            beforeEach(function () {
-                newElement = document.createElement('div');
-            });
-
-            it('adds class .streamhub-list-view', function () {
-                listView.setElement(newElement);
-                expect($(newElement)).toHaveClass('streamhub-content-list-view');
-            });
-        });
-
-        it('uses a modal when constructecd with opts.modal = true', function () {
-            var listView = new ListView({
-                modal: true
-            });
-            expect(typeof listView.modal).toBe('object');
-        });
-
-        describe('handles focusContent.hub event', function () {
-
-            var content;
-
-            beforeEach(function() {
-                listView = new ListView();
-
-                content = new Content();
-                listView.add(content);
-            });
-
-            it('shows the modal when a modal is set on the ListView instance', function () {
-                spyOn(listView.modal, '_setFocus');
-                spyOn(listView.modal, 'show');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(listView.modal.show).toHaveBeenCalled();
-            });
-
-            it('shows finds the correct ContentView instance and invokes .attachmentsView.focus when no modal is set on the ListView instance', function () {
-                listView.modal = false;
-                var targetContentView = listView.getContentView(content);
-                targetContentView.attachmentsView.focus = function () {};
-                spyOn(targetContentView.attachmentsView, 'focus');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(targetContentView.attachmentsView.focus).toHaveBeenCalled();
+            it('uses a modal when constructecd with opts.modal = true', function () {
+                var listView = new ListView({
+                    modal: true
+                });
+                expect(typeof listView.modal).toBe('object');
             });
         });
 
@@ -156,7 +112,7 @@ function ($, ListView, Content, ContentView) {
             });
         });
 
-        describe("opts.showMore", function () {
+        describe("when constructed with opts.showMore", function () {
             var showMore,
                 listView;
             beforeEach(function () {
@@ -178,7 +134,51 @@ function ($, ListView, Content, ContentView) {
             });
         });
 
-        describe(".showMore()", function () {
+        describe('.setElement', function () {
+            var newElement;
+            beforeEach(function () {
+                newElement = document.createElement('div');
+            });
+
+            it('adds class .streamhub-list-view', function () {
+                listView.setElement(newElement);
+                expect($(newElement)).toHaveClass('streamhub-content-list-view');
+            });
+        });
+
+        describe('handles focusContent.hub event', function () {
+
+            var content;
+
+            beforeEach(function() {
+                listView = new ListView();
+
+                content = new Content();
+                listView.add(content);
+            });
+
+            it('shows the modal when a modal is set on the ListView instance', function () {
+                spyOn(listView.modal, '_setFocus');
+                spyOn(listView.modal, 'show');
+
+                listView.$el.trigger('focusContent.hub', { content: content });
+
+                expect(listView.modal.show).toHaveBeenCalled();
+            });
+
+            it('shows finds the correct ContentView instance and invokes .attachmentsView.focus when no modal is set on the ListView instance', function () {
+                listView.modal = false;
+                var targetContentView = listView.getContentView(content);
+                targetContentView.attachmentsView.focus = function () {};
+                spyOn(targetContentView.attachmentsView, 'focus');
+
+                listView.$el.trigger('focusContent.hub', { content: content });
+
+                expect(targetContentView.attachmentsView.focus).toHaveBeenCalled();
+            });
+        });
+
+        describe("handles showMore.hub event", function () {
             it("is called on showMore.hub event", function () {
                 spyOn(listView, 'showMore').andCallThrough();
                 listView.$el.trigger('showMore.hub');
