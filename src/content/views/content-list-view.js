@@ -8,10 +8,9 @@ define([
     'stream/writable',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/views/streams/more',
-    'streamhub-sdk/views/show-more-button',
-    'hgn!streamhub-sdk/views/templates/list-view'],
+    'streamhub-sdk/views/show-more-button'],
 function($, ListView, ContentViewFactory, AttachmentGalleryModal, inherits,
-debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
+debug, Writable, ContentView, More, ShowMoreButton) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/views/content-list-view');
@@ -36,12 +35,20 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
                 this.modal = opts.modal;
         }
 
-        this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
-
         ListView.call(this, opts);
+
+        this._stash = opts.stash || this.more;
+        this._maxVisibleItems = opts.maxVisibleItems || 50;
+        this._bound = true;
+
+        this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
     };
 
     inherits(ContentListView, ListView);
+
+    ContentListView.prototype.insertingClassName = 'hub-wall-is-inserting';
+    ContentListView.prototype.hiddenClassName = 'hub-content-container-hidden';
+    ContentListView.prototype.contentContainerClassName = 'hub-content-container';
 
     /**
      * Class property to add to ListView instances' .el
@@ -56,7 +63,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         ListView.prototype.setElement.apply(this, arguments);
 
         this.$el.on('removeContentView.hub', function(e, data) {
-            this.remove(data.contentView.content);
+            return ListView.prototype.remove.call(this, data.contentView);
         }.bind(this));
         this.$el.on('focusContent.hub', function(e, context) {
             var contentView = this.getContentView(context.content);
@@ -89,6 +96,9 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         return bDate - aDate;
     };
 
+    ContentListView.prototype.bounded = function (bound) {
+        this._bound = bound;
+    };
 
     /**
      * Add a piece of Content to the ContentListView
@@ -100,19 +110,90 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
      * @returns the newly created ContentView
      */
     ContentListView.prototype.add = function(content) {
-        var contentView = this.getContentView(content);
+        var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
 
         log("add", content);
 
         if (contentView) {
-            return contentView;
+            return ListView.prototype.add.call(this, contentView);
         }
 
         contentView = this.createContentView(content);
 
+        if (this._bound && ! this._hasVisibleVacancy()) {
+            var viewToRemove = this.views[this.views.length-1];
+
+            // Ensure .more won't let more through right away,
+            // we already have more than we want.
+            this.more.setGoal(0);
+            // Unshift content to more stream
+            this.saveForLater(viewToRemove.content);
+
+            // Remove non visible view
+            this.remove(viewToRemove);
+        }
+
         return ListView.prototype.add.call(this, contentView);
     };
 
+    ContentListView.prototype._insert = function (contentView) {
+        var newContentViewIndex,
+            $previousEl,
+            $wrappedEl;
+
+        newContentViewIndex = this.views.indexOf(contentView);
+
+        var $containerEl = $('<div class="'+this.contentContainerClassName+' '+this.insertingClassName+'"></div>');
+        contentView.$el.wrap($containerEl);
+        $wrappedEl = contentView.$el.parent();
+
+        if (newContentViewIndex === 0) {
+            // Beginning!
+            $wrappedEl.prependTo(this.$listEl);
+
+            // Wait for the element to be rendered, before removing class which 
+            // transitions the margin-top from -100% to 0
+            setTimeout(function () { $wrappedEl.removeClass(this.insertingClassName); }.bind(this), 0.1);
+        } else {
+            // Find it's previous view and insert new view after
+            $previousEl = this.views[newContentViewIndex - 1].$el;
+            $wrappedEl.removeClass(this.insertingClassName).addClass(this.hiddenClassName);
+            $wrappedEl.insertAfter($previousEl.parent('.'+this.contentContainerClassName));
+
+            // Wait for the element to be rendered, before remvoing class which
+            // transitions the opacity from 0 to 1
+            setTimeout(function () { $wrappedEl.removeClass(this.hiddenClassName); }.bind(this), 0.1);
+        }
+    };
+
+    /**
+     * Remove a view from the DOM. Called by .remove();
+     * @private
+     * @param view {View} The View to remove from the DOM
+     */
+    ContentListView.prototype._extract = function (view) {
+        view.$el.parent().remove();
+    };
+
+    /**
+     * Checks if it is still possible to add a content item
+     * into the visible list
+     * @returns {Boolean} Whether a content item can be displayed
+     */
+    ContentListView.prototype._hasVisibleVacancy = function () {
+        if (this.views.length > this._maxVisibleItems) {
+            return false;
+        }
+        return true;
+    };
+
+    /**
+     * Save formerly visible content to be redisplayed later
+     * @param content {Content} A content item to be redisplayed later
+     */
+    ContentListView.prototype.saveForLater = function (content) {
+        this._stash.stack(content);
+    };
 
     /**
      * Remove a piece of Content from this ContentListView
@@ -121,9 +202,13 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
      */
     ContentListView.prototype.remove = function (content) {
         var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
-        return ListView.prototype.remove.call(this, contentView);
+        contentView.remove();
     };
 
+    ContentListView.prototype.showMore = function (numToShow) {
+        this._bound = false;
+        ListView.prototype.showMore.call(this, numToShow);
+    };
 
     /**
      * Given a new Content instance, return an existing contentView that
@@ -141,7 +226,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         return null;
     };
 
-
     /**
      * Creates a content view from the given piece of content, by looking in this view's
      * content registry for the supplied content type.
@@ -158,6 +242,10 @@ debug, Writable, ContentView, More, ShowMoreButton, ContentListViewTemplate) {
         return view;
     };
 
+    ContentListView.prototype.destroy = function () {
+        ListView.prototype.destroy.call(this);
+        this.contentViewFactory = null;
+    };
 
     return ContentListView;
 });

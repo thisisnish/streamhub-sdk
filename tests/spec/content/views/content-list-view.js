@@ -3,7 +3,7 @@ define([
     'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/content',
     'streamhub-sdk/content/views/content-view'],
-function ($, ListView, Content, ContentView) {
+function ($, ContentListView, Content, ContentView) {
     'use strict';
 
     describe('A ContentListView', function () {
@@ -13,13 +13,13 @@ function ($, ListView, Content, ContentView) {
             $el;
 
         beforeEach(function () {
-            listView = new ListView({});
+            listView = new ContentListView({});
         });
 
         describe("when constructed", function () {
 
-            it("is instanceof ListView", function () {
-                expect(listView instanceof ListView).toBe(true);
+            it("is instanceof ContentListView", function () {
+                expect(listView instanceof ContentListView).toBe(true);
             });
 
             it("is .writable", function () {
@@ -42,7 +42,7 @@ function ($, ListView, Content, ContentView) {
                     $el = $('#'+fixtureId);
                     el = $el[0];
 
-                    listView = new ListView({
+                    listView = new ContentListView({
                         el: el
                     });
                 });
@@ -51,56 +51,12 @@ function ($, ListView, Content, ContentView) {
                     expect(listView.el).toBe(el);
                 });
             });
-        });
 
-        describe('.setElement', function () {
-            var newElement;
-            beforeEach(function () {
-                newElement = document.createElement('div');
-            });
-
-            it('adds class .streamhub-list-view', function () {
-                listView.setElement(newElement);
-                expect($(newElement)).toHaveClass('streamhub-content-list-view');
-            });
-        });
-
-        it('uses a modal when constructecd with opts.modal = true', function () {
-            var listView = new ListView({
-                modal: true
-            });
-            expect(typeof listView.modal).toBe('object');
-        });
-
-        describe('handles focusContent.hub event', function () {
-
-            var content;
-
-            beforeEach(function() {
-                listView = new ListView();
-
-                content = new Content();
-                listView.add(content);
-            });
-
-            it('shows the modal when a modal is set on the ListView instance', function () {
-                spyOn(listView.modal, '_setFocus');
-                spyOn(listView.modal, 'show');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(listView.modal.show).toHaveBeenCalled();
-            });
-
-            it('shows finds the correct ContentView instance and invokes .attachmentsView.focus when no modal is set on the ListView instance', function () {
-                listView.modal = false;
-                var targetContentView = listView.getContentView(content);
-                targetContentView.attachmentsView.focus = function () {};
-                spyOn(targetContentView.attachmentsView, 'focus');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(targetContentView.attachmentsView.focus).toHaveBeenCalled();
+            it('uses a modal when constructecd with opts.modal = true', function () {
+                var listView = new ContentListView({
+                    modal: true
+                });
+                expect(typeof listView.modal).toBe('object');
             });
         });
 
@@ -109,7 +65,7 @@ function ($, ListView, Content, ContentView) {
                 listView;
             beforeEach(function () {
                 initial = 2;
-                listView = new ListView({
+                listView = new ContentListView({
                     initial: initial
                 });
             });
@@ -156,12 +112,12 @@ function ($, ListView, Content, ContentView) {
             });
         });
 
-        describe("opts.showMore", function () {
+        describe("when constructed with opts.showMore", function () {
             var showMore,
                 listView;
             beforeEach(function () {
                 showMore = 39;
-                listView = new ListView({
+                listView = new ContentListView({
                     showMore: showMore
                 });
             });
@@ -171,14 +127,58 @@ function ($, ListView, Content, ContentView) {
                 expect(listView.more.setGoal).toHaveBeenCalledWith(showMore);
             });
             it("defaults to 50", function () {
-                listView = new ListView();
+                listView = new ContentListView();
                 spyOn(listView.more, 'setGoal');
                 listView.showMore();
                 expect(listView.more.setGoal).toHaveBeenCalledWith(50);
             });
         });
 
-        describe(".showMore()", function () {
+        describe('.setElement', function () {
+            var newElement;
+            beforeEach(function () {
+                newElement = document.createElement('div');
+            });
+
+            it('adds class .streamhub-list-view', function () {
+                listView.setElement(newElement);
+                expect($(newElement)).toHaveClass('streamhub-content-list-view');
+            });
+        });
+
+        describe('handles focusContent.hub event', function () {
+
+            var content;
+
+            beforeEach(function() {
+                listView = new ContentListView();
+
+                content = new Content();
+                listView.add(content);
+            });
+
+            it('shows the modal when a modal is set on the ContentListView instance', function () {
+                spyOn(listView.modal, '_setFocus');
+                spyOn(listView.modal, 'show');
+
+                listView.$el.trigger('focusContent.hub', { content: content });
+
+                expect(listView.modal.show).toHaveBeenCalled();
+            });
+
+            it('shows finds the correct ContentView instance and invokes .attachmentsView.focus when no modal is set on the ContentListView instance', function () {
+                listView.modal = false;
+                var targetContentView = listView.getContentView(content);
+                targetContentView.attachmentsView.focus = function () {};
+                spyOn(targetContentView.attachmentsView, 'focus');
+
+                listView.$el.trigger('focusContent.hub', { content: content });
+
+                expect(targetContentView.attachmentsView.focus).toHaveBeenCalled();
+            });
+        });
+
+        describe("handles showMore.hub event", function () {
             it("is called on showMore.hub event", function () {
                 spyOn(listView, 'showMore').andCallThrough();
                 listView.$el.trigger('showMore.hub');
@@ -197,7 +197,7 @@ function ($, ListView, Content, ContentView) {
                 contentView;
             beforeEach(function () {
                 content = new Content('Body Text', 'id');
-                list = new ListView();
+                list = new ContentListView();
                 contentView = list.add(content);
 
                 expect(list.views.length).toBe(1);
@@ -302,7 +302,7 @@ function ($, ListView, Content, ContentView) {
                 $el = $('#'+fixtureId);
                 el = $el[0];
 
-                listView = new ListView({
+                listView = new ContentListView({
                     el: el
                 });
 
@@ -311,14 +311,18 @@ function ($, ListView, Content, ContentView) {
                 content = new Content({
                     content: 'Say what'
                 });
-                newContentView = listView.add(content);
             });
 
             it("returns the new ContentView", function () {
+                newContentView = listView.add(content);
                 expect(newContentView instanceof ContentView).toBe(true);
             });
 
             describe("and ContentViews are created", function () {
+                beforeEach(function () {
+                    newContentView = listView.add(content);
+                });
+
                 it("stores them in .contentViews", function () {
                     expect(listView.views.length).toBe(1);
                     expect(listView.views[0] instanceof ContentView).toBe(true);
@@ -339,13 +343,77 @@ function ($, ListView, Content, ContentView) {
 
             describe("and a ContentView is inserted", function () {
                 it("the new ContentView is in the DOM", function () {
+                    newContentView = listView.add(content);
                     expect(listView.$listEl).toContain($(newContentView.el));
                 });
+            });
+
+            describe("when bounded", function () {
+                it("checks the visible vacancy", function () {
+                    spyOn(listView, '_hasVisibleVacancy').andCallThrough();
+
+                    newContentView = listView.add(content);
+                    expect(listView._bound).toBe(true);
+                    expect(listView._hasVisibleVacancy).toHaveBeenCalled();
+                });
+
+                it("and there is no visible vacancy, it unshifts from the content views and calls #saveForLater", function () {
+                    var oldContent = new Content({ body: 'blah' });
+                    var oldContentView = listView.add(oldContent);
+
+                    expect(listView._bound).toBe(true);
+                    spyOn(listView, '_hasVisibleVacancy').andReturn(false);
+                    spyOn(listView.more, 'setGoal');
+                    spyOn(listView, 'saveForLater');
+                    spyOn(listView, 'remove');
+
+                    newContentView = listView.add(content);
+                    expect(listView.more.setGoal).toHaveBeenCalledWith(0);
+                    expect(listView.saveForLater).toHaveBeenCalled();
+                    expect(listView.remove).toHaveBeenCalledWith(oldContentView);
+                });
+            });
+
+            describe("when not bounded", function () {
+                it("does not check the visible vacancy", function () {
+                    spyOn(listView, '_hasVisibleVacancy').andCallThrough();
+
+                    listView.bounded(false);
+                    newContentView = listView.add(content);
+                    expect(listView._bound).toBe(false);
+                    expect(listView._hasVisibleVacancy).not.toHaveBeenCalled();
+                });
+            });
+
+        });
+
+        describe('ContentListView#saveForLater', function () {
+            var content,
+                newContentView;
+
+            beforeEach(function () {
+                setFixtures(sandbox());
+                $el = $('#'+fixtureId);
+                el = $el[0];
+
+                listView = new ContentListView({
+                    el: el
+                });
+
+                content = new Content({
+                    content: 'Say what'
+                });
+            });
+
+            it("adds the Content instance to the stash's stack", function () {
+                spyOn(listView._stash, 'stack');
+                newContentView = listView.saveForLater(content);
+                expect(listView._stash.stack).toHaveBeenCalledWith(content)
             });
         });
     });
 
-    describe("Default ListView.prototype.contentView", function () {
+    describe("Default ContentListView.prototype.contentView", function () {
         var contentView;
 
         beforeEach(function () {
