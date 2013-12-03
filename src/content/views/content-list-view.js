@@ -62,10 +62,10 @@ debug, Writable, ContentView, More, ShowMoreButton) {
     ContentListView.prototype.setElement = function (element) {
         ListView.prototype.setElement.apply(this, arguments);
 
-        this.$el.on('removeContentView.hub', function(e, data) {
+        this.$el.on('removeContentView.hub', $.proxy(function(e, data) {
             return ListView.prototype.remove.call(this, data.contentView);
-        }.bind(this));
-        this.$el.on('focusContent.hub', function(e, context) {
+        }, this));
+        this.$el.on('focusContent.hub', $.proxy(function(e, context) {
             var contentView = this.getContentView(context.content);
             if (! this.modal) {
                 if (contentView &&
@@ -76,7 +76,7 @@ debug, Writable, ContentView, More, ShowMoreButton) {
                 return;
             }
             this.modal.show(context.content, { attachment: context.attachmentToFocus });
-        }.bind(this));
+        }, this));
     };
 
 
@@ -154,7 +154,9 @@ debug, Writable, ContentView, More, ShowMoreButton) {
 
             // Wait for the element to be rendered, before removing class which 
             // transitions the margin-top from -100% to 0
-            setTimeout(function () { $wrappedEl.removeClass(this.insertingClassName).css('margin-top', ''); }.bind(this), 0.1);
+            setTimeout($.proxy(function () {
+                $wrappedEl.removeClass(this.insertingClassName).css('margin-top', '');
+            }, this), 0.1);
         } else {
             // Find it's previous view and insert new view after
             $previousEl = this.views[newContentViewIndex - 1].$el;
@@ -163,7 +165,9 @@ debug, Writable, ContentView, More, ShowMoreButton) {
 
             // Wait for the element to be rendered, before remvoing class which
             // transitions the opacity from 0 to 1
-            setTimeout(function () { $wrappedEl.removeClass(this.hiddenClassName); }.bind(this), 0.1);
+            setTimeout($.proxy(function () {
+                $wrappedEl.removeClass(this.hiddenClassName);
+            }, this), 0.1);
         }
     };
 
