@@ -408,7 +408,7 @@ function ($, ContentListView, Content, ContentView) {
             it("adds the Content instance to the stash's stack", function () {
                 spyOn(listView._stash, 'stack');
                 newContentView = listView.saveForLater(content);
-                expect(listView._stash.stack).toHaveBeenCalledWith(content)
+                expect(listView._stash.stack).toHaveBeenCalledWith(content);
             });
         });
     });
