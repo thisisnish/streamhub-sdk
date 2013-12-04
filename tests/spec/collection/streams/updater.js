@@ -79,8 +79,8 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
                 var ogInitFromBootstrap = updater._collection.initFromBootstrap;
                 spyOn(updater._collection, 'initFromBootstrap').andCallFake(function (errback) {
                     ogInitFromBootstrap.call(updater._collection, function (err, initData) {
-                        initData = Object.create(initData);
-                        initData.collectionSettings = Object.create(initData.collectionSettings);
+                        initData = $.extend({}, initData);
+                        initData.collectionSettings = $.extend({}, initData.collectionSettings);
                         initData.collectionSettings.event = 0;
                         errback(null, initData);
                     });

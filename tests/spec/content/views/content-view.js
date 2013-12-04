@@ -23,7 +23,16 @@ function ($, util, Content, LivefyreContent, ContentView, TiledAttachmentListVie
                 countListeners = function ($el) {
                 //obj.on('', $el) and not $el.on('', obj); 
                     var obj = $._data($el, 'events');
-                    return obj ? Object.getOwnPropertyNames(obj).length : 0;
+                    var ownPropertyNames = [];
+                    if ( ! obj) {
+                        return 0;
+                    }
+                    for (var name in obj) {
+                        if (obj.hasOwnProperty(name)) {
+                            ownPropertyNames.push(name);
+                        }
+                    }
+                    return ownPropertyNames.length;
                 };
             beforeEach(function () {
                 content = new Content('Body Text', 'id');
