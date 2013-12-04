@@ -65,12 +65,12 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         View.prototype.setElement.apply(this, arguments);
         this.$listEl = this.$el;
         // .showMoreButton will trigger showMore.hub when it is clicked
-        this.$el.on('showMore.hub', function () {
+        this.$el.on('showMore.hub', $.proxy(function () {
             this.showMore();
-        }.bind(this));
-        this.$el.on('removeView.hub', function (ev, view) {
+        }, this));
+        this.$el.on('removeView.hub', $.proxy(function (ev, view) {
             this.remove(view);
-        }.bind(this));
+        }, this));
     };
 
 

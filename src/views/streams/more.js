@@ -69,6 +69,7 @@ function (inherits, Duplex, debug) {
      * @private
      */
     More.prototype._write = function (chunk, doneWriting) {
+        var self = this;
         log('_write', chunk);
 
         // Put on BOTTOM of the stack.
@@ -79,9 +80,9 @@ function (inherits, Duplex, debug) {
         // new bottom of the stack is popped, and we need more data
         // from the Writable side of the duplex
         this._requestMore = function () {
-            this._requestMore = null;
+            self._requestMore = null;
             doneWriting();
-        }.bind(this);
+        };
 
         if (this._goal >= 1) {
             this._fetchAndPush();

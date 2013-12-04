@@ -19,6 +19,7 @@ define([
      * @constructor
      */
     var ContentView = function ContentView (opts) {
+        var self = this;
         opts = opts || {};
         this.content = opts.content;
         // store construction time to use for ordering if this.content has no dates
@@ -30,14 +31,14 @@ define([
 
         if (this.content) {
             this.content.on("reply", function(content) {
-                this.render();
-            }.bind(this));
+                self.render();
+            });
             this.content.on("change:visibility", function(newVis, oldVis) {
-                this._handleVisibilityChange(newVis, oldVis);
-            }.bind(this));
+                self._handleVisibilityChange(newVis, oldVis);
+            });
             this.content.on("change", function() {
-                this.render();
-            }.bind(this));
+                self.render();
+            });
         }
     };
     inherits(ContentView, View);

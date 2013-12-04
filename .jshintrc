@@ -1,6 +1,7 @@
 {
     "browser": true,
     "globals": {
+        "jasmine": true,
         "define": true,
         "expect": true,
         "describe": true,

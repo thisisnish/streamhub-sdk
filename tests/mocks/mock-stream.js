@@ -25,7 +25,7 @@ define([
 
     MockStream.prototype._read = function() {
         var self = this;
-        var content = Object.create(this.mocks[Math.floor(Math.random() * this.mocks.length)]);
+        var content = $.extend({}, this.mocks[Math.floor(Math.random() * this.mocks.length)]);
         content.id = (new Date().getTime());
         setTimeout(function () {
             self.push(content);
