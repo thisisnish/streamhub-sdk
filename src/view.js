@@ -65,6 +65,14 @@ define([
         }
     };
 
+    /**
+     * The inverse of render. Detaches the element from the DOM.
+     * Retains data and event handlers
+     */
+    View.prototype.detach = function () {
+        this.$el.detach();
+    };
+
     View.prototype.destroy = function () {
         this.$el.remove();
         this.template = null;
