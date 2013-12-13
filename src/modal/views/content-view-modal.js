@@ -56,7 +56,9 @@ define([
              * Hide modal
              * @event GalleryAttachmentListView#hideModal.hub
              */
-            self.$el.trigger('hideModal.hub');
+            if ($(e.target).hasClass('hub-modal-content')) {
+                self.$el.trigger('hideModal.hub');
+            }
         });
 
         return this;
