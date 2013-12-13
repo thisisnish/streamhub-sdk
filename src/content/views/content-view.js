@@ -55,6 +55,10 @@ define([
     ContentView.prototype.template = ContentTemplate;
     ContentView.prototype.formatDate = util.formatDate;
 
+    ContentView.prototype.setContent = function (content) {
+        this.content = content;
+    };
+
      /**
      * Set the .el DOMElement that the ContentView should render to
      * @param el {DOMElement} The new element the ContentView should render to
@@ -86,7 +90,7 @@ define([
         if (this.content.createdAt) {
             context.formattedCreatedAt = this.formatDate(this.content.createdAt);
         }
-        this.el.innerHTML = this.template(context);
+        this.$el.html(this.template(context));
 
         if (this.attachmentsView) {
             this.attachmentsView.setElement(this.$el.find(this.attachmentsElSelector)[0]);

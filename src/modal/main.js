@@ -22,8 +22,7 @@ define([
         this.visible = false;
         this._attached = false;
         this._rendered = false;
-
-        this.modalContentView = this._createContentView();
+        this.modalContentView = null;
 
         View.call(this);
 
@@ -31,12 +30,6 @@ define([
             // Escape
             if (e.keyCode === 27 && self.visible) {
                 self.hide();
-            }
-        });
-
-        $(window).on('mousewheel', function(e) {
-            if (self.visible) {
-                e.preventDefault();
             }
         });
 
@@ -67,6 +60,7 @@ define([
     ModalView.prototype.modalElSelector = '.hub-modal';
     ModalView.prototype.closeButtonSelector = '.hub-modal-close';
     ModalView.prototype.containerElSelector = '.hub-modal-content';
+    ModalView.prototype.contentViewElSelector = '.hub-modal-content-view';
 
 
     /**
@@ -85,7 +79,7 @@ define([
 
     /**
      * Makes the modal and its content visible
-     * @param content {Content} The content to be displayed in the content view by the modal
+     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
      * @param opts {Object} The content to be displayed in the content view by the modal
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
      */
@@ -128,7 +122,7 @@ define([
     ModalView.prototype.render = function () {
         View.prototype.render.call(this);
 
-        this.modalContentView.setElement(this.$el.find(this.containerElSelector));
+        this.modalContentView.setElement(this.$el.find(this.contentViewElSelector));
         this.modalContentView.render();
 
         this._rendered = true;
@@ -164,13 +158,15 @@ define([
     /**
      * Sets the content object and optional attachment to be displayed in the content view 
      * @private
-     * @param content {Content} The content to be displayed in the content view by the modal
+     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
      * @param opts {Object} The content to be displayed in the content view by the modal
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
      */
     ModalView.prototype._setFocus = function (content, opts) {
         opts = opts || {};
-        this.modalContentView.setContent(content, opts);
+        if (! this.modalContentView) {
+            this.modalContentView = this._createContentView(content, opts);
+        }
     };
 
 
