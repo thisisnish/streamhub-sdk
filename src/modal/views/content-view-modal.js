@@ -51,6 +51,13 @@ define([
         this.$el.on('galleryResize.hub', function (e) {
             self.resizeFocusedAttachment();
         });
+        this.$el.on('click', function (e) {
+            /**
+             * Hide modal
+             * @event GalleryAttachmentListView#hideModal.hub
+             */
+            self.$el.trigger('hideModal.hub');
+        });
 
         return this;
     };
