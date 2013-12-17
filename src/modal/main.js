@@ -94,9 +94,7 @@ define([
             this._attach();
         }
 
-        if (content) {
-            this._setFocus(content, options);
-        }
+        this._setFocus(content, options);
 
         if ( ! this._rendered) {
             this.render();
@@ -122,8 +120,10 @@ define([
     ModalView.prototype.render = function () {
         View.prototype.render.call(this);
 
-        this.modalContentView.setElement(this.$el.find(this.contentViewElSelector));
-        this.modalContentView.render();
+        if (this.modalContentView) {
+            this.modalContentView.setElement(this.$el.find(this.contentViewElSelector));
+            this.modalContentView.render();
+        }
 
         this._rendered = true;
     };
@@ -166,7 +166,7 @@ define([
      */
     ModalView.prototype._setFocus = function (content, opts) {
         opts = opts || {};
-        if (! this.modalContentView) {
+        if (! this.modalContentView && content) {
             this.modalContentView = this._createContentView(content, opts);
         }
     };
