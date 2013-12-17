@@ -109,7 +109,7 @@ define([
     /**
      * Makes the modal and its content not visible
      */
-    ModalView.prototype.hide = function() {
+    ModalView.prototype.hide = function () {
         this.$el.hide();
         this._detach();
         this.visible = false;
