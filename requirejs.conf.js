@@ -30,6 +30,10 @@ require.config({
     name: "streamhub-sdk/modal",
     location: "src/modal"
   },{
+    name: "streamhub-sdk/jquery",
+    location: "src",
+    main: "jquery"
+  },{
     name: "streamhub-sdk-tests",
     location: "tests"
   },{
