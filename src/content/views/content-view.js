@@ -55,10 +55,6 @@ define([
     ContentView.prototype.template = ContentTemplate;
     ContentView.prototype.formatDate = util.formatDate;
 
-    ContentView.prototype.setContent = function (content) {
-        this.content = content;
-    };
-
      /**
      * Set the .el DOMElement that the ContentView should render to
      * @param el {DOMElement} The new element the ContentView should render to
