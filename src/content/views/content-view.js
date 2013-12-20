@@ -55,15 +55,71 @@ define([
     ContentView.prototype.template = ContentTemplate;
     ContentView.prototype.formatDate = util.formatDate;
 
+    ContentView.prototype.events = View.prototype.events.extended({
+        'imageLoaded.hub': function(e) {
+            this.$el.addClass(this.contentWithImageClass);
+            this.$el.removeClass(this.imageLoadingClass);
+        },
+        'imageError.hub': function(e, oembed) {
+            this.content.removeAttachment(oembed);
+
+            if (this.attachmentsView && this.attachmentsView.tileableCount && !this.attachmentsView.tileableCount()) {
+                this.$el.removeClass(this.contentWithImageClass);
+                this.$el.removeClass(this.imageLoadingClass);
+            }
+        }
+    }, function (events) {
+        events['click ' + this.headerElSelector] = function(e) {
+            var headerEl = $(e.currentTarget);
+            var frameEl = this.$el.find('.content-attachments-tiled ' + this.attachmentFrameElSelector);
+
+            headerEl.hide();
+            frameEl.hide();
+            var targetEl = document.elementFromPoint(e.clientX, e.clientY);
+            frameEl.show();
+            headerEl.show();
+
+            $(targetEl).trigger('click');
+        };
+
+        events['mouseenter ' + this.tooltipElSelector] = function (e) {
+            var title = $(this).attr('title');
+            var position = $(this).position();
+            var positionWidth = $(this).width();
+
+            var $currentTooltip = $("<div class=\"hub-current-tooltip content-action-tooltip\"><div class=\"content-action-tooltip-bubble\">" + title + "</div><div class=\"content-action-tooltip-tail\"></div></div>");
+            $(this).parent().append($currentTooltip);
+
+            var tooltipWidth = $currentTooltip.outerWidth();
+            var tooltipHeight = $currentTooltip.outerHeight();
+
+            $currentTooltip.css({
+                "left": position.left + (positionWidth / 2) - (tooltipWidth / 2),
+                "top":  position.top - tooltipHeight - 2
+            });
+
+            if ($(this).hasClass(this.tooltipElSelector)){
+                var currentLeft = parseInt($currentTooltip.css('left'), 10);
+                $currentTooltip.css('left', currentLeft + 7);
+            }
+
+            $currentTooltip.fadeIn();
+        };
+        events['mouseleave ' + this.tooltipElSelector] = function (e) {
+            var $current = this.$el.find('.hub-current-tooltip');
+            $current.removeClass('hub-current-tooltip').fadeOut(200, function(){
+                $(this).remove();
+            });
+        };
+    });
+
      /**
      * Set the .el DOMElement that the ContentView should render to
      * @param el {DOMElement} The new element the ContentView should render to
      * @returns {ContentView}
      */
     ContentView.prototype.setElement = function (el) {
-        this.el = el;
-        this.$el = $(el);
-        this.$el.addClass(this.elClass);
+        View.prototype.setElement.apply(this, arguments);
 
         if (this.attachmentsView && this.attachmentsView.tileableCount && this.attachmentsView.tileableCount()) {
             this.$el.addClass(this.imageLoadingClass);
@@ -98,67 +154,11 @@ define([
     
     /**
      * Binds event handlers on this.el
+     * This is deprecated now that View provides .delegateEvents
+     * @deprecated
      * @returns {ContentView}
      */
     ContentView.prototype.attachHandlers = function () {
-        var self = this;
-
-        this.$el.on('imageLoaded.hub', function(e) {
-            self.$el.addClass(self.contentWithImageClass);
-            self.$el.removeClass(self.imageLoadingClass);
-        });
-
-        this.$el.on('imageError.hub', function(e, oembed) {
-            self.content.removeAttachment(oembed);
-
-            if (self.attachmentsView && self.attachmentsView.tileableCount && !self.attachmentsView.tileableCount()) {
-                self.$el.removeClass(self.contentWithImageClass);
-                self.$el.removeClass(self.imageLoadingClass);
-            }
-        });
-
-        this.$el.on('click', this.headerElSelector, function(e) {
-            var headerEl = $(e.currentTarget);
-            var frameEl = self.$el.find('.content-attachments-tiled ' + self.attachmentFrameElSelector);
-
-            headerEl.hide();
-            frameEl.hide();
-            var targetEl = document.elementFromPoint(e.clientX, e.clientY);
-            frameEl.show();
-            headerEl.show();
-
-            $(targetEl).trigger('click');
-        });
-
-        this.$el.on('mouseenter', this.tooltipElSelector, function (e) {
-            var title = $(this).attr('title');
-            var position = $(this).position();
-            var positionWidth = $(this).width();
-
-            var $currentTooltip = $("<div class=\"hub-current-tooltip content-action-tooltip\"><div class=\"content-action-tooltip-bubble\">" + title + "</div><div class=\"content-action-tooltip-tail\"></div></div>");
-            $(this).parent().append($currentTooltip);
-
-            var tooltipWidth = $currentTooltip.outerWidth();
-            var tooltipHeight = $currentTooltip.outerHeight();
-
-            $currentTooltip.css({
-                "left": position.left + (positionWidth / 2) - (tooltipWidth / 2),
-                "top":  position.top - tooltipHeight - 2
-            });
-
-            if ($(this).hasClass(self.tooltipElSelector)){
-                var currentLeft = parseInt($currentTooltip.css('left'), 10);
-                $currentTooltip.css('left', currentLeft + 7);
-            }
-
-            $currentTooltip.fadeIn();
-        });
-        this.$el.on('mouseleave', this.tooltipElSelector, function (e) {
-            var $current = self.$el.find('.hub-current-tooltip');
-            $current.removeClass('hub-current-tooltip').fadeOut(200, function(){
-                $(this).remove();
-            });
-        });
         return this;
     };
     

@@ -21,6 +21,8 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
 
     /**
      * An Object that represents a hosted StreamHub Collection
+     * @param [opts.replies=false] {boolean} Whether to stream out reply Content
+     * from the Archives and Updaters
      */
     var Collection = function (opts) {
         opts = opts || {};
@@ -29,9 +31,11 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this.siteId = opts.siteId;
         this.articleId = opts.articleId;
         this.environment = opts.environment;
+
         this._collectionMeta = opts.collectionMeta;
         this._signed = opts.signed;
         this._autoCreate = opts.autoCreate || true;
+        this._replies = opts.replies || false;
 
         this._bootstrapClient = opts.bootstrapClient || new LivefyreBootstrapClient();
         this._createClient = opts.createClient || new LivefyreCreateClient();
@@ -59,7 +63,8 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         opts = opts || {};
         return new CollectionArchive({
             collection: this,
-            bootstrapClient: opts.bootstrapClient || this._bootstrapClient
+            bootstrapClient: opts.bootstrapClient || this._bootstrapClient,
+            replies: this._replies
         });
     };
 
@@ -72,7 +77,8 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         opts = opts || {};
         return new CollectionUpdater({
             collection: this,
-            streamClient: opts.streamClient
+            streamClient: opts.streamClient,
+            replies: this._replies
         });
     };
 
@@ -177,7 +183,9 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
 
     Collection.prototype.initFromBootstrap = function (errback) {
         var self = this;
-        this.once('_initFromBootstrap', errback);
+        if (errback) {
+            this.once('_initFromBootstrap', errback);
+        }
         if (this._isInitingFromBootstrap) {
             return;
         }
@@ -187,7 +195,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             if (err === 'Not Found' && this._autoCreate) {
                 this._createCollection(function (err) {
                     if (!err) {
-                        self.initFromBootstrap(errback);
+                        self.initFromBootstrap();
                     }
                 });
                 return;
@@ -230,14 +238,14 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             errback.call(self, err, data);
         });
     };
-    
-    
+
+
     /**
      * @callback optionalObjectCallback
-     * @param [error] {Object} 
+     * @param [error] {Object}
      */
-    
-    
+
+
     /**
      * Request the Create endpoint to create an entirely new collection. This
      * gets called when Bootstrap initialization fails.
@@ -250,7 +258,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             throw 'Attempting to create a collection more than once.';
         }
         this._isCreatingCollection = true;
-        
+
         var self = this;
         this._autoCreate = false;
         this.once('_createCollection', errback);
