@@ -1,9 +1,10 @@
 define([
+    'streamhub-sdk/jquery',
     'streamhub-sdk/modal',
     'streamhub-sdk/content/content-view-factory',
     'streamhub-sdk/content/views/content-list-view',
     'inherits'
-], function(ModalView, ContentViewFactory, ContentListView, inherits) {
+], function($, ModalView, ContentViewFactory, ContentListView, inherits) {
     'use strict';
 
     /**
