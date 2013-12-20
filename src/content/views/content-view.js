@@ -86,7 +86,7 @@ define([
         if (this.content.createdAt) {
             context.formattedCreatedAt = this.formatDate(this.content.createdAt);
         }
-        this.$el.html(this.template(context));
+        this.el.innerHTML = this.template(context);
 
         if (this.attachmentsView) {
             this.attachmentsView.setElement(this.$el.find(this.attachmentsElSelector)[0]);
