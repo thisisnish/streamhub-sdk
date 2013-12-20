@@ -149,8 +149,7 @@ define([
         });
 
         this.$el.on('click', this.closeButtonSelector, function (e) {
-            self.hide();
-            $('body').css('overflow', 'auto');
+            self.$el.trigger('hideModal.hub');
         });
 
         return this;
