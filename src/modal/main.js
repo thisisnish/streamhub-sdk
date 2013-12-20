@@ -26,7 +26,7 @@ define([
 
         View.call(this);
 
-        $(window).keyup(function(e) {
+        $(window).keyup(function (e) {
             // Escape
             if (e.keyCode === 27 && self.visible) {
                 self.hide();
@@ -87,6 +87,11 @@ define([
         // First hide any other modals
         $.each(ModalView.instances, function (i, modal) {
             modal.hide();
+        });
+
+        $('body').css({
+            'overflow': 'hidden',
+            'position': 'fixed'
         });
 
         this.$el.show();
