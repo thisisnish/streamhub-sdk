@@ -22,21 +22,14 @@ define([
         this.visible = false;
         this._attached = false;
         this._rendered = false;
-
-        this.modalContentView = this._createContentView();
+        this.modalContentView = null;
 
         View.call(this);
 
-        $(window).keyup(function(e) {
+        $(window).keyup(function (e) {
             // Escape
             if (e.keyCode === 27 && self.visible) {
                 self.hide();
-            }
-        });
-
-        $(window).on('mousewheel', function(e) {
-            if (self.visible) {
-                e.preventDefault();
             }
         });
 
@@ -67,6 +60,7 @@ define([
     ModalView.prototype.modalElSelector = '.hub-modal';
     ModalView.prototype.closeButtonSelector = '.hub-modal-close';
     ModalView.prototype.containerElSelector = '.hub-modal-content';
+    ModalView.prototype.contentViewElSelector = '.hub-modal-content-view';
 
 
     /**
@@ -85,7 +79,7 @@ define([
 
     /**
      * Makes the modal and its content visible
-     * @param content {Content} The content to be displayed in the content view by the modal
+     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
      * @param opts {Object} The content to be displayed in the content view by the modal
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
      */
@@ -95,14 +89,16 @@ define([
             modal.hide();
         });
 
+        $('body').css({
+            'overflow': 'hidden'
+        });
+
         this.$el.show();
         if ( ! this._attached) {
             this._attach();
         }
 
-        if (content) {
-            this._setFocus(content, options);
-        }
+        this._setFocus(content, options);
 
         if ( ! this._rendered) {
             this.render();
@@ -115,7 +111,7 @@ define([
     /**
      * Makes the modal and its content not visible
      */
-    ModalView.prototype.hide = function() {
+    ModalView.prototype.hide = function () {
         this.$el.hide();
         this._detach();
         this.visible = false;
@@ -128,8 +124,10 @@ define([
     ModalView.prototype.render = function () {
         View.prototype.render.call(this);
 
-        this.modalContentView.setElement(this.$el.find(this.containerElSelector));
-        this.modalContentView.render();
+        if (this.modalContentView) {
+            this.modalContentView.setElement(this.$el.find(this.contentViewElSelector));
+            this.modalContentView.render();
+        }
 
         this._rendered = true;
     };
@@ -151,10 +149,11 @@ define([
 
         this.$el.on('hideModal.hub', function (e) {
             self.hide();
+            $('body').css('overflow', 'auto');
         });
 
         this.$el.on('click', this.closeButtonSelector, function (e) {
-            self.hide();
+            self.$el.trigger('hideModal.hub');
         });
 
         return this;
@@ -164,13 +163,15 @@ define([
     /**
      * Sets the content object and optional attachment to be displayed in the content view 
      * @private
-     * @param content {Content} The content to be displayed in the content view by the modal
+     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
      * @param opts {Object} The content to be displayed in the content view by the modal
      * @param opts.attachment {Oembed} The attachment to be focused in the content view
      */
     ModalView.prototype._setFocus = function (content, opts) {
         opts = opts || {};
-        this.modalContentView.setContent(content, opts);
+        if (! this.modalContentView && content) {
+            this.modalContentView = this._createContentView(content, opts);
+        }
     };
 
 
