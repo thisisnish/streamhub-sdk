@@ -90,8 +90,7 @@ define([
         });
 
         $('body').css({
-            'overflow': 'hidden',
-            'position': 'fixed'
+            'overflow': 'hidden'
         });
 
         this.$el.show();
