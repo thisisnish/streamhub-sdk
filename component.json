@@ -16,7 +16,7 @@
     "stream": "git://github.com/Livefyre/stream.git#~0.1",
     "event-emitter": "git://github.com/Livefyre/event-emitter.git",
     "inherits": "git://github.com/Livefyre/inherits.git",
-    "view": "git://github.com/Livefyre/view.git#~1.0"
+    "view": "git://github.com/Livefyre/view.git#~1.1"
   },
   "devDependencies": {
     "jasmine": "*",
