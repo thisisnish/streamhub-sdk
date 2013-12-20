@@ -74,10 +74,9 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
      * @returns this
      */
     AttachmentListView.prototype.setElement = function (element) {
-        this.el = element;
-        this.$el = $(element);
+        var ret = View.prototype.setElement.apply(this, arguments);
         this.$el.attr(this.listLengthAttribute, this.count());
-        return this;
+        return ret;
     };
 
     AttachmentListView.prototype.render = function () {
