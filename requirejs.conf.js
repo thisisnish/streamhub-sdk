@@ -12,8 +12,7 @@ require.config({
     'event-emitter': 'lib/event-emitter/src/event-emitter',
     inherits: 'lib/inherits/inherits',
     blanket: 'lib/blanket/dist/qunit/blanket',
-    'blanket-jasmine': 'lib/blanket/dist/jasmine/blanket_jasmine',
-    view: 'lib/view/src/view'
+    'blanket-jasmine': 'lib/blanket/dist/jasmine/blanket_jasmine'
   },
   packages: [{
     name: "streamhub-sdk",
@@ -36,6 +35,10 @@ require.config({
   },{
     name: "stream",
     location: "lib/stream/src"
+  },{
+    name: "view",
+    location: "lib/view/src",
+    main: "view"
   }],
   shim: {
     jquery: {

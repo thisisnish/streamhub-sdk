@@ -20,14 +20,11 @@ function (ContentView, InstagramContentTemplate, inherits) {
     InstagramContentView.prototype.elClass += ' content-instagram ';
     InstagramContentView.prototype.template = InstagramContentTemplate;
 
-    InstagramContentView.prototype.attachHandlers = function () {
-        ContentView.prototype.attachHandlers.call(this);
-
-        var self = this;
-        this.$el.on('imageError.hub', function(e, oembed) {
-            self.remove();
-        });
-    };
+    InstagramContentView.prototype.events = ContentView.prototype.events.extended({
+        'imageError.hub': function (e, oembed) {
+            this.remove();
+        }
+    });
 
     return InstagramContentView;
 });

@@ -46,6 +46,17 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
     inherits.parasitically(ListView, Writable);
 
 
+    ListView.prototype.events = View.prototype.events.extended({
+        // .showMoreButton will trigger showMore.hub when it is clicked
+        'showMore.hub': function () {
+            this.showMore();
+        },
+        // When a subview .remove()s itself, it should fire this event
+        'removeView.hub': function (event, view) {
+            this.remove(view);
+        }
+    });
+
     ListView.prototype.template = ListViewTemplate;
 
 
@@ -64,13 +75,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
     ListView.prototype.setElement = function (element) {
         View.prototype.setElement.apply(this, arguments);
         this.$listEl = this.$el;
-        // .showMoreButton will trigger showMore.hub when it is clicked
-        this.$el.on('showMore.hub', $.proxy(function () {
-            this.showMore();
-        }, this));
-        this.$el.on('removeView.hub', $.proxy(function (ev, view) {
-            this.remove(view);
-        }, this));
     };
 
 

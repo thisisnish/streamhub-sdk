@@ -1,4 +1,4 @@
-define(['inherits', 'streamhub-sdk/view'],
+define(['inherits', 'streamhub-sdk/view', 'streamhub-sdk/jquery'],
 function (inherits, View) {
     'use strict';
 
@@ -18,6 +18,16 @@ function (inherits, View) {
     inherits(ShowMoreButton, View);
 
 
+    ShowMoreButton.prototype.events = View.prototype.events.extended({
+        // Hide the button on click. When more content is held and can be shown,
+        // It will reappear
+        'click': function () {
+            this.$el.hide();
+            this.$el.trigger('showMore.hub');
+        }
+    });
+
+
     ShowMoreButton.prototype.render = function () {
         View.prototype.render.call(this);
         this.$el.hide();
@@ -30,22 +40,6 @@ function (inherits, View) {
      */
     ShowMoreButton.prototype.template = function () {
         return "Load More";
-    };
-
-
-    /**
-     * Set the HTMLElement this Button should render in
-     * @param element {HTMLElement} An element the button should render in
-     */
-    ShowMoreButton.prototype.setElement = function (element) {
-        var self = this;
-        View.prototype.setElement.apply(this, arguments);
-        // Hide the button on click. When more content is held and can be shown,
-        // It will reappear
-        this.$el.on('click', function () {
-            self.$el.hide();
-            self.$el.trigger('showMore.hub');
-        });
     };
 
 

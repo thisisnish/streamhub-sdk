@@ -81,6 +81,44 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     GalleryAttachmentListView.prototype.attachmentMetaSelector = '.content-attachments-meta';
     GalleryAttachmentListView.prototype.actualImageSelector = '.content-attachment-actual-image';
 
+    GalleryAttachmentListView.prototype.events = TiledAttachmentListView.prototype.events.extended({
+        click: function (e) {
+            /**
+             * Hide modal
+             * @event GalleryAttachmentListView#hideModal.hub
+             */
+            this.$el.trigger('hideModal.hub');
+        },
+        'focusContent.hub': function(e, context) {
+            if (context.content) {
+                for (var i=0; i < context.content.attachments; i++) {
+                    this.add(context.content.attachments[i]);
+                }
+            }
+            this.setFocusedAttachment(context.attachmentToFocus);
+            this.render();
+        }
+    }, function (events) {
+        var pagingSelectors = [
+            this.attachmentMetaSelector,
+            this.galleryNextSelector,
+            this.galleryPrevSelector,
+            this.actualImageSelector
+        ].join(',');
+
+        events['click '+pagingSelectors] = function (e) {
+            e.stopPropagation();
+            if (!this.pageButtons) {
+                return;
+            }
+            if ($(e.currentTarget).hasClass(this.galleryNextSelector.substring(1)) || $(e.currentTarget).hasClass(this.actualImageSelector.substring(1))) {
+                this.next();
+            } else if ($(e.currentTarget).hasClass(this.galleryPrevSelector.substring(1))) {
+                this.prev();
+            }
+        };
+    })
+
     /**
      * Set the attachment instance to be displayed as the focused item in the gallery
      * @param element {Oembed} The attachment to focus in the gallery
@@ -97,43 +135,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
      * @returns this
      */
     GalleryAttachmentListView.prototype.setElement = function (element) {
-        View.prototype.setElement.call(this, element);
-
-        var self = this;
-        this.$el.on('click', function (e) {
-            /**
-             * Hide modal
-             * @event GalleryAttachmentListView#hideModal.hub
-             */
-            self.$el.trigger('hideModal.hub');
-        });
-        this.$el.on(
-            'click',
-            [this.attachmentMetaSelector, this.galleryNextSelector, this.galleryPrevSelector, this.actualImageSelector].join(','),
-            function (e) {
-                e.stopPropagation();
-                if (!self.pageButtons) {
-                    return;
-                }
-                if ($(e.currentTarget).hasClass(self.galleryNextSelector.substring(1)) || $(e.currentTarget).hasClass(self.actualImageSelector.substring(1))) {
-                    self.next();
-                } else if ($(e.currentTarget).hasClass(self.galleryPrevSelector.substring(1))) {
-                    self.prev();
-                }
-            }
-        );
-
-        this.$el.on('focusContent.hub', function(e, context) {
-            if (context.content) {
-                for (var i=0; i < context.content.attachments; i++) {
-                    self.add(context.content.attachments[i]);
-                }
-            }
-            self.setFocusedAttachment(context.attachmentToFocus);
-            self.render();
-        });
-
-        return this;
+        return View.prototype.setElement.call(this, element);
     };
 
     /**

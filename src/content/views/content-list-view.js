@@ -55,17 +55,11 @@ debug, Writable, ContentView, More, ShowMoreButton) {
      */
     ContentListView.prototype.elClass += ' streamhub-content-list-view';
 
-    /**
-     * Set the element that this ContentListView renders in
-     * @param element {HTMLElement} The element to render the ContentListView in
-     */
-    ContentListView.prototype.setElement = function (element) {
-        ListView.prototype.setElement.apply(this, arguments);
-
-        this.$el.on('removeContentView.hub', $.proxy(function(e, data) {
+    ContentListView.prototype.events = ListView.prototype.events.extended({
+        'removeContentView.hub': function(e, data) {
             return ListView.prototype.remove.call(this, data.contentView);
-        }, this));
-        this.$el.on('focusContent.hub', $.proxy(function(e, context) {
+        },
+        'focusContent.hub': function(e, context) {
             var contentView = this.getContentView(context.content);
             if (! this.modal) {
                 if (contentView &&
@@ -76,9 +70,8 @@ debug, Writable, ContentView, More, ShowMoreButton) {
                 return;
             }
             this.modal.show(context.content, { attachment: context.attachmentToFocus });
-        }, this));
-    };
-
+        }
+    });
 
     /**
      * Comparator function to determine ordering of ContentViews.
