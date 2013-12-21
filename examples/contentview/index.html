@@ -31,8 +31,11 @@
         <div id="c5"></div>
 
         <h2>Ad-hoc Content</h2>
-        <pre>new Content.create('&lt;p&gt;Woah&lt;/p&gt;')</pre>
+        <pre>new Content('&lt;p&gt;Woah&lt;/p&gt;')</pre>
         <div id="c3"></div>
+
+        <h2>Content Author w/ broken avatar</h2>
+        <div id="c6"></div>
 
         <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
         <script src="/requirejs.conf.js" type="text/javascript"></script>
@@ -134,6 +137,18 @@
             });
             c5v.render();
             
+            var c6 = new Content('<p>My avatar is broken</p>');
+            c6.set({
+                author: {
+                    displayName: 'ben',
+                    avatar: 'http://goooo'
+                }
+            });
+            var c6v = new ContentView({
+                content: c6,
+                el: document.getElementById('c6')
+            });
+            c6v.render();
         });
         </script>
     </body>
