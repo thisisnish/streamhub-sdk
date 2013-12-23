@@ -210,8 +210,7 @@ define([
     };
 
     /**
-     * Handle an error loading the avatar
-     * Hide the avatar
+     * Handle an error loading the avatar by removing the avatar element
      * @private
      */
     ContentView.prototype._handleAvatarError = function (e) {
