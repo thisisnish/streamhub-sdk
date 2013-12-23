@@ -141,11 +141,9 @@ StateToContent, debug) {
      * @return {Content[]} An Array of Content models
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
-        var self = this,
-            stateToContent = this._createStateToContent(streamData),
+        var stateToContent = this._createStateToContent(streamData),
             states = streamData.states,
             state,
-            content,
             contents = [];
 
         stateToContent.on('data', function (content) {

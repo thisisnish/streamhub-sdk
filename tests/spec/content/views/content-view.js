@@ -126,8 +126,6 @@ function ($, util, Content, LivefyreContent, ContentView, TiledAttachmentListVie
                     expect(contentView.$(contentView.avatarSelector)).not.toExist();
                 });
             });
-            xit('falls back to a configured .defaultAvatar if it fails to load', function () {})
-            xit('uses configured .defaultAvatar if one is not provided', function () {})
         });
 
         describe('when Content is featured-content', function () {
