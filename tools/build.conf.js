@@ -21,7 +21,8 @@
   pragmasOnSave: {
     excludeHogan: true
   },
-  optimize: "uglify2",
+  cjsTranslate: true,
+  optimize: "none",
   preserveLicenseComments: false,
   uglify2: {
     compress: {
