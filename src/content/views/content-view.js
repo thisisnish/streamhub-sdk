@@ -149,8 +149,8 @@ define([
         this.el.innerHTML = this.template(context);
 
         // If avatar fails to load, hide it
-        // TODO (bengo): Is there any way this bubbles up to this.$el?
-        // initial experiments say no, so we can't delegate the listener
+        // Error events don't bubble, so we have to bind here
+        // http://bit.ly/JWp86R
         this.$(this.avatarSelector+' img')
             .on('error', $.proxy(this._handleAvatarError, this));
 
