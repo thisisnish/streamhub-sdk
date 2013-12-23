@@ -105,6 +105,29 @@ function ($, util, Content, LivefyreContent, ContentView, TiledAttachmentListVie
             });
         });
         
+        describe('when rendering avatars', function () {
+            it('removes the avatar section if the avatar image fails to load', function () {
+                var content = new Content('<p>My avatar is broken</p>');
+                content.set({
+                    author: {
+                        displayName: 'ben',
+                        avatar: 'a broken avatar url'
+                    }
+                });
+                var contentView = new ContentView({
+                    content: content
+                });
+                var _handleAvatarError = spyOn(contentView, '_handleAvatarError').andCallThrough();
+                contentView.render();
+                waitsFor(function () {
+                    return _handleAvatarError.callCount;
+                });
+                runs(function () {
+                    expect(contentView.$(contentView.avatarSelector)).not.toExist();
+                });
+            });
+        });
+
         describe('when Content is featured-content', function () {
             var content,
                 view;

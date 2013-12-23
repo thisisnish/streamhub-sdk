@@ -3,9 +3,12 @@ define([
     'streamhub-sdk/view',
     'hgn!streamhub-sdk/content/templates/content',
     'streamhub-sdk/util',
-    'inherits'
-], function ($, View, ContentTemplate, util, inherits) {
+    'inherits',
+    'streamhub-sdk/debug'
+], function ($, View, ContentTemplate, util, inherits, debug) {
     'use strict';
+
+    var log = debug('streamhub-sdk/content/views/content-view');
 
     /**
      * Defines the base class for all content-views. Handles updates to attachments
@@ -51,6 +54,7 @@ define([
     ContentView.prototype.attachmentsElSelector = '.content-attachments';
     ContentView.prototype.tiledAttachmentsElSelector = '.content-attachments-tiled';
     ContentView.prototype.headerElSelector = '.content-header';
+    ContentView.prototype.avatarSelector = '.content-author-avatar';
     ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
     ContentView.prototype.template = ContentTemplate;
     ContentView.prototype.formatDate = util.formatDate;
@@ -144,6 +148,12 @@ define([
         }
         this.el.innerHTML = this.template(context);
 
+        // If avatar fails to load, hide it
+        // Error events don't bubble, so we have to bind here
+        // http://bit.ly/JWp86R
+        this.$(this.avatarSelector+' img')
+            .on('error', $.proxy(this._handleAvatarError, this));
+
         if (this.attachmentsView) {
             this.attachmentsView.setElement(this.$el.find(this.attachmentsElSelector)[0]);
             this.attachmentsView.render();
@@ -154,7 +164,9 @@ define([
     
     /**
      * Binds event handlers on this.el
-     * This is deprecated now that View provides .delegateEvents
+     * This is deprecated now that View provides .delegateEvents, but retained
+     * in v2 for public interface consistency
+     * It should be removed in v3
      * @deprecated
      * @returns {ContentView}
      */
@@ -195,6 +207,15 @@ define([
         if (newVis !== 'EVERYONE') {
             this.remove();
         }
+    };
+
+    /**
+     * Handle an error loading the avatar by removing the avatar element
+     * @private
+     */
+    ContentView.prototype._handleAvatarError = function (e) {
+        log('avatar error, hiding it', e);
+        this.$(this.avatarSelector).remove();
     };
 
     ContentView.prototype.destroy = function () {

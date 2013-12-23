@@ -117,7 +117,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
                 this.prev();
             }
         };
-    })
+    });
 
     /**
      * Set the attachment instance to be displayed as the focused item in the gallery
