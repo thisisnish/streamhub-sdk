@@ -8,21 +8,9 @@ define([
     'stream/writable',
     'streamhub-sdk/views/streams/more',
     'streamhub-sdk/views/show-more-button',
-    'inherits',
-    'streamhub-sdk/debug'],
-function(
-    $,
-    ListView,
-    ContentView,
-    ContentViewFactory,
-    GalleryAttachmentListView,
-    AttachmentGalleryModal,
-    Writable,
-    More,
-    ShowMoreButton,
-    inherits,
-    debug
-) {
+    'streamhub-sdk/views/streams/pond'],
+function($, ListView, ContentViewFactory, AttachmentGalleryModal, inherits,
+debug, Writable, ContentView, More, ShowMoreButton, Pond) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/views/content-list-view');
@@ -52,6 +40,9 @@ function(
         this._stash = opts.stash || this.more;
         this._maxVisibleItems = opts.maxVisibleItems || 50;
         this._bound = true;
+        this.feature = opts.feature || this._createFeatureStream(opts);//TODO (joao) Generalize
+        
+        this._pipeFeature();//TODO (joao) Generalize
 
         this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
     };
@@ -83,8 +74,36 @@ function(
                 var modalSubView = new GalleryAttachmentListView(context);
                 this.modal.show(modalSubView);
             }
-        }
-    });
+            this.modal.show(context.content, { attachment: context.attachmentToFocus });
+        }, this));
+    };
+    
+    /**
+     * TODO (joao) Generalize
+     * Creates and returns a stream, designed to be used a featured content
+     * @param [opts] {Object}
+     * @returns {Readable}
+     */
+    ContentListView.prototype._createFeatureStream = function (opts) {
+        opts = opts || {};
+        return new Pond({
+            highWaterMark: 0,
+            goal: 0
+        });
+    };
+    
+    /**
+     * TODO (joao) Generalize
+     */
+    ContentListView.prototype._pipeFeature = function () {
+        var self = this;
+        this.feature.on('readable', function () {
+            var content;
+            while (content = self.feature.read()) {
+                self.add(content, 0);
+            }
+        });
+    };
 
     /**
      * Comparator function to determine ordering of ContentViews.
@@ -113,15 +132,16 @@ function(
      *     render the newContentView
      *     insert the newContentView into this.el according to this.comparator
      * @param content {Content} A Content model to add to the ContentListView
+     * @param [index] {number} location for the new view
      * @returns the newly created ContentView
      */
-    ContentListView.prototype.add = function(content) {
+    ContentListView.prototype.add = function(content, index) {
         var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
 
         log("add", content);
 
         if (contentView) {
-            return ListView.prototype.add.call(this, contentView);
+            return ListView.prototype.add.call(this, contentView, index);
         }
 
         contentView = this.createContentView(content);
@@ -139,7 +159,14 @@ function(
             this.remove(viewToRemove);
         }
 
-        return ListView.prototype.add.call(this, contentView);
+        var retVal = ListView.prototype.add.call(this, contentView, index);
+        //TODO (joao) These things can't live here
+        this.feature._count++;
+        if (this.feature._count == this.feature._interval) {
+            this.feature._count = -1;
+            this.feature.setGoal(1);
+        };
+        return retVal;
     };
 
     ContentListView.prototype._insert = function (contentView) {
