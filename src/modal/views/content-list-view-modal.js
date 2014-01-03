@@ -16,6 +16,7 @@ define([
      * @constructor
      */
     var ContentListViewModal = function (opts) {
+        opts = opts || {};
         ModalView.call(this, opts);
 
         this._contentViewFactory = new ContentViewFactory();
@@ -46,7 +47,7 @@ define([
         ModalView.prototype.render.call(this);
 
         for (var i=0; i < this._contentItems.length; i++) {
-            this.modalContentView.add(this._contentItems[i]);
+            this.modalContentView.more.write(this._contentItems[i]);
         }
     };
 
