@@ -20,7 +20,7 @@ define([
         opts = opts || {};
         this.visible = false;
         this._attached = false;
-        this._modalContentView = opts.modalContentView || null;
+        this._modalSubView = opts.modalSubView || null;
 
         View.call(this);
 
@@ -64,9 +64,9 @@ define([
 
     /**
      * Makes the modal and its content visible
-     * @param modalContentView {View} The view to be displayed in the by the modal
+     * @param modalSubView {View} The view to be displayed in the by the modal
      */
-    ModalView.prototype.show = function (modalContentView) {
+    ModalView.prototype.show = function (modalSubView) {
         // First hide any other modals
         $.each(ModalView.instances, function (i, modal) {
             modal.hide();
@@ -81,7 +81,7 @@ define([
             this._attach();
         }
 
-        this._modalContentView = modalContentView;
+        this._modalSubView = modalSubView;
 
         this.render();
 
@@ -105,8 +105,8 @@ define([
     ModalView.prototype.render = function () {
         View.prototype.render.call(this);
 
-        this._modalContentView.setElement(this.$el.find(this.contentViewElSelector));
-        this._modalContentView.render();
+        this._modalSubView.setElement(this.$el.find(this.contentViewElSelector));
+        this._modalSubView.render();
     };
 
 

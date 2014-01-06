@@ -43,7 +43,7 @@ function($, Content, Oembed, GalleryAttachmentListView, AttachmentGalleryModal) 
 
             it('sets a content instance on the modal content view', function () {
                 modalView.show(new GalleryAttachmentListView({ content: content }));
-                expect(modalView._modalContentView.content).toBe(content);
+                expect(modalView._modalSubView.content).toBe(content);
             });
 
             it('sets the focused attachment on the modal content view', function () {
@@ -52,8 +52,8 @@ function($, Content, Oembed, GalleryAttachmentListView, AttachmentGalleryModal) 
                     content: content,
                     attachmentToFocus: attachment
                 }));
-                expect(modalView._modalContentView.content).toBe(content);
-                expect(modalView._modalContentView._focusedAttachment).toBe(attachment);
+                expect(modalView._modalSubView.content).toBe(content);
+                expect(modalView._modalSubView._focusedAttachment).toBe(attachment);
             });
         });
 

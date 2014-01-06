@@ -80,8 +80,8 @@ function(
                     contentView.attachmentsView.focus(context.attachmentToFocus);
                 }
             } else {
-                var modalContentView = new GalleryAttachmentListView(context);
-                this.modal.show(modalContentView);
+                var modalSubView = new GalleryAttachmentListView(context);
+                this.modal.show(modalSubView);
             }
         }
     });

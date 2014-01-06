@@ -22,7 +22,7 @@ define([
             var modalView;
 
             beforeEach(function () {
-                modalView = new ModalView({ modalContentView: new GalleryAttachmentListView() });
+                modalView = new ModalView({ modalSubView: new GalleryAttachmentListView() });
             });
 
             afterEach(function () {
@@ -40,7 +40,7 @@ define([
             var modalView;
 
             beforeEach(function() {
-                modalView = new ModalView({ modalContentView: new GalleryAttachmentListView() });
+                modalView = new ModalView({ modalSubView: new GalleryAttachmentListView() });
                 modalView.render();
             });
 
@@ -87,7 +87,7 @@ define([
             var modalView;
 
             beforeEach(function() {
-                modalView = new ModalView({ modalContentView: new GalleryAttachmentListView() });
+                modalView = new ModalView({ modalSubView: new GalleryAttachmentListView() });
                 modalView.render();
             });
 
