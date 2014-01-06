@@ -13,9 +13,8 @@ define([
 
             describe('with no arguments', function() {
 
-                it('throws a not implemented error', function () {
-                    expect(ModalView.prototype._createContentView).toThrow();
-                });
+                var modalView = new ModalView();
+                expect(modalView instanceof ModalView).toBe(true);
             });
         });
 
@@ -23,10 +22,7 @@ define([
             var modalView;
 
             beforeEach(function () {
-                ModalView.prototype._createContentView = function () {
-                    return new GalleryAttachmentListView();
-                };
-                modalView = new ModalView();
+                modalView = new ModalView({ modalSubView: new GalleryAttachmentListView() });
             });
 
             afterEach(function () {
@@ -44,10 +40,7 @@ define([
             var modalView;
 
             beforeEach(function() {
-                ModalView.prototype._createContentView = function () {
-                    return new GalleryAttachmentListView();
-                };
-                modalView = new ModalView();
+                modalView = new ModalView({ modalSubView: new GalleryAttachmentListView() });
                 modalView.render();
             });
 
@@ -71,11 +64,8 @@ define([
             var modalView;
 
             beforeEach(function() {
-                ModalView.prototype._createContentView = function () {
-                    return new GalleryAttachmentListView();
-                };
                 modalView = new ModalView();
-                modalView.show();
+                modalView.show(new GalleryAttachmentListView());
             });
 
             afterEach(function() {
@@ -87,7 +77,7 @@ define([
             });
 
             it('the .visible property is true', function() {
-                modalView.show();
+                modalView.show(new GalleryAttachmentListView());
                 expect(modalView.visible).toBe(true);
             });
         });
@@ -97,10 +87,7 @@ define([
             var modalView;
 
             beforeEach(function() {
-                ModalView.prototype._createContentView = function () {
-                    return new GalleryAttachmentListView();
-                };
-                modalView = new ModalView();
+                modalView = new ModalView({ modalSubView: new GalleryAttachmentListView() });
                 modalView.render();
             });
 
@@ -110,7 +97,7 @@ define([
             });
 
             it('the .visible property is false', function() {
-                modalView.show();
+                modalView.show(new GalleryAttachmentListView());
                 modalView.hide();
                 expect(modalView.visible).toBe(false);
             });
@@ -130,7 +117,7 @@ define([
                 });
 
                 it('hides the modal', function () {
-                    modalView.show();
+                    modalView.show(new GalleryAttachmentListView());
                     spyOn(modalView, 'hide').andCallThrough();
                     $(window).trigger($.Event('keyup', { keyCode: 27 }));
                     expect(modalView.hide).toHaveBeenCalled();
@@ -149,7 +136,7 @@ define([
                 });
 
                 it('hides the modal', function () {
-                    modalView.show();
+                    modalView.show(new GalleryAttachmentListView());
                     spyOn(modalView, 'hide').andCallThrough();
                     var $closeButtonEl = modalView.$el.find(modalView.closeButtonSelector);
                     $closeButtonEl.trigger('click');

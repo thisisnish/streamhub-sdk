@@ -1,16 +1,28 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/views/list-view',
-    'streamhub-sdk/content/content-view-factory',
-    'streamhub-sdk/modal/views/attachment-gallery-modal',
-    'inherits',
-    'streamhub-sdk/debug',
-    'stream/writable',
     'streamhub-sdk/content/views/content-view',
+    'streamhub-sdk/content/content-view-factory',
+    'streamhub-sdk/content/views/gallery-attachment-list-view',
+    'streamhub-sdk/modal/views/attachment-gallery-modal',
+    'stream/writable',
     'streamhub-sdk/views/streams/more',
-    'streamhub-sdk/views/show-more-button'],
-function($, ListView, ContentViewFactory, AttachmentGalleryModal, inherits,
-debug, Writable, ContentView, More, ShowMoreButton) {
+    'streamhub-sdk/views/show-more-button',
+    'inherits',
+    'streamhub-sdk/debug'],
+function(
+    $,
+    ListView,
+    ContentView,
+    ContentViewFactory,
+    GalleryAttachmentListView,
+    AttachmentGalleryModal,
+    Writable,
+    More,
+    ShowMoreButton,
+    inherits,
+    debug
+) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/views/content-list-view');
@@ -67,9 +79,10 @@ debug, Writable, ContentView, More, ShowMoreButton) {
                     typeof contentView.attachmentsView.focus === 'function') {
                     contentView.attachmentsView.focus(context.attachmentToFocus);
                 }
-                return;
+            } else {
+                var modalSubView = new GalleryAttachmentListView(context);
+                this.modal.show(modalSubView);
             }
-            this.modal.show(context.content, { attachment: context.attachmentToFocus });
         }
     });
 
