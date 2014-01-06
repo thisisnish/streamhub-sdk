@@ -20,23 +20,6 @@ define([
 
 
     /**
-     * Creates a the content view to display within the modal view
-     * @param content {Content} The content to be displayed in the content view by the modal
-     * @param opts {Object} The content to be displayed in the content view by the modal
-     * @param opts.attachment {Oembed} The attachment to be focused in the content view
-     * @private
-     */
-    AttachmentGalleryModal.prototype._createContentView = function (content, opts) {
-        opts = opts || {};
-        var modalContentView = new GalleryAttachmentListView({
-            content: content,
-            attachmentToFocus: opts.attachment
-        });
-        return modalContentView;
-    };
-
-
-    /**
      * Set the element for the view to render in.
      * ModalView construction takes care of creating its own element in
      *     ModalView.el. You probably don't want to call this manually

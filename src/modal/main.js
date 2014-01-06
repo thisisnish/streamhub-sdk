@@ -17,15 +17,14 @@ define([
      * @constructor
      */
     var ModalView = function (opts) {
-        var self = this;
         opts = opts || {};
         this.visible = false;
         this._attached = false;
-        this._rendered = false;
-        this.modalContentView = null;
+        this._modalContentView = opts.modalContentView || null;
 
         View.call(this);
 
+        var self = this;
         $(window).keyup(function (e) {
             // Escape
             if (e.keyCode === 27 && self.visible) {
@@ -64,26 +63,10 @@ define([
 
 
     /**
-     * Overridable method for concrete modal view implementations. In this base class,
-     * the default implementation will emit a "not implemented" error.
-     * Creates a the content view to display within the modal view.
-     * @param content {Content} The content to be displayed in the content view by the modal
-     * @param opts {Object} The content to be displayed in the content view by the modal
-     * @param opts.attachment {Oembed} The attachment to be focused in the content view
-     * @private
-     */
-    ModalView.prototype._createContentView = function (content, opts) {
-        throw new Error('not implemented');
-    };
-
-
-    /**
      * Makes the modal and its content visible
-     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
-     * @param opts {Object} The content to be displayed in the content view by the modal
-     * @param opts.attachment {Oembed} The attachment to be focused in the content view
+     * @param modalContentView {View} The view to be displayed in the by the modal
      */
-    ModalView.prototype.show = function(content, options) {
+    ModalView.prototype.show = function (modalContentView) {
         // First hide any other modals
         $.each(ModalView.instances, function (i, modal) {
             modal.hide();
@@ -98,11 +81,9 @@ define([
             this._attach();
         }
 
-        this._setFocus(content, options);
+        this._modalContentView = modalContentView;
 
-        if ( ! this._rendered) {
-            this.render();
-        }
+        this.render();
 
         this.visible = true;
     };
@@ -124,12 +105,8 @@ define([
     ModalView.prototype.render = function () {
         View.prototype.render.call(this);
 
-        if (this.modalContentView) {
-            this.modalContentView.setElement(this.$el.find(this.contentViewElSelector));
-            this.modalContentView.render();
-        }
-
-        this._rendered = true;
+        this._modalContentView.setElement(this.$el.find(this.contentViewElSelector));
+        this._modalContentView.render();
     };
 
 
@@ -157,21 +134,6 @@ define([
         });
 
         return this;
-    };
-
-
-    /**
-     * Sets the content object and optional attachment to be displayed in the content view 
-     * @private
-     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
-     * @param opts {Object} The content to be displayed in the content view by the modal
-     * @param opts.attachment {Oembed} The attachment to be focused in the content view
-     */
-    ModalView.prototype._setFocus = function (content, opts) {
-        opts = opts || {};
-        if (! this.modalContentView && content) {
-            this.modalContentView = this._createContentView(content, opts);
-        }
     };
 
 

@@ -25,34 +25,6 @@ define([
 
 
     /**
-     * Creates a the content view to display within the modal view
-     * @param contentItems {Content[]} The content to be displayed in the content view by the modal
-     * @param opts {Object} The content to be displayed in the content view by the modal
-     * @private
-     */
-    ContentListViewModal.prototype._createContentView = function (contentItems, opts) {
-        opts = opts || {};
-
-        if (!contentItems.length) {
-            contentItems = [contentItems];
-        }
-        this._contentItems = contentItems;
-
-        var contentListView = new ContentListView();
-
-        return contentListView;
-    };
-
-    ContentListViewModal.prototype.render = function () {
-        ModalView.prototype.render.call(this);
-
-        for (var i=0; i < this._contentItems.length; i++) {
-            this.modalContentView.more.write(this._contentItems[i]);
-        }
-    };
-
-
-    /**
      * Set the element for the view to render in.
      * ModalView construction takes care of creating its own element in
      *     ModalView.el. You probably don't want to call this manually
@@ -75,20 +47,6 @@ define([
         });
 
         return this;
-    };
-
-
-    /**
-     * Sets the content object and optional attachment to be displayed in the content view 
-     * @private
-     * @param content {Content|ContentView} The content to be displayed in the content view by the modal
-     * @param opts {Object} The content to be displayed in the content view by the modal
-     * @param opts.attachment {Oembed} The attachment to be focused in the content view
-     */
-    ContentListViewModal.prototype._setFocus = function (content, opts) {
-        opts = opts || {};
-        this.modalContentView = this._createContentView(content, opts);
-        this._rendered = false;
     };
 
     return ContentListViewModal;
