@@ -2,8 +2,9 @@ define([
     'jquery',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/oembed',
+    'streamhub-sdk/content/views/gallery-attachment-list-view',
     'streamhub-sdk/modal/views/attachment-gallery-modal'],
-function($, Content, Oembed, AttachmentGalleryModal) {
+function($, Content, Oembed, GalleryAttachmentListView, AttachmentGalleryModal) {
     'use strict';
 
     describe('AttachmentGalleryModal', function () {
@@ -13,10 +14,6 @@ function($, Content, Oembed, AttachmentGalleryModal) {
             type: "photo",
             url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg"
         };
-
-        it('has implemented the ._createContentView method', function () {
-            expect(AttachmentGalleryModal.prototype._createContentView).toBeDefined();
-        });
 
         describe('when constructed', function () {
 
@@ -31,32 +28,32 @@ function($, Content, Oembed, AttachmentGalleryModal) {
                     expect(modalView).toBeDefined();
                     expect(modalView instanceof AttachmentGalleryModal).toBe(true);
                 });
-
-                it('has a .modalContentView', function () {
-                    expect(modalView.modalContentView).toBeDefined();
-                });
             });
         });
 
-        describe('when focusing content', function () {
+        describe('when showing content', function () {
             var modalView;
+            var content;
 
             beforeEach(function () {
+                content = new Content();
                 modalView = new AttachmentGalleryModal();
+                modalView.setElement($('<div></div>'));
             });
 
             it('sets a content instance on the modal content view', function () {
-                var content = new Content({ body: 'what' });
-                modalView._setFocus(content);
-                expect(modalView.modalContentView.content).toBe(content);
+                modalView.show(new GalleryAttachmentListView({ content: content }));
+                expect(modalView._modalContentView.content).toBe(content);
             });
 
             it('sets the focused attachment on the modal content view', function () {
-                var content = new Content({ body: 'what' });
                 var attachment = new Oembed();
-                modalView._setFocus(content, { attachment: attachment });
-                expect(modalView.modalContentView.content).toBe(content);
-                expect(modalView.modalContentView._focusedAttachment).toBe(attachment);
+                modalView.show(new GalleryAttachmentListView({
+                    content: content,
+                    attachmentToFocus: attachment
+                }));
+                expect(modalView._modalContentView.content).toBe(content);
+                expect(modalView._modalContentView._focusedAttachment).toBe(attachment);
             });
         });
 
@@ -76,7 +73,10 @@ function($, Content, Oembed, AttachmentGalleryModal) {
                 content = new Content();
                 modalView = new AttachmentGalleryModal();
                 modalView.setElement($('<div></div>'));
-                modalView.show(content, { attachment: oembedVideoAttachment });
+                modalView.show(new GalleryAttachmentListView({
+                    content: content,
+                    attachmentToFocus: oembedVideoAttachment
+                }));
 
                 for (var i=0; i < 4; i++) {
                     var attachment = $.extend({}, oembedVideoAttachment);
@@ -109,7 +109,10 @@ function($, Content, Oembed, AttachmentGalleryModal) {
                 content = new Content();
                 modalView = new AttachmentGalleryModal();
                 modalView.setElement($('<div></div>'));
-                modalView.show(content, { attachment: oembedAttachment });
+                modalView.show(new GalleryAttachmentListView({
+                    content: content,
+                    attachmentToFocus: oembedAttachment
+                }));
 
                 oembedAttachment.type = 'photo';
                 for (var i=0; i < 3; i++) {

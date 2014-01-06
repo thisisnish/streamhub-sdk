@@ -158,7 +158,6 @@ function ($, ContentListView, Content, ContentView) {
             });
 
             it('shows the modal when a modal is set on the ContentListView instance', function () {
-                spyOn(listView.modal, '_setFocus');
                 spyOn(listView.modal, 'show');
 
                 listView.$el.trigger('focusContent.hub', { content: content });
