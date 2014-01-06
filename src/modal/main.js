@@ -133,6 +133,16 @@ define([
             self.$el.trigger('hideModal.hub');
         });
 
+        this.$el.on('click', function (e) {
+            /**
+             * Hide modal
+             * @event GalleryAttachmentListView#hideModal.hub
+             */
+            if ($(e.target).hasClass('hub-modal-content') || $(e.target).hasClass('hub-modal-close')) {
+                self.$el.trigger('hideModal.hub');
+            }
+        });
+
         return this;
     };
 
