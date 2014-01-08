@@ -87,12 +87,13 @@ define([
         };
 
         events['mouseenter ' + this.tooltipElSelector] = function (e) {
-            var title = $(this).attr('title');
-            var position = $(this).position();
-            var positionWidth = $(this).width();
+            var target = e.target;
+            var title = $(target).attr('title');
+            var position = $(target).position();
+            var positionWidth = $(target).width();
 
             var $currentTooltip = $("<div class=\"hub-current-tooltip content-action-tooltip\"><div class=\"content-action-tooltip-bubble\">" + title + "</div><div class=\"content-action-tooltip-tail\"></div></div>");
-            $(this).parent().append($currentTooltip);
+            $(target).parent().append($currentTooltip);
 
             var tooltipWidth = $currentTooltip.outerWidth();
             var tooltipHeight = $currentTooltip.outerHeight();
@@ -102,7 +103,7 @@ define([
                 "top":  position.top - tooltipHeight - 2
             });
 
-            if ($(this).hasClass(this.tooltipElSelector)){
+            if ($(target).hasClass(this.tooltipElSelector)){
                 var currentLeft = parseInt($currentTooltip.css('left'), 10);
                 $currentTooltip.css('left', currentLeft + 7);
             }
@@ -112,7 +113,7 @@ define([
         events['mouseleave ' + this.tooltipElSelector] = function (e) {
             var $current = this.$el.find('.hub-current-tooltip');
             $current.removeClass('hub-current-tooltip').fadeOut(200, function(){
-                $(this).remove();
+                $current.remove();
             });
         };
     });
