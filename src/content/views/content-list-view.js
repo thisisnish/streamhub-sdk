@@ -7,9 +7,11 @@ define([
     'streamhub-sdk/modal/views/attachment-gallery-modal',
     'stream/writable',
     'streamhub-sdk/views/streams/more',
-    'streamhub-sdk/views/show-more-button'],
-function($, ListView, ContentViewFactory, AttachmentGalleryModal, inherits,
-debug, Writable, ContentView, More, ShowMoreButton) {
+    'streamhub-sdk/views/show-more-button',
+    'inherits',
+    'streamhub-sdk/debug'],
+function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView,
+        AttachmentGalleryModal, Writable, More, ShowMoreButton, inherits, debug) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/views/content-list-view');
@@ -70,9 +72,8 @@ debug, Writable, ContentView, More, ShowMoreButton) {
                 var modalSubView = new GalleryAttachmentListView(context);
                 this.modal.show(modalSubView);
             }
-            this.modal.show(context.content, { attachment: context.attachmentToFocus });
-        }, this));
-    };
+        }
+    });
     
     /**
      * Comparator function to determine ordering of ContentViews.
