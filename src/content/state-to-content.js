@@ -213,6 +213,15 @@ inherits) {
         if (content.body) {
             updatedProperties.body = content.body;
         }
+        if (content.author) {
+            updatedProperties.author = content.author;
+        }
+        if (content.createdAt) {
+            updatedProperties.createdAt = content.createdAt;
+        }
+        if (content.updatedAt) {
+            updatedProperties.updatedAt = content.updatedAt;
+        }
         return updatedProperties;
     };
 

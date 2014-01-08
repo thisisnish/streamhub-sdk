@@ -27,7 +27,9 @@ function (ContentView, TwitterContentTemplate, inherits, $) {
      */
     TwitterContentView.prototype.getTemplateContext = function () {
         var context = ContentView.prototype.getTemplateContext.call(this);
-        context.author.twitterUsername = context.author.profileUrl.split('/').pop();
+        if (context && context.author && typeof context.author.profileUrl === 'string') {
+            context.author.twitterUsername = context.author.profileUrl.split('/').pop();
+        }
         return context;
     };
 
