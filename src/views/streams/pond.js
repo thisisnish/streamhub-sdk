@@ -1,9 +1,9 @@
 define([
     'inherits',
-    'stream/duplex',
+    'stream/writable',
     'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/debug'],
-function (inherits, Duplex, ContentListView, debug) {
+function (inherits, Writable, ContentListView, debug) {
     'use strict';
 
 
@@ -28,12 +28,12 @@ function (inherits, Duplex, ContentListView, debug) {
         this._stack = [];
         this._requestMore = null;
         this._interval = opts.interval || 1;
-        this._count = 0;
+        this._count = -1;//Works well for archived content, resets to 0
         this._written = [];
         this._contentListView = null;
-        Duplex.call(this, opts);
+        Writable.call(this, opts);
     };
-    inherits(Pond, Duplex);
+    inherits(Pond, Writable);
 
     
     /**
@@ -56,7 +56,7 @@ function (inherits, Duplex, ContentListView, debug) {
             }
             
             var index = this._written.indexOf(contentView.content);
-            if (this._written.indexOf(contentView.content) < 0) {
+            if (index < 0) {
                 this._count++;
             } else {
                 this._written.splice(index, 1);
@@ -81,16 +81,6 @@ function (inherits, Duplex, ContentListView, debug) {
         if (this._scoops >= 0) {
             this._fetchAndPush();
         }
-    };
-
-
-    /**
-     * Stack Content that should be re-emitted later in last-in-first-out
-     * fashion. stacked stuff is read out before written stuff
-     * @param obj {Object} An object to stack, that you may want back later
-     */
-    Pond.prototype.stack = function (obj) {
-        this._stack.push(obj);
     };
 
 
@@ -125,21 +115,6 @@ function (inherits, Duplex, ContentListView, debug) {
             // show more button that, when clicked, does nothing but disappear
             this.emit('hold');
         }
-    };
-
-
-    /**
-     * Required by Readable subclasses. Get data from upstream. In this case,
-     * either the internal ._stack or the Writable side of the Duplex
-     * @private
-     */
-    Pond.prototype._read = function () {
-        if (this._scoops <= 0 && this._stack.length) {
-            // You don't get data yet.
-            this.emit('hold');
-            return;
-        }
-        this._fetchAndPush();
     };
 
 
