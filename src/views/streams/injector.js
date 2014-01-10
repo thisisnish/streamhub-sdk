@@ -74,6 +74,7 @@ function (inherits, Writable, Readable, ContentListView, debug) {
                 this.inject();
             }
         }.bind(this));
+        return this;
     };
 
     /**
