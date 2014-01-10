@@ -33,9 +33,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         View.call(this, opts);
         Writable.call(this, opts);
 
-        if (opts.comparator) {
-            this.comparator = opts.comparator;
-        }
+        this.comparator = opts.comparator || this.comparator;
         this._moreAmount = opts.showMore || 50;
         this.more = opts.more || this._createMoreStream(opts);
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
@@ -74,6 +72,14 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * Selector of .el child in which to render a show more button
      */
     ListView.prototype.showMoreElSelector = '.hub-list-more';
+    
+    
+    /**
+     * Keys are views that were forcibly indexed into this view.
+     * @type {Object.<string, boolean>}
+     * @private
+     */
+    ListView.prototype._indexedViews = {};
 
 
     ListView.prototype.setElement = function (element) {
@@ -116,6 +122,25 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      */
     ListView.prototype.comparator = null;
     
+
+    /**
+     * Returns true if the view is listed on the indexedViews list.
+     * @param view {!View}
+     * @returns {!boolean}
+     */
+    ListView.prototype.isIndexedView = function(view) {
+        return (this._indexedViews[view.uid]) ? true : false;
+    };
+    
+    /**
+     * Adds a view to _indexedViews
+     * @param view {!View}
+     * @private
+     */
+    ListView.prototype._recordIndexedView = function(view) {
+        this._indexedViews[view.uid] = true;
+    };
+    
     /**
      * Returns the index where newView should be inserted.
      * Requires this.comparator to be defined.
@@ -129,20 +154,19 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         if (!this.comparator) {
             throw new Error("Tried to _binarySearch without this.comparator.");
         }
+        
         var low = 0, high = array.length, mid, comp;
         while (low < high) {
             mid = (low + high) >>> 1;
             comp = array[mid];
             
-            if (comp.indexed) {
+            while (this.isIndexedView(comp) && mid > low) {
             //Try to get a comp that isn't indexed
-                while (comp.indexed && mid > low) {
-                //Move lower looking for a comparable view
-                    comp = array[--mid];
-                }
+            //Move lower looking for a comparable view
+                comp = array[--mid];
             }
                 
-            if (comp.indexed) {
+            if (this.isIndexedView(comp)) {
             //If nothing was found, just add it to the beginning of this segment
                 high = low;
             } else {
@@ -154,6 +178,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
                 }
             }
         }
+        
         return Math.max(0, low);//Incase of miscalculations, use max() to assure minimum of 0
     };
 
@@ -177,10 +202,10 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
             if (this.comparator) {
                 index = this._binarySearch(newView);
             } else {
-                index = 0;//TODO (joao) Maybe this.views.length?
+                index = this.views.length;
             }
         } else {
-            newView.indexed = true;
+            this._recordIndexedView(newView);
         }
         
         this.views.splice(index, 0, newView);
@@ -188,7 +213,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         newView.render();
         // Add to DOM
         this._insert(newView);
-
+        this.emit('added', newView);
         return newView;
     };
 

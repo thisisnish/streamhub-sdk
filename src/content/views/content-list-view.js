@@ -106,7 +106,6 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
      * @returns the newly created ContentView
      */
     ContentListView.prototype.add = function(content, index) {
-        var retVal;
         var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
 
         log("add", content);
@@ -128,9 +127,7 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
             }
         }
         
-        retVal = ListView.prototype.add.call(this, contentView, index);
-        this.emit('added', contentView);
-        return retVal;
+        return ListView.prototype.add.call(this, contentView, index);
     };
 
     ContentListView.prototype._insert = function (contentView) {
