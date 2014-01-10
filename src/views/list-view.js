@@ -184,7 +184,8 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         }
         
         this.views.splice(index, 0, newView);
-        
+
+        newView.render();
         // Add to DOM
         this._insert(newView);
 
