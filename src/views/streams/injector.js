@@ -1,54 +1,59 @@
 define([
     'inherits',
     'stream/writable',
+    'stream/readable',
     'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/debug'],
-function (inherits, Writable, ContentListView, debug) {
+function (inherits, Writable, Readable, ContentListView, debug) {
     'use strict';
 
 
-    var log = debug('streamhub-sdk/views/streams/pond');
+    var log = debug('streamhub-sdk/views/streams/injector');
 
 
     /**
-     * A Duplex stream (Readable & Writable) that directly adds items to a
-     * ContentListView after specified intervals of that view receiving
-     * adding content.
-     * Pond also maintains a LIFO stack such that previously emitted Content can
-     * be stashed back into Pond so that it is re-read out later when needed.
+     * A Writable stream that directly adds items to a ContentListView. It
+     * counts the number of items added to the view and adds another piece of
+     * content at the specified interval.
      * @constructor
-     * @param [opts] {object}
-     * @param [opts.scoops] {number} The default number of items to add.
+     * @param [opts] {Object}
+     * @param [opts.source] {Readable} Souce for Injector content.
+     * @param [opts.target] {ContentListView} View to target content to.
+     * @param [opts.count] {number} The default number of items to add.
      * @param [opts.interval] {number} The number of items that need to be
-     *      added to the view before this Pond adds another.
+     *      added to the targeted ContentListView before this Injector adds
+     *      its count of content items.
      */
-    var Pond = function (opts) {
+    var Injector = function (opts) {
         opts = opts || {};
-        this.SCOOPS = opts.scoops || this.SCOOPS;
+        this.count = opts.count || this.count;
         this._stack = [];
         this._requestMore = null;
         this._interval = opts.interval || 1;
-        this._count = -1;//Works well for archived content, resets to 0
+        this._counter = -1;//Works well for archived content, resets to 0
         this._written = [];
         this._contentListView = null;
+        
         Writable.call(this, opts);
+        opts.source && opts.source.pipe(this);
+        opts.target && this.target(opts.target);
     };
-    inherits(Pond, Writable);
+    inherits(Injector, Writable);
 
     
     /**
-     * The default number of scoops when no number is provided.
+     * The default number of content items to inject when no number is provided.
      * @type {!number} Should be greater than 0.
      */
-    Pond.prototype.SCOOPS = 1;
+    Injector.prototype.count = 1;
     
     /**
-     * Registers a ContentListView or subclass. Listens for added contentViews and
-     * pushes an addition at the specified interval.
+     * Registers a ContentListView or subclass. Listens for added contentViews
+     * and pushes an addition at the specified interval.
      * @param contentListView {!ContentListView}
      * @param [opts} {Object}
      */
-    Pond.prototype.pipish = function(contentListView, opts) {
+    Injector.prototype.target = function(contentListView, opts) {
         this._contentListView = contentListView;
         this._contentListView.on('added', function (contentView) {
             if (!contentView) {
@@ -57,41 +62,40 @@ function (inherits, Writable, ContentListView, debug) {
             
             var index = this._written.indexOf(contentView.content);
             if (index < 0) {
-                this._count++;
+                this._counter++;
             } else {
                 this._written.splice(index, 1);
             }
             
-            if (this._count === this._interval) {
-                this._count = 0;
+            if (this._counter === this._interval) {
+                this._counter = 0;
                 //Get index to specify where to add new content
                 this._index = this._contentListView.views.indexOf(contentView) || 0;
-                this.scoop();
+                this.inject();
             }
         }.bind(this));
     };
 
     /**
-     * Adds 1 or the specified number of items.
+     * Injects the preset or specified number of content items.
      * @param [n] {number}
      */
-    Pond.prototype.scoop = function (n) {
-        this._scoops = n || this.SCOOPS;
+    Injector.prototype.inject = function (n) {
+        this._count = n || this.count;
         
-        if (this._scoops >= 0) {
+        if (this._count >= 0) {
             this._fetchAndPush();
         }
     };
 
 
     /**
-     * Required by Duplex subclasses.
-     * This ensures that once the scoop count is reached, no more content
+     * Required by Writable subclasses.
+     * This ensures that once the inject count is reached, no more content
      * is pushed.
      * @private
      */
-    Pond.prototype._write = function (chunk, doneWriting) {
-        var self = this;
+    Injector.prototype._write = function (chunk, doneWriting) {
         log('_write', chunk);
 
         // Put on BOTTOM of the stack.
@@ -102,11 +106,11 @@ function (inherits, Writable, ContentListView, debug) {
         // new bottom of the stack is popped, and we need more data
         // from the Writable side of the duplex
         this._requestMore = function () {
-            self._requestMore = null;
+            this._requestMore = null;
             doneWriting();
-        };
+        }.bind(this);
 
-        if (this._scoops >= 1) {
+        if (this._count >= 1) {
             this._fetchAndPush();
         } else {
             // Emit 'hold' to signify that there is data waiting, if only
@@ -120,15 +124,15 @@ function (inherits, Writable, ContentListView, debug) {
 
     /**
      * Fetch data from the internal stack (sync) and add it.
-     * Or, if there is nothing in the stack, request more from the Writable
-     * side of the duplex, which will eventually call this again.
+     * Or, if there is nothing in the stack, request more as a Writable
+     * which will eventually call this again.
      * @private
      */
-    Pond.prototype._fetchAndPush = function () {
+    Injector.prototype._fetchAndPush = function () {
         // If there's data in the stack, pop, push it along, & decrement goal
         if (this._stack.length) {
             // There's stuff in the stack. Use it.
-            this._scoops--;
+            this._count--;
             var content = this._stack.pop();
             this._written.push(content);
             this._contentListView.add(content, this._index);
@@ -143,5 +147,5 @@ function (inherits, Writable, ContentListView, debug) {
     };
 
 
-    return Pond;
+    return Injector;
 });

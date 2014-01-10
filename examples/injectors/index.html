@@ -3,14 +3,14 @@
 <head>
     <link rel="stylesheet" type="text/css" href="/src/css/style.css">
     <style>
-    #listView {
+    #view {
         width:500px;
     }
     </style>
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 </head>
     <body>
-        <div id="listView"></div>
+        <div id="view"></div>
 
         <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
         <script src="/requirejs.conf.js" type="text/javascript"></script>
@@ -23,12 +23,8 @@
         require([
             'streamhub-sdk/content/views/content-list-view',
             'streamhub-sdk/collection',
-            'streamhub-sdk/content',
-            'streamhub-sdk/content/content-view-factory',
-            'streamhub-sdk/views/streams/pond',
-            'streamhub-sdk/auth'//,
-            //'stream/insert'
-        ],function (ListView, Collection, Content, ContentViewFactory, Pond, Auth) {//, Insert) {
+            'streamhub-sdk/views/streams/injector'
+        ],function (ContentListView, Collection, Injector) {
             var opts = {
                 "network": "labs-t402.fyre.co",
                 "siteId": "303827",
@@ -42,30 +38,26 @@
                 "environment": "t402.livefyre.com"
             };
             
-            var listView = window.view = new ListView({
+            var view = window.view = new ContentListView({
                 initial: 10,
                 showMore: 5,
-                el: document.getElementById("listView")
+                el: document.getElementById("view")
             });
 
             var featuredCollection =  new Collection(featureOpts);
-
             var featuredContents = featuredCollection.createFeaturedContents();
-            
             var featuredArchive = featuredContents.createArchive();
             
             var collection = window.collection =  new Collection(opts);
-            
             var archive = window.archive = collection.createArchive();
             
-            archive.pipe(listView.more);
-            
-            var pond = new Pond({
+            var injector = new Injector({
                 interval: 3,
-            	scoops: 1
+                count: 1
             });
             
-            featuredArchive.pipe(pond).pipish(listView);
+            archive.pipe(view.more);
+            featuredArchive.pipe(injector).target(view);
         });
         </script>
     </body>
