@@ -106,25 +106,27 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
      * @returns the newly created ContentView
      */
     ContentListView.prototype.add = function(content, index) {
-        var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
-
         log("add", content);
-
-        if (!contentView) {
-            contentView = this.createContentView(content);
+        if (!content.el && this.getContentView(content)) {
+        //No double-adds
+            log('already added', content);
+            return;
+        }
+        
+        var contentView = content.el ? content : this.createContentView(content);
+        //duck type for ContentView
+        
+        if (this._bound && ! this._hasVisibleVacancy()) {
+            var viewToRemove = this.views[this.views.length-1];
             
-            if (this._bound && ! this._hasVisibleVacancy()) {
-                var viewToRemove = this.views[this.views.length-1];
-                
-                // Ensure .more won't let more through right away,
-                // we already have more than we want.
-                this.more.setGoal(0);
-                // Unshift content to more stream
-                this.saveForLater(viewToRemove.content);
-                
-                // Remove non visible view
-                this.remove(viewToRemove);
-            }
+            // Ensure .more won't let more through right away,
+            // we already have more than we want.
+            this.more.setGoal(0);
+            // Unshift content to more stream
+            this.saveForLater(viewToRemove.content);
+            
+            // Remove non visible view
+            this.remove(viewToRemove);
         }
         
         return ListView.prototype.add.call(this, contentView, index);
