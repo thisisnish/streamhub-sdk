@@ -127,8 +127,9 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * Returns true if the view is listed on the indexedViews list.
      * @param view {!View}
      * @returns {!boolean}
+     * @protected
      */
-    ListView.prototype.isIndexedView = function(view) {
+    ListView.prototype._isIndexedView = function(view) {
         return (view && view.uid && this._indexedViews[view.uid]) ? true : false;
     };
     
@@ -160,12 +161,12 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
             origMid = mid = (low + high) >>> 1;
             comp = array[mid];
             
-            while (this.isIndexedView(comp) && mid > low) {
+            while (this._isIndexedView(comp) && mid > low) {
             //Try to get a comp that isn't indexed
             //Move lower looking for a comparable view
                 comp = array[--mid];
             }
-            if (this.isIndexedView(comp)) {
+            if (this._isIndexedView(comp)) {
             //If nothing was found...
                 if (low === 0) {
                 //...and we're at the beginning, then just add it to the beginning
