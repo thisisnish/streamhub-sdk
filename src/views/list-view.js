@@ -193,18 +193,19 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * Add a view to the ListView
      *     insert the newView into this.el according to this.comparator
      * @param newView {View} A View to add to the ListView
-     * @param [index] {number} location for the new view
+     * @param [forcedIndex] {number} location for the new view
      * @returns the newly added View
      */
-    ListView.prototype.add = function(newView, index) {
-        log("add", newView, index);
+    ListView.prototype.add = function(newView, forcedIndex) {
+        log("add", newView, forcedIndex);
+        var index;
 
         if ( ! newView) {
             log("Called add with a falsy parameter, returning");
             return;
         }
-        
-        if (typeof(index) !== 'number' || Math.abs(index) > this.views.length) {
+
+        if (typeof(forcedIndex) !== 'number' || Math.abs(forcedIndex) > this.views.length) {
             if (this.comparator) {
                 index = this._binarySearch(newView);
             } else {
@@ -214,11 +215,11 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
             this._recordIndexedView(newView);
         }
         
-        this.views.splice(index, 0, newView);
+        this.views.splice(forcedIndex || index, 0, newView);
 
         newView.render();
         // Add to DOM
-        this._insert(newView);
+        this._insert(newView, forcedIndex);
         this.emit('added', newView);
         return newView;
     };
@@ -259,15 +260,15 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
 
     /**
      * Insert a contentView into the ListView's .el
-     * Get insertion index based on this.comparator
-     * @private
+     * @protected
      * @param view {View} The view to add to this.el
+     * @param [forcedIndex] {number} Index of the view in this.views
      */
-    ListView.prototype._insert = function (view) {
+    ListView.prototype._insert = function (view, forcedIndex) {
         var newContentViewIndex,
             $previousEl;
 
-        newContentViewIndex = this.views.indexOf(view);
+        newContentViewIndex = forcedIndex || this.views.indexOf(view);
 
         if (newContentViewIndex === 0) {
             // Beginning!

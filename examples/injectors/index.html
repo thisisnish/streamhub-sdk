@@ -40,8 +40,8 @@
             };
             
             var view = window.view = new ContentListView({
-                initial: 10,
-                showMore: 5,
+                initial: 20,
+                showMore: 7,
                 el: document.getElementById("view")
             });
 
@@ -53,14 +53,14 @@
             var archive = window.archive = collection.createArchive();
             
             var injector = new Injector({
-                interval: 3,
+                interval: 6,
                 count: 1
             });
             
-            archive.pipe(view.more);
             featuredArchive.pipe(injector).target(view);
+            archive.pipe(view.more);
             
-            var count = 25;
+            var count = 35;
             setInterval(function () {
                 if (count > 0) { view.write(new Content({ body: new Date() })); }
                 count--;
