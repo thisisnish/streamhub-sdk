@@ -35,8 +35,12 @@ function (inherits, Writable, Readable, ContentListView, debug) {
         this._contentListView = null;
         
         Writable.call(this, opts);
-        opts.source && opts.source.pipe(this);
-        opts.target && this.target(opts.target);
+        if (opts.source) {
+            opts.source.pipe(this);
+        }
+        if (opts.target) {
+            this.target(opts.target);
+        }
     };
     inherits(Injector, Writable);
 

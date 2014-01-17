@@ -22,9 +22,10 @@
         <script>
         require([
             'streamhub-sdk/content/views/content-list-view',
+            'streamhub-sdk/content',
             'streamhub-sdk/collection',
             'streamhub-sdk/views/streams/injector'
-        ],function (ContentListView, Collection, Injector) {
+        ],function (ContentListView, Content, Collection, Injector) {
             var opts = {
                 "network": "labs-t402.fyre.co",
                 "siteId": "303827",
@@ -39,8 +40,8 @@
             };
             
             var view = window.view = new ContentListView({
-                initial: 10,
-                showMore: 5,
+                initial: 20,
+                showMore: 7,
                 el: document.getElementById("view")
             });
 
@@ -52,12 +53,18 @@
             var archive = window.archive = collection.createArchive();
             
             var injector = new Injector({
-                interval: 3,
+                interval: 6,
                 count: 1
             });
             
-            archive.pipe(view.more);
             featuredArchive.pipe(injector).target(view);
+            archive.pipe(view.more);
+            
+            var count = 35;
+            setInterval(function () {
+                if (count > 0) { view.write(new Content({ body: new Date() })); }
+                count--;
+            }, 3000);
         });
         </script>
     </body>

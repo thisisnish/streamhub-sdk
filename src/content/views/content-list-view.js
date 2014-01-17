@@ -102,10 +102,10 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
      *     render the newContentView
      *     insert the newContentView into this.el according to this.comparator
      * @param content {Content} A Content model to add to the ContentListView
-     * @param [index] {number} location for the new view
+     * @param [forcedIndex] {number} location for the new view
      * @returns the newly created ContentView
      */
-    ContentListView.prototype.add = function(content, index) {
+    ContentListView.prototype.add = function(content, forcedIndex) {
         log("add", content);
         if (!content.el && this.getContentView(content)) {
         //No double-adds
@@ -115,7 +115,6 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
         
         var contentView = content.el ? content : this.createContentView(content);
         //duck type for ContentView
-        
         if (this._bound && ! this._hasVisibleVacancy()) {
             var viewToRemove = this.views[this.views.length-1];
             
@@ -129,15 +128,15 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
             this.remove(viewToRemove);
         }
         
-        return ListView.prototype.add.call(this, contentView, index);
+        return ListView.prototype.add.call(this, contentView, forcedIndex);
     };
 
-    ContentListView.prototype._insert = function (contentView) {
+    ContentListView.prototype._insert = function (contentView, forcedIndex) {
         var newContentViewIndex,
             $previousEl,
             $wrappedEl;
 
-        newContentViewIndex = this.views.indexOf(contentView);
+        newContentViewIndex = forcedIndex || this.views.indexOf(contentView);
 
         var $containerEl = $('<div class="'+this.contentContainerClassName+' '+this.insertingClassName+'"></div>');
         contentView.$el.wrap($containerEl);
