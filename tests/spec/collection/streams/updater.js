@@ -18,9 +18,10 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
                 createStateToContent;
 
             beforeEach(function () {
-                createStateToContent = function(opts) {
-                    return CollectionUpdater.prototype._createStateToContent.call(this, opts);
-                }
+                createStateToContent = jasmine.createSpy('createStateToContent')
+                    .andCallFake(function(opts) {
+                        return CollectionUpdater.prototype._createStateToContent.call(this, opts);
+                    });
 
                 streamClient = new MockLivefyreStreamClient();
                 updater = new CollectionUpdater({
@@ -80,6 +81,17 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
                         expect(content.author).toEqual(jasmine.any(Object));
                         expect(content.author.displayName)
                             .toEqual(jasmine.any(String));
+                    });
+                });
+                it('uses opts.createStateToContent', function () {
+                    waitsFor(function () {
+                        if ( ! content) {
+                            content = updater.read();
+                        }
+                        return content;
+                    });
+                    runs(function () {
+                        expect(createStateToContent).toHaveBeenCalled();
                     });
                 });
             });
