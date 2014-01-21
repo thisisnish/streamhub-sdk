@@ -5,9 +5,10 @@ define([
     'streamhub-sdk/collection/clients/bootstrap-client',
     'streamhub-sdk/collection/clients/stream-client',
     'streamhub-sdk/content/state-to-content',
+    'streamhub-sdk/content/annotater',
     'streamhub-sdk/debug'],
 function (inherits, Readable, streamUtil, BootstrapClient, StreamClient,
-StateToContent, debug) {
+StateToContent, Annotator, debug) {
     'use strict';
 
 
@@ -37,6 +38,9 @@ StateToContent, debug) {
         this._replies = opts.replies || false;
         if (opts.createStateToContent) {
             this._createStateToContent = opts.createStateToContent;
+        }
+        if (opts.createAnnotator) {
+            this._createAnnotator = opts.createAnnotator;
         }
         Readable.call(this, opts);
     };
@@ -145,21 +149,34 @@ StateToContent, debug) {
      * @return {Content[]} An Array of Content models
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
-        var stateToContent = this._createStateToContent(streamData),
-            states = streamData.states,
+        var annotationDiffs,
+            annotater = this._createAnnotator(),
+            annotations = streamData.annotations,
+            contentId,
+            contents = [],
             state,
-            contents = [];
+            states = streamData.states,
+            stateToContent = this._createStateToContent(streamData);
 
         stateToContent.on('data', function (content) {
             contents.push(content);
         });
 
-        for (var contentId in states) {
+        for (contentId in states) {
             if ( ! states.hasOwnProperty(contentId)) {
                 continue;
             }
             state = states[contentId];
             stateToContent.write(state);
+        }
+
+        for (contentId in annotations) {
+            if ( ! annotations.hasOwnProperty(contentId)) {
+                continue;
+            }
+
+            annotationDiffs = annotations[contentId];
+            annotater.write(contentId, annotationDiffs);
         }
 
         return contents;
@@ -189,6 +206,13 @@ StateToContent, debug) {
         opts = opts || {};
         opts.replies = this._replies;
         return new StateToContent(opts);
+    };
+
+    /**
+     * Create an Annotator that will mutate Content in Storage.
+     */
+    CollectionUpdater.prototype._createAnnotator = function () {
+        return new Annotator();
     };
 
     return CollectionUpdater;
