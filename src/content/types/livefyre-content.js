@@ -1,9 +1,9 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/content',
-    'streamhub-sdk/content/annotater',
+    'streamhub-sdk/content/annotator',
     'inherits'],
-function($, Content, Annotater, inherits) {
+function($, Content, Annotator, inherits) {
     'use strict';
 
     /**
@@ -32,7 +32,7 @@ function($, Content, Annotater, inherits) {
         this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
-        Annotater.annotate(this, {
+        Annotator.annotate(this, {
             added: json.content.annotations
         }, true);  // Silently add b/c this is new Content.
     };

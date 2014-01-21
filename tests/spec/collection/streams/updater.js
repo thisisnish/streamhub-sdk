@@ -15,7 +15,8 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
         describe('when constructed', function () {
             var updater,
                 streamClient,
-                createStateToContent;
+                createStateToContent,
+                createAnnotator;
 
             beforeEach(function () {
                 createStateToContent = jasmine.createSpy('createStateToContent')
@@ -23,11 +24,17 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
                         return CollectionUpdater.prototype._createStateToContent.call(this, opts);
                     });
 
+                createAnnotator = jasmine.createSpy('createAnnotator')
+                    .andCallFake(function() {
+                        return CollectionUpdater.prototype._createAnnotator.call(this);
+                    });
+
                 streamClient = new MockLivefyreStreamClient();
                 updater = new CollectionUpdater({
                     collection: new MockCollection(),
                     streamClient: streamClient,
-                    createStateToContent: createStateToContent
+                    createStateToContent: createStateToContent,
+                    createAnnotator: createAnnotator
                 });
                 spyOn(updater._collection._bootstrapClient, 'getContent').andCallThrough();
             });
@@ -52,6 +59,10 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
 
             it('can be passed opts.createStateToContent', function () {
                 expect(updater._createStateToContent).toEqual(createStateToContent);
+            });
+
+            it('can be passed opts.createAnnotator', function () {
+                expect(updater._createAnnotator).toEqual(createAnnotator);
             });
 
             describe('when .read() for the first time', function () {
@@ -92,6 +103,18 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
                     });
                     runs(function () {
                         expect(createStateToContent).toHaveBeenCalled();
+                    });
+                });
+
+                it('uses opts.createAnnotator', function () {
+                    waitsFor(function () {
+                        if ( ! content) {
+                            content = updater.read();
+                        }
+                        return content;
+                    });
+                    runs(function () {
+                        expect(createAnnotator).toHaveBeenCalled();
                     });
                 });
             });

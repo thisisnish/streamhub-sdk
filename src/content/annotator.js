@@ -8,12 +8,12 @@ define([
     /**
      * An Object that updates Content when changes are streamed.
      */
-    var Annotater = function (opts) {
+    var Annotator = function (opts) {
         opts = opts || {};
         Writable.call(this, opts);
     };
 
-    inherits(Annotater, Writable);
+    inherits(Annotator, Writable);
 
     /**
      * AnnotationTypes
@@ -25,9 +25,9 @@ define([
     /**
      * AnnotationVerbs
      */
-    Annotater.added = {};
-    Annotater.updated = {};
-    Annotater.removed = {};
+    Annotator.added = {};
+    Annotator.updated = {};
+    Annotator.removed = {};
 
 
     /**
@@ -35,7 +35,7 @@ define([
      * @param annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
      * @param opt_silence [boolean] Mute any events that would be fired
      */
-    Annotater.annotate = function (content, annotationDiff, opt_silence) {
+    Annotator.annotate = function (content, annotationDiff, opt_silence) {
         var annotation;
         var annotations;
         var annotationType;
@@ -57,7 +57,7 @@ define([
                     continue;
                 }
                 annotation = annotations[annotationType];
-                handleFunc = Annotater[verb][annotationType];
+                handleFunc = Annotator[verb][annotationType];
                 handleFunc && handleFunc(changeSet, annotation, content);
             }
         }
@@ -70,54 +70,54 @@ define([
      * @param annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
      * @param opt_silence [boolean] Mute any events that would be fired
      */
-    Annotater.prototype._write = function(contentId, annotationDiff, opt_silence) {
+    Annotator.prototype._write = function(contentId, annotationDiff, opt_silence) {
         var content = content || Storage.get(contentId);
-        Annotater.annotate(content, annotationDiff, opt_silence);
+        Annotator.annotate(content, annotationDiff, opt_silence);
     }
 
     // featuredmessage
 
-    Annotater.added.featuredmessage = function (changeSet, annotation) {
+    Annotator.added.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = annotation;
     }
 
-    Annotater.updated.featuredmessage = Annotater.added.featuredmessage;
+    Annotator.updated.featuredmessage = Annotator.added.featuredmessage;
 
-    Annotater.removed.featuredmessage = function (changeSet, annotation) {
+    Annotator.removed.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = false;
     }
 
     // vote
 
-    Annotater.added.vote = function(changeSet, annotation, content) {
+    Annotator.added.vote = function(changeSet, annotation, content) {
         var votes = content.votes.list;
         votes.list.push(annotation);
         changeSet.votes = votes;
     }
 
-    Annotater.updated.vote = function(changeSet, annotation, content) {
+    Annotator.updated.vote = function(changeSet, annotation, content) {
         var votes = content.votes.list;
-        votes[Annotater._indexOfVote(votes, annotation)] = annotation;
+        votes[Annotator._indexOfVote(votes, annotation)] = annotation;
         changeSet.votes = votes;
     }
 
-    Annotater.removed.vote = function(changeSet, annotation, content) {
+    Annotator.removed.vote = function(changeSet, annotation, content) {
         var votes = content.votes.list;
-        votes.pop(Annotater._indexOfVote(votes, annotation));
+        votes.pop(Annotator._indexOfVote(votes, annotation));
         changeSet.votes = votes;
     }
 
     // moderator
 
-    Annotater.added.moderator = function(changeSet, annotation) {
+    Annotator.added.moderator = function(changeSet, annotation) {
         changeSet.moderator = annotation;
     }
 
     // Moderator is only true/false
-    Annotater.updated.moderator = Annotater.added.moderator;
-    Annotater.removed.moderator = Annotater.added.moderator;
+    Annotator.updated.moderator = Annotator.added.moderator;
+    Annotator.removed.moderator = Annotator.added.moderator;
 
-    Annotater._indexOfVote = function(votes, vote) {
+    Annotator._indexOfVote = function(votes, vote) {
         for (var i, len = votes.len; i < len; i++) {
             if (votes[i].author === vote.author) {
                 return i;
@@ -125,5 +125,5 @@ define([
         }
     }
 
-    return Annotater;
+    return Annotator;
 });

@@ -5,7 +5,7 @@ define([
     'streamhub-sdk/collection/clients/bootstrap-client',
     'streamhub-sdk/collection/clients/stream-client',
     'streamhub-sdk/content/state-to-content',
-    'streamhub-sdk/content/annotater',
+    'streamhub-sdk/content/annotator',
     'streamhub-sdk/debug'],
 function (inherits, Readable, streamUtil, BootstrapClient, StreamClient,
 StateToContent, Annotator, debug) {
@@ -150,7 +150,7 @@ StateToContent, Annotator, debug) {
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
         var annotationDiffs,
-            annotater = this._createAnnotator(),
+            annotator = this._createAnnotator(),
             annotations = streamData.annotations,
             contentId,
             contents = [],
@@ -176,7 +176,7 @@ StateToContent, Annotator, debug) {
             }
 
             annotationDiffs = annotations[contentId];
-            annotater.write(contentId, annotationDiffs);
+            annotator.write(contentId, annotationDiffs);
         }
 
         return contents;
