@@ -14,13 +14,19 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
 
         describe('when constructed', function () {
             var updater,
-                streamClient;
+                streamClient,
+                createStateToContent;
 
             beforeEach(function () {
+                createStateToContent = function(opts) {
+                    return CollectionUpdater.prototype._createStateToContent.call(this, opts);
+                }
+
                 streamClient = new MockLivefyreStreamClient();
                 updater = new CollectionUpdater({
                     collection: new MockCollection(),
-                    streamClient: streamClient
+                    streamClient: streamClient,
+                    createStateToContent: createStateToContent
                 });
                 spyOn(updater._collection._bootstrapClient, 'getContent').andCallThrough();
             });
@@ -41,6 +47,10 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $) {
 
             it('can be passed opts.streamClient', function () {
                 expect(updater._streamClient).toBe(streamClient);
+            });
+
+            it('can be passed opts.createStateToContent', function () {
+                expect(updater._createStateToContent).toEqual(createStateToContent);
             });
 
             describe('when .read() for the first time', function () {
