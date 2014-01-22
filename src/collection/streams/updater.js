@@ -149,7 +149,7 @@ StateToContent, Annotator, debug) {
      * @return {Content[]} An Array of Content models
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
-        var annotationDiffs,
+        var annotationDiff,
             annotator = this._createAnnotator(),
             annotations = streamData.annotations,
             contentId,
@@ -163,20 +163,20 @@ StateToContent, Annotator, debug) {
         });
 
         for (contentId in states) {
-            if ( ! states.hasOwnProperty(contentId)) {
-                continue;
+            if (states.hasOwnProperty(contentId)) {
+                state = states[contentId];
+                stateToContent.write(state);
             }
-            state = states[contentId];
-            stateToContent.write(state);
         }
 
         for (contentId in annotations) {
-            if ( ! annotations.hasOwnProperty(contentId)) {
-                continue;
+            if (annotations.hasOwnProperty(contentId)) {
+                annotationDiff = annotations[contentId];
+                annotator.write({
+                    contentId: contentId,
+                    annotationDiff: annotationDiff
+                });
             }
-
-            annotationDiffs = annotations[contentId];
-            annotator.write(contentId, annotationDiffs);
         }
 
         return contents;

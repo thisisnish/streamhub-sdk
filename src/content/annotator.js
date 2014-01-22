@@ -1,6 +1,6 @@
 define([
     'streamhub-sdk/storage',
-    'stream/transform',
+    'stream/writable',
     'inherits'
 ], function (Storage, Writable, inherits) {
     'use strict';
@@ -14,21 +14,6 @@ define([
     };
 
     inherits(Annotator, Writable);
-
-    /**
-     * AnnotationTypes
-     * featuredmessage
-     * vote
-     * moderator
-     */
-
-    /**
-     * AnnotationVerbs
-     */
-    Annotator.added = {};
-    Annotator.updated = {};
-    Annotator.removed = {};
-
 
     /**
      * @param content {Content}
@@ -63,67 +48,59 @@ define([
         }
 
         content.set(changeSet, opt_silence);
-    }
+    };
 
     /**
-     * @param contentId {string}
-     * @param annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
-     * @param opt_silence [boolean] Mute any events that would be fired
+     * @param opts {object}
+     * @param opts.contentId [string]
+     * @param opts.content {Content}
+     * @param opts.annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
+     * @param opts.opt_silence [boolean] Mute any events that would be fired
      */
-    Annotator.prototype._write = function(contentId, annotationDiff, opt_silence) {
-        var content = content || Storage.get(contentId);
-        Annotator.annotate(content, annotationDiff, opt_silence);
-    }
+    Annotator.prototype._write = function(opts) {
+        var content = opts.content || Storage.get(opts.contentId);
+        if (!content) {
+            return;
+        }
+        Annotator.annotate(content, opts.annotationDiff, opts.opt_silence);
+    };
+
+    /**
+     * AnnotationTypes
+     * featuredmessage
+     * moderator
+     */
+
+    /**
+     * AnnotationVerbs
+     */
+    Annotator.added = {};
+    Annotator.updated = {};
+    Annotator.removed = {};
 
     // featuredmessage
 
     Annotator.added.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = annotation;
-    }
+    };
 
     Annotator.updated.featuredmessage = Annotator.added.featuredmessage;
 
     Annotator.removed.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = false;
-    }
-
-    // vote
-
-    Annotator.added.vote = function(changeSet, annotation, content) {
-        var votes = content.votes.list;
-        votes.list.push(annotation);
-        changeSet.votes = votes;
-    }
-
-    Annotator.updated.vote = function(changeSet, annotation, content) {
-        var votes = content.votes.list;
-        votes[Annotator._indexOfVote(votes, annotation)] = annotation;
-        changeSet.votes = votes;
-    }
-
-    Annotator.removed.vote = function(changeSet, annotation, content) {
-        var votes = content.votes.list;
-        votes.pop(Annotator._indexOfVote(votes, annotation));
-        changeSet.votes = votes;
-    }
+    };
 
     // moderator
 
-    Annotator.added.moderator = function(changeSet, annotation) {
-        changeSet.moderator = annotation;
-    }
+    Annotator.added.moderator = function(changeSet) {
+        changeSet.moderator = true;
+    };
 
-    // Moderator is only true/false
     Annotator.updated.moderator = Annotator.added.moderator;
-    Annotator.removed.moderator = Annotator.added.moderator;
 
-    Annotator._indexOfVote = function(votes, vote) {
-        for (var i, len = votes.len; i < len; i++) {
-            if (votes[i].author === vote.author) {
-                return i;
-            }
-        }
-    }
+    Annotator.removed.moderator = function(changeSet) {
+        changeSet.moderator = false;
+    };
 
     return Annotator;
 });
