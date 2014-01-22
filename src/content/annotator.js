@@ -84,6 +84,8 @@ define([
         changeSet.featured = annotation;
     };
 
+    Annotator.prototype.updated.featuredmessage = Annotator.prototype.added.featuredmessage;
+
     Annotator.prototype.removed.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = false;
     };
