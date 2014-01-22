@@ -52,12 +52,38 @@ function (inherits, Writable, Readable, ContentListView, debug) {
     Injector.prototype.count = 1;
     
     /**
+     * Update the interval setting. Will trigger an injection and reset the
+     * counter if the new interval is less than the counter.
+     * @param n {!number} >= 1
+     */
+    Injector.prototype.setInterval = function (n) {
+        if (typeof(n) === 'number' && n >= 1) {
+            this._interval = n;
+            if (this._interval <= this._counter) {
+                this.now();
+            }
+        }
+    };
+    
+    /**
+     * Returns the current value of the ._counter
+     * @returns {!number}
+     */
+    Injector.prototype.getCounter = function () {
+        return this._counter;
+    };
+    
+    /**
      * Registers a ContentListView or subclass. Listens for added contentViews
      * and pushes an addition at the specified interval.
      * @param contentListView {!ContentListView}
      * @param [opts} {Object}
      */
     Injector.prototype.target = function(contentListView, opts) {
+        if (this._contentListView) {
+            throw "Target already set.";
+        }
+        
         this._contentListView = contentListView;
         this._contentListView.on('added', function (contentView) {
             if (!contentView) {
@@ -72,10 +98,9 @@ function (inherits, Writable, Readable, ContentListView, debug) {
             }
             
             if (this._counter === this._interval) {
-                this._counter = 0;
                 //Get index to specify where to add new content
                 this._index = this._contentListView.views.indexOf(contentView) || 0;
-                this.inject();
+                this.now();
             }
         }.bind(this));
         return this;
@@ -83,14 +108,34 @@ function (inherits, Writable, Readable, ContentListView, debug) {
 
     /**
      * Injects the preset or specified number of content items.
-     * @param [n] {number}
+     * Doesn't reset the counter. Returns number of injections attempted.
+     * @param [n] {number} Number of items to inject. Default is .count
+     * @param [i] {number} >= 0 at which to inject content.
+     *          Defaults to location of previous injection.
+     * @returns {!number}
      */
-    Injector.prototype.inject = function (n) {
-        this._count = n || this.count;
+    Injector.prototype.inject = function (n, i) {
+        var count = this._count = n || this.count;
+        this._index = i || this._index;
         
         if (this._count >= 0) {
             this._fetchAndPush();
         }
+        return count;
+    };
+    
+    /**
+     * Injects and resets the counter. Really just a wrapper for inject() that
+     * resets the counter. Returns this Injector.
+     * @param [n] {number} Number of items to inject. Default is .count.
+     * @param [i] {number} >= 0 at which to inject content.
+     *          Defaults to location of previous injection.
+     * @returns {!Injector}
+     */
+    Injector.prototype.now = function (n, i) {
+        this._counter = 0;
+        this.inject(n, i);
+        return this;
     };
 
 
