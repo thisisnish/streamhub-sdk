@@ -17,27 +17,27 @@ define([], function () {
         2: -1
     };
 
-    function _downVote (vote) {
+    function downVote (vote) {
         return vote.value === voteEnums.vote.DOWNVOTE ? 1 : 0;
     }
 
-    function _upVote (vote) {
+    function upVote (vote) {
         return vote.value === voteEnums.vote.UPVOTE ? 1 : 0;
     }
 
-    function _scoreVote (votesObj, vote, priorVote) {
+    function scoreVote (votesObj, vote, priorVote) {
         if (priorVote) {
-            votesObj.upvotes -= _upVote(priorVote);
-            votesObj.downvotes -= _downVote(priorVote);
+            votesObj.upvotes -= upVote(priorVote);
+            votesObj.downvotes -= downVote(priorVote);
         }
         if (vote) {
-            votesObj.upvotes += _upVote(vote);
-            votesObj.downvotes += _downVote(vote);
+            votesObj.upvotes += upVote(vote);
+            votesObj.downvotes += downVote(vote);
         }
         votesObj.helpfulness = votesObj.upvotes - votesObj.downvotes;
     }
 
-    function _indexOfVote (votes, vote) {
+    function indexOfVote (votes, vote) {
         for (var i = 0, len = votes.length; i < len; i++) {
             if (votes[i].author === vote.author) {
                 return i;
@@ -46,7 +46,7 @@ define([], function () {
         return -1;
     }
 
-    function _addVote (changeSet, annotation, content) {
+    function addVote (changeSet, annotation, content) {
         var vote;
         var votes = content.votes = content.votes || {};
         var list = content.votes.list = content.votes.list || [];
@@ -57,13 +57,13 @@ define([], function () {
         for (var i=0, len=annotation.length; i<len; i++) {
             vote = annotation[i];
             list.push(vote);
-            _scoreVote(votes, vote);
+            scoreVote(votes, vote);
         }
 
         changeSet.votes = votes;
     }
 
-    function _updatedVote (changeSet, annotation, content) {
+    function updatedVote (changeSet, annotation, content) {
         var j;
         var vote;
         var updateVote;
@@ -72,10 +72,10 @@ define([], function () {
 
         for (var i=0, len=list.length; i<len; i++) {
             vote = list[i];
-            j = _indexOfVote(annotation, vote);
+            j = indexOfVote(annotation, vote);
             if (j !== -1) {
                 updateVote = annotation[j];
-                _scoreVote(votes, updateVote, vote);
+                scoreVote(votes, updateVote, vote);
                 list[i] = updateVote;
             }
 
@@ -84,13 +84,13 @@ define([], function () {
         changeSet.votes = votes;
     }
 
-    function _removedVote (changeSet, annotation, content) {
+    function removedVote (changeSet, annotation, content) {
         var votes = content.votes;
         var list = content.votes.list;
 
         list = list.filter(function(vote) {
-            if (_indexOfVote(annotation, vote) !== -1) {
-                _scoreVote(votes, false, vote);
+            if (indexOfVote(annotation, vote) !== -1) {
+                scoreVote(votes, false, vote);
                 return false;
             }
             return true;
@@ -101,9 +101,9 @@ define([], function () {
     }
 
     function withVotes (annotator) {
-        annotator.added.vote = _addVote;
-        annotator.updated.vote = _updatedVote;
-        annotator.removed.vote = _removedVote;
+        annotator.added.vote = addVote;
+        annotator.updated.vote = updatedVote;
+        annotator.removed.vote = removedVote;
     }
 
     return {

@@ -13,10 +13,13 @@ function($, Content, Annotator, inherits) {
      *        state of the content.
      * @param json.body {!string}
      * @param json.id {!number}
+     * @param opts {object}
+     * @param opts.annotator {Annotator}
      * @exports streamhub-sdk/content/types/livefyre-content
      * @constructor
      */
-    var LivefyreContent = function(json) {
+    var LivefyreContent = function(json, opts) {
+        opts = opts || {};
         Content.call(this);
         if ( ! json) {
             return this;
@@ -32,6 +35,8 @@ function($, Content, Annotator, inherits) {
         this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
+
+        this._annotator = opts.annotator || this._createAnnotator();
         this._annotator.annotate(this, {
             added: json.content.annotations
         }, true);  // Silently add b/c this is new Content.
@@ -39,9 +44,11 @@ function($, Content, Annotator, inherits) {
     inherits(LivefyreContent, Content);
 
     /**
-     * Overridable annotator instance
+     * Overridable annotator instantiator
      */
-    LivefyreContent.prototype._annotator = new Annotator();
+    LivefyreContent.prototype._createAnnotator = function() {
+        return new Annotator();
+    };
 
     /**
      * Attach an Oembed to the Content while first checking for an existing attachment.

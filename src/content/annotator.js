@@ -18,9 +18,9 @@ define([
     /**
      * @param content {Content}
      * @param annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
-     * @param opt_silence [boolean] Mute any events that would be fired
+     * @param silence [boolean] Mute any events that would be fired
      */
-    Annotator.prototype.annotate = function (content, annotationDiff, opt_silence) {
+    Annotator.prototype.annotate = function (content, annotationDiff, silence) {
         var annotation;
         var annotations;
         var annotationType;
@@ -47,7 +47,7 @@ define([
             }
         }
 
-        content.set(changeSet, opt_silence);
+        content.set(changeSet, silence);
     };
 
     /**
@@ -55,14 +55,14 @@ define([
      * @param opts.contentId [string]
      * @param opts.content {Content}
      * @param opts.annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
-     * @param opts.opt_silence [boolean] Mute any events that would be fired
+     * @param opts.silence [boolean] Mute any events that would be fired
      */
     Annotator.prototype._write = function(opts) {
         var content = opts.content || Storage.get(opts.contentId);
         if (!content) {
             return;
         }
-        this.annotate(content, opts.annotationDiff, opts.opt_silence);
+        this.annotate(content, opts.annotationDiff, opts.silence);
     };
 
     /**
