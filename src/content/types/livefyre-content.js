@@ -32,11 +32,16 @@ function($, Content, Annotator, inherits) {
         this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
-        Annotator.annotate(this, {
+        this._annotator.annotate(this, {
             added: json.content.annotations
         }, true);  // Silently add b/c this is new Content.
     };
     inherits(LivefyreContent, Content);
+
+    /**
+     * Overridable annotator instance
+     */
+    LivefyreContent.prototype._annotator = new Annotator();
 
     /**
      * Attach an Oembed to the Content while first checking for an existing attachment.
