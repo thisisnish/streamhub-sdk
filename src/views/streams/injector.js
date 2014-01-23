@@ -32,7 +32,7 @@ function (inherits, Writable, Readable, ContentListView, debug) {
         this._interval = opts.interval || 1;
         this._counter = -1;//Works well for archived content, resets to 0
         this._written = [];
-        this._contentListView = null;
+        this._target = null;
         
         Writable.call(this, opts);
         if (opts.source) {
@@ -52,45 +52,109 @@ function (inherits, Writable, Readable, ContentListView, debug) {
     Injector.prototype.count = 1;
     
     /**
-     * Registers a ContentListView or subclass. Listens for added contentViews
-     * and pushes an addition at the specified interval.
+     * Update the interval setting. Will trigger an injection and reset the
+     * counter if the new interval is less than the counter.
+     * @param n {!number} >= 1
+     */
+    Injector.prototype.setInterval = function (n) {
+        if (typeof(n) === 'number' && n >= 1) {
+            this._interval = n;
+            if (this._interval <= this._counter) {
+                this.now();
+            }
+        }
+    };
+    
+    /**
+     * Returns the current value of the ._counter
+     * @returns {!number}
+     */
+    Injector.prototype.getCounter = function () {
+        return this._counter;
+    };
+    
+    /**
+     * Registers a ContentListView or subclass. Listens for added Views
+     * and injects at the specified interval.
      * @param contentListView {!ContentListView}
      * @param [opts} {Object}
      */
     Injector.prototype.target = function(contentListView, opts) {
-        this._contentListView = contentListView;
-        this._contentListView.on('added', function (contentView) {
-            if (!contentView) {
-                return;
-            }
-            
-            var index = this._written.indexOf(contentView.content);
-            if (index < 0) {
-                this._counter++;
-            } else {
-                this._written.splice(index, 1);
-            }
-            
-            if (this._counter === this._interval) {
-                this._counter = 0;
-                //Get index to specify where to add new content
-                this._index = this._contentListView.views.indexOf(contentView) || 0;
-                this.inject();
-            }
-        }.bind(this));
+        if (this._target) {
+            throw "Target already set. " +
+            		"Need to .untarget() before trying to .target().";
+        }
+        
+        this._target = contentListView;
+        this._target.on('added', this._addHandler.bind(this));
         return this;
+    };
+    
+    /**
+     * Removes the current target.
+     */
+    Injector.prototype.untarget = function () {
+        this._target && this._target.removeListener('added', this._addHandler);
+        this._target = null;
+        this._counter = 0;
+    };
+    
+    /**
+     * Handles the 'added' event. Takes the view and triggers injections.
+     * @param [view] {View} Currently assumed to be a ContentView
+     * @protected
+     */
+    Injector.prototype._addHandler = function (view) {
+        var i = (view) ? this._written.indexOf(view.content || view) : -1;
+        if (i < 0) {
+        //Didn't originate from Injecor, so increment the counter
+            this._counter++;
+        } else {
+        //Recover some memory
+            this._written.splice(i, 1);
+        }
+        
+        //Track index for injecting content
+        this._index = (view) ? this._target.views.indexOf(view) || 0 : 0;
+        
+        if (this._counter === this._interval) {
+            this.now();
+        }
     };
 
     /**
      * Injects the preset or specified number of content items.
-     * @param [n] {number}
+     * Doesn't reset the counter. Returns number of injections attempted.
+     * @param [n] {number} Number of items to inject. Default is .count
+     * @param [i] {number} >= 0 at which to inject content.
+     *          Defaults to index of previously caught "added" or 0.
+     * @returns {!number}
      */
-    Injector.prototype.inject = function (n) {
-        this._count = n || this.count;
+    Injector.prototype.inject = function (n, i) {
+        if (!this._target) {
+            throw '_target needs to exist before calling inject()';
+        }
+        var count = this._count = n || this.count;
+        this._index = i || this._index;
         
         if (this._count >= 0) {
             this._fetchAndPush();
         }
+        return count;
+    };
+    
+    /**
+     * Injects and resets the counter. Really just a wrapper for inject() that
+     * resets the counter. Returns this Injector.
+     * @param [n] {number} Number of items to inject. Default is .count.
+     * @param [i] {number} >= 0 at which to inject content.
+     *          Defaults to index of previously caught "added" or 0.
+     * @returns {!Injector}
+     */
+    Injector.prototype.now = function (n, i) {
+        this._counter = 0;
+        this.inject(n, i);
+        return this;
     };
 
 
@@ -140,7 +204,7 @@ function (inherits, Writable, Readable, ContentListView, debug) {
             this._count--;
             var content = this._stack.pop();
             this._written.push(content);
-            this._contentListView.add(content, this._index);
+            this._target.add(content, this._index);
         }
 
         // If there was no data, or we just pushed the last bit,

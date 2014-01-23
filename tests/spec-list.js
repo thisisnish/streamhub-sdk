@@ -8,6 +8,7 @@ define(function () {
         'tests/spec/views/list-view',
         'tests/spec/views/show-more-button',
         'tests/spec/views/streams/more',
+        'tests/spec/views/streams/injector',
         'tests/spec/collection/main',
         'tests/spec/collection/clients/stream-client',
         'tests/spec/collection/clients/bootstrap-client',
