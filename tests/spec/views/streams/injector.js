@@ -64,6 +64,13 @@ function ($, Injector, ContentListView, Content, MockCollection) {
                 }
             });
             
+            it('throws if .inject() is called before .target() is set', function () {
+                function injectWithoutTarget () {
+                    injector.inject();
+                }
+                expect(injectWithoutTarget).toThrow();
+            });
+
             it('returns itself when .target(ContentListView)', function () {
                 var retVal = injector.target(target);
                 expect(retVal).toBe(injector);
