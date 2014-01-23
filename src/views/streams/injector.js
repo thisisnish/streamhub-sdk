@@ -3,9 +3,8 @@ define([
     'stream/writable',
     'stream/readable',
     'streamhub-sdk/content/views/content-list-view',
-    'view',
     'streamhub-sdk/debug'],
-function (inherits, Writable, Readable, ContentListView, View, debug) {
+function (inherits, Writable, Readable, ContentListView, debug) {
     'use strict';
 
 
