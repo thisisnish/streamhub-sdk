@@ -64,11 +64,11 @@ define([
     /**
      * Set some properties and emit 'change' and 'change:{property}' events
      * @param newProperties {Object} An object of properties to set on this Content
-     * @param opt_silence [boolean] Mute any events that would be fired
+     * @param silence [boolean] Mute any events that would be fired
      * @fires Content#change
      * @fires Content#event:change:_property_
      */
-    Content.prototype.set = function (newProperties, opt_silence) {
+    Content.prototype.set = function (newProperties, silence) {
         newProperties = newProperties || {};
         var oldProperties = {};
         var oldVal, newVal, changed;
@@ -77,13 +77,13 @@ define([
                 oldVal = oldProperties[key] = this[key];
                 newVal = this[key] = newProperties[key];
                 if (newVal !== oldVal) {
-                    opt_silence || this.emit('change:'+key, newVal, oldVal);//Will emit 'change:visibility'
+                    silence || this.emit('change:'+key, newVal, oldVal);//Will emit 'change:visibility'
                     changed = true;
                 }
             }
         }
         if (changed) {
-            opt_silence || this.emit('change', newProperties, oldProperties);
+            silence || this.emit('change', newProperties, oldProperties);
         }
     };
 

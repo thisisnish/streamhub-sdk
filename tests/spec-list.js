@@ -21,6 +21,7 @@ define(function () {
         'tests/spec/collection/streams/featured-archive',
         'tests/spec/auth/main',
         'tests/spec/content/state-to-content',
+        'tests/spec/content/annotator',
         'tests/spec/content/main',
         'tests/spec/content/types/livefyre-content',
         'tests/spec/content/types/livefyre-facebook-content',

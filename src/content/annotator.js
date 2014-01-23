@@ -18,9 +18,9 @@ define([
     /**
      * @param content {Content}
      * @param annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
-     * @param opt_silence [boolean] Mute any events that would be fired
+     * @param silence [boolean] Mute any events that would be fired
      */
-    Annotator.annotate = function (content, annotationDiff, opt_silence) {
+    Annotator.prototype.annotate = function (content, annotationDiff, silence) {
         var annotation;
         var annotations;
         var annotationType;
@@ -42,12 +42,12 @@ define([
                     continue;
                 }
                 annotation = annotations[annotationType];
-                handleFunc = Annotator[verb][annotationType];
+                handleFunc = this[verb][annotationType];
                 handleFunc && handleFunc(changeSet, annotation, content);
             }
         }
 
-        content.set(changeSet, opt_silence);
+        content.set(changeSet, silence);
     };
 
     /**
@@ -55,14 +55,14 @@ define([
      * @param opts.contentId [string]
      * @param opts.content {Content}
      * @param opts.annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
-     * @param opts.opt_silence [boolean] Mute any events that would be fired
+     * @param opts.silence [boolean] Mute any events that would be fired
      */
     Annotator.prototype._write = function(opts) {
         var content = opts.content || Storage.get(opts.contentId);
         if (!content) {
             return;
         }
-        Annotator.annotate(content, opts.annotationDiff, opts.opt_silence);
+        this.annotate(content, opts.annotationDiff, opts.silence);
     };
 
     /**
@@ -74,31 +74,29 @@ define([
     /**
      * AnnotationVerbs
      */
-    Annotator.added = {};
-    Annotator.updated = {};
-    Annotator.removed = {};
+    Annotator.prototype.added = {};
+    Annotator.prototype.updated = {};
+    Annotator.prototype.removed = {};
 
     // featuredmessage
 
-    Annotator.added.featuredmessage = function (changeSet, annotation) {
+    Annotator.prototype.added.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = annotation;
     };
 
-    Annotator.updated.featuredmessage = Annotator.added.featuredmessage;
+    Annotator.prototype.updated.featuredmessage = Annotator.prototype.added.featuredmessage;
 
-    Annotator.removed.featuredmessage = function (changeSet, annotation) {
+    Annotator.prototype.removed.featuredmessage = function (changeSet, annotation) {
         changeSet.featured = false;
     };
 
     // moderator
 
-    Annotator.added.moderator = function(changeSet) {
+    Annotator.prototype.added.moderator = function(changeSet) {
         changeSet.moderator = true;
     };
 
-    Annotator.updated.moderator = Annotator.added.moderator;
-
-    Annotator.removed.moderator = function(changeSet) {
+    Annotator.prototype.removed.moderator = function(changeSet) {
         changeSet.moderator = false;
     };
 

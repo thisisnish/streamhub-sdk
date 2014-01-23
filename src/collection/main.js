@@ -78,7 +78,9 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         return new CollectionUpdater({
             collection: this,
             streamClient: opts.streamClient,
-            replies: this._replies
+            replies: this._replies,
+            createStateToContent: opts.createStateToContent,
+            createAnnotator: opts.createAnnotator
         });
     };
 

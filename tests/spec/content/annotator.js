@@ -1,9 +1,12 @@
 define([
     'streamhub-sdk/content/annotator',
+    'streamhub-sdk/content/annotator-extensions',
     'stream/writable',
     'streamhub-sdk/content/types/livefyre-content',
-    'json!streamhub-sdk-tests/mocks/bootstrap-data.json'],
-function (Annotator, Writable, LivefyreContent, mockBootstrapData) {
+    'json!streamhub-sdk-tests/mocks/bootstrap-data.json',
+    'streamhub-sdk/jquery',
+    'inherits'],
+function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstrapData, $, inherits) {
     'use strict';
 
     describe('streamhub-sdk/content/annotator', function () {
@@ -11,15 +14,16 @@ function (Annotator, Writable, LivefyreContent, mockBootstrapData) {
             expect(Annotator.prototype instanceof Writable).toBe(true);
         });
 
+        var annotator = new Annotator();
         var featuredmessage = { "featuredmessage": { "rel_collectionId": "10739960", "value": 1381771896 }};
         var moderatorTrue = {"moderator": true};
-
+        var lfContent = new LivefyreContent({});
+        var vote = {"vote": [{"collectionId": "2486003", "value": 1, "author": "default@livefyre.com"}]};
+        var downVote = {"vote": [{"collectionId": "2486003", "value": 2, "author": "default@livefyre.com"}]};
 
         describe('Annotator#annotate', function () {
-            var lfContent = new LivefyreContent({});
-
             it('can add featuredmessage annotations', function () {
-                Annotator.annotate(lfContent, {
+                annotator.annotate(lfContent, {
                     'added': featuredmessage
                 });
 
@@ -27,7 +31,7 @@ function (Annotator, Writable, LivefyreContent, mockBootstrapData) {
             });
 
             it('can remove featuredmessage annotations', function () {
-                Annotator.annotate(lfContent, {
+                annotator.annotate(lfContent, {
                     'removed': featuredmessage
                 });
 
@@ -35,7 +39,7 @@ function (Annotator, Writable, LivefyreContent, mockBootstrapData) {
             });
 
             it('can add moderater annotations', function () {
-                Annotator.annotate(lfContent, {
+                annotator.annotate(lfContent, {
                     'added': moderatorTrue
                 });
 
@@ -43,11 +47,61 @@ function (Annotator, Writable, LivefyreContent, mockBootstrapData) {
             });
 
             it('can remove moderater annotations', function () {
-                Annotator.annotate(lfContent, {
+                annotator.annotate(lfContent, {
                     'removed': moderatorTrue
                 });
 
                 expect(lfContent.moderator).toEqual(false);
+            });
+        });
+
+        describe('Annotator w/ votes', function () {
+            var annotator, AnnotatorWithVotes;
+
+            beforeEach(function () {
+                AnnotatorWithVotes = function () {
+                    Annotator.call(this);
+                    AnnotatorExtensions.withVotes(this);
+                };
+                inherits(AnnotatorWithVotes, Annotator);
+
+                annotator = new AnnotatorWithVotes();
+            });
+
+            it('can be extended with VoteAnnotator', function () {
+                expect(annotator.added.vote).toBeDefined();
+                expect(annotator.added.featuredmessage).toBeDefined();
+            });
+
+            it('can add vote annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': vote
+                });
+
+                expect(lfContent.votes.helpfulness).toEqual(1);
+                expect(lfContent.votes.downvotes).toEqual(0);
+                expect(lfContent.votes.list.length).toEqual(1);
+            });
+
+            it('can update vote annotations', function () {
+                annotator.annotate(lfContent, {
+                    'updated': downVote
+                });
+
+
+                expect(lfContent.votes.helpfulness).toEqual(-1);
+                expect(lfContent.votes.downvotes).toEqual(1);
+                expect(lfContent.votes.list.length).toEqual(1);
+            });
+
+            it('can remove vote annotations', function () {
+                annotator.annotate(lfContent, {
+                    'removed': downVote
+                });
+
+                expect(lfContent.votes.helpfulness).toEqual(0);
+                expect(lfContent.votes.downvotes).toEqual(0);
+                expect(lfContent.votes.list.length).toEqual(0);
             });
         });
     });
