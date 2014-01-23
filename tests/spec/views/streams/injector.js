@@ -43,8 +43,8 @@ function ($, Injector, ContentListView, Content, MockCollection) {
                     expect(injector.count).toBe(opts.count);
                 });
                 
-                it('targets opts.target', function () {
-                    expect(injector._contentListView).toBe(opts.target);
+                it('will target opts.target', function () {
+                    expect(injector._target).toBe(opts.target);
                 });
                 
                 it('pipes itself from opts.source', function () {
@@ -53,10 +53,10 @@ function ($, Injector, ContentListView, Content, MockCollection) {
             });
             
             it('can set target once with .target(ContentListView)', function () {
-                expect(injector._contentListView).toBeFalsy();
+                expect(injector._target).toBeFalsy();
                 
                 injector.target(target);
-                expect(injector._contentListView).toBe(target);
+                expect(injector._target).toBe(target);
                 expect(setTwice).toThrow();
                 
                 function setTwice() {
@@ -114,9 +114,19 @@ function ($, Injector, ContentListView, Content, MockCollection) {
                     content = content2 = null;
                 });
                 
+                it('can target() a specified ContentListView', function () {
+                    injector.target(target);
+                    expect(injector._target).toBe(target);
+                });
+                
                 describe('and a target ContentListView ', function () {
                     beforeEach(function () {
                         injector.target(target);
+                    });
+                    
+                    it('can untarget() its existing target', function () {
+                        injector.untarget();
+                        expect(injector._target).toBeFalsy();
                     });
                     
                     it('triggers an injection and resets the ._counter when .setInterval(n <= ._counter', function () {
@@ -164,10 +174,10 @@ function ($, Injector, ContentListView, Content, MockCollection) {
                         });
                     });
                     
-                    it('monitors the ContentListView for "added" events and increments ._counter', function () {
+                    it('monitors the ._target for "added" events and increments ._counter even if "view" isn\'t provided', function () {
                         var origCounter = injector._counter;
                         
-                        target.write(content);//Will emit "added"
+                        target.emit('added');
                         expect(injector._counter).toBe(origCounter+1);
                     });
                     
@@ -191,16 +201,21 @@ function ($, Injector, ContentListView, Content, MockCollection) {
                     it('inject()s content into the ContentListView specifying the index of the item that triggered the injection and doesn\'t increment ._counter for its own injected content', function () {
                         spyOn(target, "add").andCallThrough();
                         
+                        content.createdAt = new Date(2);
+                        content2.createdAt = new Date(1);
+                        
                         target.write(content);
                         target.write(content2);
+                        //[content, content2]
                         
                         waitsFor(function () {
                             return target.views.length === 3;
                         }, 'target to contain 3 views', 300);
                         runs(function () {
-                            expect(target.views[2].content).toBe(content);
-                            expect(target.views[1].content).toBe(content2);
-                            expect(target.add.mostRecentCall.args[1]).toBe(0);
+                            //[content, injection, content2]
+                            expect(target.views[0].content).toBe(content);
+                            expect(target.views[2].content).toBe(content2);
+                            expect(target.add.mostRecentCall.args[1]).toBe(1);
                             expect(injector._counter).toBe(0);
                         });
                     });
