@@ -76,7 +76,7 @@ define([
             if (newProperties.hasOwnProperty(key) && key.charAt(0) !== '_') {//ignore _listeners and others
                 oldVal = oldProperties[key] = this[key];
                 newVal = this[key] = newProperties[key];
-                if (newVal !== oldVal) {
+                if (newVal !== oldVal || typeof newVal === 'object') {
                     silence || this.emit('change:'+key, newVal, oldVal);//Will emit 'change:visibility'
                     changed = true;
                 }
