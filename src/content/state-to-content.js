@@ -37,14 +37,8 @@ inherits) {
     StateToContent.prototype._transform = function (state, done) {
         var contents;
         try {
-            contents = StateToContent.transform(state, this._authors, {
-                replies: this._replies,
-                createContent: this._createContent,
-                getUpdatedProperties: this._getUpdatedProperties,
-                attachOrStore: this._attachOrStore,
-                addReplyOrStore: this._addReplyOrStore,
-                storeChild: this._storeChild,
-                addChildren: this._addChildren
+            contents = this.transform(state, this._authors, {
+                replies: this._replies
             });
         } catch (err) {
             this.emit('error transforming state-to-content', err);
@@ -55,7 +49,6 @@ inherits) {
         }
         done();
     };
-
 
     /**
      * Creates the correct content type given the supplied "state".
@@ -69,7 +62,7 @@ inherits) {
      *     reply Content that was transformed will be returned
      *     (including potentially many descendants)
      */
-    StateToContent.transform = function (state, authors, opts) {
+    StateToContent.prototype.transform = function (state, authors, opts) {
         opts = opts || {};
         var isPublic = (typeof state.vis === 'undefined') || (state.vis === 1),
             isReply = state.content.parentId,
@@ -78,12 +71,6 @@ inherits) {
             isContent = ('CONTENT' === type),
             childStates = state.childContent || [],
             content,
-            createContent = opts.createContent || StateToContent.prototype._createContent,
-            getUpdatedProperties = opts.getUpdatedProperties || StateToContent.prototype._getUpdatedProperties,
-            attachOrStore = opts.attachOrStore || StateToContent.prototype._attachOrStore,
-            addReplyOrStore = opts.addReplyOrStore || StateToContent.prototype._addReplyOrStore,
-            storeChild = opts.storeChild || StateToContent.prototype._storeChild,
-            addChildren = opts.addChildren || StateToContent.prototype._addChildren,
             childContent = [],
             descendantContent = [];
 
@@ -91,7 +78,7 @@ inherits) {
             return;
         }
 
-        content = createContent(state, authors);
+        content = this._createContent(state, authors);
 
         // Store content with IDs in case we later get
         // replies or attachments targeting it
@@ -102,7 +89,7 @@ inherits) {
                 if (isContent) {
                     // This could be a delete state, so only update
                     // properties that are actually set
-                    stored.set(getUpdatedProperties(content));
+                    stored.set(this._getUpdatedProperties(content));
                 }
                 // Use the stored object, now that its properties have been
                 // updated
@@ -125,25 +112,29 @@ inherits) {
 
         // Add any children that are awaiting the new content
         if (childContent.length) {
-            addChildren.call(this, content, childContent);
+            this._addChildren(content, childContent);
         }
 
         // At this point, all content and children (recursively)
         // Are stored by ID
         // Attach attachments to their target, or store for later
         if (isAttachment) {
-            attachOrStore.call(this, content, state.content.targetId);
+            this._attachOrStore(content, state.content.targetId);
         }
         // Add replies to their parent, or store for later
         if (isReply) {
-            addReplyOrStore.call(this, content, state.content.parentId);
+            this._addReplyOrStore(content, state.content.parentId);
         }
 
         // Never return non-Content items or non-public items
         // But note, this is at the end of the recursive function,
         // so these items are still walked/processed, just not returned
-        if ( ! isContent || ! isPublic) {
-            return;
+        if ( ! isContent) {
+            return this._handleNonContent(content);
+        }
+
+        if ( ! isPublic) {
+            return this._handleNonPublic(content);
         }
 
         // Don't return replies if not explicitly specified
@@ -157,6 +148,11 @@ inherits) {
         return [content];
     };
 
+    // Keep static for legacy API compatibility.
+    StateToContent.transform = function (state, authors, opts) {
+        var instance = new StateToContent();
+        return instance.transform(state, authors, opts);
+    };
 
     StateToContent.prototype._addChildren = function (content, children) {
         var child;
@@ -284,6 +280,13 @@ inherits) {
     // Keep static for legacy API compatibility
     StateToContent._storeChild = StateToContent.prototype._storeChild;
 
+    StateToContent.prototype._handleNonPublic = function(content) {
+        return;
+    };
+
+    StateToContent.prototype._handleNonContent = function(content) {
+        return;
+    };
 
     StateToContent.enums = {};
 
@@ -308,8 +311,8 @@ inherits) {
         'SHARE',
         'OEMBED'
     ];
-    
-    
+
+
     StateToContent.Storage = Storage;
     return StateToContent;
 });
