@@ -37,7 +37,7 @@ inherits) {
     StateToContent.prototype._transform = function (state, done) {
         var contents;
         try {
-            contents = StateToContent.transform(state, this._authors, {
+            contents = this.transform(state, this._authors, {
                 replies: this._replies
             });
         } catch (err) {
@@ -50,17 +50,19 @@ inherits) {
         done();
     };
 
-
     /**
      * Creates the correct content type given the supplied "state".
      * @param state {Object} The livefyre content "state" as received by the
      *     client.
+     * @param authors {Object} A mapping of authorIds to author information
+     * @param opts {Object}
+     * @param opts.createContent {Function}
      * @return {LivefyreContent[]} An Array containing a Content that represents
      *     the passed state, if it was top-level. If opts.replies, then any
      *     reply Content that was transformed will be returned
      *     (including potentially many descendants)
      */
-    StateToContent.transform = function (state, authors, opts) {
+    StateToContent.prototype.transform = function (state, authors, opts) {
         opts = opts || {};
         var isPublic = (typeof state.vis === 'undefined') || (state.vis === 1),
             isReply = state.content.parentId,
@@ -76,7 +78,7 @@ inherits) {
             return;
         }
 
-        content = StateToContent._createContent(state, authors);
+        content = this._createContent(state, authors);
 
         // Store content with IDs in case we later get
         // replies or attachments targeting it
@@ -87,7 +89,7 @@ inherits) {
                 if (isContent) {
                     // This could be a delete state, so only update
                     // properties that are actually set
-                    stored.set(StateToContent._getUpdatedProperties(content));
+                    stored.set(this._getUpdatedProperties(content));
                 }
                 // Use the stored object, now that its properties have been
                 // updated
@@ -127,8 +129,12 @@ inherits) {
         // Never return non-Content items or non-public items
         // But note, this is at the end of the recursive function,
         // so these items are still walked/processed, just not returned
-        if ( ! isContent || ! isPublic) {
-            return;
+        if ( ! isContent) {
+            return this._handleNonContent(content);
+        }
+
+        if ( ! isPublic) {
+            return this._handleNonPublic(content);
         }
 
         // Don't return replies if not explicitly specified
@@ -142,8 +148,13 @@ inherits) {
         return [content];
     };
 
+    // Keep static for legacy API compatibility.
+    StateToContent.transform = function (state, authors, opts) {
+        var instance = new StateToContent();
+        return instance.transform(state, authors, opts);
+    };
 
-    StateToContent._addChildren = function (content, children) {
+    StateToContent.prototype._addChildren = function (content, children) {
         var child;
         for (var i=0, numChildren=children.length; i < numChildren; i++) {
             child = children[i];
@@ -154,9 +165,11 @@ inherits) {
             }
         }
     };
+    // Keep static for legacy API compatibility.
+    StateToContent._addChildren = StateToContent.prototype._addChildren;
 
 
-    StateToContent._createContent = function (state, authors) {
+    StateToContent.prototype._createContent = function (state, authors) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
 
@@ -183,6 +196,8 @@ inherits) {
             log("StateToContent could not create content for state", state);
         }
     };
+    // Keep static for legacy API compatibility.
+    StateToContent._createContent = StateToContent.prototype._createContent;
 
 
     function isInstagramState (state) {
@@ -203,7 +218,7 @@ inherits) {
      *     .body and .attachments
      * @return {Object} A dict containing updated properties and their new value
      */
-    StateToContent._getUpdatedProperties = function(content) {
+    StateToContent.prototype._getUpdatedProperties = function(content) {
         var updatedProperties = {
             visibility: content.visibility
         };
@@ -224,9 +239,11 @@ inherits) {
         }
         return updatedProperties;
     };
+    // Keep static for legacy API compatibility
+    StateToContent._getUpdatedProperties = StateToContent.prototype._getUpdatedProperties;
 
 
-    StateToContent._attachOrStore = function (attachment, targetId) {
+    StateToContent.prototype._attachOrStore = function (attachment, targetId) {
         var target = Storage.get(targetId);
         if (target) {
             log('attaching attachment', arguments);
@@ -236,9 +253,10 @@ inherits) {
             this._storeChild(attachment, targetId);
         }
     };
+    // Keep static for legacy API compatibility
+    StateToContent._attachOrStore = StateToContent.prototype._attachOrStore;
 
-
-    StateToContent._addReplyOrStore = function (reply, parentId) {
+    StateToContent.prototype._addReplyOrStore = function (reply, parentId) {
         var parent = Storage.get(parentId);
         if (parent) {
             log('adding reply', arguments);
@@ -248,16 +266,27 @@ inherits) {
             this._storeChild(reply, parentId);
         }
     };
+    // Keep static for legacy API compatibility
+    StateToContent._addReplyOrStore = StateToContent.prototype._addReplyOrStore;
 
 
-    StateToContent._storeChild = function (child, parentId) {
+    StateToContent.prototype._storeChild = function (child, parentId) {
         //TODO (joao) Make this smart enough to not push duplicates
         var childrenKey = 'children_' + parentId,
             children = Storage.get(childrenKey) || [];
         children.push(child);
         Storage.set(childrenKey, children);
     };
+    // Keep static for legacy API compatibility
+    StateToContent._storeChild = StateToContent.prototype._storeChild;
 
+    StateToContent.prototype._handleNonPublic = function(content) {
+        return;
+    };
+
+    StateToContent.prototype._handleNonContent = function(content) {
+        return;
+    };
 
     StateToContent.enums = {};
 
@@ -282,8 +311,8 @@ inherits) {
         'SHARE',
         'OEMBED'
     ];
-    
-    
+
+
     StateToContent.Storage = Storage;
     return StateToContent;
 });
