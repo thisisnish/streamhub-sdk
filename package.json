@@ -10,7 +10,7 @@
   "dependencies": {
     "bower": "*",
     "http-server": "*",
-    "requirejs": "~2.1.6",
+    "requirejs": "2.1.9",
     "phantom": "*",
     "less": "~1.3.3"
   },
