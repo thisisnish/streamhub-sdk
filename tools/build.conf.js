@@ -13,7 +13,8 @@
     'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/views/list-view',
     'streamhub-sdk/auth',
-    'streamhub-sdk/modal'
+    'streamhub-sdk/modal',
+    'streamhub-sdk/views/streams/injector'
   ],
   stubModules: ['text', 'hgn', 'json'],
   out: "../dist/streamhub-sdk.min.js",
@@ -32,8 +33,10 @@
   },
   generateSourceMaps: true,
   onBuildRead: function(moduleName, path, contents) {
-    if (moduleName == "jquery") {
-      contents = "define([], function(require, exports, module) {" + contents + "});";
+    switch (moduleName) {
+      case "jquery":
+      case "base64":
+        contents = "define([], function(require, exports, module) {" + contents + "});";
     }
     return contents;
   }

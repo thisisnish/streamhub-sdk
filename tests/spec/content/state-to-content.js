@@ -1,10 +1,11 @@
 define([
     'streamhub-sdk/content/state-to-content',
     'stream/transform',
+    'inherits',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-instagram-content',
     'json!streamhub-sdk-tests/mocks/bootstrap-data.json'],
-function (StateToContent, Transform, Content, LivefyreInstagramContent,
+function (StateToContent, Transform, inherits, Content, LivefyreInstagramContent,
 mockBootstrapData) {
     'use strict';
 
@@ -340,5 +341,50 @@ mockBootstrapData) {
             expect(content1).toBe(content2);
         });
 
+        describe('extending', function () {
+            var state;
+            beforeEach(function () {
+                state = mockBootstrapData.content['2 Tiled Attachments'];
+                StateToContent.Storage.cache = {};
+            });
+            it('can have custom ._createContent', function () {
+                var customCreateContent = jasmine.createSpy().andCallFake(function () {
+                    return StateToContent.prototype._createContent.apply(this, arguments);
+                });
+                function CustomStateToContent () {
+                    StateToContent.apply(this, arguments);
+                }
+                inherits(CustomStateToContent, StateToContent);
+                CustomStateToContent.prototype._createContent = customCreateContent;
+
+                var myStateToContent = new CustomStateToContent();
+                myStateToContent.write(state);
+                var content = myStateToContent.read();
+                // The test state here has two attachments, so 1+2 Content
+                // objects will be created
+                expect(customCreateContent.callCount).toBe(3);
+            });
+            it('can have custom ._getUpdatedProperties', function () {
+                var customGetUpdatedProperties = jasmine.createSpy().andCallFake(function () {
+                    return StateToContent.prototype._getUpdatedProperties.apply(this, arguments);
+                });
+                function CustomStateToContent () {
+                    StateToContent.apply(this, arguments);
+                }
+                inherits(CustomStateToContent, StateToContent);
+                CustomStateToContent.prototype._getUpdatedProperties = customGetUpdatedProperties;
+
+                var myStateToContent = new CustomStateToContent();
+                // Write the same thing twice, which will ensure
+                // getUpdatedProperties is used
+                myStateToContent.write(state);
+                myStateToContent.write(state);
+                var content = myStateToContent.read();
+                var contentAgain = myStateToContent.read();
+                // The test state here has two attachments, so 1+2 Content
+                // objects will be created
+                expect(customGetUpdatedProperties.callCount).toBe(1);
+            });
+        });
     });
 });

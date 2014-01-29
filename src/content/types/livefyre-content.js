@@ -1,4 +1,9 @@
-define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($, Content, inherits) {
+define([
+    'streamhub-sdk/jquery',
+    'streamhub-sdk/content',
+    'streamhub-sdk/content/annotator',
+    'inherits'],
+function($, Content, Annotator, inherits) {
     'use strict';
 
     /**
@@ -8,15 +13,19 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      *        state of the content.
      * @param json.body {!string}
      * @param json.id {!number}
+     * @param opts {object}
+     * @param opts.annotator {Annotator}
      * @exports streamhub-sdk/content/types/livefyre-content
      * @constructor
      */
-    var LivefyreContent = function(json) {
+    var LivefyreContent = function(json, opts) {
+        opts = opts || {};
         Content.call(this);
         if ( ! json) {
             return this;
         }
         json.content = json.content || {};
+        json.content.annotations = json.content.annotations || {};
         this.body = json.content.bodyHtml || "";
         this.source = LivefyreContent.SOURCES[json.source];
         this.id = json.content.id || json.id;
@@ -26,9 +35,20 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
         this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
-        this._readAnnotations(json.content.annotations || {});
+
+        this._annotator = opts.annotator || this._createAnnotator();
+        this._annotator.annotate(this, {
+            added: json.content.annotations
+        }, true);  // Silently add b/c this is new Content.
     };
     inherits(LivefyreContent, Content);
+
+    /**
+     * Overridable annotator instantiator
+     */
+    LivefyreContent.prototype._createAnnotator = function() {
+        return new Annotator();
+    };
 
     /**
      * Attach an Oembed to the Content while first checking for an existing attachment.
@@ -83,18 +103,12 @@ define(['streamhub-sdk/jquery', 'streamhub-sdk/content', 'inherits'], function($
      * @return {Number|undefined} The featured value, if featured, else undefined
      */
     LivefyreContent.prototype.getFeaturedValue = function () {
+        if (!this.isFeatured()) {
+            return undefined;
+        }
         return this.featured.value;
     };
-    
-    /**
-     * Takes an object of annotations and sets properties as directed.
-     * @param anno {!Object} Object of annotations.
-     */
-    LivefyreContent.prototype._readAnnotations = function(anno) {
-        this._annotations = anno;
-        this.featured = anno.featuredmessage || false;
-    };
-    
+
     /**
      * The set of sources as defined by Livefyre's Stream API
      */

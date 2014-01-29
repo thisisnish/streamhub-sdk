@@ -78,7 +78,9 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         return new CollectionUpdater({
             collection: this,
             streamClient: opts.streamClient,
-            replies: this._replies
+            replies: this._replies,
+            createStateToContent: opts.createStateToContent,
+            createAnnotator: opts.createAnnotator
         });
     };
 
@@ -192,7 +194,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this._isInitingFromBootstrap = true;
         this._getBootstrapInit(function (err, initData) {
             self._isInitingFromBootstrap = false;
-            if (err === 'Not Found' && this._autoCreate) {
+            if (err && err.toLowerCase() === 'not found' && this._autoCreate) {
                 this._createCollection(function (err) {
                     if (!err) {
                         self.initFromBootstrap();
