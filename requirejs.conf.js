@@ -61,9 +61,6 @@ require.config({
     },
     'jasmine-jquery': {
         deps: ['jquery']
-    },
-    'base64': {
-        exports: 'base64'
     }
   }
 });
