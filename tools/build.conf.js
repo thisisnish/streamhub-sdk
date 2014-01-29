@@ -33,8 +33,10 @@
   },
   generateSourceMaps: true,
   onBuildRead: function(moduleName, path, contents) {
-    if (moduleName == "jquery") {
-      contents = "define([], function(require, exports, module) {" + contents + "});";
+    switch (moduleName) {
+      case "jquery":
+      case "base64":
+        contents = "define([], function(require, exports, module) {" + contents + "});";
     }
     return contents;
   }
