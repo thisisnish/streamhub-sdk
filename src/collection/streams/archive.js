@@ -142,6 +142,7 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
             states = bootstrapDoc.content || [],
             stateToContent = this._createStateToContent(bootstrapDoc),
             state,
+            stateContentId,
             content,
             contents = [];
 
@@ -158,6 +159,13 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
         for (var i=0, statesCount=states.length; i < statesCount; i++) {
             state = states[i];
+            stateContentId = state.content && state.content.id;
+            // Don't write in states that we already wrote in from the
+            // headDocument, as they'll cause unnecessary changes
+            // and rerenders to Content in storage
+            if (stateContentId && this._contentIdsInHeadDocument.indexOf(stateContentId) !== -1) {
+                continue;
+            }
             content = stateToContent.write(state);
         }
 

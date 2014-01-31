@@ -39,9 +39,9 @@ define([
             this.content.on("change:visibility", function(newVis, oldVis) {
                 this._handleVisibilityChange(newVis, oldVis);
             }.bind(this));
-            this.content.on("change", function() {
-                this.render();
-            }.bind(this));
+            // TODO: Re-render on change.
+            // Removed for now because re-rendering a ContentView and
+            // AttachmentsListView can unbind handlers important for modal
         }
     };
     inherits(ContentView, View);
