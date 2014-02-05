@@ -19,6 +19,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         opts = opts || {};
 
         this.oembedViews = [];
+        this._rendered = false;
 
         View.call(this, opts);
         
@@ -82,11 +83,13 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
     AttachmentListView.prototype.render = function () {
         var self = this;
         View.prototype.render.call(this);
+        this._rendered = true;
         $.each(self.oembedViews, function (i, oembedView) {
             if ( ! self.$el.has(oembedView.$el).length) {
                 // oembedView needs to be a descendant of AttachmentListView#.el
                 self._insert(oembedView);
             }
+            oembedView.render();
         });
     };
 
@@ -120,9 +123,12 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         // Insert in .el
         if (this.el) {
             this._insert(oembedView);
-            oembedView.render();
             // Update list length attribute
             this.$el.attr(this.listLengthAttribute, this.count());
+        }
+
+        if (this._rendered) {
+            oembedView.render();
         }
 
         return oembedView;

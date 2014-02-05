@@ -49,6 +49,15 @@ function($, Content, AttachmentListView, OembedView) {
 
         describe('when adding an attachment', function() {
 
+            it('does not render the resulting oembedView until the attachmentListView is rendered', function () {
+                var attachmentListView = new AttachmentListView({ content: content });
+                attachmentListView.add(oembedAttachment);
+                var oembedView = attachmentListView.oembedViews[0];
+                expect(oembedView.$el.html()).toBe('');
+                attachmentListView.render();
+                expect(oembedView.$el.html()).not.toBe('');
+            });
+
             it('increments the attachment count', function() {
                 var attachmentListView = new AttachmentListView({ content: content });
                 expect(attachmentListView.count()).toBe(0);

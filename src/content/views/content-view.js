@@ -23,13 +23,14 @@ define([
      */
     var ContentView = function ContentView (opts) {
         opts = opts || {};
-        View.call(this, opts);
         
         this.content = opts.content;
         // store construction time to use for ordering if this.content has no dates
         this.createdAt = new Date();
         this.template = opts.template || this.template;
         this.attachmentsView = opts.attachmentsView;
+
+        View.call(this, opts);
 
         if (this.content) {
             this.content.on("reply", function(content) {
@@ -38,9 +39,9 @@ define([
             this.content.on("change:visibility", function(newVis, oldVis) {
                 this._handleVisibilityChange(newVis, oldVis);
             }.bind(this));
-            this.content.on("change", function() {
-                this.render();
-            }.bind(this));
+            // TODO: Re-render on change.
+            // Removed for now because re-rendering a ContentView and
+            // AttachmentsListView can unbind handlers important for modal
         }
     };
     inherits(ContentView, View);

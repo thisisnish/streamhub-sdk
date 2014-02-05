@@ -4,8 +4,10 @@ define([
     'streamhub-sdk/collection/clients/bootstrap-client',
     'streamhub-sdk/content/state-to-content',
     'streamhub-sdk/debug',
+    'stream/util',
     'inherits'],
-function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
+function ($, Readable, BootstrapClient, StateToContent, debug, streamUtil,
+inherits) {
     "use strict";
 
 
@@ -67,6 +69,19 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
                 // Bootstrap pages are zero-based. Store the highest 
                 self._nextPage = numPages - 1;
 
+                // If we couldn't create any Content from the headDocument
+                // e.g. they were all premodded, push nothing and read again
+                // soon
+                if ( ! contents.length) {
+                    // Push nothing for now.
+                    self.push();
+                    // But trigger another _read cycle ASAP
+                    // This gives the internals a chance to check paused state
+                    streamUtil.nextTick(function () {
+                        self.read(0);
+                    });
+                    return;
+                }
                 self.push.apply(self, contents);
             });
         }
@@ -142,6 +157,7 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
             states = bootstrapDoc.content || [],
             stateToContent = this._createStateToContent(bootstrapDoc),
             state,
+            stateContentId,
             content,
             contents = [];
 
@@ -158,6 +174,13 @@ function ($, Readable, BootstrapClient, StateToContent, debug, inherits) {
 
         for (var i=0, statesCount=states.length; i < statesCount; i++) {
             state = states[i];
+            stateContentId = state.content && state.content.id;
+            // Don't write in states that we already wrote in from the
+            // headDocument, as they'll cause unnecessary changes
+            // and rerenders to Content in storage
+            if (stateContentId && this._contentIdsInHeadDocument.indexOf(stateContentId) !== -1) {
+                continue;
+            }
             content = stateToContent.write(state);
         }
 
