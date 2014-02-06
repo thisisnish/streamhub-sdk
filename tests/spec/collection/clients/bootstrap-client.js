@@ -103,6 +103,29 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
             });
         });
 
+        describe("when configured without opts.environment (prod)", function () {
+            var opts,
+                callback;
+            beforeEach(function () {
+                opts = {
+                    "network": "livefyre.com",
+                    "siteId": "313878",
+                    "articleId": "1"
+                };
+                callback = jasmine.createSpy();
+                spyOn(bootstrapClient, '_request', function (opts, errback) {
+                    return $.ajax().success(function () {
+                        errback(null, {});
+                    });
+                });
+            });
+            it("requests the correct bootstrap URL for prod", function () {
+                bootstrapClient.getContent(opts, callback);
+                var requestedUrl = bootstrapClient._request.mostRecentCall.args[0].url;
+                expect(requestedUrl).toBe('http://bootstrap.livefyre.com/bs3/livefyre.com/313878/MQ==/init');
+            });
+        });
+
         describe('when configured with opts.protocol=https', function () {
             var bootstrapClient;
             beforeEach(function () {
