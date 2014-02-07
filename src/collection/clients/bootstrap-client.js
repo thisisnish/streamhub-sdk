@@ -34,7 +34,7 @@ function(LivefyreHttpClient, inherits, base64) {
     LivefyreBootstrapClient.prototype.getContent = function(opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
-        var environment = opts.environment || 'livefyre.com';
+        var environment = opts.environment = opts.environment || 'livefyre.com';
         var includeEnvironment = (environment !== 'livefyre.com') && (environment !== 'fyre');
 
         var url = [
