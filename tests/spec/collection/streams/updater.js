@@ -120,6 +120,38 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
                 });
             });
 
+            it('uses headDocument.event if set', function (done) {
+                // Patch initFromBootstrap to return 0 for latestEvent
+                var ogInitFromBootstrap = updater._collection.initFromBootstrap;
+                spyOn(updater._collection, 'initFromBootstrap').andCallFake(function (errback) {
+                    ogInitFromBootstrap.call(updater._collection, function (err, initData) {
+                        initData = $.extend({}, initData);
+                        initData.collectionSettings = $.extend({}, initData.collectionSettings);
+                        initData.headDocument = $.extend({}, initData.headDocument);
+                        initData.collectionSettings.event = 456;
+                        initData.headDocument.event = 123;
+                        errback(null, initData);
+                    });
+                });
+                updater.read();
+                expect(updater._latestEvent).toBe(123);
+            });
+
+            it('uses collectionSettings.event if headDocument.event is not set', function () {
+                // Patch initFromBootstrap to return 0 for latestEvent
+                var ogInitFromBootstrap = updater._collection.initFromBootstrap;
+                spyOn(updater._collection, 'initFromBootstrap').andCallFake(function (errback) {
+                    ogInitFromBootstrap.call(updater._collection, function (err, initData) {
+                        initData = $.extend({}, initData);
+                        initData.collectionSettings = $.extend({}, initData.collectionSettings);
+                        initData.collectionSettings.event = 456;
+                        errback(null, initData);
+                    });
+                });
+                updater.read();
+                expect(updater._latestEvent).toBe(456);
+            });
+
             it("streams if initData.latestEvent === 0 (falsy)", function () {
                 // Patch initFromBootstrap to return 0 for latestEvent
                 var ogInitFromBootstrap = updater._collection.initFromBootstrap;
