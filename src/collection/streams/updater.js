@@ -61,8 +61,15 @@ StateToContent, Annotator, debug) {
             // Get the latest event and/or collection ID by initing
             // the collection from bootstrap
             return this._collection.initFromBootstrap(function (err, initData) {
-                var collectionSettings = initData.collectionSettings,
-                    latestEvent = collectionSettings && collectionSettings.event;
+                var collectionSettings = initData.collectionSettings;
+                var headDocument = initData.headDocument;
+
+                // Use the event value from the headDocument (new) over the
+                // collectionSettings dict because it's newer. If it's not set
+                // in headDocument, use the collectionSettings version.
+                var latestEvent = headDocument && headDocument.event;
+                latestEvent = latestEvent || collectionSettings && collectionSettings.event;
+
                 if ( ! self._collection.id) {
                     throw new Error("Couldn't get Collection ID after initFromBootstrap");
                 }
