@@ -44,6 +44,8 @@ You can also include the default stylesheet
 
 See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/25/
 
+Note: Any styling customization of Tweets rendered by streamhub-sdk must be done in accordance with Twitter's [Display Requirements](https://dev.twitter.com/terms/display-requirements).
+
 ### Local Development
 
 To run locally, make sure you have NPM. It is bundled with [node.js](http://nodejs.org/)
