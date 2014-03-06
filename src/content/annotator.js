@@ -1,8 +1,9 @@
 define([
     'streamhub-sdk/storage',
+    'streamhub-sdk/util',
     'stream/writable',
     'inherits'
-], function (Storage, Writable, inherits) {
+], function (Storage, util, Writable, inherits) {
     'use strict';
 
     /**
@@ -33,7 +34,7 @@ define([
                 continue;
             }
             annotations = annotationDiff[verb];
-            if ( ! Object.keys(annotations).length) {
+            if ( ! util.objectKeys(annotations).length) {
                 continue;
             }
 

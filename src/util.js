@@ -85,7 +85,7 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
         return dateString;
     };
 
-    Object.keys = Object.keys || (function () {
+    exports.objectKeys = Object.keys || (function () {
         var hasOwnProperty = Object.prototype.hasOwnProperty,
             hasDontEnumBug = !{toString:null}.propertyIsEnumerable("toString"),
             DontEnums = [
@@ -101,7 +101,7 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
 
         return function (o) {
             if (typeof o !== "object" && typeof o !== "function" || o === null) {
-                throw new TypeError("Object.keys called on a non-object");
+                throw new TypeError("objectKeys called on a non-object");
             }
 
             var result = [];
