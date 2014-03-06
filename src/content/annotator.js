@@ -34,7 +34,7 @@ define([
                 continue;
             }
             annotations = annotationDiff[verb];
-            if ( ! Object.keys(annotations).length) {
+            if ( ! util.objectKeys(annotations).length) {
                 continue;
             }
 
