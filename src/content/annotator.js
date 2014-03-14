@@ -101,5 +101,9 @@ define([
         changeSet.moderator = false;
     };
 
+    Annotator.prototype.added.geocode = function (changeSet, annotationValue) {
+        changeSet.geocode = annotationValue;
+    };
+
     return Annotator;
 });
