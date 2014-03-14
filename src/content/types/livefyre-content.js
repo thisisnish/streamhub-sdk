@@ -32,6 +32,7 @@ function($, Content, Annotator, inherits) {
         this.author = json.author;
         this.createdAt = new Date(1000 * json.content.createdAt);
         this.updatedAt = new Date(1000 * json.content.updatedAt);
+        this.lastVisibility = Content.enums.visibility[json.lastVis];
         this.visibility = Content.enums.visibility[json.vis];
         this.parentId = json.content.parentId;
         this.meta = json;
