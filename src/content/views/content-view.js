@@ -74,6 +74,10 @@ define([
         }
     }, function (events) {
         events['click ' + this.headerElSelector] = function(e) {
+            if (! this.$el.hasClass(this.contentWithImageClass)) {
+                // Only do this when there is an image
+                return;
+            }
             var headerEl = $(e.currentTarget);
             var frameEl = this.$el.find('.content-attachments-tiled ' + this.attachmentFrameElSelector);
 
