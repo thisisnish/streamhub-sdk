@@ -105,6 +105,7 @@ Auth, Writable, Readable) {
                     collection,
                     mock404Response,
                     mock400Response,
+                    mock409Response,
                     mock500Response,
                     mock200Response,
                     mock202Response,
@@ -112,6 +113,7 @@ Auth, Writable, Readable) {
                     fnFailedInit,
                     fnSuccessfulCreate,
                     fnFailedCreate,
+                    fnCreateConflict,
                     fnServerError,
                     fnCallback;
                 beforeEach(function () {
@@ -130,6 +132,7 @@ Auth, Writable, Readable) {
                     //Faked responses
                     mock404Response = "Not Found";//{"msg": "", "status": "error", "error_type": "ResourceDoesNotExist", "trace": "Traceback (most recent call last):\n  File... raise ResourceDoesNotExist()\nResourceNotFoundError\n", "code": 404};
                     mock400Response = "Bad Request";//{"msg": "Cannot create a collection without an articleId: {\"url\": \"http://www.fake.com\", \"tags\": \"test,wall\", \"title\": \"Media Wall Example\"}.", "status": "error", "error_type": "BadRequestError", "trace": "Traceback (most recent call last):\n  File... raise BadRequestError(\"Cannot create a collection without an articleId: %s.\" % json.dumps(collection_meta))\nBadDataError: Cannot create a collection without an articleId: {\"url\": \"http://www.fake.com\", \"tags\": \"test,wall\", \"title\": \"Media Wall Example\"}.\n", "code": 400}
+                    mock409Response = "Conflict";
                     mock500Response = "Internal Server Error";//{"msg": "", "status": "error", "code": 500};
                     mock200Response = "OK";//{};//Sometimes sent by our servers in leu of an error.
                     mock202Response = {"msg": "This request is being processed.", "status": "ok", "code": 202};
@@ -139,6 +142,7 @@ Auth, Writable, Readable) {
                     fnFailedInit= function (opts, errback) { errback(mock404Response); };
                     fnSuccessfulCreate= function (opts, errback) { errback(null, mock202Response); };
                     fnFailedCreate= function (opts, errback) { errback(mock400Response); };
+                    fnCreateConflict = function (opts, errback) { errback(mock409Response); };
                     fnServerError= function (opts, errback) { errback(mock500Response); };
 
                     //Use spy to check callbacks
@@ -188,6 +192,62 @@ Auth, Writable, Readable) {
                     spyOn(collection._bootstrapClient, "getContent").andCallFake(fnFailedInit);
                     spyOn(collection._createClient, "createCollection").andCallFake(fnFailedCreate);
 
+                    collection.initFromBootstrap(fnCallback);
+
+                    expect(collection._bootstrapClient.getContent.calls.length).toEqual(1);
+                    expect(collection._createClient.createCollection.calls.length).toEqual(1);
+                });
+
+                var cnt = 0;
+                var contentStub = function(err, init) {
+                    if (cnt < 4) {
+                        cnt++;
+                        fnFailedInit(err, init);
+                        return;
+                    }
+                    fnSuccessfulInit(err, init);
+                };
+
+                it('retries to init from bootstrap when collection is created', function () {
+                    runs(function () {
+                        cnt = 0;
+                        spyOn(collection._bootstrapClient, "getContent").andCallFake(contentStub);
+                        spyOn(collection._createClient, "createCollection").andCallFake(fnSuccessfulCreate);
+                        collection.initFromBootstrap(fnCallback);
+                    });
+                    
+                    waitsFor(function () {
+                        return cnt === 4;
+                    }, "polling failed" , 5000);
+
+                    runs(function () {
+                        expect(collection._bootstrapClient.getContent.calls.length).toEqual(4);
+                        expect(collection._createClient.createCollection.calls.length).toEqual(1);
+                    });
+                });
+
+                it('retries to init from bootstrap when collection has a conflict', function () {
+                    runs(function () {
+                        cnt = 0;
+                        spyOn(collection._bootstrapClient, "getContent").andCallFake(contentStub);
+                        spyOn(collection._createClient, "createCollection").andCallFake(fnCreateConflict);
+                        collection.initFromBootstrap(fnCallback);
+                    });
+                    
+                    waitsFor(function () {
+                        return cnt === 4;
+                    }, "polling failed" , 5000);
+
+                    runs(function () {
+                        expect(collection._bootstrapClient.getContent.calls.length).toEqual(4);
+                        expect(collection._createClient.createCollection.calls.length).toEqual(1);
+                    });
+                });
+
+                it('does not retry when a collection fails to create', function () {
+                    cnt = 0;
+                    spyOn(collection._bootstrapClient, "getContent").andCallFake(contentStub);
+                    spyOn(collection._createClient, "createCollection").andCallFake(fnFailedCreate);
                     collection.initFromBootstrap(fnCallback);
 
                     expect(collection._bootstrapClient.getContent.calls.length).toEqual(1);
