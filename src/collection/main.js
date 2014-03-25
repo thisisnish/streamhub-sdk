@@ -35,6 +35,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this._collectionMeta = opts.collectionMeta;
         this._signed = opts.signed;
         this._autoCreate = opts.autoCreate || true;
+        this._maxInitAttempts = opts.maxInitAttempts || 4;
         this._replies = opts.replies || false;
 
         this._bootstrapClient = opts.bootstrapClient || new LivefyreBootstrapClient();
@@ -196,18 +197,57 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             self._isInitingFromBootstrap = false;
             if (err && err.toLowerCase() === 'not found' && this._autoCreate) {
                 this._createCollection(function (err) {
-                    if (!err) {
-                        self.initFromBootstrap();
+                    // Should always poll for init file to be created. If the
+                    // collection successfullly created this time (202), then
+                    // we should wait. It it's a conflict (409), then it was
+                    // already created and we should wait.
+                    if (!err || err.toLowerCase() === 'conflict') {
+                        self._pollForBootstrapLoaded();
                     }
                 });
                 return;
             }
-            if (!initData) {
-                throw 'Fatal collection connection error';
+            this._handleInitComplete(err, initData);
+        });
+    };
+
+
+    /**
+     * Process the bootstrap init complete state. When the init file is fetched,
+     * this processes and emits an event.
+     * @param {string} err The error string.
+     * @param {Object=} initData The data from the init file.
+     * @private
+     */
+    Collection.prototype._handleInitComplete = function (err, initData) {
+        if (!initData) {
+            throw 'Fatal collection connection error';
+        }
+        var collectionSettings = initData.collectionSettings;
+        this.id = collectionSettings && collectionSettings.collectionId;
+        this.emit('_initFromBootstrap', err, initData);
+    };
+
+
+    /**
+     * Poll the bootstrap init file to wait for it to be created. If it has
+     * reached the max attempts, don't keep doing it.
+     * @param {number=} opt_attempt Optional number of attempts made to fetch.
+     */
+    Collection.prototype._pollForBootstrapLoaded = function (opt_attempt) {
+        var attempt = opt_attempt || 1;
+        var self = this;
+        this._getBootstrapInit(function (err, initData) {
+            if (err && err.toLowerCase() === 'not found') {
+                attempt++;
+                if (attempt < this._maxInitAttempts) {
+                    setTimeout(function () {
+                        self._pollForBootstrapLoaded(attempt);
+                    }, attempt * 1000);
+                }
+                return;
             }
-            var collectionSettings = initData.collectionSettings;
-            self.id = collectionSettings && collectionSettings.collectionId;
-            self.emit('_initFromBootstrap', err, initData);
+            this._handleInitComplete(err, initData);
         });
     };
 
