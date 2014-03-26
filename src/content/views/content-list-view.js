@@ -19,9 +19,9 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
      *
-     * @param opts {Object} A set of options to config the view with
-     * @param opts.el {HTMLElement} The element in which to render the streamed content
-     * @param opts.animate {Boolean} Whether to add animations when content is
+     * @param [opts] {Object} A set of options to config the view with
+     * @param [opts.el] {HTMLElement} The element in which to render the streamed content
+     * @param [opts.animate] {Boolean} Whether to add animations when content is
      *                               rendered in the ContentListView
      * @exports streamhub-sdk/views/list-view
      * @constructor

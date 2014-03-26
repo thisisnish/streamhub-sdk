@@ -10,7 +10,6 @@ function ($, ListView, View) {
             var list;
             beforeEach(function () {
                 sandbox();
-                spyOn(ListView.prototype, 'render');
                 list = new ListView({el: $('#sandbox')[0]});
             });
             
@@ -20,6 +19,8 @@ function ($, ListView, View) {
             });
 
             it('it calls #render() in the constructor', function () {
+                spyOn(ListView.prototype, 'render').andCallThrough();
+                list = new ListView({el: $('#sandbox')[0]});
                 expect(ListView.prototype.render).toHaveBeenCalled();
             });
             
@@ -35,6 +36,14 @@ function ($, ListView, View) {
                 
                 it('assigns opts.comparator to this.comparator', function () {
                     expect(list.comparator).toBe(opts.comparator);
+                });
+
+                it('does not call #render when opts.autoRender == false', function () {
+                    list.destroy();
+                    spyOn(ListView.prototype, 'render').andCallThrough();
+                    opts.autoRender = false;
+                    list = new ListView(opts);
+                    expect(ListView.prototype.render).not.toHaveBeenCalled();
                 });
             });
             
@@ -119,35 +128,5 @@ function ($, ListView, View) {
                 });
             });
         });
-
-        describe('when rendering', function () {
-            var list;
-            beforeEach(function () {
-                sandbox();
-                list = new ListView({ el: $('#sandbox')[0] });
-                list._rendered = false;
-            });
-            
-            afterEach(function () {
-                list.destroy();
-                list = null;
-            });
-
-            it('sets ._rendered to true', function () {
-                spyOn(View.prototype, 'render').andCallThrough();
-                list.render();
-                expect(View.prototype.render).toHaveBeenCalled();
-                expect(list._rendered).toBe(true);
-            });
-
-            it('returns when ._rendered is true', function () {
-                list.render();
-                spyOn(View.prototype, 'render').andCallThrough();
-                list.render();
-                expect(View.prototype.render).not.toHaveBeenCalled();
-                expect(list._rendered).toBe(true);
-            });
-        });
-
     });
 });

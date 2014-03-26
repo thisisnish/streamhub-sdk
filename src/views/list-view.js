@@ -22,14 +22,15 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * @param [opts] {Object} A set of options to config the view with
      * @param [opts.el] {HTMLElement} The element in which to render the streamed content
      * @param [opts.comparator] {function(view, view): number}
+     * @param [opts.autoRender] Whether to call #render in the constructor
      * @exports streamhub-sdk/views/list-view
      * @constructor
      */
     var ListView = function(opts) {
         opts = opts || {};
+        opts.autoRender = opts.autoRender === undefined ? true : opts.autoRender;
 
         this.views = [];
-        this._rendered = false;
 
         View.call(this, opts);
         Writable.call(this, opts);
@@ -45,9 +46,10 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         // in the public API to instantiate a ListView and have it be visible.
         // Removing this to require an explicit invocation would alter
         // the public API siginificantly, so for now render stays in the
-        // constructor. The #_rendered property guards against
-        // unexpected calls to render.
-        this.render();
+        // constructor. To avoid this behavior, opts.autoRender == false.
+        if (opts.autoRender) {
+            this.render();
+        }
 
         this._pipeMore();
     };
@@ -100,17 +102,11 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * Render the ListView in its .el, and call .setElement on any subviews
      */
     ListView.prototype.render = function () {
-        if (this._rendered) {
-            return;
-        }
-
         View.prototype.render.call(this);
         this.$listEl = this.$el.find(this.listElSelector);
 
         this.showMoreButton.setElement(this.$el.find(this.showMoreElSelector));
         this.showMoreButton.render();
-
-        this._rendered = true;
     };
 
 
@@ -356,7 +352,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
     ListView.prototype.destroy = function () {
         View.prototype.destroy.call(this);
         this.views = null;
-        this._rendered = false;
     };
 
     return ListView;
