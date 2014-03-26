@@ -29,6 +29,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         opts = opts || {};
 
         this.views = [];
+        this._rendered = false;
 
         View.call(this, opts);
         Writable.call(this, opts);
@@ -38,6 +39,15 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         this.more = opts.more || this._createMoreStream(opts);
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
+
+        //TODO(ryanc): This is out of convention to call #render
+        // in the constructor. However it is convenient/intuitive
+        // in the public API to instantiate a ListView and have it be visible.
+        // Removing this to require an explicit invocation would alter
+        // the public API siginificantly, so for now render stays in the
+        // constructor. The #_rendered property guards against
+        // unexpected calls to render.
+        this.render();
 
         this._pipeMore();
     };
@@ -90,11 +100,17 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * Render the ListView in its .el, and call .setElement on any subviews
      */
     ListView.prototype.render = function () {
+        if (this._rendered) {
+            return;
+        }
+
         View.prototype.render.call(this);
         this.$listEl = this.$el.find(this.listElSelector);
 
         this.showMoreButton.setElement(this.$el.find(this.showMoreElSelector));
         this.showMoreButton.render();
+
+        this._rendered = true;
     };
 
 
@@ -340,6 +356,7 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
     ListView.prototype.destroy = function () {
         View.prototype.destroy.call(this);
         this.views = null;
+        this._rendered = false;
     };
 
     return ListView;

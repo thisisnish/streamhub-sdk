@@ -5,17 +5,22 @@ define([
 function ($, ListView, View) {
     'use strict';
 
-    describe('List-View', function () {
+    describe('ListView', function () {
         describe('when constructed', function () {
             var list;
             beforeEach(function () {
                 sandbox();
+                spyOn(ListView.prototype, 'render');
                 list = new ListView({el: $('#sandbox')[0]});
             });
             
             afterEach(function () {
                 list.destroy();
                 list = null;
+            });
+
+            it('it calls #render() in the constructor', function () {
+                expect(ListView.prototype.render).toHaveBeenCalled();
             });
             
             describe('with opts', function () {
@@ -114,5 +119,35 @@ function ($, ListView, View) {
                 });
             });
         });
+
+        describe('when rendering', function () {
+            var list;
+            beforeEach(function () {
+                sandbox();
+                list = new ListView({ el: $('#sandbox')[0] });
+                list._rendered = false;
+            });
+            
+            afterEach(function () {
+                list.destroy();
+                list = null;
+            });
+
+            it('sets ._rendered to true', function () {
+                spyOn(View.prototype, 'render').andCallThrough();
+                list.render();
+                expect(View.prototype.render).toHaveBeenCalled();
+                expect(list._rendered).toBe(true);
+            });
+
+            it('returns when ._rendered is true', function () {
+                list.render();
+                spyOn(View.prototype, 'render').andCallThrough();
+                list.render();
+                expect(View.prototype.render).not.toHaveBeenCalled();
+                expect(list._rendered).toBe(true);
+            });
+        });
+
     });
 });
