@@ -113,9 +113,10 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
             log('already added', content);
             return;
         }
-        
-        var contentView = content.el ? content : this.createContentView(content);
+
         //duck type for ContentView
+        var contentView = content.el ? content : this.createContentView(content);
+
         if (this._bound && ! this._hasVisibleVacancy()) {
             var viewToRemove = this.views[this.views.length-1];
             
@@ -139,11 +140,13 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
 
         newContentViewIndex = forcedIndex || this.views.indexOf(contentView);
 
-        var $containerEl = $('<div class="'+this.contentContainerClassName+'"></div>');
-        if (this._animate) {
-            $containerEl.addClass(this.insertingClassName);
+        if (! contentView.$el.parent('.'+this.contentContainerClassName).length) {
+            var $containerEl = $('<div class="'+this.contentContainerClassName+'"></div>');
+            if (this._animate) {
+                $containerEl.addClass(this.insertingClassName);
+            }
+            contentView.$el.wrap($containerEl);
         }
-        contentView.$el.wrap($containerEl);
         $wrappedEl = contentView.$el.parent();
 
         if (newContentViewIndex === 0) {
