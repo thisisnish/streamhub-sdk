@@ -39,8 +39,6 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
 
-        this.render();
-
         this._pipeMore();
     };
 
