@@ -22,11 +22,13 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
      * @param [opts] {Object} A set of options to config the view with
      * @param [opts.el] {HTMLElement} The element in which to render the streamed content
      * @param [opts.comparator] {function(view, view): number}
+     * @param [opts.autoRender] Whether to call #render in the constructor
      * @exports streamhub-sdk/views/list-view
      * @constructor
      */
     var ListView = function(opts) {
         opts = opts || {};
+        opts.autoRender = opts.autoRender === undefined ? true : opts.autoRender;
 
         this.views = [];
 
@@ -39,7 +41,15 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
 
-        this.render();
+        //TODO(ryanc): This is out of convention to call #render
+        // in the constructor. However it is convenient/intuitive
+        // in the public API to instantiate a ListView and have it be visible.
+        // Removing this to require an explicit invocation would alter
+        // the public API siginificantly, so for now render stays in the
+        // constructor. To avoid this behavior, opts.autoRender == false.
+        if (opts.autoRender) {
+            this.render();
+        }
 
         this._pipeMore();
     };
@@ -97,6 +107,9 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
 
         this.showMoreButton.setElement(this.$el.find(this.showMoreElSelector));
         this.showMoreButton.render();
+        if (this.showMoreButton.isHolding()) {
+            this.showMoreButton.$el.show();
+        }
     };
 
 
@@ -337,6 +350,17 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
                 self.add(content);
             }
         });
+    };
+
+    /**
+     * Detaches list item view elements.
+     * Removes references to list item views.
+     */
+    ListView.prototype.clear = function () {
+        for (var i=0; i < this.views.length; i++) {
+            this.views[i].detach();
+        }
+        this.views = [];
     };
 
     ListView.prototype.destroy = function () {

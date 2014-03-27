@@ -22,8 +22,9 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, 
      * @constructor
      */
     var OembedView = function(opts) {
-        View.call(this);
         this.oembed = opts.oembed || {};
+        View.call(this, opts);
+
         if (!this.oembed) {
             return;
         }

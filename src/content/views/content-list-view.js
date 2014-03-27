@@ -19,8 +19,10 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
      *
-     * @param opts {Object} A set of options to config the view with
-     * @param opts.el {HTMLElement} The element in which to render the streamed content
+     * @param [opts] {Object} A set of options to config the view with
+     * @param [opts.el] {HTMLElement} The element in which to render the streamed content
+     * @param [opts.animate] {Boolean} Whether to add animations when content is
+     *                               rendered in the ContentListView
      * @exports streamhub-sdk/views/list-view
      * @constructor
      */
@@ -41,6 +43,7 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
         this._stash = opts.stash || this.more;
         this._maxVisibleItems = opts.maxVisibleItems || 50;
         this._bound = true;
+        this._animate = opts.animate === undefined ? true : opts.animate;
 
         this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
     };
@@ -112,9 +115,10 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
             log('already added', content);
             return;
         }
-        
-        var contentView = content.el ? content : this.createContentView(content);
+
         //duck type for ContentView
+        var contentView = content.el ? content : this.createContentView(content);
+
         if (this._bound && ! this._hasVisibleVacancy()) {
             var viewToRemove = this.views[this.views.length-1];
             
@@ -138,8 +142,13 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
 
         newContentViewIndex = forcedIndex || this.views.indexOf(contentView);
 
-        var $containerEl = $('<div class="'+this.contentContainerClassName+' '+this.insertingClassName+'"></div>');
-        contentView.$el.wrap($containerEl);
+        if (! contentView.$el.parent('.'+this.contentContainerClassName).length) {
+            var $containerEl = $('<div class="'+this.contentContainerClassName+'"></div>');
+            if (this._animate) {
+                $containerEl.addClass(this.insertingClassName);
+            }
+            contentView.$el.wrap($containerEl);
+        }
         $wrappedEl = contentView.$el.parent();
 
         if (newContentViewIndex === 0) {
@@ -155,7 +164,10 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
         } else {
             // Find it's previous view and insert new view after
             $previousEl = this.views[newContentViewIndex - 1].$el;
-            $wrappedEl.removeClass(this.insertingClassName).addClass(this.hiddenClassName);
+            $wrappedEl.removeClass(this.insertingClassName)
+            if (this._animate) {
+                $wrappedEl.addClass(this.hiddenClassName);
+            }
             $wrappedEl.insertAfter($previousEl.parent('.'+this.contentContainerClassName));
 
             // Wait for the element to be rendered, before remvoing class which

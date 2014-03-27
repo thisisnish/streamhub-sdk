@@ -5,7 +5,7 @@ define([
 function ($, ListView, View) {
     'use strict';
 
-    describe('List-View', function () {
+    describe('ListView', function () {
         describe('when constructed', function () {
             var list;
             beforeEach(function () {
@@ -16,6 +16,12 @@ function ($, ListView, View) {
             afterEach(function () {
                 list.destroy();
                 list = null;
+            });
+
+            it('it calls #render() in the constructor', function () {
+                spyOn(ListView.prototype, 'render').andCallThrough();
+                list = new ListView({el: $('#sandbox')[0]});
+                expect(ListView.prototype.render).toHaveBeenCalled();
             });
             
             describe('with opts', function () {
@@ -30,6 +36,14 @@ function ($, ListView, View) {
                 
                 it('assigns opts.comparator to this.comparator', function () {
                     expect(list.comparator).toBe(opts.comparator);
+                });
+
+                it('does not call #render when opts.autoRender == false', function () {
+                    list.destroy();
+                    spyOn(ListView.prototype, 'render').andCallThrough();
+                    opts.autoRender = false;
+                    list = new ListView(opts);
+                    expect(ListView.prototype.render).not.toHaveBeenCalled();
                 });
             });
             
