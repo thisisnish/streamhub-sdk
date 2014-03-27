@@ -107,6 +107,9 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
 
         this.showMoreButton.setElement(this.$el.find(this.showMoreElSelector));
         this.showMoreButton.render();
+        if (this.showMoreButton.isHolding()) {
+            this.showMoreButton.$el.show();
+        }
     };
 
 
@@ -347,6 +350,17 @@ debug, Writable, ContentView, More, ShowMoreButton, ListViewTemplate) {
                 self.add(content);
             }
         });
+    };
+
+    /**
+     * Detaches list item view elements.
+     * Removes references to list item views.
+     */
+    ListView.prototype.clear = function () {
+        for (var i=0; i < this.views.length; i++) {
+            this.views[i].detach();
+        }
+        this.views = [];
     };
 
     ListView.prototype.destroy = function () {

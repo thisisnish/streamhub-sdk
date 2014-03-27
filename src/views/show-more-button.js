@@ -22,6 +22,7 @@ function (inherits, View) {
         // Hide the button on click. When more content is held and can be shown,
         // It will reappear
         'click': function () {
+            this._holding = false;
             this.$el.hide();
             this.$el.trigger('showMore.hub');
         }
@@ -54,8 +55,14 @@ function (inherits, View) {
 
         // When more content is held to be shown, show the button
         this._more.on('hold', function () {
+            self._holding = true;
             self.$el.show();
         });
+    };
+
+
+    ShowMoreButton.prototype.isHolding = function () {
+        return this._holding;
     };
 
 
