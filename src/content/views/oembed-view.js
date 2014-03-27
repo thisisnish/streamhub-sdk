@@ -23,7 +23,7 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, 
      */
     var OembedView = function(opts) {
         this.oembed = opts.oembed || {};
-        View.call(this);
+        View.call(this, opts);
 
         if (!this.oembed) {
             return;
