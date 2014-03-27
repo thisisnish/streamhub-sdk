@@ -36,7 +36,7 @@ function ($, View, AttachmentListView, OembedView, TiledAttachmentListTemplate, 
     TiledAttachmentListView.prototype.events = AttachmentListView.prototype.events.extended({
         'click': function (e, opts) {
             opts = opts || {};
-            $(e.target).trigger('focusContent.hub', { content: this.content, attachmentToFocus: opts.oembed });
+            this.$el.trigger('focusContent.hub', { content: this.content, attachmentToFocus: opts.oembed });
         }
     });
 
