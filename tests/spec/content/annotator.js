@@ -17,9 +17,13 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
         var annotator = new Annotator();
         var featuredmessage = { "featuredmessage": { "rel_collectionId": "10739960", "value": 1381771896 }};
         var moderatorTrue = {"moderator": true};
-        var lfContent = new LivefyreContent({});
+        var lfContent;
         var vote = {"vote": [{"collectionId": "2486003", "value": 1, "author": "default@livefyre.com"}]};
         var downVote = {"vote": [{"collectionId": "2486003", "value": 2, "author": "default@livefyre.com"}]};
+
+        beforeEach(function () {
+            lfContent = new LivefyreContent({});
+        });
 
         describe('Annotator#annotate', function () {
             it('can add featuredmessage annotations', function () {
@@ -83,11 +87,32 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
                 expect(lfContent.votes.list.length).toEqual(1);
             });
 
+            it('only adds a vote annotation if a vote for the same user does not already exist', function () {
+                annotator.annotate(lfContent, {
+                    'added': vote
+                });
+
+                expect(lfContent.votes.helpfulness).toEqual(1);
+                expect(lfContent.votes.downvotes).toEqual(0);
+                expect(lfContent.votes.list.length).toEqual(1);
+
+                annotator.annotate(lfContent, {
+                    'added': vote
+                });
+
+                expect(lfContent.votes.helpfulness).toEqual(1);
+                expect(lfContent.votes.downvotes).toEqual(0);
+                expect(lfContent.votes.list.length).toEqual(1);
+            });
+
             it('can update vote annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': vote
+                });
+
                 annotator.annotate(lfContent, {
                     'updated': downVote
                 });
-
 
                 expect(lfContent.votes.helpfulness).toEqual(-1);
                 expect(lfContent.votes.downvotes).toEqual(1);
@@ -95,6 +120,10 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
             });
 
             it('can remove vote annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': vote
+                });
+
                 annotator.annotate(lfContent, {
                     'removed': downVote
                 });
