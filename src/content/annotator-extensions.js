@@ -56,6 +56,9 @@ define([], function () {
 
         for (var i=0, len=annotation.length; i<len; i++) {
             vote = annotation[i];
+            if (indexOfVote(list, vote) > -1) {
+                continue;
+            }
             list.push(vote);
             scoreVote(votes, vote);
         }
