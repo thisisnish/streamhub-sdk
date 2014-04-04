@@ -87,8 +87,22 @@ define([
 
     Annotator.prototype.updated.featuredmessage = Annotator.prototype.added.featuredmessage;
 
-    Annotator.prototype.removed.featuredmessage = function (changeSet, annotation) {
+    Annotator.prototype.removed.featuredmessage = function (changeSet, annotation, content) {
         changeSet.featured = false;
+    };
+
+    // sort order
+
+    Annotator.prototype.added.sortOrder = function (changeSet, annotation) {
+        changeSet.sortOrder = annotation;
+    };
+
+    Annotator.prototype.updated.sortOrder = function (changeSet, annotation, content) {
+        changeSet.sortOrder = annotation;
+    };
+
+    Annotator.prototype.removed.sortOrder = function (changeSet, annotation, content) {
+        changeSet.sortOrder = null;
     };
 
     // moderator
