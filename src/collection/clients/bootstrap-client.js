@@ -12,6 +12,7 @@ function(LivefyreHttpClient, inherits, base64) {
     var LivefyreBootstrapClient = function (opts) {
         opts = opts || {};
         opts.serviceName = 'bootstrap';
+        this._version = opts.version;
         LivefyreHttpClient.call(this, opts);
     };
 
@@ -28,6 +29,8 @@ function(LivefyreHttpClient, inherits, base64) {
      * @param [opts.page] {string} Livefyre page name or number to fetch from bootstrap
      *     (default "init")
      * @param [opts.environment] {string} Optional livefyre environment to use dev/prod environment
+     * @param [opts.version] {string} Version string to include in Bootstrap API
+     *     resource paths. By default, one will not be added, which usually means '3.0'
      * @param callback {function} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is "function(error, data)".
      */
@@ -36,10 +39,10 @@ function(LivefyreHttpClient, inherits, base64) {
         callback = callback || function() {};
         var environment = opts.environment = opts.environment || 'livefyre.com';
         var includeEnvironment = (environment !== 'livefyre.com') && (environment !== 'fyre');
-
         var url = [
             this._getUrlBase(opts),
             "/bs3/",
+            this._version ? this._version + '/' : '',
             includeEnvironment ? opts.environment + "/" : "",
             opts.network,
             "/",
