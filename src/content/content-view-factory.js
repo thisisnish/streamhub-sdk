@@ -11,7 +11,8 @@ define([
     'streamhub-sdk/content/views/twitter-content-view',
     'streamhub-sdk/content/views/facebook-content-view',
     'streamhub-sdk/content/views/instagram-content-view',
-    'streamhub-sdk/content/views/gallery-on-focus-view'
+    'streamhub-sdk/content/views/gallery-on-focus-view',
+    'streamhub-sdk/ui/command'
 ], function(
     Content,
     LivefyreContent,
@@ -25,7 +26,8 @@ define([
     TwitterContentView,
     FacebookContentView,
     InstagramContentView,
-    GalleryOnFocusView
+    GalleryOnFocusView,
+    Command
 ) {
     'use strict';
 
@@ -61,15 +63,23 @@ define([
      * Creates a content view from the given piece of content, by looking in this view's
      * content registry for the supplied content type.
      * @param content {Content} A content object to create the corresponding view for.
+     * @param opts {object} Options for displaying specific controls on the content view.
      * @returns {ContentView} A new content view object for the given piece of content.
      */
-    ContentViewFactory.prototype.createContentView = function(content) {
+    ContentViewFactory.prototype.createContentView = function(content, opts) {
+        opts = opts || {};
         var ContentViewType = this._getViewTypeForContent(content);
         var attachmentsView = this._createAttachmentsView(content);
-        var contentView = new ContentViewType({ content : content, attachmentsView: attachmentsView });
+        var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
+        var contentView = new ContentViewType({
+            content : content,
+            attachmentsView: attachmentsView,
+            shareCommand: shareCommand
+        });
 
         return contentView;
     };
+
 
 
     ContentViewFactory.prototype._getViewTypeForContent = function (content) {
@@ -89,6 +99,27 @@ define([
         }
     };
 
+    /**
+     * Given content and a sharer, create a Command to pass as
+     * opts.shareCommand to the ContentView
+     */
+    ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
+        if ( ! sharer) {
+            return;
+        }
+        var shareCommand = new Command(function () {
+            sharer.share(content);
+        });
+        shareCommand.canExecute = function () {
+            if (typeof sharer.canShare !== 'function') {
+                return true;
+            }
+            return sharer.canShare(content);
+        }
+        // TODO: When the sharer's delegate changes and it didn't have one before,
+        // then the shareCommand should emit change:canExecute
+        return shareCommand;
+    };
 
     ContentViewFactory.prototype._createAttachmentsView = function (content) {
         var tiledAttachmentListView = new TiledAttachmentListView();

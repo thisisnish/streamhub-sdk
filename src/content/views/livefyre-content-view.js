@@ -19,6 +19,8 @@ define([
      * @param opts {Object} The set of options to configure this view with.
      * @param opts.content {Content} The content object to use when rendering. 
      * @param opts.el {?HTMLElement} The element to render this object in.
+     * @param opts.shareCommand {streamhub-sdk/ui/command} Command to use
+     *     for share button. If not present or cannot execute, no share button
      * @fires LivefyreContentView#removeContentView.hub
      * @exports streamhub-sdk/content/views/content-view
      * @constructor
@@ -31,6 +33,7 @@ define([
             'right': []
         };
         this._rendered = false;
+        this._setShareCommand(opts.shareCommand);
 
         ContentView.call(this, opts);
     };
@@ -52,10 +55,6 @@ define([
         this.$el.find(this.footerLeftSelector).empty();
         this.$el.find(this.footerRightSelector).empty();
 
-        if (! (this.content instanceof LivefyreContent)) {
-            return;
-        }
-
         //TODO(ryanc): Wait until we have auth
         // to add like button
         //var likeButton = this._createLikeButton();
@@ -66,24 +65,62 @@ define([
         //    self.$el.trigger('contentReply.hub');
         //});
         //var replyButton = new HubButton(replyCommand, {
-        //    className: 'hub-btn-link hub-content-reply',
+        //    className: 'btn-link content-reply',
         //    label: 'Reply'
         //});
         //this.addButton(replyButton);
 
-        //TODO(ryanc): Wait until we have likes finished first
-        //var shareButton = new HubButton(this._handleShare.bind(this), {
-        //    className: 'hub-btn-link hub-content-share',
-        //    label: 'Share'
-        //});
-        //this.addButton(shareButton);
+        this._renderShareButton();
+    };
+
+    /**
+     * Render a Share Button
+     * @protected
+     */
+    LivefyreContentView.prototype._renderShareButton = function () {
+        var shareButton = this._createShareButton();
+        if ( ! shareButton) {
+            return;
+        }
+        this.addButton(shareButton);
+    };
+
+    /**
+     * Create a Share Button
+     * @protected
+     */
+    LivefyreContentView.prototype._createShareButton = function () {
+        var shareCommand = this._shareCommand;
+        if ( ! (shareCommand && shareCommand.canExecute())) {
+            return;
+        }
+        var shareButton = new HubButton(shareCommand, {
+            className: 'btn-link content-share',
+            label: 'Share'
+        });
+        return shareButton;
+    };
+
+    /**
+     * Set the share command
+     * This should only be called once.
+     * @private
+     */
+    LivefyreContentView.prototype._setShareCommand = function (shareCommand) {
+        this._shareCommand = shareCommand;
+        if ( ! shareCommand) {
+            return;
+        }
+        // If canExecute changes, re-render buttons because now maybe the share
+        // button should appear
+        shareCommand.on('change:canExecute', this._renderButtons.bind(this));
     };
 
     LivefyreContentView.prototype.addButton = function (button, opts) {
         opts = opts || {};
         var footerControls;
         var footerSide;
-        if (opts.side == 'right') {
+        if (opts.side === 'right') {
             footerControls = this._controls.right;
             footerSide = this.$el.find(this.footerRightSelector);
         } else {

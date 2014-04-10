@@ -15,7 +15,7 @@
     position: relative;
 	background-color: white;
 	margin-bottom: 10px;
-	padding-bottom: 13px;
+	padding-bottom: 15px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 14px;
 	border-radius: 3px;
@@ -139,8 +139,18 @@
             }
         }
 
+        .content-footer-left {
+            .hub-btn-link:first-child {
+                margin-left: -8px;
+            }
+        }
+
         .content-footer-right {
             float: right;
+
+            .hub-btn-link:first-child {
+                margin-right: -5px;
+            }
         }
 
         .hub-btn {
@@ -412,6 +422,10 @@
         .content-source-logo {
             background-position: -24px 0;
         }
+
+        .hub-content-action:first-child {
+            margin-left: -10px;
+        }
         
         .hub-content-action-favorite {
             width: 18px;
@@ -419,7 +433,6 @@
             background-position: center;
             background-repeat: no-repeat;
             background-image: data-uri('../images/favorite.png');
-            margin-top: 3px;
             &:hover {
                 background-image: data-uri('../images/favorite_hover.png');
             }
@@ -430,7 +443,6 @@
         .hub-content-action-reply {
             width: 23px;
             height: 16px;
-            margin-top: 4px;
             background-position: center;
             background-repeat: no-repeat;
             background-image: data-uri('../images/reply.png');
@@ -444,7 +456,6 @@
         .hub-content-action-retweet {
             width: 27px;
             height: 14px;
-            margin-top: 4px;
             background-position: center;
             background-repeat: no-repeat;
             background-image: data-uri('../images/retweet.png');
