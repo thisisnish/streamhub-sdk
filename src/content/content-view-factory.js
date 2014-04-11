@@ -91,11 +91,9 @@ define([
         }
         var likeCommand = new Command(function () {
             if (! content.isLiked()) {
-                liker.like(content, function () {
-                });
+                liker.like(content);
             } else {
-                liker.unlike(content, function () {
-                });
+                liker.unlike(content);
             }
         });
 
