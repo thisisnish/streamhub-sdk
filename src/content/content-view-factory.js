@@ -92,7 +92,7 @@ define([
             liker = new Liker();
         }
         var likeCommand = new Command(function () {
-            if (! content.isLiked()) {
+            if (! content.isLiked(auth.get('livefyre').get('id'))) {
                 liker.like(content);
             } else {
                 liker.unlike(content);
