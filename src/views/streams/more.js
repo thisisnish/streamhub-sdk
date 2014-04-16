@@ -38,7 +38,7 @@ function (inherits, Duplex, debug) {
     More.prototype.setGoal = function (newGoal) {
         this._goal = newGoal;
 
-        if (this._goal >= 0) {
+        if (this._goal > 0) {
             this._fetchAndPush();
         }
     };
@@ -59,6 +59,7 @@ function (inherits, Duplex, debug) {
      */
     More.prototype.stack = function (obj) {
         this._stack.push(obj);
+        this.emit('hold');
     };
 
 
