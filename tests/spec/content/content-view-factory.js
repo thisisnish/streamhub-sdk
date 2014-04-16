@@ -4,9 +4,10 @@ define([
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/content/content-view-factory',
     'streamhub-sdk/content',
-    'streamhub-sdk/content/types/oembed'],
+    'streamhub-sdk/content/types/oembed',
+    'streamhub-sdk/sharer'],
 function($, LivefyreContent, ContentView, ContentViewFactory, Content,
-Oembed) {
+Oembed, sharer) {
     'use strict';
 
     describe('ContentViewFactory', function() {
@@ -44,8 +45,18 @@ Oembed) {
         });
 
         describe('when passed opts.sharer', function () {
-            it('creates a content with a ._shareCommand', function () {
-                var sharer = { share: function () {} };
+
+            beforeEach(function () {
+                // Set a share delegate
+                sharer.delegate(function () {});
+            });
+
+            afterEach(function () {
+                sharer._delegate = undefined;
+            });
+
+            it('creates a content with a ._commands.share', function () {
+
                 var content = new LivefyreContent();
                 var contentViewFactory = new ContentViewFactory();
                 spyOn(contentViewFactory, '_createShareCommand').andCallThrough();
@@ -53,7 +64,7 @@ Oembed) {
                     sharer: sharer
                 });
                 expect(contentViewFactory._createShareCommand).toHaveBeenCalledWith(content, sharer);
-                expect(contentView._shareCommand).toBeTruthy();
+                expect(contentView._commands.share).toBeTruthy();
             });
         });
 

@@ -1,15 +1,19 @@
 define([
     'streamhub-sdk/jquery',
-    'streamhub-sdk/auth',
+    'auth',
     'streamhub-sdk/content/views/content-view',
     'streamhub-sdk/content/types/livefyre-content',
+    'streamhub-sdk/content/types/livefyre-opine',
+    'streamhub-sdk/ui/auth-required-command',
+    'streamhub-sdk/ui/command',
     'streamhub-sdk/ui/hub-button',
-    'streamhub-sdk/ui/hub-toggle-button',
+    'streamhub-sdk/ui/hub-like-button',
+    'streamhub-sdk/collection/liker',
     'hgn!streamhub-sdk/content/templates/content',
     'streamhub-sdk/util',
     'inherits',
     'streamhub-sdk/debug'
-], function ($, Auth, ContentView, LivefyreContent, HubButton, HubToggleButton, ContentTemplate, util, inherits, debug) {
+], function ($, auth, ContentView, LivefyreContent, LivefyreOpine, AuthRequiredCommand, Command, HubButton, HubLikeButton, Liker, ContentTemplate, util, inherits, debug) {
     'use strict';
 
     /**
@@ -28,18 +32,43 @@ define([
     var LivefyreContentView = function LivefyreContentView (opts) {
         opts = opts || {};
 
+        this._rendered = false;
         this._controls = {
             'left': [],
             'right': []
         };
-        this._rendered = false;
-        this._setShareCommand(opts.shareCommand);
+        this._commands = {};
+        this._setCommand({
+            like: opts.likeCommand,
+            share: opts.shareCommand
+        });
 
         ContentView.call(this, opts);
     };
     inherits(LivefyreContentView, ContentView);
 
     LivefyreContentView.prototype.footerLeftSelector = '.content-footer-left';
+    LivefyreContentView.prototype.footerRightSelector = '.content-footer-right';
+
+
+    /**
+     * Set the a command for a buton
+     * This should only be called once.
+     * @private
+     */
+    LivefyreContentView.prototype._setCommand = function (cmds) {
+        for (var name in cmds) {
+            if (cmds.hasOwnProperty(name)) {
+                if (! cmds[name]) {
+                    continue;
+                }
+                this._commands[name] = cmds[name];
+
+                // If canExecute changes, re-render buttons because now maybe the button should appear
+                cmds[name].on('change:canExecute', this._renderButtons.bind(this));
+            }
+        }
+    };
 
     /**
      * Render the content inside of the LivefyreContentView's element.
@@ -52,13 +81,12 @@ define([
     };
 
     LivefyreContentView.prototype._renderButtons = function () {
+        if (! (this.content instanceof LivefyreContent)) {
+            return;
+        }
+
         this.$el.find(this.footerLeftSelector).empty();
         this.$el.find(this.footerRightSelector).empty();
-
-        //TODO(ryanc): Wait until we have auth
-        // to add like button
-        //var likeButton = this._createLikeButton();
-        //this.addButton(likeButton);
 
         //TODO(ryanc): Wait until we have replies on SDK
         //var replyCommand = new Command(function () {
@@ -70,7 +98,33 @@ define([
         //});
         //this.addButton(replyButton);
 
+        this._renderLikeButton();
         this._renderShareButton();
+    };
+
+    LivefyreContentView.prototype._updateLikeCount = function () {
+        this._likeButton.updateLabel(this.content.getLikeCount().toString());
+    };
+
+    /**
+     * Create a Button to be used for Liking functionality
+     * @protected
+     */
+    LivefyreContentView.prototype._createLikeButton = function () {
+        if (! auth.hasDelegate('login')) {
+            return; // Don't render a button when not logged in
+        }
+        return new HubLikeButton(this._commands.like, {
+            content: this.content
+        });
+    };
+
+    LivefyreContentView.prototype._renderLikeButton = function () {
+        var likeButton = this._likeButton = this._createLikeButton();
+        if ( ! likeButton) {
+            return;
+        }
+        this.addButton(likeButton);
     };
 
     /**
@@ -90,7 +144,7 @@ define([
      * @protected
      */
     LivefyreContentView.prototype._createShareButton = function () {
-        var shareCommand = this._shareCommand;
+        var shareCommand = this._commands.share;
         if ( ! (shareCommand && shareCommand.canExecute())) {
             return;
         }
@@ -99,21 +153,6 @@ define([
             label: 'Share'
         });
         return shareButton;
-    };
-
-    /**
-     * Set the share command
-     * This should only be called once.
-     * @private
-     */
-    LivefyreContentView.prototype._setShareCommand = function (shareCommand) {
-        this._shareCommand = shareCommand;
-        if ( ! shareCommand) {
-            return;
-        }
-        // If canExecute changes, re-render buttons because now maybe the share
-        // button should appear
-        shareCommand.on('change:canExecute', this._renderButtons.bind(this));
     };
 
     LivefyreContentView.prototype.addButton = function (button, opts) {

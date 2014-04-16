@@ -1,4 +1,5 @@
 define([
+    'auth',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/types/livefyre-twitter-content',
@@ -12,8 +13,10 @@ define([
     'streamhub-sdk/content/views/facebook-content-view',
     'streamhub-sdk/content/views/instagram-content-view',
     'streamhub-sdk/content/views/gallery-on-focus-view',
-    'streamhub-sdk/ui/command'
+    'streamhub-sdk/ui/command',
+    'streamhub-sdk/collection/liker'
 ], function(
+    auth,
     Content,
     LivefyreContent,
     LivefyreTwitterContent,
@@ -27,7 +30,8 @@ define([
     FacebookContentView,
     InstagramContentView,
     GalleryOnFocusView,
-    Command
+    Command,
+    Liker
 ) {
     'use strict';
 
@@ -70,17 +74,38 @@ define([
         opts = opts || {};
         var ContentViewType = this._getViewTypeForContent(content);
         var attachmentsView = this._createAttachmentsView(content);
+
+        var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
         var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
         var contentView = new ContentViewType({
             content : content,
             attachmentsView: attachmentsView,
+            likeCommand: likeCommand,
             shareCommand: shareCommand
         });
 
         return contentView;
     };
 
+    ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
+        if (! liker) {
+            liker = new Liker();
+        }
+        var likeCommand = new Command(function (errback) {
+            if (! content.isLiked(auth.get('livefyre').get('id'))) {
+                liker.like(content, errback);
+            } else {
+                liker.unlike(content, errback);
+            }
+        });
 
+        var livefyreUser = auth.get('livefyre');
+        if (livefyreUser && content.author && content.author.id === livefyreUser.get('id')) {
+            likeCommand.disable();
+        }
+
+        return likeCommand;
+    };
 
     ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         for (var i=0, len=this.contentRegistry.length; i < len; i++) {
@@ -104,7 +129,7 @@ define([
      * opts.shareCommand to the ContentView
      */
     ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
-        if ( ! sharer) {
+        if ( ! sharer || ! sharer.hasDelegate()) {
             return;
         }
         var shareCommand = new Command(function () {

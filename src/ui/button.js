@@ -19,7 +19,9 @@ function Button (command, opts) {
     if (this.elClassPrefix) {
         this.elClass = distributeClassPrefix(this.elClassPrefix, this.elClass);
     }
+    this._disabled = false;
     this._label = opts.label || '';
+    this._errback = opts.errback;
 
     View.call(this, opts);
 
@@ -47,9 +49,9 @@ function distributeClassPrefix(prefix, classAttr) {
 }
 
 // DOM Event Listeners
-Button.prototype.events = {
+Button.prototype.events = View.prototype.events.extended({
     click: '_execute'
-};
+});
 
 Button.prototype.elClassPrefix = 'lf';
 Button.prototype.elClass += 'btn';
@@ -81,9 +83,9 @@ Button.prototype.getTemplateContext = function () {
  * Execute the button's command
  * @protected
  */
-Button.prototype._execute = function _execute() {
+Button.prototype._execute = function () {
     // TODO: Don't execute if not enabled
-    this._command.execute();
+    this._command.execute(this._errback);
 };
 
 /**
@@ -108,6 +110,7 @@ Button.prototype._setCommand = function (command) {
  */
 Button.prototype._setEnabled = function (isEnabled) {
     this.$el.toggleClass(this.disabledClass, ! isEnabled);
+    this._disabled = !isEnabled;
 };
 
 module.exports = Button;
