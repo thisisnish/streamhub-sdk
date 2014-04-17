@@ -1,6 +1,6 @@
 {
   "name": "streamhub-sdk",
-  "version": "2.7.5",
+  "version": "2.7.5+build.395",
   "main": [
     "./src/main.js"
   ],
