@@ -186,7 +186,7 @@ function (More, ReadableArray) {
                     more.setGoal(6);
                 });
                 waitsFor(function () {
-                    return onHold.callCount === 2;
+                    return onHold.callCount === 5;
                 });
                 runs(function () {
                     expect(things.slice(3)).toEqual(['s3', 's2', 's1', 4, 5, 6]);
