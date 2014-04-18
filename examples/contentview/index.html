@@ -51,10 +51,10 @@
             'streamhub-sdk/content/types/livefyre-facebook-content',
             'streamhub-sdk/content/types/livefyre-content',
             'streamhub-sdk/content/types/livefyre-oembed',
-            'streamhub-sdk/content/views/content-view',
-            'streamhub-sdk/content/views/facebook-content-view',
-            'streamhub-sdk/content/views/twitter-content-view'],
-        function (Content, LivefyreTweet, Oembed, LivefyreFacebookContent, LivefyreContent, LivefyreOembed, ContentView, FacebookContentView, TwitterContentView) {
+            'streamhub-sdk/content/content-view-factory'],
+        function (Content, LivefyreTweet, Oembed, LivefyreFacebookContent, LivefyreContent, LivefyreOembed, ContentViewFactory) {
+
+            var contentViewFactory = new ContentViewFactory();
 
             var mockData = {};
             mockData.livefyreContent = {"source":5,"content":{"replaces":"","parentId":"","bodyHtml":"<p>first</p>","id":"26377292","authorId":"_u1975@livefyre.com","updatedAt":1359696267,"annotations":{"moderator":true},"createdAt":1359696267},"vis":1,"type":0,"event":1359696267541618,"childContent":[],"author":{"displayName":"markdoten","tags":[],"profileUrl":"http://www.t402.livefyre.com/profile/1975/","avatar":"http://d10g4z0y9q0fip.cloudfront.net/a/1/a26fc9513108c64ecdeef1809f2815e8/50.jpg","type":1,"id":"_u1975@livefyre.com"}}
@@ -63,17 +63,13 @@
             mockData.livefyreFacebookContent = {"source": 14, "content": {"replaces": "", "parentId": "", "bodyHtml": "<div class='fyre-facebook-entry'>My house with Tamberly Kennedy jammin by the fire</div><div class='fyre-facebook-entry fyre-image'>http://www.facebook.com/photo.php?fbid=598374453508425&set=pcb.598375046841699&type=1&relevant_count=3</div>", "id": "1e2aa20a21caad80e0661f94ecc26d14", "authorId": "100000076278740@facebook.com", "updatedAt": 1366506808, "annotations": {}, "createdAt": 1366506807}, "vis": 1, "type": 0, "event": 1366506809748878, "author": {"displayName": "Ryan Boone", "tags": [], "profileUrl": "http://www.facebook.com/profile.php?id=100000076278740", "avatar": "https://graph.facebook.com/100000076278740/picture", "type": 4, "id": "100000076278740@facebook.com"}};
 
             var c1 = new LivefyreContent(mockData.livefyreContent);
-            var c1v = new ContentView({
-                content: c1,
-                el: document.getElementById('c1')
-            });
+            var c1v = contentViewFactory.createContentView(c1);
+            c1v.setElement(document.getElementById('c1'));
             c1v.render();
 
             var c2 = new LivefyreContent(mockData.livefyreStreamContent);
-            var c2v = new ContentView({
-                content: c2,
-                el: document.getElementById('c2')
-            });
+            var c2v = contentViewFactory.createContentView(c2);
+            c2v.setElement(document.getElementById('c2'));
             c2v.render();
 
             var c3 = new Content('<p>Woah</p>');
@@ -88,11 +84,9 @@
                 "author_url": "http://www.flickr.com/photos/bees/",
                 "provider_name": "Flickr",
                 "provider_url": "http://www.flickr.com/"
-            }]
-            var c3v = new ContentView({
-                content: c3,
-                el: document.getElementById('c3')
-            });
+            }];
+            var c3v = contentViewFactory.createContentView(c3);
+            c3v.setElement(document.getElementById('c3'));
             c3v.render();
 
             var c4 = new LivefyreTweet(mockData.livefyreTwitterContent);
@@ -108,10 +102,8 @@
                 "provider_name": "Flickr",
                 "provider_url": "http://www.flickr.com/"
             }));
-            var c4v = new TwitterContentView({
-                content: c4,
-                el: document.getElementById('c4')
-            });
+            var c4v = contentViewFactory.createContentView(c4);
+            c4v.setElement(document.getElementById('c4'));
             c4v.render();
             
             var c5 = new LivefyreFacebookContent(mockData.livefyreFacebookContent);
@@ -131,10 +123,8 @@
                 "thumbnail_height": 960, 
                 "author_url": ""
             }}}));
-            var c5v = new FacebookContentView({
-                content: c5,
-                el: document.getElementById('c5')
-            });
+            var c5v = contentViewFactory.createContentView(c5);
+            c5v.setElement(document.getElementById('c5'));
             c5v.render();
             
             var c6 = new Content('<p>My avatar is broken</p>');
@@ -144,11 +134,10 @@
                     avatar: 'http://goooo'
                 }
             });
-            var c6v = new ContentView({
-                content: c6,
-                el: document.getElementById('c6')
-            });
+            var c6v = contentViewFactory.createContentView(c6);
+            c6v.setElement(document.getElementById('c6'));
             c6v.render();
+
         });
         </script>
     </body>
