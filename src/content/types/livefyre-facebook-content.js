@@ -32,6 +32,8 @@ define([
     };
     inherits(LivefyreFacebookContent, LivefyreContent);
 
+    LivefyreFacebookContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-facebook';
+
     /**
      * Get a jQuery Element as HTML
      */
