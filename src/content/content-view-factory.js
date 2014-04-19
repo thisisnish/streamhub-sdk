@@ -55,12 +55,18 @@ define([
      * type function, useful for conditional view selection.).
      */
     ContentViewFactory.prototype.contentRegistry = [
-        { type: LivefyreTwitterContent, view: TwitterContentView },
-        { type: LivefyreFacebookContent, view: FacebookContentView },
-        { type: LivefyreInstagramContent, view: InstagramContentView },
-        { type: TwitterContent, view: TwitterContentView },
-        { type: LivefyreContent, view: LivefyreContentView },
-        { type: Content, view: ContentView }
+        { type: LivefyreTwitterContent, view: TwitterContentView,
+            typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-twitter' },
+        { type: LivefyreFacebookContent, view: FacebookContentView,
+            typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-facebook' },
+        { type: LivefyreInstagramContent, view: InstagramContentView,
+            typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram' },
+        { type: TwitterContent, view: TwitterContentView,
+            typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:twitter' },
+        { type: LivefyreContent, view: ContentView,
+            typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre' },
+        { type: Content, view: ContentView,
+            typeUrn: 'urn:livefyre:js:streamhub-sdk:content' }
     ];
 
     /**
@@ -110,7 +116,8 @@ define([
     ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         for (var i=0, len=this.contentRegistry.length; i < len; i++) {
             var current = this.contentRegistry[i];
-            if (!(content instanceof current.type)) {
+            var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
+            if (! (sameTypeUrn || (content instanceof current.type))) {
                 continue;
             }
 

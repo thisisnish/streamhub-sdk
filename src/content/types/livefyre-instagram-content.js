@@ -15,5 +15,7 @@ function(LivefyreContent, inherits) {
     };
     inherits(LivefyreInstagramContent, LivefyreContent);
 
+    LivefyreInstagramContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram';
+
     return LivefyreInstagramContent;
 });
