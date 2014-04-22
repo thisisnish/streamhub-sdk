@@ -18,12 +18,11 @@
   ],
   stubModules: ['text', 'hgn', 'json'],
   out: "../dist/streamhub-sdk.min.js",
-  namespace: 'Livefyre',
   pragmasOnSave: {
     excludeHogan: true
   },
   cjsTranslate: true,
-  optimize: "uglify2",
+  optimize: "none",
   preserveLicenseComments: false,
   uglify2: {
     compress: {
@@ -31,11 +30,14 @@
     },
     mangle: true
   },
+  wrap: {
+    startFile: 'wrap-start.frag',
+    endFile: 'wrap-end.frag'
+  },
   generateSourceMaps: true,
   onBuildRead: function(moduleName, path, contents) {
     switch (moduleName) {
       case "jquery":
-      case "base64":
         contents = "define([], function(require, exports, module) {" + contents + "});";
     }
     return contents;

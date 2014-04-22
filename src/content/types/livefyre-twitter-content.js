@@ -23,6 +23,8 @@ define([
     };
     inherits(LivefyreTwitterContent, LivefyreContent);
 
+    LivefyreTwitterContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-twitter';
+
     /**
      * Transform a Livefyre Message ID to a Twitter tweet id
      * @param livefyreId {String} A Livefyre Message ID
