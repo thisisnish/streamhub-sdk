@@ -32,6 +32,8 @@ define([
     };
     inherits(Content, EventEmitter);
 
+    Content.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content';
+
     /**
      * Attach an Oembed to the Content
      * @param obj {Oembed} An Oembed Content instance to attach

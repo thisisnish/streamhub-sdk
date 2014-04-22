@@ -46,6 +46,8 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
     };
     inherits(LivefyreContent, Content);
 
+    LivefyreContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre';
+
     /**
      * Overridable annotator instantiator
      */
