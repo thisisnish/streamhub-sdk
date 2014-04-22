@@ -63,7 +63,7 @@ define([
             typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram' },
         { type: TwitterContent, view: TwitterContentView,
             typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:twitter' },
-        { type: LivefyreContent, view: ContentView,
+        { type: LivefyreContent, view: LivefyreContentView,
             typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre' },
         { type: Content, view: ContentView,
             typeUrn: 'urn:livefyre:js:streamhub-sdk:content' }
