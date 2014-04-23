@@ -15,8 +15,12 @@ function (Collection, ListView, auth) {
         "environment": "livefyre.com"
     };
 
-    var view = window.view = new ListView({ el: document.getElementById('view') });
+    var view = window.view = new ListView({
+        el: document.getElementById('view'),
+        sharer: function () {
+            console.log('share', arguments);
+        }
+    });
     var collection = window.collection = new Collection(opts);
-
     collection.pipe(view);
 });
