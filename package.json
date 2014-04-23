@@ -49,9 +49,7 @@
     "karma-script-launcher": "~0.1.0",
     "karma-cajon": "*",
     "coveralls": "~2.3.0",
-    "jsontool": "^7.0.2"
-  },
-  "optionalDependencies": {
-    "lfcdn": "git+ssh://git@github.com:Livefyre/lfcdn.git"
+    "jsontool": "^7.0.2",
+    "lfcdn": "git://github.com/Livefyre/lfcdn.git"
   }
 }
