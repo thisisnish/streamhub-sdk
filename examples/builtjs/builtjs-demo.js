@@ -1,19 +1,18 @@
-debugger;
-// if (typeof Livefyre === 'object' && typeof Livefyre.require === 'function' && Livefyre.require.amd) {
-//     return Livefyre.require;
-// }
-// if (typeof require === 'function' && require.amd) {
-//     return require;
-// }
-
-Livefyre.require(['streamhub-sdk/collection', 'streamhub-sdk/content/views/content-list-view'],
-function (Collection, ListView) {
-    debugger;
+Livefyre.require(['streamhub-sdk/collection', 'streamhub-sdk/content/views/content-list-view', 'auth'],
+function (Collection, ListView, auth) {
+    auth.delegate({
+        login: function (done) {
+            var lftoken = prompt('lftoken?');
+            done(null, {
+                livefyre: lftoken
+            });
+        }
+    });
     var opts = {
-        "network": "labs-t402.fyre.co",
-        "siteId": "303827",
-        "articleId": "xbox-0",
-        "environment": "t402.livefyre.com"
+        "network": "livefyre.com",
+        "siteId": "313878",
+        "articleId": "1",
+        "environment": "livefyre.com"
     };
 
     var view = window.view = new ListView({ el: document.getElementById('view') });
