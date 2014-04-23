@@ -1,13 +1,14 @@
 Livefyre.require(['streamhub-sdk/collection', 'streamhub-sdk/content/views/content-list-view', 'auth'],
 function (Collection, ListView, auth) {
-    auth.delegate({
-        login: function (done) {
-            var lftoken = prompt('lftoken?');
-            done(null, {
-                livefyre: lftoken
-            });
-        }
-    });
+    // auth.delegate({
+    //     login: function (done) {
+    //         var lftoken = prompt('lftoken?');
+    //         done(null, {
+    //             livefyre: lftoken
+    //         });
+    //     }
+    // });
+    auth.delegate(auth.createDelegate('http://livefyre.com'));
     var opts = {
         "network": "livefyre.com",
         "siteId": "313878",
