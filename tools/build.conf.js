@@ -17,6 +17,7 @@
     'streamhub-sdk/modal',
     'streamhub-sdk/views/streams/injector'
   ],
+  namespace: 'Livefyre',
   stubModules: ['text', 'hgn', 'json'],
   out: "../dist/streamhub-sdk.min.js",
   pragmasOnSave: {
@@ -30,10 +31,6 @@
       unsafe: true
     },
     mangle: true
-  },
-  wrap: {
-    startFile: 'wrap-start.frag',
-    endFile: 'wrap-end.frag'
   },
   generateSourceMaps: true,
   onBuildRead: function(moduleName, path, contents) {
