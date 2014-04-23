@@ -1,8 +1,8 @@
 require([
     'auth',
-    'auth-livefyre',
+    'livefyre-auth',
     'auth/contrib/auth-button',
-    'auth-livefyre/livefyre-auth-delegate',
+    'livefyre-auth/livefyre-auth-delegate',
     'streamhub-sdk/debug',
     'streamhub-sdk/jquery',
     'streamhub-sdk/content/views/content-list-view',

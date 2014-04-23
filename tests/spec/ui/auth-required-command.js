@@ -1,7 +1,7 @@
 'use strict';
 
 var auth = require('auth');
-var MockUserFactory = require('auth-livefyre-tests/mocks/mock-user-factory');
+var MockUserFactory = require('livefyre-auth-tests/mocks/mock-user-factory');
 var Auth = require('streamhub-sdk/auth');
 var AuthRequiredCommand = require('streamhub-sdk/ui/auth-required-command');
 var Command = require('streamhub-sdk/ui/command');
