@@ -133,15 +133,34 @@ define([
 
     /**
      * Given content and a sharer, create a Command to pass as
+     * @param sharer {function|Sharer} Object or Function to share with
      * opts.shareCommand to the ContentView
      */
     ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
-        if ( ! sharer || ! sharer.hasDelegate()) {
+        if ( ! sharer) {
             return;
         }
-        var shareCommand = new Command(function () {
-            sharer.share(content);
-        });
+
+        if (sharer instanceof Command) {
+            return sharer;
+        }
+
+        var hasHasDelegate = typeof sharer.hasDelegate === 'function';
+        if (hasHasDelegate && ! sharer.hasDelegate()) {
+            return;
+        }
+
+        var shareCommand;
+        if (typeof sharer === 'function') {
+            shareCommand = new Command(function () {
+                sharer(content);
+            });
+        } else {
+            shareCommand = new Command(function () {
+                sharer.share(content);
+            });
+        }
+        
         shareCommand.canExecute = function () {
             if (typeof sharer.canShare !== 'function') {
                 return true;

@@ -2,7 +2,8 @@
   mainConfigFile: '../requirejs.conf.js',
   paths: {
     jquery: 'lib/jquery/jquery.min',
-    almond: 'lib/almond/almond'
+    almond: 'lib/almond/almond',
+    auth: 'tools/auth-stub'
   },
   baseUrl: '..',
   name: "streamhub-sdk",
@@ -22,7 +23,7 @@
     excludeHogan: true
   },
   cjsTranslate: true,
-  optimize: "none",
+  optimize: "uglify2",
   preserveLicenseComments: false,
   uglify2: {
     compress: {
