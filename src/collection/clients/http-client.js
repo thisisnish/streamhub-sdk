@@ -25,9 +25,10 @@ define(['streamhub-sdk/jquery'], function($) {
      * @param [opts.method=GET] {string} HTTP Method
      * @param opts.url {string} URL to request
      * @param opts.dataType {string} Data type to expect in response
-     * @param callback {function} A callback to pass (err, data) to
+     * @param callback {function=} A callback to pass (err, data) to
      */
     LivefyreHttpClient.prototype._request = function (opts, callback) {
+        callback = callback || function() {};
         var xhr = $.ajax({
             type: opts.method || 'GET',
             url: opts.url,
@@ -47,10 +48,9 @@ define(['streamhub-sdk/jquery'], function($) {
                 // going away anyway.
                 return;
             }
-            if ( ! err) {
-                err = "LivefyreHttpClient Error";
-            }
-            callback(err);
+            var errorMessage = err || 'LivefyreHttpClient Error';
+            var httpError = createHttpError(errorMessage, jqXhr.status);
+            callback(httpError);
         });
 
         return xhr;
@@ -88,7 +88,8 @@ define(['streamhub-sdk/jquery'], function($) {
      */
     LivefyreHttpClient.prototype._getHost = function (opts) {
         var isLivefyreNetwork = (opts.network === 'livefyre.com');
-        var host = this._serviceName + '.' + (isLivefyreNetwork ? opts.environment : opts.network);
+        var environment = opts.environment || 'livefyre.com';
+        var host = this._serviceName + '.' + (isLivefyreNetwork ? environment : opts.network);
         var hostParts;
         if ( ! isLivefyreNetwork && this._protocol === 'https:') {
             hostParts = opts.network.split('.');
@@ -98,6 +99,12 @@ define(['streamhub-sdk/jquery'], function($) {
         }
         return host;
     };
+
+    function createHttpError (message, statusCode) {
+        var err = new Error(message);
+        err.statusCode = statusCode;
+        return err;
+    }
 
     // Keep track of whether the page is unloading, so we don't throw exceptions
     // if the XHR fails just because of that.

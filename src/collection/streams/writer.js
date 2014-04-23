@@ -43,7 +43,11 @@ function (Writable, LivefyreWriteClient, Auth, inherits) {
         if (numAttachments) {
             postParams.media = [];
             for (var i=0; i < numAttachments; i++) {
-                postParams.media.push(content.attachments[i].toJSON());
+                attachment = content.attachments[i];
+                if (typeof attachment.toJSON === 'function') {
+                    attachment = attachment.toJSON();
+                }
+                postParams.media.push(attachment);
             }
         }
 
@@ -57,7 +61,16 @@ function (Writable, LivefyreWriteClient, Auth, inherits) {
             postParams.tweetId = content.tweetId;
         }
 
-        post.call(this._writeClient, postParams, done);
+        post.call(this._writeClient, postParams, function (err, response) {
+            if (err) {
+                return done(err);
+            }
+            content.set({
+                collection: this._collection,
+                id: response.data.messages[0].content.id
+            });
+            done();
+        }.bind(this));
     };
 
 

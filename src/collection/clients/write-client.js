@@ -28,7 +28,7 @@ function(LivefyreHttpClient, inherits) {
      * @param callback {function} A callback that is called upon success/failure of the
      *     write request. Callback signature is "function(error, data)".
      */
-    LivefyreWriteClient.prototype.postContent = function(opts, callback) {
+    LivefyreWriteClient.prototype.postContent = function (opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
@@ -48,13 +48,12 @@ function(LivefyreHttpClient, inherits) {
         }
 
         if (opts.media) {
-            postData.media = JSON.stringify(opts.media);
+            postData.attachments = JSON.stringify(opts.media);
         }
 
         this._request({
             method: 'POST',
             url: url,
-            dataType: 'json',
             data: postData
         }, callback);
     };
@@ -69,7 +68,7 @@ function(LivefyreHttpClient, inherits) {
      * @param callback {function} A callback that is called upon success/failure of the
      *     write request. Callback signature is "function(error, data)".
      */
-    LivefyreWriteClient.prototype.postTweet = function(opts, callback) {
+    LivefyreWriteClient.prototype.postTweet = function (opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
@@ -84,12 +83,11 @@ function(LivefyreHttpClient, inherits) {
         this._request({
             method: 'POST',
             url: url,
-            dataType: 'json',
             data: postData
         }, callback);
     };
 
-    LivefyreWriteClient.prototype.follow = function(opts, callback) {
+    LivefyreWriteClient.prototype.follow = function (opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
@@ -104,12 +102,11 @@ function(LivefyreHttpClient, inherits) {
         this._request({
             method: 'POST',
             url: url,
-            dataType: 'json',
             data: postData
         }, callback);
     };
 
-    LivefyreWriteClient.prototype.unfollow = function(opts, callback) {
+    LivefyreWriteClient.prototype.unfollow = function (opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
         var url = [
@@ -120,6 +117,50 @@ function(LivefyreHttpClient, inherits) {
         ].join("");
 
         var postData = {lftoken: opts.lftoken};
+
+        this._request({
+            method: 'POST',
+            url: url,
+            data: postData
+        }, callback);
+    };
+
+    LivefyreWriteClient.prototype.like = function (opts, callback) {
+        opts = opts || {};
+        callback = callback || function () {};
+        var url = [
+            this._getUrlBase(opts),
+            '/api/v3.0/message/',
+            opts.contentId,
+            '/like/'
+        ].join("");
+
+        var postData = {
+            lftoken: opts.lftoken,
+            collection_id:  opts.collectionId
+        };
+
+        this._request({
+            method: 'POST',
+            url: url,
+            data: postData
+        }, callback);
+    };
+
+    LivefyreWriteClient.prototype.unlike = function (opts, callback) {
+        opts = opts || {};
+        callback = callback || function () {};
+        var url = [
+            this._getUrlBase(opts),
+            '/api/v3.0/message/',
+            opts.contentId,
+            '/unlike/'
+        ].join("");
+
+        var postData = {
+            lftoken: opts.lftoken,
+            collection_id:  opts.collectionId
+        };
 
         this._request({
             method: 'POST',

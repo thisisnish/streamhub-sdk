@@ -2,7 +2,8 @@
   mainConfigFile: '../requirejs.conf.js',
   paths: {
     jquery: 'lib/jquery/jquery.min',
-    almond: 'lib/almond/almond'
+    almond: 'lib/almond/almond',
+    auth: 'tools/auth-stub'
   },
   baseUrl: '..',
   name: "streamhub-sdk",
@@ -16,23 +17,20 @@
     'streamhub-sdk/modal',
     'streamhub-sdk/views/streams/injector'
   ],
+  namespace: 'Livefyre',
   stubModules: ['text', 'hgn', 'json'],
   out: "../dist/streamhub-sdk.min.js",
   pragmasOnSave: {
     excludeHogan: true
   },
   cjsTranslate: true,
-  optimize: "none",
+  optimize: "uglify2",
   preserveLicenseComments: false,
   uglify2: {
     compress: {
       unsafe: true
     },
     mangle: true
-  },
-  wrap: {
-    startFile: 'wrap-start.frag',
-    endFile: 'wrap-end.frag'
   },
   generateSourceMaps: true,
   onBuildRead: function(moduleName, path, contents) {
