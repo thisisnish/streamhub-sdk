@@ -77,7 +77,8 @@ function (
                 mockUserFactory = new MockUserFactory();
                 user = mockUserFactory.createUser();
                 auth.delegate({
-                    login: function () {}
+                    login: function (done) { done(); },
+                    logout: function (done) { done(); }
                 });
                 auth.login({ livefyre: user});
                 contentViewFactory = new ContentViewFactory();
