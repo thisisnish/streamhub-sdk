@@ -17,7 +17,7 @@
     "event-emitter": "git://github.com/Livefyre/event-emitter.git",
     "inherits": "git://github.com/Livefyre/inherits.git",
     "view": "git://github.com/Livefyre/view.git#~1.1",
-    "auth": "git://github.com/Livefyre/auth.git#v0.0.1",
+    "auth": "git://github.com/Livefyre/auth.git#~0.0",
     "livefyre-bootstrap": "git://github.com/Livefyre/livefyre-bootstrap.git#v0.3.2"
   },
   "devDependencies": {
