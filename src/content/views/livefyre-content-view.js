@@ -31,8 +31,6 @@ define([
 
         ContentView.call(this, opts);
     };
-    inherits(LivefyreContentView, ContentView);
-
     /**
      * Render the content inside of the LivefyreContentView's element.
      * @returns {LivefyreContentView}
