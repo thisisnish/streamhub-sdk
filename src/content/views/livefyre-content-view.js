@@ -53,6 +53,10 @@ define([
     LivefyreContentView.prototype.footerLeftSelector = '.content-footer-left > .content-control-list';
     LivefyreContentView.prototype.footerRightSelector = '.content-footer-right > .content-control-list';
 
+    LivefyreContentView.prototype.CLASSES = {
+        defaultTheme: 'content-default'
+    };
+
 
     /**
      * Set the a command for a buton
@@ -93,6 +97,7 @@ define([
             this._detachButtons();
         }
         ContentView.prototype.render.call(this);
+        this.$el.addClass(this.CLASSES.defaultTheme);
         this._renderButtons();
         return this;
     };
