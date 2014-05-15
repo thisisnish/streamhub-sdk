@@ -84,11 +84,12 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         var self = this;
         View.prototype.render.call(this);
         this._rendered = true;
-
-        //Scrap the current oembedViews and re-add them
-        this.oembedViews = [];
-        $.each(this.content.attachments, function (i, oembed) {
-            self.add(oembed);
+        $.each(self.oembedViews, function (i, oembedView) {
+            if ( ! self.$el.has(oembedView.$el).length) {
+                // oembedView needs to be a descendant of AttachmentListView#.el
+                self._insert(oembedView);
+            }
+            oembedView.render();
         });
     };
 
