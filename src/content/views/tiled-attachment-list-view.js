@@ -1,10 +1,11 @@
-'use strict';
-
 var $ = require('streamhub-sdk/jquery');
 var AttachmentListView = require('streamhub-sdk/content/views/attachment-list-view');
 var OembedView = require('streamhub-sdk/content/views/oembed-view');
 var TiledAttachmentListTemplate = require('hgn!streamhub-sdk/content/templates/tiled-attachment-list');
 var inherits = require('inherits');
+
+'use strict';
+
 
 /**
  * A simple View that displays Content in a list (`<ul>` by default).
