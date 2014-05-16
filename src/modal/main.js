@@ -39,7 +39,7 @@ define([
 
     // Store all instances of modal to ensure that only one is visible
     ModalView.instances = [];
-    
+
     // A stack pointing to instances that should be re-shown
     ModalView._stackedInstances = [];
 
@@ -76,15 +76,13 @@ define([
         if (stack || ModalView._stackedInstances.length && stack !== false) {
             this._stack();
         }
-        
+
         // First hide any other modals
         $.each(ModalView.instances, function (i, modal) {
             modal.hide();
         });
 
-        $('body').css({
-            'overflow': 'hidden'
-        });
+        $('body').css('overflow', 'hidden');
 
         this.$el.show();
         if ( ! this._attached) {
@@ -106,6 +104,7 @@ define([
         this.$el.hide();
         this._detach();
         this.visible = false;
+        $('body').css('overflow', 'auto');
     };
 
 
@@ -136,7 +135,6 @@ define([
 
         this.$el.on('hideModal.hub', function (e) {
             self.hide();
-            $('body').css('overflow', 'auto');
             self._unstack();
         });
 
@@ -187,7 +185,7 @@ define([
     ModalView.prototype._stack = function () {
         ModalView._stackedInstances.push(this);
     };
-    
+
     /**
      * If we're stacking modals, remove this modal from the stack and show the
      * next modal.
@@ -200,11 +198,11 @@ define([
         //Return early if the stack is empty
             return;
         }
-        
+
         //Check that this is the top item and pop it off if it is
         top = ModalView._stackedInstances[stackLength - 1];
         this === top && ModalView._stackedInstances.pop() && stackLength--;
-        
+
         if (stackLength > 0) {
         //If there is a next modal, show it
             ModalView._stackedInstances[stackLength - 1].show(undefined, false);
