@@ -17,7 +17,7 @@ describe('streamhub-sdk/ui/button', function () {
             new Button();
         }).not.toThrow();
     });
-    
+
     it('can be constructed with a command', function () {
         var button;
         var cmd;
@@ -27,7 +27,16 @@ describe('streamhub-sdk/ui/button', function () {
         }).not.toThrow();
         expect(button._command).toBe(cmd);
     });
-    
+
+    it('can be enabled/disabled without a command', function () {
+        var button = new Button();
+        expect(button.$el.hasClass(button.disabledClass)).toBe(false);
+        button.disable();
+        expect(button.$el.hasClass(button.disabledClass)).toBe(true);
+        button.enable();
+        expect(button.$el.hasClass(button.disabledClass)).toBe(false);
+    });
+
     describe('when constructed with a command', function () {
         var button;
         var cmd;
@@ -35,20 +44,27 @@ describe('streamhub-sdk/ui/button', function () {
             cmd = new Command(jasmine.createSpy('Command'));
             button = new Button(cmd);
         });
-        
+
         it('executes the command when clicked', function () {
             button.$el.click();
             expect(cmd._execute).toHaveBeenCalled();
         });
-        
+
+        it('does not execute the command when clicked and disabled', function () {
+            cmd.disable();
+            button.$el.click();
+            expect(cmd._execute).not.toHaveBeenCalled();
+            cmd.enable();
+        });
+
         it('uses .disabledClass to reflect Command.disable/enable', function () {
             // enabled by default
             expect(button.$el.hasClass(button.disabledClass)).toBe(false);
-            
+
             // reflects disabling
             cmd.disable();
             expect(button.$el.hasClass(button.disabledClass)).toBe(true);
-            
+
             // reflects re-enabling
             cmd.enable();
             expect(button.$el.hasClass(button.disabledClass)).toBe(false);

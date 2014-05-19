@@ -63,6 +63,16 @@ Button.prototype.template = ButtonTemplate;
  */
 Button.prototype.disabledClass = 'disabled';
 
+/** Disable the button */
+Button.prototype.disable = function () {
+    this._setEnabled(false);
+};
+
+/** Enable the button */
+Button.prototype.enable = function () {
+    this._setEnabled(true);
+};
+
 Button.prototype.updateLabel = function (label) {
     this._label = label;
     this.render();
@@ -84,8 +94,7 @@ Button.prototype.getTemplateContext = function () {
  * @protected
  */
 Button.prototype._execute = function () {
-    // TODO: Don't execute if not enabled
-    this._command.execute(this._errback);
+    !this._disabled && this._command.execute(this._errback);
 };
 
 /**
