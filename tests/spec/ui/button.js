@@ -28,6 +28,15 @@ describe('streamhub-sdk/ui/button', function () {
         expect(button._command).toBe(cmd);
     });
 
+    it('can be enabled/disabled without a command', function () {
+        var button = new Button();
+        expect(button.$el.hasClass(button.disabledClass)).toBe(false);
+        button.disable();
+        expect(button.$el.hasClass(button.disabledClass)).toBe(true);
+        button.enable();
+        expect(button.$el.hasClass(button.disabledClass)).toBe(false);
+    });
+
     describe('when constructed with a command', function () {
         var button;
         var cmd;

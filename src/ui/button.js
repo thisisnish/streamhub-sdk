@@ -63,6 +63,16 @@ Button.prototype.template = ButtonTemplate;
  */
 Button.prototype.disabledClass = 'disabled';
 
+/** Disable the button */
+Button.prototype.disable = function () {
+    this._setEnabled(false);
+};
+
+/** Enable the button */
+Button.prototype.enable = function () {
+    this._setEnabled(true);
+};
+
 Button.prototype.updateLabel = function (label) {
     this._label = label;
     this.render();
