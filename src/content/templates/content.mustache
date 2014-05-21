@@ -18,6 +18,9 @@
             {{^authorUrl}}
                 <span class="content-author-name">{{ author.displayName }}</span>
             {{/authorUrl}}
+            {{#authorTwitterVerified}}
+                <span class="fyre-twitter-verified"></span>
+            {{/authorTwitterVerified}}
             {{#authorUserName}}
                 {{#authorUrl}}
                     <a class="content-author-username" href="{{authorUrl}}" target="_blank">{{authorUserNamePrefix}}{{ authorUserName }}</a>

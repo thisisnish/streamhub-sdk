@@ -58,6 +58,7 @@ function (LivefyreContentView, HubButton, inherits, $) {
         context.authorUrl = '//twitter.com/intent/user?user_id='+context.author.twitterUserId;
         context.authorUserName = context.author.twitterUsername;
         context.authorUserNamePrefix = '@';
+        context.authorTwitterVerified = this.content.twitterVerified;
 
         context.contentSourceName = 'twitter';
         context.contentSourceTooltipUrl = '//twitter.com/statuses/'+context.tweetId;
