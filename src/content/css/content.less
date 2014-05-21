@@ -113,7 +113,8 @@
             }
         }
         .fyre-twitter-verified {
-            background: url(../images/certified.png) no-repeat;
+            background-image: data-uri('../images/certified.png');
+            background-repeat: no-repeat;
             display: inline-block;
             height: 16px;
             position: relative;
@@ -121,7 +122,7 @@
             width: 16px;
 
             @media only screen and (-webkit-min-device-pixel-ratio: 2) {
-                background-image: url(../images/certified@2x.png);
+                background-image: data-uri('../images/certified@2x.png');
                 background-size: 16px 16px;
             }
         }
