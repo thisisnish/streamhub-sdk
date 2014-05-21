@@ -112,6 +112,20 @@
                 -moz-transition-property: color 0.1s ease 0;
             }
         }
+        .fyre-twitter-verified {
+            background-image: data-uri('../images/certified.png');
+            background-repeat: no-repeat;
+            display: inline-block;
+            height: 16px;
+            position: relative;
+            top: 3px;
+            width: 16px;
+
+            @media only screen and (-webkit-min-device-pixel-ratio: 2) {
+                background-image: data-uri('../images/certified@2x.png');
+                background-size: 16px 16px;
+            }
+        }
     }
 
     .content-author-username, .content-created-at {
@@ -119,6 +133,10 @@
         color: @secondary_color;
         font-size: 12px;
         font-weight: normal;
+    }
+
+    .content-author-username {
+        display: block;
     }
 
     .content-body {
