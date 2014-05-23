@@ -20,10 +20,21 @@ define([
         if (this.author) {
             this.author.twitterUserId = LivefyreTwitterContent.twitterUserIdFromLivefyreAuthorId(this.author.id);
         }
+        this.twitterVerified = LivefyreTwitterContent.isVerified(this.meta);
     };
     inherits(LivefyreTwitterContent, LivefyreContent);
 
     LivefyreTwitterContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-twitter';
+
+    /**
+     * Determine if the author of the content is verified by Twitter.
+     * @param {Object} json The content to look through for the verified status.
+     * @return {Boolean} Whether the author is verified or not.
+     */
+    LivefyreTwitterContent.isVerified = function (json) {
+        var tweetMeta = json.content.annotations.tweetMeta || {};
+        return tweetMeta.verified_user || false;
+    };
 
     /**
      * Transform a Livefyre Message ID to a Twitter tweet id

@@ -1,0 +1,27 @@
+{
+  "vis": 1,
+  "collectionId": "10732798",
+  "content": {
+    "parentId": "",
+    "bodyHtml": "<a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:350491448\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/KMK3245\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">KMK3245<\/span><\/a> Let us know if you have any account or console related Xbox questions we can help out with. ^SB",
+    "annotations": {
+      "tweetMeta": {
+        "language": "en",
+        "created_at": "Mon Mar 03 23:44:38 +0000 2014",
+        "tweetId": 4.4063388066448e+17,
+        "in_reply_to_status_id": 4.4063055199393e+17,
+        "in_reply_to_screen_name": "KMK3245",
+        "in_reply_to_user_id": 350491448,
+        "verified_user": true
+      }
+    },
+    "authorId": "59804598@twitter.com",
+    "updatedAt": 1393890278,
+    "id": "tweet-440633880664477697@twitter.com",
+    "createdAt": 1393890278
+  },
+  "source": 1,
+  "type": 0,
+  "event": 1.3938902786787e+15,
+  "childContent": []
+}

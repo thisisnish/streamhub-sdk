@@ -1,0 +1,26 @@
+{
+  "vis": 1,
+  "collectionId": "10732798",
+  "content": {
+    "parentId": "",
+    "bodyHtml": "<a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:315498598\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/XboxWorryWart\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">XboxWorryWart<\/span><\/a>  <a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:89836099\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/ShankinsHD\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">ShankinsHD<\/span><\/a> <a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:18420291\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/Doom_CMYK\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">Doom_CMYK<\/span><\/a> <a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:107512178\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/clanMOH\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">clanMOH<\/span><\/a> <a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:142820081\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/J_Martinez2012\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">J_Martinez2012<\/span><\/a> <a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:297216746\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/kenjitillman\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">kenjitillman<\/span><\/a> <a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:1098401288\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/K_Alex1\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">K_Alex1<\/span><\/a> He got that big by curling the Xbox One. J\/k lol",
+    "annotations": {
+      "tweetMeta": {
+        "language": "en",
+        "created_at": "Mon Mar 03 23:45:10 +0000 2014",
+        "tweetId": 4.4063401499547e+17,
+        "in_reply_to_status_id": 4.4063331167817e+17,
+        "in_reply_to_screen_name": "XboxWorryWart",
+        "in_reply_to_user_id": 315498598,
+        "verified_user": false
+      }
+    },
+    "authorId": "4113261@twitter.com",
+    "updatedAt": 1393890310,
+    "id": "tweet-440634014995468288@twitter.com",
+    "createdAt": 1393890310
+  },
+  "source": 1,
+  "type": 0,
+  "event": 1.3938903107239e+15
+}

@@ -55,9 +55,13 @@ function (LivefyreContentView, HubButton, inherits, $) {
         if (context && context.author && typeof context.author.profileUrl === 'string') {
             context.author.twitterUsername = context.author.profileUrl.split('/').pop();
         }
-        context.authorUrl = '//twitter.com/intent/user?user_id='+context.author.twitterUserId;
-        context.authorUserName = context.author.twitterUsername;
-        context.authorUserNamePrefix = '@';
+        if (context.author) {
+            context.authorUrl = '//twitter.com/intent/user?user_id='+context.author.twitterUserId;
+            context.authorUserName = context.author.twitterUsername;
+            context.authorUserNamePrefix = '@';
+        }
+
+        context.authorTwitterVerified = this.content.twitterVerified;
 
         context.contentSourceName = 'twitter';
         context.contentSourceTooltipUrl = '//twitter.com/statuses/'+context.tweetId;
