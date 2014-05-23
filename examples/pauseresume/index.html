@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/src/css/style.css">
+    <style>
+    #listView {
+        width:500px;
+        overflow: hidden;
+    }
+    </style>
+</head>
+    <body>
+        <menu>
+            <button id="pause">Pause</button>
+            <button id="resume">Resume</button>
+        </menu>
+        <div id="listView"></div>
+
+        <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
+        <script src="/requirejs.conf.js" type="text/javascript"></script>
+        <script>
+        requirejs.config({
+            baseUrl: '../../'
+        });
+        require([
+            'streamhub-sdk/jquery',
+            'streamhub-sdk/auth',
+            'streamhub-sdk/content/views/content-list-view',
+            'streamhub-sdk/collection',
+            'streamhub-sdk/content',
+            'streamhub-sdk/collection/liker',
+            'streamhub-sdk/sharer',
+        ],function ($, Auth, ListView, Collection, Content, Liker, sharer) {
+            var opts = {
+                "network": "labs-t402.fyre.co",
+                "siteId": "303827",
+                "articleId": "xbox-0",
+                "environment": "t402.livefyre.com",
+                "replies": true
+            };
+
+            var listView = window.view = new ListView({
+                initial: 50,
+                showMore: 50,
+                el: document.getElementById("listView"),
+                liker: new Liker(),
+                sharer: sharer
+            });
+
+            var collection = window.collection =  new Collection(opts);
+
+            collection.pipe(listView);
+
+            $(document)
+                .on('click', '#pause', function () {
+                    collection.pause();
+                })
+                .on('click', '#resume', function () {
+                    collection.resume();
+                });
+        });
+        </script>
+    </body>
+</html>

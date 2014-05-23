@@ -95,7 +95,7 @@ StateToContent, Annotator, debug) {
             streamClientOpts = this._getStreamClientOptions();
 
         var request = streamClient.getContent(streamClientOpts, function (err, data) {
-            if (err === 'abort') {
+            if (err && err.message === 'abort') {
                 log('stream request aborted');
                 self.push();
                 return;
