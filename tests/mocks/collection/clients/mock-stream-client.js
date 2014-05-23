@@ -20,10 +20,16 @@ function (inherits, StreamClient) {
 
 
     MockLivefyreStreamClient.prototype._request = function (opts, errback) {
-        setTimeout(function () {
-            errback(null, mockStreamResponse);
-        }, 100);
-        return $.ajax();
+        var deferred = $.ajax();
+        deferred.done(function () {
+            // ensure that this is called back async
+            setTimeout(function () {
+                errback(null, mockStreamResponse);
+            }, 100);
+        }).fail(function (jqXhr, status, err) {
+            errback(new Error(err));
+        });
+        return deferred;
     };
 
 
