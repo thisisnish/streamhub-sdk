@@ -1,7 +1,4 @@
-'use strict';
-
 var $ = require('streamhub-sdk/jquery');
-var View = require('streamhub-sdk/view');
 var CompositeView = require('view/composite-view');
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
@@ -10,6 +7,8 @@ var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachm
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
 var inherits = require('inherits');
 var debug = require('debug');
+
+'use strict';
 
 var log = debug('streamhub-sdk/content/views/content-view');
 
@@ -33,6 +32,7 @@ var ContentView = function (opts) {
 
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
+    this._themeClass = opts.themeClass;
 
     CompositeView.call(this, opts);
 
@@ -80,12 +80,13 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
     }
 });
 
-/**
- * @param opts.headerView {View}
- * @param opts.bodyView {View}
- * @param opts.footerView {View}
- * @param opts.attachmentsView {View}
- */
+ContentView.prototype.render = function () {
+    CompositeView.prototype.render.call(this);
+    if (this._themeClass) {
+        this.$el.addClass(this._themeClass);
+    }
+};
+
 ContentView.prototype._addInitialChildViews = function (opts) {
     this._headerView = opts.headerView || new ContentHeaderView(opts);
     this.add(this._headerView, { render: false });
