@@ -110,6 +110,8 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
      *     insert the newContentView into this.el according to this.comparator
      * @param content {Content} A Content model to add to the ContentListView
      * @param [forcedIndex] {number} location for the new view
+     * @param [opts] {Object} A set of options to config the view with
+     * @param [opts.tail] {Boolean} Whether items are added to the tail or head
      * @returns the newly created ContentView
      */
     ContentListView.prototype.add = function(content, forcedIndex, opts) {
