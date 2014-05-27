@@ -35,7 +35,9 @@ var ContentView = function (opts) {
     this._headerView = new ContentHeaderView(opts);
     this.add(this._headerView, { render: false });
 
-    this._attachmentsView = opts.attachmentsView || new CompositeView(new TiledAttachmentListView(opts), new BlockAttachmentListView(opts));
+    this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
+    this._blockAttachmentsView = new BlockAttachmentListView(opts);
+    this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
     this.add(this._attachmentsView, { render: false });
 
     this._bodyView = new ContentBodyView(opts);
