@@ -32,6 +32,9 @@ define([
     var LivefyreContentView = function LivefyreContentView (opts) {
         opts = opts || {};
 
+        this._themeClass = opts.themeClass || 'content-default';
+        this.elClass += this._themeClass;
+
         ContentView.call(this, opts);
 
         this._commands = {};
@@ -39,7 +42,6 @@ define([
             like: opts.likeCommand,
             share: opts.shareCommand
         });
-        this._themeClass = opts.themeClass || 'content-default';
         if (opts.template) {
             this.template = opts.template;
         }
@@ -74,7 +76,6 @@ define([
      */
     LivefyreContentView.prototype.render = function () {
         ContentView.prototype.render.call(this);
-        this.$el.addClass(this._themeClass);
         return this;
     };
 
