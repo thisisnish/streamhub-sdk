@@ -1,17 +1,17 @@
 .content-structure() {
     display: block;
     position: relative;
-	background-color: white;
-	margin-bottom: 10px;
-	padding-bottom: 15px;
+    background-color: white;
+    margin-bottom: 10px;
+    padding-bottom: 15px;
     -webkit-font-smoothing: antialiased;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-	
-	&:hover .content-byline .content-created-at {
-	   display: block;
-	}
+    
+    &:hover .content-byline .content-created-at {
+       display: block;
+    }
     
     a {
         text-decoration: none;
@@ -19,7 +19,7 @@
             text-decoration: underline;
         }
     }
-	.content-author-avatar {
+    .content-author-avatar {
         line-height:0px;
         float:left;
         display:block;
@@ -38,10 +38,6 @@
         min-height:48px;
     }
     
-    .content-author-avatar + .content-main, 
-    .content-author-avatar ~ .content-actions {
-    }
-	
     .content-header {
         display: block;
         width: 100%;
@@ -98,10 +94,6 @@
             display: inline-block;
             height: 22px;
             line-height: 22px;
-
-            & * {
-                padding: 2px 0;
-            }
         }
 
         .content-footer-left {
@@ -271,7 +263,7 @@
     &.content-with-image  > .content-attachment-link-thumbnail {
         display: block;
         position: absolute;
-	    border-radius: 3px;
+        border-radius: 3px;
         margin: 10px 10px 10px 20px;
         width: 66px;
         height: auto;
@@ -368,9 +360,9 @@
     }
 
     &.content-tweet {
-	    .content-author-avatar + .content-main {
-	        min-height: 34px;
-	    }
+        .content-author-avatar + .content-main {
+            min-height: 34px;
+        }
         .content-source-logo {
             background-position: -24px 0;
         }
