@@ -1,11 +1,20 @@
-'use strict';
-
 var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var View = require('streamhub-sdk/view');
 var template = require('hgn!streamhub-sdk/content/templates/content-footer');
 var util = require('streamhub-sdk/util');
 
+'use strict';
+
+/**
+ * A view that displays a content item's footer.
+ * Includes content buttons and timestamp
+ * @param opts {Object} A set of options to config the view with
+ * @param opts.el {HTMLElement} The element in which to render the streamed content
+ * @param opts.content {Content} The content instance with which to display its footer
+ * @exports streamhub-sdk/views/content-footer-view
+ * @constructor
+ */
 var ContentFooterView = function (opts) {
     opts = opts || {};
     View.call(this, opts);

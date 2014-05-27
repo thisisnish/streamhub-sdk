@@ -1,5 +1,3 @@
-'use strict';
-
 var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var View = require('streamhub-sdk/view');
@@ -8,6 +6,17 @@ var debug = require('debug');
 
 var log = debug('streamhub-sdk/content/views/content-header-view');
 
+'use strict';
+
+/**
+ * A view that displays a content item's header.
+ * Includes the avatar, content byline, and source-type logo/tooltip
+ * @param opts {Object} A set of options to config the view with
+ * @param opts.el {HTMLElement} The element in which to render the streamed content
+ * @param opts.content {Content} The content instance with which to display its header
+ * @exports streamhub-sdk/views/content-header-view
+ * @constructor
+ */
 var ContentHeaderView = function (opts) {
     opts = opts || {};
     View.call(this, opts);

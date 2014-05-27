@@ -1,10 +1,18 @@
-'use strict';
-
 var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var View = require('streamhub-sdk/view');
 var template = require('hgn!streamhub-sdk/content/templates/content-body');
 
+'use strict';
+
+/**
+ * A view that displays a content item's body
+ * @param opts {Object} A set of options to config the view with
+ * @param opts.el {HTMLElement} The element in which to render the streamed content
+ * @param opts.content {Content} The content instance with which to display its body
+ * @exports streamhub-sdk/views/content-body-view
+ * @constructor
+ */
 var ContentBodyView = function (opts) {
     opts = opts || {};
     View.call(this, opts);
