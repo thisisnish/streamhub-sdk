@@ -27,6 +27,6 @@
     "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
   },
   "resolutions": {
-      "view": "~1.3"
+    "view": "~1.3"
   }
 }
