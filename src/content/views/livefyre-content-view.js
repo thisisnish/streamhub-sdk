@@ -1,19 +1,12 @@
 define([
     'streamhub-sdk/jquery',
-    'auth',
     'streamhub-sdk/content/views/content-view',
-    'streamhub-sdk/content/types/livefyre-content',
     'streamhub-sdk/content/types/livefyre-opine',
-    'streamhub-sdk/ui/auth-required-command',
-    'streamhub-sdk/ui/command',
-    'streamhub-sdk/ui/hub-button',
-    'streamhub-sdk/ui/hub-like-button',
-    'streamhub-sdk/collection/liker',
     'hgn!streamhub-sdk/content/templates/content',
     'streamhub-sdk/util',
     'inherits',
     'streamhub-sdk/debug'
-], function ($, auth, ContentView, LivefyreContent, LivefyreOpine, AuthRequiredCommand, Command, HubButton, HubLikeButton, Liker, ContentTemplate, util, inherits, debug) {
+], function ($, ContentView, LivefyreOpine, ContentTemplate, util, inherits, debug) {
     'use strict';
     var log = debug('streamhub-sdk/content/views/livefyre-content-view');
 
@@ -37,39 +30,8 @@ define([
         this.elClass += this._themeClass;
 
         ContentView.call(this, opts);
-
-        this._commands = {};
-        this._setCommand({
-            like: opts.likeCommand,
-            share: opts.shareCommand
-        });
-        if (opts.template) {
-            this.template = opts.template;
-        }
-
-        this._addInitialButtons();
     };
     inherits(LivefyreContentView, ContentView);
-
-
-    /**
-     * Set the a command for a buton
-     * This should only be called once.
-     * @private
-     */
-    LivefyreContentView.prototype._setCommand = function (cmds) {
-        for (var name in cmds) {
-            if (cmds.hasOwnProperty(name)) {
-                if (! cmds[name]) {
-                    continue;
-                }
-                this._commands[name] = cmds[name];
-
-                // If canExecute changes, re-render buttons because now maybe the button should appear
-                cmds[name].on('change:canExecute', this._footerView._renderButtons.bind(this._footerView));
-            }
-        }
-    };
 
     /**
      * Render the content inside of the LivefyreContentView's element.
@@ -99,69 +61,6 @@ define([
         var myNav = navigator.userAgent.toLowerCase();
         return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
     }
-
-    /**
-     * Create and add any buttons that should be on all LivefyreContentViews.
-     * This will be invoked on construction
-     * They will be rendered by ._renderButtons later.
-     */
-    LivefyreContentView.prototype._addInitialButtons = function () {
-        // Like
-        this._likeButton = this._createLikeButton();
-        if (this._likeButton) {
-            this.addButton(this._likeButton);
-        }
-        // Share
-        this._shareButton = this._createShareButton();
-        if (this._shareButton) {
-            this.addButton(this._shareButton);
-        }
-    };
-
-    LivefyreContentView.prototype._updateLikeCount = function () {
-        this._likeButton.updateLabel(this.content.getLikeCount().toString());
-    };
-
-    /**
-     * Create a Button to be used for Liking functionality
-     * @protected
-     */
-    LivefyreContentView.prototype._createLikeButton = function () {
-        // Don't render a button when no auth delegate
-        if ( ! auth.hasDelegate('login')) {
-            return;
-        }
-        // Don't render a button if this isn't actually LivefyreContent
-        if ( ! (this.content instanceof LivefyreContent)) {
-            return;
-        }
-
-        try {
-            var likeButton = new HubLikeButton(this._commands.like, {
-                content: this.content
-            });
-        } catch (e) {
-            log('Couldn\'t create HubLikeButton for content', content, e);
-            return;
-        }
-        return likeButton;
-    };
-
-    /**
-     * Create a Share Button
-     * @protected
-     */
-    LivefyreContentView.prototype._createShareButton = function () {
-        var shareCommand = this._commands.share;
-        if ( ! (shareCommand && shareCommand.canExecute())) {
-            return;
-        }
-        var shareButton = new HubButton(shareCommand, {
-            className: 'btn-link content-share',
-            label: 'Share'
-        });
-        return shareButton;
-    };
 
     /**
      * Add a button to this ContentView.

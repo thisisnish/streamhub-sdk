@@ -423,7 +423,7 @@ function ($, ContentListView, Content, ContentView) {
         var contentView;
 
         beforeEach(function () {
-            contentView = new ContentView('');
+            contentView = new ContentView({ content: new Content });
         });
 
         describe("when constructed", function () {
