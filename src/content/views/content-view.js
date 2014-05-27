@@ -67,7 +67,7 @@ ContentView.prototype.imageLoadingClass = 'hub-content-image-loading';
 ContentView.prototype.attachmentsElSelector = '.content-attachments';
 ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 
-ContentView.prototype.events = View.prototype.events.extended({
+ContentView.prototype.events = CompositeView.prototype.events.extended({
     'imageLoaded.hub': function(e) {
         this.$el.addClass(this.contentWithImageClass);
         this.$el.removeClass(this.imageLoadingClass);
@@ -94,7 +94,7 @@ ContentView.prototype.events = View.prototype.events.extended({
  * @returns {ContentView}
  */
 ContentView.prototype.setElement = function (el) {
-    View.prototype.setElement.apply(this, arguments);
+    CompositeView.prototype.setElement.apply(this, arguments);
 
     if (this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount()) {
         this.$el.addClass(this.imageLoadingClass);
@@ -143,7 +143,7 @@ ContentView.prototype._handleVisibilityChange = function(newVis, oldVis) {
 };
 
 ContentView.prototype.destroy = function () {
-    View.prototype.destroy.call(this);
+    CompositeView.prototype.destroy.call(this);
     this.content = null;
 };
 
