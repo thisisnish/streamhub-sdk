@@ -1,6 +1,10 @@
 var $ = require('streamhub-sdk/jquery');
+var auth = require('auth');
 var inherits = require('inherits');
 var View = require('streamhub-sdk/view');
+var HubButton = require('streamhub-sdk/ui/hub-button');
+var HubLikeButton = require('streamhub-sdk/ui/hub-like-button');
+var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 var template = require('hgn!streamhub-sdk/content/templates/content-footer');
 var util = require('streamhub-sdk/util');
 
@@ -24,6 +28,17 @@ var ContentFooterView = function (opts) {
         'left': [],
         'right': []
     };
+
+    this._commands = {};
+    this._setCommand({
+        like: opts.likeCommand,
+        share: opts.shareCommand
+    });
+    if (opts.template) {
+        this.template = opts.template;
+    }
+
+    this._addInitialButtons();
 };
 inherits(ContentFooterView, View);
 
@@ -35,6 +50,77 @@ ContentFooterView.prototype.formatDate = util.formatDate;
 
 ContentFooterView.prototype.footerLeftSelector = '.content-footer-left > .content-control-list';
 ContentFooterView.prototype.footerRightSelector = '.content-footer-right > .content-control-list';
+
+/**
+ * Set the a command for a buton
+ * This should only be called once.
+ * @private
+ */
+ContentFooterView.prototype._setCommand = function (cmds) {
+    for (var name in cmds) {
+        if (cmds.hasOwnProperty(name)) {
+            if (! cmds[name]) {
+                continue;
+            }
+            this._commands[name] = cmds[name];
+
+            // If canExecute changes, re-render buttons because now maybe the button should appear
+            cmds[name].on('change:canExecute', this._renderButtons.bind(this));
+        }
+    }
+};
+
+/**
+ * Create and add any buttons that should be on all ContentFooterViews.
+ * This will be invoked on construction
+ * They will be rendered by ._renderButtons later.
+ */
+ContentFooterView.prototype._addInitialButtons = function () {
+    // Like
+    this._likeButton = this._createLikeButton();
+    if (this._likeButton) {
+        this.addButton(this._likeButton);
+    }
+    // Share
+    this._shareButton = this._createShareButton();
+    if (this._shareButton) {
+        this.addButton(this._shareButton);
+    }
+};
+
+/**
+ * Create a Button to be used for Liking functionality
+ * @protected
+ */
+ContentFooterView.prototype._createLikeButton = function () {
+    // Don't render a button when no auth delegate
+    if ( ! auth.hasDelegate('login')) {
+        return;
+    }
+    // Don't render a button if this isn't actually LivefyreContent
+    if (this._content.typeUrn !== LivefyreContent.prototype.typeUrn) {
+        return;
+    }
+    return new HubLikeButton(this._commands.like, {
+        content: this._content
+    });
+};
+
+/**
+ * Create a Share Button
+ * @protected
+ */
+ContentFooterView.prototype._createShareButton = function () {
+    var shareCommand = this._commands.share;
+    if ( ! (shareCommand && shareCommand.canExecute())) {
+        return;
+    }
+    var shareButton = new HubButton(shareCommand, {
+        className: 'btn-link content-share',
+        label: 'Share'
+    });
+    return shareButton;
+};
 
 ContentFooterView.prototype.render = function () {
     View.prototype.render.call(this);
