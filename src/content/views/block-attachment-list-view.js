@@ -1,8 +1,17 @@
-'use strict';
-
 var AttachmentListView = require('streamhub-sdk/content/views/attachment-list-view');
 var inherits = require('inherits');
 
+'use strict';
+
+/**
+ * A view that displays a content item's links and rich attachments
+ * as stacked block-level items.
+ * @param opts {Object} A set of options to config the view with
+ * @param opts.el {HTMLElement} The element in which to render the streamed content
+ * @param opts.content {Content} The content instance with which to display its attachments
+ * @exports streamhub-sdk/views/block-attachment-list-view
+ * @constructor
+ */
 var BlockAttachmentListView = function (opts) {
     opts = opts || {};
     AttachmentListView.call(this, opts);
