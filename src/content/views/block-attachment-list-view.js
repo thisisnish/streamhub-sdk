@@ -23,10 +23,7 @@ inherits(BlockAttachmentListView, AttachmentListView);
  * @returns {boolean} Whether an attachment is block-style
  */
 BlockAttachmentListView.prototype.isBlockAttachment = function (oembed) {
-    if (oembed.type !== 'photo' && oembed.type !== 'video') {
-        return true;
-    }
-    return false;
+    return oembed && oembed.type !== 'photo' && oembed.type !== 'video';
 };
 
 BlockAttachmentListView.prototype._insert = function (oembedView) {
