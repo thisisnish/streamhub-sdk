@@ -49,7 +49,7 @@ ContentFooterView.prototype._renderButtons = function () {
     var $leftControls = this.$el.find(this.footerLeftSelector);
     var $rightControls = this.$el.find(this.footerRightSelector);
 
-    $leftControls.innerHTML = '';
+    $leftControls.html('');
     this._controls.left.forEach(function (button) {
         // In case event handler is unbound by jQuery's html() method: http://stackoverflow.com/a/9227033
         // call setElement to ensure event handlers are bound
@@ -57,7 +57,7 @@ ContentFooterView.prototype._renderButtons = function () {
         $leftControls.append(button.$el);
     });
 
-    $rightControls.innerHTML = '';
+    $rightControls.html('');
     this._controls.right.forEach(function (button) {
         // In case event handler is unbound by jQuery's html() method: http://stackoverflow.com/a/9227033
         // call setElement to ensure event handlers are bound
