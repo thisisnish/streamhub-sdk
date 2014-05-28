@@ -20,6 +20,10 @@ var log = debug('streamhub-sdk/content/views/content-view');
  * @param opts {Object} The set of options to configure this view with.
  * @param opts.content {Content} The content object to use when rendering. 
  * @param opts.el {?HTMLElement} The element to render this object in.
+ * @param opts.headerView {View}
+ * @param opts.bodyView {View}
+ * @param opts.footerView {View}
+ * @param opts.attachmentsView {View}
  * @fires ContentView#removeContentView.hub
  * @exports streamhub-sdk/content/views/content-view
  * @constructor
@@ -32,19 +36,7 @@ var ContentView = function (opts) {
 
     CompositeView.call(this, opts);
 
-    this._headerView = new ContentHeaderView(opts);
-    this.add(this._headerView, { render: false });
-
-    this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
-    this._blockAttachmentsView = new BlockAttachmentListView(opts);
-    this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
-    this.add(this._attachmentsView, { render: false });
-
-    this._bodyView = new ContentBodyView(opts);
-    this.add(this._bodyView, { render: false });
-
-    this._footerView = new ContentFooterView(opts);
-    this.add(this._footerView, { render: false });
+    this._addInitialChildViews(opts);
 
     if (this.content) {
         this.content.on("reply", function(content) {
@@ -87,6 +79,28 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
         this.$el.parent().trigger('imageError.hub', { oembed: oembed, contentView: this });
     }
 });
+
+/**
+ * @param opts.headerView {View}
+ * @param opts.bodyView {View}
+ * @param opts.footerView {View}
+ * @param opts.attachmentsView {View}
+ */
+ContentView.prototype._addInitialChildViews = function (opts) {
+    this._headerView = opts.headerView || new ContentHeaderView(opts);
+    this.add(this._headerView, { render: false });
+
+    this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
+    this._blockAttachmentsView = new BlockAttachmentListView(opts);
+    this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
+    this.add(this._attachmentsView, { render: false });
+
+    this._bodyView = opts.bodyView || new ContentBodyView(opts);
+    this.add(this._bodyView, { render: false });
+
+    this._footerView = opts.footerView || new ContentFooterView(opts);
+    this.add(this._footerView, { render: false });
+};
 
  /**
  * Set the .el DOMElement that the ContentView should render to
