@@ -1,8 +1,9 @@
 define([
     'streamhub-sdk/content/views/livefyre-content-view',
+    'streamhub-sdk/content/views/facebook-content-header-view',
     'inherits',
     'streamhub-sdk/jquery'],
-function (LivefyreContentView, inherits, $) {
+function (LivefyreContentView, FacebookContentHeaderView, inherits, $) {
     'use strict';
 
     /**
@@ -12,32 +13,13 @@ function (LivefyreContentView, inherits, $) {
      * @constructor
      */
     var FacebookContentView = function FacebookContentView (opts) {
+        opts = opts || {};
+        opts.headerView = new FacebookContentHeaderView(opts);
         LivefyreContentView.call(this, opts);
     };
     inherits(FacebookContentView, LivefyreContentView);
     
     FacebookContentView.prototype.elClass += ' content-facebook ';
-
-    /**
-     * Gets the template rendering context. By default, returns "this.content".
-     * @return {Content} The content object this view was instantiated with.
-     */
-    FacebookContentView.prototype.getTemplateContext = function () {
-        var context = LivefyreContentView.prototype.getTemplateContext.call(this);
-        if (context.attachments.length) {
-            context.permalink = context.attachments[0].url;
-        }
-        
-        context.authorUrl = context.author.profileUrl;
-
-        context.contentSourceName = 'facbeook';
-        context.contentSourceTooltipUrl = context.permalink;
-        context.contentSourceTooltipText = 'View on Facebook';
-
-        context.createdAtUrl = context.permalink;
-
-        return context;
-    };
     
     return FacebookContentView;
 });

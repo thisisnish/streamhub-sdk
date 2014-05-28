@@ -1,9 +1,10 @@
 define([
     'streamhub-sdk/content/views/livefyre-content-view',
+    'streamhub-sdk/content/views/twitter-content-header-view',
     'streamhub-sdk/ui/hub-button',
     'inherits',
     'streamhub-sdk/jquery'],
-function (LivefyreContentView, HubButton, inherits, $) {
+function (LivefyreContentView, TwitterContentHeaderView, HubButton, inherits, $) {
     'use strict';
     
     /**
@@ -14,6 +15,9 @@ function (LivefyreContentView, HubButton, inherits, $) {
      */
 
     var TwitterContentView = function (opts) {
+        opts = opts || {};
+        opts.headerView = new TwitterContentHeaderView(opts);
+
         LivefyreContentView.call(this, opts);
 
         this._rendered = false;
@@ -44,32 +48,6 @@ function (LivefyreContentView, HubButton, inherits, $) {
         this.addButton(replyButton);
         this.addButton(retweetButton);
         this.addButton(favoriteButton);
-    };
-
-    /**
-     * Gets the template rendering context. By default, returns "this.content".
-     * @return {Content} The content object this view was instantiated with.
-     */
-    TwitterContentView.prototype.getTemplateContext = function () {
-        var context = LivefyreContentView.prototype.getTemplateContext.call(this);
-        if (context && context.author && typeof context.author.profileUrl === 'string') {
-            context.author.twitterUsername = context.author.profileUrl.split('/').pop();
-        }
-        if (context.author) {
-            context.authorUrl = '//twitter.com/intent/user?user_id='+context.author.twitterUserId;
-            context.authorUserName = context.author.twitterUsername;
-            context.authorUserNamePrefix = '@';
-        }
-
-        context.authorTwitterVerified = this.content.twitterVerified;
-
-        context.contentSourceName = 'twitter';
-        context.contentSourceTooltipUrl = '//twitter.com/statuses/'+context.tweetId;
-        context.contentSourceTooltipText = 'View on Twitter';
-
-        context.createdAtUrl = context.contentSourceTooltipUrl;
-
-        return context;
     };
 
     return TwitterContentView;

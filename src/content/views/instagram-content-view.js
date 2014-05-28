@@ -25,17 +25,5 @@ function (LivefyreContentView, Button, inherits) {
         }
     });
 
-    /**
-     * Gets the template rendering context. By default, returns "this.content".
-     * @return {Content} The content object this view was instantiated with.
-     */
-    InstagramContentView.prototype.getTemplateContext = function () {
-        var context = LivefyreContentView.prototype.getTemplateContext.call(this);
-
-        context.contentSourceName = 'instagram';
-
-        return context;
-    };
-
     return InstagramContentView;
 });
