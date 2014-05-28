@@ -78,10 +78,6 @@ Button.prototype.updateLabel = function (label) {
     this.render();
 };
 
-Button.prototype.render = function () {
-    View.prototype.render.call(this);
-};
-
 Button.prototype.getTemplateContext = function () {
     var context = {};
     context.buttonLabel = this._label;

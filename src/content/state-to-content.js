@@ -29,7 +29,7 @@ inherits) {
      */
     var StateToContent = function (opts) {
         opts = opts || {};
-        this._authors = opts.authors || {};
+        this.setAuthors(opts.authors || {});
         this._replies = opts.replies;
         this._collection = opts.collection;
         this._storage = opts.storage || Storage;
@@ -171,6 +171,10 @@ inherits) {
     StateToContent.transform = function (state, authors, opts) {
         var instance = new StateToContent();
         return instance.transform(state, authors, opts);
+    };
+
+    StateToContent.prototype.setAuthors = function (authors) {
+        this._authors = authors;
     };
 
     StateToContent.prototype._addChildren = function (content, children) {
