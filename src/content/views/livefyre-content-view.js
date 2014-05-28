@@ -33,6 +33,8 @@ var LivefyreContentView = function (opts) {
 
     CardContentView.apply(this, arguments);
     asLivefyreContentView(this);
+
+    this._addInitialButtons();
 };
 inherits(LivefyreContentView, CardContentView);
 
@@ -47,6 +49,10 @@ LivefyreContentView.prototype.render = function () {
 
 LivefyreContentView.prototype._updateLikeCount = function () {
     this._likeButton.updateLabel(this.content.getLikeCount().toString());
+};
+
+LivefyreContentView.prototype._addInitialButtons = function () {
+    return;
 };
 
 /**
