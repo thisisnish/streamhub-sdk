@@ -14,7 +14,7 @@ define([
     'streamhub-sdk/content/views/instagram-content-view',
     'streamhub-sdk/content/views/gallery-on-focus-view',
     'streamhub-sdk/ui/command',
-    'streamhub-sdk/ui/share-button',
+    'streamhub-share',
     'streamhub-sdk/collection/liker'
 ], function(
     auth,
