@@ -33,6 +33,8 @@ var LivefyreContentView = function (opts) {
 
     CardContentView.apply(this, arguments);
     asLivefyreContentView(this);
+
+    this._addInitialButtons();
 };
 inherits(LivefyreContentView, CardContentView);
 
@@ -64,6 +66,10 @@ LivefyreContentView.prototype.render = function () {
         var myNav = navigator.userAgent.toLowerCase();
         return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
     }
+
+LivefyreContentView.prototype._addInitialButtons = function () {
+    return;
+};
 
 /**
  * Add a button to this ContentView.
