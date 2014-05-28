@@ -1,6 +1,7 @@
 var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
+var TwitterContentHeaderView = require('streamhub-sdk/content/views/twitter-content-header-view');
 var HubButton = require('streamhub-sdk/ui/hub-button');
 var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
 var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');

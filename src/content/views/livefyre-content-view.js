@@ -33,39 +33,40 @@ var LivefyreContentView = function (opts) {
 
     CardContentView.apply(this, arguments);
     asLivefyreContentView(this);
+};
+inherits(LivefyreContentView, CardContentView);
 
-    /**
-     * Render the content inside of the LivefyreContentView's element.
-     * @returns {LivefyreContentView}
-     */
-    LivefyreContentView.prototype.render = function () {
-        ContentView.prototype.render.call(this);
-        return this;
-    };
+/**
+ * Render the content inside of the LivefyreContentView's element.
+ * @returns {LivefyreContentView}
+ */
+LivefyreContentView.prototype.render = function () {
+    CardContentView.prototype.render.call(this);
+    return this;
+};
 
-    LivefyreContentView.prototype._updateLikeCount = function () {
-        this._likeButton.updateLabel(this.content.getLikeCount().toString());
-    };
+LivefyreContentView.prototype._updateLikeCount = function () {
+    this._likeButton.updateLabel(this.content.getLikeCount().toString());
+};
 
-    /**
-     * Add a button to this ContentView.
-     * This will re-render the buttons
-     * @param button {Button} Button to add
-     * @param [opts] {object}
-     * @param [opts.side='left'] {'right'|'left'} Which side of the footer to add
-     *     the button to
-     */
-    LivefyreContentView.prototype.addButton = function (button, opts) {
-        this._footerView.addButton(button, opts);
-    };
+/**
+ * Add a button to this ContentView.
+ * This will re-render the buttons
+ * @param button {Button} Button to add
+ * @param [opts] {object}
+ * @param [opts.side='left'] {'right'|'left'} Which side of the footer to add
+ *     the button to
+ */
+LivefyreContentView.prototype.addButton = function (button, opts) {
+    this._footerView.addButton(button, opts);
+};
 
-    /**
-     * Remove a Button from the ContentView
-     * @param button {Button} Button to remove
-     */
-    LivefyreContentView.prototype.removeButton = function (button) {
-        this._footerView.removeButton(button);
-    };
+/**
+ * Remove a Button from the ContentView
+ * @param button {Button} Button to remove
+ */
+LivefyreContentView.prototype.removeButton = function (button) {
+    this._footerView.removeButton(button);
+};
 
-    return LivefyreContentView;
-});
+module.exports = LivefyreContentView;
