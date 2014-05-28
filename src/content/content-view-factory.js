@@ -77,7 +77,6 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         attachmentsView: opts.attachmentsView,
         likeCommand: likeCommand,
         shareCommand: shareCommand
-        //template: opts.template
     });
 
     return contentView;
