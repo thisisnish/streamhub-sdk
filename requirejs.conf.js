@@ -56,6 +56,13 @@ require.config({
   },{
     name: "livefyre-auth-tests",
     location: "lib/livefyre-auth/test"
+  },{
+    name: "streamhub-editor",
+    location: "lib/streamhub-editor/src/javascript",
+    main: "editor"
+  },{
+    name: 'streamhub-editor/templates',
+    location: 'lib/streamhub-editor/src/templates'
   }],
   shim: {
     jquery: {

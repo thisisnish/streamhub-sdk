@@ -32,6 +32,7 @@ var ContentFooterView = function (opts) {
     this._commands = {};
     this._setCommand({
         like: opts.likeCommand,
+        reply: opts.replyCommand,
         share: opts.shareCommand
     });
     if (opts.template) {
@@ -81,6 +82,11 @@ ContentFooterView.prototype._addInitialButtons = function () {
     if (this._likeButton) {
         this.addButton(this._likeButton);
     }
+    // Reply
+    this._replyButton = this._createReplyButton();
+    if (this._replyButton) {
+        this.addButton(this._replyButton);
+    }
     // Share
     this._shareButton = this._createShareButton();
     if (this._shareButton) {
@@ -104,6 +110,21 @@ ContentFooterView.prototype._createLikeButton = function () {
     return new HubLikeButton(this._commands.like, {
         content: this._content
     });
+};
+
+/**
+ * Create a Button to be used for replying
+ */
+ContentFooterView.prototype._createReplyButton = function () {
+    var replyCommand = this._commands.reply;
+    if ( ! (replyCommand && replyCommand.canExecute())) {
+        return;
+    }
+    var replyButton = new HubButton(replyCommand, {
+        className: 'btn-reply content-reply',
+        label: 'Reply'
+    });
+    return replyButton;
 };
 
 /**

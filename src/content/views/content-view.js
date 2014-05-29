@@ -5,6 +5,7 @@ var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var ContentEditorView = require('streamhub-sdk/content/views/content-editor-view');
 var inherits = require('inherits');
 var debug = require('debug');
 
@@ -60,6 +61,11 @@ ContentView.prototype.attachmentsElSelector = '.content-attachments';
 ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 
 ContentView.prototype.events = CompositeView.prototype.events.extended({
+    'click': function (e) {
+        if ($(e.target).hasClass('hub-content-reply')) {
+            this.toggleReplies();
+        }
+    },
     'imageLoaded.hub': function(e) {
         this.$el.addClass(this.contentWithImageClass);
         this.$el.removeClass(this.imageLoadingClass);
@@ -79,6 +85,10 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
         this.$el.parent().trigger('imageError.hub', { oembed: oembed, contentView: this });
     }
 });
+
+ContentView.prototype.toggleReplies = function () {
+    this._editorView.$el.toggle();
+};
 
 ContentView.prototype.render = function () {
     CompositeView.prototype.render.call(this);
@@ -101,6 +111,9 @@ ContentView.prototype._addInitialChildViews = function (opts) {
 
     this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, { render: false });
+
+    this._editorView = opts.editorView || new ContentEditorView(opts);
+    this.add(this._editorView, { render: false });
 };
 
  /**

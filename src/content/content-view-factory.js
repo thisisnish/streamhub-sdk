@@ -70,12 +70,14 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     var attachmentsView = this._createAttachmentsView(content);
 
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
+    var replyCommand = opts.replyCommand || this._createReplyCommand(content, opts.replyer);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
 
     var contentView = new ContentViewType({
         content : content,
         attachmentsView: opts.attachmentsView,
         likeCommand: likeCommand,
+        replyCommand: replyCommand,
         shareCommand: shareCommand
     });
 
@@ -118,6 +120,18 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         }
         return currentType;
     }
+};
+
+ContentViewFactory.prototype._createReplyCommand = function (content, replyer) {
+    var replyCommand;
+    if (typeof sharer === 'function') {
+        replyCommand = new Command(function () {
+            replyer(content);
+        });
+    } else {
+        replyCommand = new Command(function () {});
+    }
+    return replyCommand;
 };
 
 /**

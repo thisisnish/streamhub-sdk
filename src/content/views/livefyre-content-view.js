@@ -29,7 +29,7 @@ var LivefyreContentView = function (opts) {
 
 
     this._themeClass = opts.themeClass || 'content-default';
-    this.elClass += this._themeClass;
+    this.elClass += ' '+this._themeClass;
 
     CardContentView.apply(this, arguments);
     asLivefyreContentView(this);
