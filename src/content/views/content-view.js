@@ -66,6 +66,12 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
             this.toggleReplies();
         }
     },
+    'writeSuccess.hub': function (e) {
+        this.toggleReplies();
+    },
+    'writeFail.hub': function (e) {
+        debugger;
+    },
     'imageLoaded.hub': function(e) {
         this.$el.addClass(this.contentWithImageClass);
         this.$el.removeClass(this.imageLoadingClass);

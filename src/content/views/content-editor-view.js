@@ -1,4 +1,5 @@
 var inherits = require('inherits');
+var Auth = require('auth');
 var View = require('streamhub-sdk/view');
 var EditorView = require('streamhub-editor/auth-editor');
 var template = require('hgn!streamhub-sdk/content/templates/content-editor');
@@ -25,7 +26,15 @@ ContentEditorView.prototype.events = View.prototype.events.extended({
 
 ContentEditorView.prototype._writeContent = function (e, content) {
     content.parentId = this._content.id;
-    this._content.collection.write(content);
+    this._content.collection.write(content, this._handleWrite.bind(this));
+};
+
+ContentEditorView.prototype._handleWrite = function (err, data) {
+    if (err) {
+        this.$el.trigger('writeFail.hub');
+        return;
+    }
+    this.$el.trigger('writeSuccess.hub');
 };
 
 ContentEditorView.prototype.setElement = function (el) {
@@ -40,7 +49,11 @@ ContentEditorView.prototype.render = function () {
 
 ContentEditorView.prototype.getTemplateContext = function () {
     var context = View.prototype.getTemplateContext.call(this);
-    context.avatarUrl = '';
+    var user = Auth.get('livefyre');
+    if (user) {
+        context.avatarUrl = user.get('avatar');
+    }
+    return context;
 };
 
 module.exports = ContentEditorView;
