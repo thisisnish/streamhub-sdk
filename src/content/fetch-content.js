@@ -44,10 +44,10 @@ var fetchContent = function (opts, callback) {
             state,
             content,
             contents = [];
-        
+
         //Prepare StateToContents to handle the received states
         var trans = opts.stateToContent || new StateToContent(opts);
-        trans.setAuthors = data.authors;
+        trans.setAuthors(data.authors);
         
         //Listen for states that have been transformed into Content
         trans.on('data', function (content) {
