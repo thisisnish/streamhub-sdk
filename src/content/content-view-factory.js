@@ -92,7 +92,9 @@ define([
         cvOpts.shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
         
         contentView = new ContentViewType(cvOpts);
-        !cvOpts.shareCommand && contentView.addButton(new ShareButton({content: content}));
+        if (!cvOpts.shareCommand && ContentViewType !== TwitterContentView) {
+            contentView.addButton(new ShareButton({content: content}));
+        }
 
         return contentView;
     };
