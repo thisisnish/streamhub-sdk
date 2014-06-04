@@ -33,15 +33,19 @@ LivefyrePermalinkClient.prototype.getPermalink = function (opts, callback) {
             value = [opts.environment, opts.collectionId, opts.messageId].join(':'),
             pieces = document.location.href.split("#"),
             url = pieces[0],
-            fragment = pieces[1].replace(rgx, '');
+            fragment = pieces[1];
 
-            if (fragment.length > 0){
-                //Check for & at the front and remove it
-                if (fragment.charAt(0) === '&') {
-                    fragment = fragment.slice(1);
+            if (fragment) {
+                fragment = fragment.replace(rgx, '');
+                if (fragment.length > 0){
+                    fragment = fragment.replace(rgx, '');
+                    //Check for & at the front and remove it
+                    if (fragment.charAt(0) === '&') {
+                        fragment = fragment.slice(1);
+                    }
+
+                    fragment += '&' + [param, value].join('=');
                 }
-
-                fragment += '&' + [param, value].join('=');
             } else {
                 fragment = [param, value].join('=')
             }

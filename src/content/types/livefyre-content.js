@@ -173,7 +173,14 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
      * @param parent {!Content}
      */
     LivefyreContent.prototype.setParent = function (parent) {
-        parent && !this._parent && this.parentId && parent.id === this.parentId && (this._parent = parent);
+        if (this._parent || !parent) {
+            //Can only set once and can't set to falsy value
+            return
+        }
+        if (this.parentId && parent.id === this.parentId) {
+            //If parent is valid, set it
+            this._parent = parent;
+        }
     };
     
     /**
