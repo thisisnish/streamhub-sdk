@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 var inherits = require('inherits');
 var LivefyrePermalinkClient = require('streamhub-sdk/collection/clients/permalink-client');
