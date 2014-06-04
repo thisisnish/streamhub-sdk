@@ -1,12 +1,12 @@
 {
   "name": "streamhub-sdk",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "main": [
     "./src/main.js"
   ],
   "dependencies": {
     "jquery": "~1.10.1",
-    "base64": "git://github.com/ross-pfahler/Base64.js#~0.3.0",
+    "base64": "git://github.com/ross-pfahler/Base64.js#~0.4.0",
     "hogan": "latest",
     "requirejs": "~2.1.5",
     "cajon": "git://github.com/requirejs/cajon.git#~0.1.11",
@@ -27,6 +27,7 @@
     "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
   },
   "resolutions": {
-    "view": "~1.1"
+    "view": "~1.1",
+    "base64": "~0.4.0"
   }
 }
