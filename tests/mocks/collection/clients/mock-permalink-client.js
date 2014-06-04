@@ -1,4 +1,5 @@
 'use strict'
+
 var inherits = require('inherits');
 var LivefyrePermalinkClient = require('streamhub-sdk/collection/clients/permalink-client');
 
@@ -15,4 +16,4 @@ MockLivefyrePermalinkClient.prototype.getPermalink = function (opts, errback) {
     errback(null, response);
 };
 
-module.exports MockLivefyrePermalinkClient;
+module.exports = MockLivefyrePermalinkClient;
