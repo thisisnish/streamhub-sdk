@@ -1,6 +1,6 @@
 {
   "name": "streamhub-sdk",
-  "version": "2.11.4",
+  "version": "2.11.4+build.445",
   "main": [
     "./src/main.js"
   ],
@@ -27,7 +27,6 @@
     "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
   },
   "resolutions": {
-    "view": "~1.1",
-    "base64": "~0.4.0"
+    "view": "~1.1"
   }
 }
