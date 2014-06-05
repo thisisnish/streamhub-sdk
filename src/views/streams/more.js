@@ -5,7 +5,6 @@ define([
 function (inherits, Duplex, debug) {
     'use strict';
 
-
     var log = debug('streamhub-sdk/views/streams/more');
 
 
@@ -49,6 +48,17 @@ function (inherits, Duplex, debug) {
      */
     More.prototype.getGoal = function () {
         return this._goal;
+    };
+
+
+    More.prototype.showAll = function () {
+        this.setGoal(this.getSize());
+    };
+
+
+    More.prototype.getSize = function () {
+        // Add this._stack.length as an item is moved from buffer to stack
+        return this._writableState.buffer.length + this._stack.length;
     };
 
 

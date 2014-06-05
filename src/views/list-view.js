@@ -33,9 +33,14 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
 
         this.comparator = opts.comparator || this.comparator;
         this._moreAmount = opts.showMore || 50;
+
         this.more = opts.more || this._createMoreStream(opts);
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
+
+        this.queue = opts.queue || this._createQueueStream();
+        this.showQueueButton = opts.showQueueButton || this._createShowMoreButton(opts);
+        this.showQueueButton.setMoreStream(this.queue);
 
         //TODO(ryanc): This is out of convention to call #render
         // in the constructor. However it is convenient/intuitive
@@ -48,6 +53,7 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         }
 
         this._pipeMore();
+        this._pipeQueue();
     };
 
     inherits(ListView, View);
@@ -56,8 +62,12 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
 
     ListView.prototype.events = View.prototype.events.extended({
         // .showMoreButton will trigger showMore.hub when it is clicked
-        'showMore.hub': function () {
-            this.showMore();
+        'showMore.hub': function (e) {
+            if ($(e.target).hasClass(this.showMoreElClass)) {
+                this.showMore();
+            } else if ($(e.target).hasClass(this.showQueueElClass)) {
+                this.showQueue();
+            }
         },
         // When a subview .remove()s itself, it should fire this event
         'removeView.hub': function (event, view) {
@@ -74,10 +84,14 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
     ListView.prototype.listElSelector = '.hub-list';
 
 
+    ListView.prototype.showMoreElClass = 'hub-list-more';
+    ListView.prototype.showQueueElClass = 'hub-list-queue';
+
     /**
      * Selector of .el child in which to render a show more button
      */
-    ListView.prototype.showMoreElSelector = '.hub-list-more';
+    ListView.prototype.showMoreElSelector = '.'+ListView.prototype.showMoreElClass;
+    ListView.prototype.showQueueElSelector = '.'+ListView.prototype.showQueueElClass;
 
 
     /**
@@ -105,6 +119,12 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         this.showMoreButton.render();
         if (this.showMoreButton.isHolding()) {
             this.showMoreButton.$el.show();
+        }
+
+        this.showQueueButton.setElement(this.$el.find(this.showQueueElSelector));
+        this.showQueueButton.render();
+        if (this.showQueueButton.isHolding()) {
+            this.showQueueButton.$el.show();
         }
     };
 
@@ -306,6 +326,14 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
     };
 
 
+    ListView.prototype.showQueue = function (numToShow) {
+        if (typeof numToShow === 'undefined') {
+            this.queue.showAll();
+        }
+        this.queue.setGoal(numToShow);
+    };
+
+
     /**
      * Create a Stream that extra content can be written into.
      * This will be used if an opts.moreBuffer is not provided on construction.
@@ -316,7 +344,14 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         opts = opts || {};
         return new More({
             highWaterMark: 0,
-            goal: opts.initial || 50
+            goal: opts.initial === undefined ? 50 : opts.initial
+        });
+    };
+
+    ListView.prototype._createQueueStream = function () {
+        return new More({
+            highWaterMark: 100,
+            goal: 0
         });
     };
 
@@ -328,6 +363,10 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
      * @return {ShowMoreButton}
      */
     ListView.prototype._createShowMoreButton = function (opts) {
+        return new ShowMoreButton();
+    };
+
+    ListView.prototype._createShowQueueButton = function (opts) {
         return new ShowMoreButton();
     };
 
@@ -343,6 +382,22 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         this.more.on('readable', function () {
             var content;
             while (content = self.more.read()) {
+                self.add(content);
+            }
+        });
+    };
+
+    /**
+     * Register listeners to the .queue stream so that the items
+     * it reads out go somewhere useful.
+     * By default, this .add()s the items
+     * @private
+     */
+    ListView.prototype._pipeQueue = function () {
+        var self = this;
+        this.queue.on('readable', function () {
+            var content;
+            while (content = self.queue.read()) {
                 self.add(content);
             }
         });
