@@ -15,6 +15,7 @@ define([
     'streamhub-sdk/debug'
 ], function ($, auth, ContentView, LivefyreContent, LivefyreOpine, AuthRequiredCommand, Command, HubButton, HubLikeButton, Liker, ContentTemplate, util, inherits, debug) {
     'use strict';
+    var log = debug('streamhub-sdk/content/views/livefyre-content-view');
 
     /**
      * Defines the base class for all content-views. Handles updates to attachments
@@ -132,13 +133,15 @@ define([
         if ( ! auth.hasDelegate('login')) {
             return;
         }
-        // Don't render a button if this isn't actually LivefyreContent
-        if ( ! (this.content instanceof LivefyreContent)) {
+        try {
+            var likeButton = new HubLikeButton(this._commands.like, {
+                content: this.content
+            });
+        } catch (e) {
+            log('Couldn\'t create HubLikeButton for content', content, e);
             return;
         }
-        return new HubLikeButton(this._commands.like, {
-            content: this.content
-        });
+        return likeButton;
     };
 
     /**
