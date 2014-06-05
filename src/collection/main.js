@@ -45,6 +45,7 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this._writer = opts.writer || null;
         this._updater = null;
         this._pipedArchives = [];
+        this._pipedUpdaters = [];
 
         Duplex.call(this, opts);
     };
@@ -114,11 +115,17 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
      *     if you use it (defaults to opts param)
      */
     Collection.prototype.pipe = function (writable, opts) {
-        var archive;
         opts = opts || {};
+
+        var archive;
         var archivePipeOpts = opts.archivePipeOpts || opts;
+        var updaterPipeOpts = opts.updaterPipeOpts || opts;
+
         if (typeof opts.pipeArchiveToMore === 'undefined') {
             opts.pipeArchiveToMore = true;
+        }
+        if (typeof opts.pipeUpdaterToQueue === 'undefined') {
+            opts.pipeUpdaterToQueue = true;
         }
 
         // If piped to a ListView (or something with a .more),
@@ -127,6 +134,16 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
             archive = this.createArchive();
             archive.pipe(writable.more, archivePipeOpts);
             this._pipedArchives.push(archive);
+        }
+
+        // If piped to a ListView (or something with a .queue),
+        // pipe an archive to .queue
+        if (opts.pipeUpdaterToQueue && writable.queue && writable.queue.writable) {
+            if ( ! this._updater) {
+                this._updater = this.createUpdater();
+            }
+            this._updater.pipe(writable.queue, updaterPipeOpts);
+            this._pipedUpdaters.push(this._updater);
         }
 
         return Duplex.prototype.pipe.apply(this, arguments);

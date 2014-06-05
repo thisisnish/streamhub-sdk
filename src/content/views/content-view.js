@@ -40,9 +40,6 @@ var ContentView = function (opts) {
     this._addInitialChildViews(opts);
 
     if (this.content) {
-        this.content.on("reply", function(content) {
-            this.render();
-        }.bind(this));
         this.content.on("change:visibility", function(newVis, oldVis) {
             this._handleVisibilityChange(newVis, oldVis);
         }.bind(this));
