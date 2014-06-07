@@ -78,10 +78,30 @@ define([
      * @returns {LivefyreContentView}
      */
     LivefyreContentView.prototype.render = function () {
+        /**
+         * bengo:
+         * This next 3 lines makes me sad, but it is necessary to support IE9.
+         * View.prototype.render will set this.innerHTML to template().
+         * For some reason, this also causes the innerHTML of the buttons to
+         * be set to an empty string. e.g. Like Buttons have their like count
+         * cleared out. When ._renderButtons later re-appendChilds all the
+         * button.els, they are empty. So if we detach them here before
+         * this.innerHTML is set, they are not cleared.
+         * bit.ly/1no8mNk 
+         */
+        if (getIeVersion() === 9) {
+            this._detachButtons();
+        }
         ContentView.prototype.render.call(this);
         this._renderButtons();
         return this;
     };
+
+    // return the ie version if IE, else false
+    function getIeVersion () {
+        var myNav = navigator.userAgent.toLowerCase();
+        return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+    }
 
     /**
      * Create and add any buttons that should be on all LivefyreContentViews.
@@ -98,6 +118,17 @@ define([
         this._shareButton = this._createShareButton();
         if (this._shareButton) {
             this.addButton(this._shareButton);
+        }
+    };
+
+    /**
+     * Detach all the buttons from the DOM
+     */
+    LivefyreContentView.prototype._detachButtons = function () {
+        this._controls.left.forEach(detachButton);
+        this._controls.right.forEach(detachButton);
+        function detachButton(button) {
+            button.$el.detach();
         }
     };
 
