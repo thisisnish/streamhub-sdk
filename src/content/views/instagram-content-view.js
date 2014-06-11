@@ -14,12 +14,8 @@ var asInstagramContentView = require('streamhub-sdk/content/views/mixins/instagr
  */
 var InstagramContentView = function (opts) {
     LivefyreContentView.call(this, opts);
-
-    asLivefyreContentView(this);
-    asInstagramContentView(this);
+    asInstagramContentView(this, opts);
 };
 inherits(InstagramContentView, LivefyreContentView);
-
-InstagramContentView.prototype.elClass += ' content-instagram ';
 
 module.exports = InstagramContentView;

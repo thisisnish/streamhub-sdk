@@ -184,13 +184,13 @@ function ($, ContentListView, Content, ContentView) {
         describe("handles showMore.hub event", function () {
             it("is called on showMore.hub event", function () {
                 spyOn(listView, 'showMore').andCallThrough();
-                listView.$el.trigger('showMore.hub');
-                expect(listView.showMore).toHaveBeenCalledWith();
+                listView.showMoreButton.$el.trigger('showMore.hub');
+                expect(listView.showMore).toHaveBeenCalled();
             });
             it("is called when .showMoreButton.$el is clicked", function () {
                 spyOn(listView, 'showMore').andCallThrough();
                 listView.showMoreButton.$el.click();
-                expect(listView.showMore).toHaveBeenCalledWith();
+                expect(listView.showMore).toHaveBeenCalled();
             });
         });
 

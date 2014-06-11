@@ -17,6 +17,8 @@ var Liker = require('streamhub-sdk/collection/liker');
 var CompositeView = require('view/composite-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
+var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 /**
  * A module to create instances of ContentView for a given Content instance.
@@ -26,6 +28,7 @@ var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachm
 var ContentViewFactory = function(opts) {
     opts = opts || {};
     this.contentRegistry = this.contentRegistry.slice(0);
+    this._headerViewFactory = new ContentHeaderViewFactory();
     if (opts.createAttachmentsView) {
         this._createAttachmentsView = opts.createAttachmentsView;
     }
@@ -39,17 +42,17 @@ var ContentViewFactory = function(opts) {
  */
 ContentViewFactory.prototype.contentRegistry = [
     { type: LivefyreTwitterContent, view: TwitterContentView,
-        typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-twitter' },
+        typeUrn: TYPE_URNS.LIVEFYRE_TWITTER },
     { type: LivefyreFacebookContent, view: FacebookContentView,
-        typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-facebook' },
+        typeUrn: TYPE_URNS.LIVEFYRE_FACEBOOK},
     { type: LivefyreInstagramContent, view: InstagramContentView,
-        typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram' },
+        typeUrn: TYPE_URNS.LIVEFYRE_INSTAGRAM },
     { type: TwitterContent, view: TwitterContentView,
-        typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:twitter' },
+        typeUrn: TYPE_URNS.TWITTER },
     { type: LivefyreContent, view: LivefyreContentView,
-        typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre' },
+        typeUrn: TYPE_URNS.LIVEFYRE },
     { type: Content, view: ContentView,
-        typeUrn: 'urn:livefyre:js:streamhub-sdk:content' }
+        typeUrn: TYPE_URNS.CONTENT }
 ];
 
 ContentViewFactory.prototype._createAttachmentsView = function (content) {
@@ -70,14 +73,13 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     var attachmentsView = this._createAttachmentsView(content);
 
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
-    var replyCommand = opts.replyCommand || this._createReplyCommand(content, opts.replyer);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
 
     var contentView = new ContentViewType({
-        content : content,
+        content: content,
         attachmentsView: opts.attachmentsView,
         likeCommand: likeCommand,
-        replyCommand: replyCommand,
+        replyCommand: opts.replyCommand,
         shareCommand: shareCommand
     });
 
@@ -122,18 +124,6 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
     }
 };
 
-ContentViewFactory.prototype._createReplyCommand = function (content, replyer) {
-    var replyCommand;
-    if (typeof sharer === 'function') {
-        replyCommand = new Command(function () {
-            replyer(content);
-        });
-    } else {
-        replyCommand = new Command(function () {});
-    }
-    return replyCommand;
-};
-
 /**
  * Given content and a sharer, create a Command to pass as
  * @param sharer {function|Sharer} Object or Function to share with
@@ -148,8 +138,8 @@ ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
         return sharer;
     }
 
-    var hasHasDelegate = typeof sharer.hasDelegate === 'function';
-    if (hasHasDelegate && ! sharer.hasDelegate()) {
+    var hasDelegate = typeof sharer.hasDelegate === 'function';
+    if (hasDelegate && ! sharer.hasDelegate()) {
         return;
     }
 
