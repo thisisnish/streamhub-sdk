@@ -21,7 +21,14 @@ var ContentHeaderView = function (opts) {
     opts = opts || {};
     View.call(this, opts);
 
-    this._content = opts.content;
+    this.author = opts.author;
+    this.authorUserNamePrefix = opts.authorUserNamePrefix;
+    this.authorUserName = opts.authorUserName;
+    this.authorUrl = opts.authorUrl;
+    this.authorVerified = opts.authorVerified;
+    this.contentSourceName = opts.contentSourceName;
+    this.contentSourceTooltipUrl = opts.contentSourceTooltipUrl;
+    this.contentSourceTooltipText = opts.contentSourceTooltipText;
 };
 inherits(ContentHeaderView, View);
 
@@ -102,7 +109,8 @@ ContentHeaderView.prototype._handleAvatarError = function (e) {
 };
 
 ContentHeaderView.prototype.getTemplateContext = function () {
-    return $.extend({}, this._content);
+    var context = $.extend({}, this)
+    return context;
 };
 
 module.exports = ContentHeaderView;

@@ -2,16 +2,15 @@
 
 /**
  * A mixin that decorates an instance of ContentView 
- * to have a bounded visible set
+ * to have default card theme
  */
-function asFacebookContentView(contentView, opts) {
+function asCardContentView(contentView, opts) {
     opts = opts || {};
-    var elClass = opts.elClass || 'content-facebook';
+    var elClass = opts.elClass || 'content-default';
     contentView.$el.addClass(elClass);
 
     /**
      * Render the content inside of the LivefyreContentView's element.
-     * @returns {LivefyreContentView}
      */
     var oldRender = contentView.render;
     contentView.render = function () {
@@ -20,4 +19,4 @@ function asFacebookContentView(contentView, opts) {
     };
 };
 
-module.exports = asFacebookContentView;
+module.exports = asCardContentView;

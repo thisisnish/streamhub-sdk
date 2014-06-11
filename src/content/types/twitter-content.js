@@ -16,5 +16,7 @@ define(['streamhub-sdk/content', 'inherits'], function(Content, inherits) {
     };
     inherits(TwitterContent, Content);
 
+    TwitterContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:twitter';
+
     return TwitterContent;
 });

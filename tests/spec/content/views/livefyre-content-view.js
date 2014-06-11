@@ -156,7 +156,7 @@ function (
                 });
                 lfContentView.render();
 
-                spyOn(lfContentView._footerView._likeButton, '_updateLikeCount');
+                spyOn(lfContentView._likeButton, '_updateLikeCount');
 
                 // Add like
                 var lfOpine = new LivefyreOpine({
@@ -166,7 +166,7 @@ function (
                 });
                 lfContent.addOpine(lfOpine);
 
-                expect(lfContentView._footerView._likeButton._updateLikeCount).toHaveBeenCalled();
+                expect(lfContentView._likeButton._updateLikeCount).toHaveBeenCalled();
             });
 
             it("updates the label when a 'removeOpine' event is emitted on the associated content", function () {
@@ -185,12 +185,12 @@ function (
                 });
                 lfContent.addOpine(lfOpine);
 
-                spyOn(lfContentView._footerView._likeButton, '_updateLikeCount');
+                spyOn(lfContentView._likeButton, '_updateLikeCount');
 
                 // Remove like
                 lfContent.removeOpine(lfOpine);
 
-                expect(lfContentView._footerView._likeButton._updateLikeCount).toHaveBeenCalled();
+                expect(lfContentView._likeButton._updateLikeCount).toHaveBeenCalled();
             });
 
             it("auto-increments the label when Like button is clicked", function () {
@@ -202,11 +202,11 @@ function (
                 lfContentView.render();
 
                 spyOn(liker, 'like');
-                spyOn(lfContentView._footerView._likeButton, '_handleClick').andCallThrough();
+                spyOn(lfContentView._likeButton, '_handleClick').andCallThrough();
 
-                lfContentView._footerView._likeButton.$el.click();
-                expect(lfContentView._footerView._likeButton._handleClick).toHaveBeenCalled();
-                expect(lfContentView._footerView._likeButton._label).toBe(1);
+                lfContentView._likeButton.$el.click();
+                expect(lfContentView._likeButton._handleClick).toHaveBeenCalled();
+                expect(lfContentView._likeButton._label).toBe(1);
             });
 
             it("reverts label when the Like request errors", function () {
@@ -224,8 +224,8 @@ function (
                     this._writeClient.like({}, callback);
                 });
 
-                lfContentView._footerView._likeButton.$el.click();
-                expect(lfContentView._footerView._likeButton._label).toBe(0);
+                lfContentView._likeButton.$el.click();
+                expect(lfContentView._likeButton._label).toBe(0);
             });
 
             it("cannot execute when the Like button's associated content is authored by the authenticated user (cannot Like own content)", function () {
@@ -247,7 +247,7 @@ function (
                 });
                 lfContentView.render();
 
-                expect(lfContentView._footerView._commands.like._canExecute).toBe(false);
+                expect(lfContentView._commands.like._canExecute).toBe(false);
             });
 
             it("can execute when the Like button's associated content is not authored by the authenticated user (can Like other users' content)", function () {
@@ -269,7 +269,7 @@ function (
                 });
                 lfContentView.render();
 
-                expect(lfContentView._footerView._commands.like._canExecute).toBe(true);
+                expect(lfContentView._commands.like._canExecute).toBe(true);
             });
         });
 

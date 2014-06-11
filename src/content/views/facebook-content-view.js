@@ -1,7 +1,6 @@
 var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
-var FacebookContentHeaderView = require('streamhub-sdk/content/views/facebook-content-header-view');
 var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
 var asFacebookContentView = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
 
@@ -15,14 +14,10 @@ var asFacebookContentView = require('streamhub-sdk/content/views/mixins/facebook
  */
 var FacebookContentView = function FacebookContentView (opts) {
     opts = opts || {};
-    opts.headerView = new FacebookContentHeaderView(opts);
     LivefyreContentView.apply(this, arguments);
 
-    asLivefyreContentView(this);
-    asFacebookContentView(this);
+    asFacebookContentView(this, opts);
 };
 inherits(FacebookContentView, LivefyreContentView);
-
-FacebookContentView.prototype.elClass += ' content-facebook ';
 
 module.exports = FacebookContentView;
