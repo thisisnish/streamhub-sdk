@@ -5,6 +5,7 @@ var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var inherits = require('inherits');
 var debug = require('debug');
 
@@ -32,6 +33,7 @@ var ContentView = function (opts) {
 
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
+    this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
     this._themeClass = opts.themeClass;
 
     CompositeView.call(this, opts);
@@ -39,9 +41,6 @@ var ContentView = function (opts) {
     this._addInitialChildViews(opts);
 
     if (this.content) {
-        this.content.on("reply", function(content) {
-            this.render();
-        }.bind(this));
         this.content.on("change:visibility", function(newVis, oldVis) {
             this._handleVisibilityChange(newVis, oldVis);
         }.bind(this));
@@ -88,7 +87,7 @@ ContentView.prototype.render = function () {
 };
 
 ContentView.prototype._addInitialChildViews = function (opts) {
-    this._headerView = opts.headerView || new ContentHeaderView(opts);
+    this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, { render: false });
 
     this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
@@ -103,7 +102,7 @@ ContentView.prototype._addInitialChildViews = function (opts) {
     this.add(this._footerView, { render: false });
 };
 
- /**
+/**
  * Set the .el DOMElement that the ContentView should render to
  * @param el {DOMElement} The new element the ContentView should render to
  * @returns {ContentView}

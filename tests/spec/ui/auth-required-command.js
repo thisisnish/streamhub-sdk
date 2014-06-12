@@ -37,9 +37,6 @@ describe('AuthRequiredCommand: streamhub-sdk/ui/command/auth-required-command', 
             authReqCmd.on('change:canExecute', observer);
 
             auth.delegate({
-                login: function () {}
-            });
-            auth.delegate({
                 login: function () {},
                 logout: function (loggedOut) {
                     loggedOut();
