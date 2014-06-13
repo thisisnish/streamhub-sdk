@@ -26,5 +26,8 @@
     "jasmine-jquery": "1.6.0",
     "almond": "0.2.5",
     "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
+  },
+  "resolutions": {
+    "view": "composite-view"
   }
 }
