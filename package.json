@@ -6,7 +6,7 @@
     "name": "Benjamin Goering",
     "email": "ben@livefyre.com"
   },
-  "version": "2.11.6",
+  "version": "2.11.7",
   "dependencies": {
     "bower": "*",
     "http-server": "*",
