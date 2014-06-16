@@ -31,7 +31,7 @@ function (LivefyreContentView, inherits, $) {
         context.authorUrl = context.author.profileUrl;
 
         context.contentSourceName = 'facbeook';
-        context.contentSourceTooltipUrl = context.permalink;
+        context.contentSourceUrl = context.permalink;
         context.contentSourceTooltipText = 'View on Facebook';
 
         context.createdAtUrl = context.permalink;

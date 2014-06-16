@@ -65,8 +65,7 @@ function (LivefyreContentView, HubButton, inherits, $) {
 
         context.contentSourceName = 'twitter';
         // must be twitter.com homepage according to twitter
-        context.contentSourceTooltipUrl = '//twitter.com';
-        context.contentSourceTooltipText = 'View on Twitter';
+        context.contentSourceUrl = '//twitter.com';
 
         context.createdAtUrl = '//twitter.com/statuses/'+context.tweetId;
 
