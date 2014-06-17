@@ -92,11 +92,7 @@ function($, ListView, ContentView, ContentViewFactory, GalleryAttachmentListView
      * @param b {ContentView}
      * @returns {Number} < 0 if a before b, 0 if same ordering, > 0 if b before a
      */
-    ContentListView.prototype.comparator = function (a, b) {
-        var aDate = a.content.createdAt || a.createdAt,
-            bDate = b.content.createdAt || b.createdAt;
-        return bDate - aDate;
-    };
+    ContentListView.prototype.comparator = ListView.prototype.comparators.CREATEDAT_DESCENDING;
 
     ContentListView.prototype.bounded = function (bound) {
         this._bound = bound;
