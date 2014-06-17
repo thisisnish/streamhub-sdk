@@ -93,6 +93,18 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
     ListView.prototype.showMoreElSelector = '.'+ListView.prototype.showMoreElClass;
     ListView.prototype.showQueueElSelector = '.'+ListView.prototype.showQueueElClass;
 
+    ListView.prototype.comparators = {
+        CREATEDAT_ASCENDING: function (a, b) {
+            var aDate = (a.content && a.content.createdAt) || a.createdAt,
+                bDate = (b.content && b.content.createdAt) || b.createdAt;
+            return aDate - bDate;
+        },
+        CREATEDAT_DESCENDING: function (a, b) {
+            var aDate = (a.content && a.content.createdAt) || a.createdAt,
+                bDate = (b.content && b.content.createdAt) || b.createdAt;
+            return bDate - aDate;
+        }
+    };
 
     /**
      * Keys are views that were forcibly indexed into this view.
@@ -125,6 +137,11 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         this.showQueueButton.render();
         if (this.showQueueButton.isHolding()) {
             this.showQueueButton.$el.show();
+        }
+
+        if (!this.comparator === ListView.prototype.comparators.CREATEDAT_ASCENDING) {
+            this.$el.find(this._listView.showMoreElSelector).insertBefore(this._listView.$listEl);
+            this.$el.find(this._listView.showQueueElSelector).insertAfter(this._listView.$listEl);
         }
     };
 
