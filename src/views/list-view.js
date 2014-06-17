@@ -38,7 +38,7 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         this.showMoreButton = opts.showMoreButton || this._createShowMoreButton(opts);
         this.showMoreButton.setMoreStream(this.more);
 
-        this.queue = opts.queue || this._createQueueStream();
+        this.queue = opts.queue || this._createQueueStream(opts);
         this.showQueueButton = opts.showQueueButton || this._createShowMoreButton(opts);
         this.showQueueButton.setMoreStream(this.queue);
 
@@ -348,10 +348,11 @@ function($, View, inherits, debug, Writable, More, ShowMoreButton, ListViewTempl
         });
     };
 
-    ListView.prototype._createQueueStream = function () {
+    ListView.prototype._createQueueStream = function (opts) {
+        opts = opts || {};
         return new More({
             highWaterMark: 100,
-            goal: 0
+            goal: opts.queueInitial === undefined ? Infinity : opts.queueInitial
         });
     };
 
