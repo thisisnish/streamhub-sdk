@@ -23,9 +23,6 @@ var LivefyreContentView = function (opts) {
     opts = opts || {};
     this.template = opts.template;
 
-    this._themeClass = opts.themeClass || 'content-default';
-    this.elClass += ' '+this._themeClass;
-
     CardContentView.apply(this, arguments);
     asLivefyreContentView(this, opts);
 };

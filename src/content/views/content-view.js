@@ -34,7 +34,6 @@ var ContentView = function (opts) {
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
-    this._themeClass = opts.themeClass;
 
     CompositeView.call(this, opts);
 
@@ -81,9 +80,6 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
 
 ContentView.prototype.render = function () {
     CompositeView.prototype.render.call(this);
-    if (this._themeClass) {
-        this.$el.addClass(this._themeClass);
-    }
 };
 
 ContentView.prototype._addInitialChildViews = function (opts) {
