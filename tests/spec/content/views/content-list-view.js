@@ -52,13 +52,6 @@ function ($, ContentListView, Content, ContentView) {
                 });
             });
 
-            it('uses a modal when constructecd with opts.modal = true', function () {
-                var listView = new ContentListView({
-                    modal: true
-                });
-                expect(typeof listView.modal).toBe('object');
-            });
-
             describe("with opts.sharer", function () {
                 it('passes the sharer to .contentViewFactory.createContentView on .createContentView', function () {
                     var sharer = {
@@ -158,26 +151,6 @@ function ($, ContentListView, Content, ContentView) {
             it('adds class .streamhub-list-view', function () {
                 listView.setElement(newElement);
                 expect($(newElement)).toHaveClass('streamhub-content-list-view');
-            });
-        });
-
-        describe('handles focusContent.hub event', function () {
-
-            var content;
-
-            beforeEach(function() {
-                listView = new ContentListView();
-
-                content = new Content();
-                listView.add(content);
-            });
-
-            it('shows the modal when a modal is set on the ContentListView instance', function () {
-                spyOn(listView.modal, 'show');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(listView.modal.show).toHaveBeenCalled();
             });
         });
 

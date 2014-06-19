@@ -39,6 +39,7 @@ define(function () {
         'tests/spec/content/views/block-attachment-list-view',
         'tests/spec/content/views/gallery-attachment-list-view',
         'tests/spec/content/views/content-list-view',
+        'tests/spec/content/views/mixins/attachment-modal-mixin',
         'tests/spec/modal/main',
         'tests/spec/modal/views/attachment-gallery-modal',
         'tests/spec/ui/button',
