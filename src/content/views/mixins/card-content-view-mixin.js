@@ -7,7 +7,7 @@ var hasTheme = require('streamhub-sdk/content/views/mixins/theme-mixin');
  * to have default card theme
  */
 function asCardContentView(contentView) {
-    hasTheme('content-default', contentView);
+    hasTheme(contentView, 'content-default');
 };
 
 module.exports = asCardContentView;

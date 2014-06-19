@@ -1,6 +1,6 @@
 'use strict';
 
-function hasTheme(themeClassName, contentView) {
+function hasTheme(contentView, themeClassName) {
     if (! themeClassName) {
         return;
     }
