@@ -39,10 +39,12 @@ ContentHeaderView.prototype.elClass = 'content-header';
 ContentHeaderView.prototype.headerElSelector = '.content-header';
 ContentHeaderView.prototype.avatarSelector = '.content-author-avatar';
 ContentHeaderView.prototype.tooltipElSelector = '.hub-tooltip-link';
+ContentHeaderView.prototype.contentWithImageClass = 'content-with-image';
+ContentHeaderView.prototype.parentClassSelector = '.content';
 
 ContentHeaderView.prototype.events = View.prototype.events.extended({}, function (events) {
-    events['click ' + this.headerElSelector] = function(e) {
-        if (! this.$el.hasClass(this.contentWithImageClass)) {
+    events['click'] = function(e) {
+        if (! this.$el.parents(this.parentClassSelector).hasClass(this.contentWithImageClass)) {
             // Only do this when there is an image
             return;
         }
