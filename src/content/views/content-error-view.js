@@ -21,7 +21,6 @@ ContentErrorView.prototype.template = template;
 ContentErrorView.prototype.events = View.prototype.events.extended({
     'click': function (e) {
         e.stopPropagation();
-        debugger;
         if ($(e.target).hasClass(this.retryLinkClass)) {
             this._retry();
         }
