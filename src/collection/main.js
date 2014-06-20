@@ -46,6 +46,10 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
         this._pipedArchives = [];
 
         Duplex.call(this, opts);
+
+        this.on('error', function (err) {
+            log(err);
+        });
     };
 
     inherits(Collection, Duplex);
