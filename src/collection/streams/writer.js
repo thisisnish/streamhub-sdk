@@ -2,15 +2,21 @@ define([
     'stream/writable',
     'streamhub-sdk/collection/clients/write-client',
     'streamhub-sdk/auth',
-    'inherits'],
-function (Writable, LivefyreWriteClient, Auth, inherits) {
+    'inherits',
+    'streamhub-sdk/debug'],
+function (Writable, LivefyreWriteClient, Auth, inherits, debug) {
     'use strict';
 
+    var log = debug('streamhub-sdk/collection/streams/writer');
 
     var CollectionWriter = function (opts) {
         this._collection = opts.collection;
         this._writeClient = opts.writeClient || new LivefyreWriteClient();
         Writable.call(this, opts);
+
+        this.on('error', function (err) {
+            log(err);
+        });
     };
 
     inherits(CollectionWriter, Writable);
