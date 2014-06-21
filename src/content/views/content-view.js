@@ -55,6 +55,7 @@ ContentView.prototype.elTag = 'article';
 ContentView.prototype.elClass = 'content';
 ContentView.prototype.contentWithImageClass = 'content-with-image';
 ContentView.prototype.imageLoadingClass = 'hub-content-image-loading';
+ContentView.prototype.invalidClass = 'content-invalid';
 ContentView.prototype.attachmentsElSelector = '.content-attachments';
 ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 
@@ -162,6 +163,7 @@ ContentView.prototype.displayError = function (err, retry) {
     }
     this._errorView.setError({ error: err, retry: retry });
     this._errorView.render();
+    this.$el.addClass(this.invalidClass);
 };
 
 ContentView.prototype.destroy = function () {

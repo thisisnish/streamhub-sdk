@@ -30,12 +30,14 @@ ContentErrorView.prototype.events = View.prototype.events.extended({
 ContentErrorView.prototype.setError = function (opts) {
     opts = opts || {};
     if (typeof opts.error === 'object') {
-        this._error = opts.error.message;
+        this._error = opts.error.body.msg;
     } else {
         this._error = opts.error;
     }
 
-    this._retry = opts.retry;
+    if (opts.error.body.error_type !== 'DuplicateCommentError') {
+        this._retry = opts.retry;
+    }
 };
 
 ContentErrorView.prototype.getTemplateContext = function () {
