@@ -2,7 +2,6 @@ var $ = require('streamhub-sdk/jquery');
 var CompositeView = require('view/composite-view');
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
-var ContentErrorView = require('streamhub-sdk/content/views/content-error-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
@@ -95,9 +94,6 @@ ContentView.prototype._addInitialChildViews = function (opts) {
 
     this._bodyView = opts.bodyView || new ContentBodyView(opts);
     this.add(this._bodyView, { render: false });
-
-    this._errorView = opts.errorView || new ContentErrorView(opts);
-    this.add(this._errorView, { render: false });
 
     this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, { render: false });
