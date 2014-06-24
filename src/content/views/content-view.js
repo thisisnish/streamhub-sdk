@@ -153,15 +153,6 @@ ContentView.prototype._handleVisibilityChange = function(newVis, oldVis) {
     }
 };
 
-ContentView.prototype.displayError = function (err, retry) {
-    if (! this._errorView) {
-        return;
-    }
-    this._errorView.setError({ error: err, retry: retry });
-    this._errorView.render();
-    this.$el.addClass(this.invalidClass);
-};
-
 ContentView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
