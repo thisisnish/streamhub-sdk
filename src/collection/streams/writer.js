@@ -71,7 +71,10 @@ function (Writable, LivefyreWriteClient, Auth, inherits, debug) {
 
         post.call(this._writeClient, postParams, function (err, response) {
             if (err) {
-                return done(err);
+                return done(err.body);
+            }
+            if (response.status === 'error') {
+                return done(response);
             }
             content.set({
                 collection: this._collection,
