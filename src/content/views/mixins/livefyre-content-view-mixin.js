@@ -79,7 +79,7 @@ function asLivefyreContentView(contentView, opts) {
             return;
         }
         var replyButton = new HubButton(replyCommand, {
-            className: 'btn-reply content-reply',
+            className: 'btn-link content-reply',
             label: 'Reply'
         });
         return replyButton;
