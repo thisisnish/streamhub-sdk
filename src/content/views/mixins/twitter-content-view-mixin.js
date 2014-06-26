@@ -23,6 +23,13 @@ function asTwitterContentView(contentView, opts) {
         contentView.$el.addClass(elClass);
     };
 
+    var oldFooterGetTemplateContext = contentView._footerView.getTemplateContext;
+    contentView._footerView.getTemplateContext = function () {
+        var context = oldFooterGetTemplateContext.apply(contentView._footerView, arguments);
+        context.createdAtUrl = '//twitter.com/statuses/'+context.tweetId;
+        return context;
+    };
+
     contentView._addInitialButtons = function () {
         var replyButton = new HubButton(undefined, {
             className: 'content-action content-action-reply',
