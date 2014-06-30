@@ -1,9 +1,11 @@
-var inherits = require('inherits');
 var $ = require('streamhub-sdk/jquery');
+var inherits = require('inherits');
 var ListView = require('streamhub-sdk/views/list-view');
 var ContentView = require('streamhub-sdk/content/views/content-view');
 var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var hasAttachmentModal = require('streamhub-sdk/content/views/mixins/attachment-modal-mixin');
+var hasMore = require('streamhub-sdk/views/mixins/more-mixin');
+var hasQueue = require('streamhub-sdk/views/mixins/queue-mixin');
 var debug = require('streamhub-sdk/debug');
 
 'use strict';
@@ -28,7 +30,16 @@ var ContentListView = function (opts) {
 
     hasAttachmentModal(this, opts.modal);
 
-    ListView.call(this, opts);
+    var listOpts = $.extend({}, opts);
+    listOpts.autoRender = false;
+    ListView.call(this, listOpts);
+    hasMore(this, opts);
+    hasQueue(this, opts);
+
+    opts.autoRender = opts.autoRender === undefined ? true : opts.autoRender;
+    if (opts.autoRender) {
+        this.render();
+    }
 
     this._stash = opts.stash || this.more;
     this._maxVisibleItems = opts.maxVisibleItems || 50;
@@ -202,7 +213,6 @@ ContentListView.prototype.remove = function (content) {
 
 ContentListView.prototype.showMore = function (numToShow) {
     this._bound = false;
-    ListView.prototype.showMore.call(this, numToShow);
 };
 
 /**
