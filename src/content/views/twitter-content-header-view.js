@@ -23,7 +23,7 @@ TwitterContentHeaderView.prototype.getTemplateContext = function () {
     context.authorVerified = this._content.twitterVerified;
 
     context.contentSourceName = 'twitter';
-    context.contentSourceTooltipUrl = '//twitter.com/statuses/'+context.tweetId;
+    context.contentSourceTooltipUrl = '//twitter.com';
     context.contentSourceTooltipText = 'View on Twitter';
 
     context.createdAtUrl = context.contentSourceTooltipUrl;

@@ -116,6 +116,7 @@ Oembed, sharer) {
 
             it('.attachmentsListView has oembedViews for each attachment', function () {
                 var contentView = contentViewFactory.createContentView(content);
+                contentView.render();
                 expect(contentView.$el.find('.content-attachment').length).toBe(2);
             });
         });
