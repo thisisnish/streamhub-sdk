@@ -6,12 +6,12 @@
     {{/author.avatar}}
 
     <div class="content-byline">
-        {{#contentSourceTooltipUrl}}
-            <a class="hub-tooltip-link tooltip-{{contentSourceName}} content-source-logo" {{#contentSourceTooltipUrl}}href="{{contentSourceTooltipUrl}}" target="_blank"{{/contentSourceTooltipUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
-        {{/contentSourceTooltipUrl}}
-        {{^contentSourceTooltipUrl}}
+        {{#contentSourceUrl}}
+            <a class="hub-tooltip-link tooltip-{{contentSourceName}} content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank"{{/contentSourceUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
+        {{/contentSourceUrl}}
+        {{^contentSourceUrl}}
             <span class="content-source-logo"></span>
-        {{/contentSourceTooltipUrl}}
+        {{/contentSourceUrl}}
         {{#authorUrl}}
             <a class="content-author-name" href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
         {{/authorUrl}}

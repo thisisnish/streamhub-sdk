@@ -27,7 +27,8 @@
     "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
   },
   "resolutions": {
-    "livefyre-bootstrap": "fycon-chars-refactor",
-    "view": "~1.3"
+    "view": "~1.3",
+    "base64": "~0.4.0",
+    "auth": "~0.2.0"
   }
 }
