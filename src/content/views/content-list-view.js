@@ -4,7 +4,6 @@ var ListView = require('streamhub-sdk/views/list-view');
 var ContentView = require('streamhub-sdk/content/views/content-view');
 var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var hasAttachmentModal = require('streamhub-sdk/content/views/mixins/attachment-modal-mixin');
-var hasMore = require('streamhub-sdk/views/mixins/more-mixin');
 var hasQueue = require('streamhub-sdk/views/mixins/queue-mixin');
 var debug = require('streamhub-sdk/debug');
 
@@ -33,7 +32,6 @@ var ContentListView = function (opts) {
     var listOpts = $.extend({}, opts);
     listOpts.autoRender = false;
     ListView.call(this, listOpts);
-    hasMore(this, opts);
     hasQueue(this, opts);
 
     opts.autoRender = opts.autoRender === undefined ? true : opts.autoRender;
