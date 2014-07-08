@@ -2,7 +2,7 @@ var inherits = require('inherits');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
 var Button = require('streamhub-sdk/ui/button');
 var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
-var asUrlContentView = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
+var asUrlContentView = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
 
 'use strict';
 
