@@ -1,5 +1,3 @@
-var template = require('hgn!streamhub-sdk/content/templates/url-content-header');
-
 'use strict';
 
 /**
@@ -11,16 +9,11 @@ function asUrlContentHeaderView(contentView, opts) {
     var elClass = opts.elClass || 'content-url';
     contentView.$el.addClass(elClass);
 
-    /**
-     * Render the content inside of the LivefyreContentView's element.
-     * @returns {LivefyreContentView}
-     */
     var oldRender = contentView.render;
     contentView.render = function () {
         oldRender.apply(contentView, arguments);
         contentView.$el.addClass(elClass);
     };
-    contentView.template = template;
 };
 
 module.exports = asUrlContentHeaderView;

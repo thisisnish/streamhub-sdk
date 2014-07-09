@@ -7,15 +7,15 @@
             <span class="content-source-logo"></span>
         {{/contentSourceTooltipUrl}}
 
-        {{#authorUrl}}
-            <a class="content-author-name" href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
-        {{/authorUrl}}
-        {{^authorUrl}}
-            <span class="content-author-name">{{ author.displayName }}</span>
-        {{/authorUrl}}
+        {{#displayNameLink}}
+            <a class="content-author-name" href="{{ displayNameLink }}" target="_blank">{{ displayName }}</a>
+        {{/displayNameLink}}
+        {{^displayNameLink}}
+            <div class="content-author-name">{{ displayName }}</div>
+        {{/displayNameLink}}
 
         {{#viaText}}
-                <span class="content-author-username">via {{ viaText }}</span>
+                <div class="content-author-username">via {{ viaText }}</div>
         {{/viaText}}
     </div>
 </div>

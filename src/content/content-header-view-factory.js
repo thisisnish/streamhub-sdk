@@ -1,4 +1,5 @@
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
+var UrlContentHeaderView = require('streamhub-sdk/content/views/url-content-header-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 'use strict';
