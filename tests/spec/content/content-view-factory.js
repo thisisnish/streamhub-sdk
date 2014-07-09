@@ -55,7 +55,7 @@ Oembed, sharer) {
                 sharer._delegate = undefined;
             });
 
-            it('creates a content with a #_footerView._commands.share', function () {
+            it('creates a content with a #_commands.share', function () {
 
                 var content = new LivefyreContent();
                 var contentViewFactory = new ContentViewFactory();
@@ -64,7 +64,7 @@ Oembed, sharer) {
                     sharer: sharer
                 });
                 expect(contentViewFactory._createShareCommand).toHaveBeenCalledWith(content, sharer);
-                expect(contentView._footerView._commands.share).toBeTruthy();
+                expect(contentView._commands.share).toBeTruthy();
             });
         });
 

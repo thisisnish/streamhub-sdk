@@ -8,9 +8,13 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    
+
     &:hover .content-byline .content-created-at {
        display: block;
+    }
+
+    p {
+        margin: 16px 0 0;
     }
     
     a {
@@ -92,7 +96,6 @@
 
         & > * {
             display: inline-block;
-            height: 22px;
             line-height: 22px;
         }
 
@@ -113,6 +116,7 @@
         .hub-btn {
             padding: 2px 7px;
             margin-right: 0px;
+            margin-bottom: 4px;
 
             & > a {
                 display: block;
@@ -143,6 +147,29 @@
             background-image: data-uri('../../images/share.png');
             background-repeat: no-repeat;
             background-position: 7px center;
+        }
+    }
+
+    .content-editor {
+        display: none;
+        padding: 20px 20px 13px 20px;
+        margin-top: 20px;
+
+        .content-editor-avatar {
+            float: left;
+            margin-right: 10px;
+        }
+
+        .content-editor-input {
+            margin-left: 48px;
+        }
+
+        .lf-editor-field {
+            box-sizing: border-box;
+            width: 100%;
+            height: 36px;
+            padding: 8px 10px;
+            line-height: 20px;
         }
     }
     
@@ -386,6 +413,7 @@
         }
         .hub-content-action-reply {
             width: 23px;
+            height: 12px;
             background-position: center;
             background-repeat: no-repeat;
             background-image: data-uri('../../images/reply.png');

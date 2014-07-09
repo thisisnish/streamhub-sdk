@@ -1,54 +1,24 @@
-define([
-    'streamhub-sdk/content/views/livefyre-content-view',
-    'streamhub-sdk/content/views/twitter-content-header-view',
-    'streamhub-sdk/ui/hub-button',
-    'inherits',
-    'streamhub-sdk/jquery'],
-function (LivefyreContentView, TwitterContentHeaderView, HubButton, inherits, $) {
-    'use strict';
-    
-    /**
-     * A view for rendering twitter content into an element.
-     * @param opts {Object} The set of options to configure this view with (See LivefyreContentView).
-     * @exports streamhub-sdk/content/views/twitter-content-view
-     * @constructor
-     */
+var inherits = require('inherits');
+var ContentView = require('streamhub-sdk/content/views/content-view');
+var asCardContentView = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
+var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
 
-    var TwitterContentView = function (opts) {
-        opts = opts || {};
-        opts.headerView = new TwitterContentHeaderView(opts);
+'use strict';
 
-        LivefyreContentView.call(this, opts);
+/**
+ * A view for rendering twitter content into an element.
+ * @param opts {Object} The set of options to configure this view with (See LivefyreContentView).
+ * @exports streamhub-sdk/content/views/twitter-content-view
+ * @constructor
+ */
+var TwitterContentView = function (opts) {
+    opts = opts || {};
+    this.content = opts.content;
 
-        this._rendered = false;
-    };
-    inherits(TwitterContentView, LivefyreContentView);
-    
-    TwitterContentView.prototype.elClass += ' content-tweet ';
+    ContentView.apply(this, arguments);
+    asCardContentView(this);
+    asTwitterContentView(this);
+};
+inherits(TwitterContentView, ContentView);
 
-    /**
-     * Create and add any buttons that should be on all TwitterContentViews.
-     * This will be invoked on construction
-     * They will be rendered by ._renderButtons later.
-     */
-    TwitterContentView.prototype._addInitialButtons = function () {
-        var replyButton = new HubButton(undefined, {
-            className: 'content-action content-action-reply',
-            buttonUrl: 'https://twitter.com/intent/tweet?in_reply_to=' + this.content.tweetId
-        });
-        var retweetButton = new HubButton(undefined, {
-            className: 'content-action content-action-retweet',
-            buttonUrl: 'https://twitter.com/intent/retweet?tweet_id=' + this.content.tweetId
-        });
-        var favoriteButton = new HubButton(undefined, {
-            className: 'content-action content-action-favorite',
-            buttonUrl: 'https://twitter.com/intent/favorite?tweet_id=' + this.content.tweetId
-        });
-
-        this.addButton(replyButton);
-        this.addButton(retweetButton);
-        this.addButton(favoriteButton);
-    };
-
-    return TwitterContentView;
-});
+module.exports = TwitterContentView;

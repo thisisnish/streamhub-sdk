@@ -31,7 +31,9 @@ function (inherits, View) {
 
     ShowMoreButton.prototype.render = function () {
         View.prototype.render.call(this);
-        this.$el.css('display', 'none');
+        if (!this.isHolding()) {
+            this.$el.css('display', 'none');
+        }
     };
 
 

@@ -191,7 +191,8 @@ function (
                 view = new ContentView({ content: content });
             });
             it('renders with the content-featured class in its view', function () {
-                var $el = view.render().$el.find('.content-featured');
+                view.render();
+                var $el = view.$el.find('.content-featured');
 
                 expect($el.length).toBe(1);
             });

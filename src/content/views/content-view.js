@@ -1,15 +1,15 @@
-'use strict';
-
 var $ = require('streamhub-sdk/jquery');
-var View = require('streamhub-sdk/view');
 var CompositeView = require('view/composite-view');
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var inherits = require('inherits');
 var debug = require('debug');
+
+'use strict';
 
 var log = debug('streamhub-sdk/content/views/content-view');
 
@@ -33,15 +33,13 @@ var ContentView = function (opts) {
 
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
+    this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
 
     CompositeView.call(this, opts);
 
     this._addInitialChildViews(opts);
 
     if (this.content) {
-        this.content.on("reply", function(content) {
-            this.render();
-        }.bind(this));
         this.content.on("change:visibility", function(newVis, oldVis) {
             this._handleVisibilityChange(newVis, oldVis);
         }.bind(this));
@@ -56,6 +54,7 @@ ContentView.prototype.elTag = 'article';
 ContentView.prototype.elClass = 'content';
 ContentView.prototype.contentWithImageClass = 'content-with-image';
 ContentView.prototype.imageLoadingClass = 'hub-content-image-loading';
+ContentView.prototype.invalidClass = 'content-invalid';
 ContentView.prototype.attachmentsElSelector = '.content-attachments';
 ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 
@@ -80,14 +79,12 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
     }
 });
 
-/**
- * @param opts.headerView {View}
- * @param opts.bodyView {View}
- * @param opts.footerView {View}
- * @param opts.attachmentsView {View}
- */
+ContentView.prototype.render = function () {
+    CompositeView.prototype.render.call(this);
+};
+
 ContentView.prototype._addInitialChildViews = function (opts) {
-    this._headerView = opts.headerView || new ContentHeaderView(opts);
+    this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, { render: false });
 
     this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
@@ -102,7 +99,7 @@ ContentView.prototype._addInitialChildViews = function (opts) {
     this.add(this._footerView, { render: false });
 };
 
- /**
+/**
  * Set the .el DOMElement that the ContentView should render to
  * @param el {DOMElement} The new element the ContentView should render to
  * @returns {ContentView}

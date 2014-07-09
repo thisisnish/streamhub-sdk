@@ -43,10 +43,13 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
 
         // Internal streams
         this._writer = opts.writer || null;
-        this._updater = null;
         this._pipedArchives = [];
 
         Duplex.call(this, opts);
+
+        this.on('error', function (err) {
+            log(err);
+        });
     };
 
     inherits(Collection, Duplex);
@@ -114,9 +117,11 @@ function (CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedConten
      *     if you use it (defaults to opts param)
      */
     Collection.prototype.pipe = function (writable, opts) {
-        var archive;
         opts = opts || {};
+
+        var archive;
         var archivePipeOpts = opts.archivePipeOpts || opts;
+
         if (typeof opts.pipeArchiveToMore === 'undefined') {
             opts.pipeArchiveToMore = true;
         }

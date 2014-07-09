@@ -21,7 +21,14 @@ var ContentHeaderView = function (opts) {
     opts = opts || {};
     View.call(this, opts);
 
-    this._content = opts.content;
+    this.author = opts.author;
+    this.authorUserNamePrefix = opts.authorUserNamePrefix;
+    this.authorUserName = opts.authorUserName;
+    this.authorUrl = opts.authorUrl;
+    this.authorVerified = opts.authorVerified;
+    this.contentSourceName = opts.contentSourceName;
+    this.contentSourceUrl = opts.contentSourceUrl;
+    this.contentSourceTooltipText = opts.contentSourceTooltipText;
 };
 inherits(ContentHeaderView, View);
 
@@ -32,10 +39,12 @@ ContentHeaderView.prototype.elClass = 'content-header';
 ContentHeaderView.prototype.headerElSelector = '.content-header';
 ContentHeaderView.prototype.avatarSelector = '.content-author-avatar';
 ContentHeaderView.prototype.tooltipElSelector = '.hub-tooltip-link';
+ContentHeaderView.prototype.contentWithImageClass = 'content-with-image';
+ContentHeaderView.prototype.parentClassSelector = '.content';
 
 ContentHeaderView.prototype.events = View.prototype.events.extended({}, function (events) {
-    events['click ' + this.headerElSelector] = function(e) {
-        if (! this.$el.hasClass(this.contentWithImageClass)) {
+    events['click'] = function(e) {
+        if (! this.$el.parents(this.parentClassSelector).hasClass(this.contentWithImageClass)) {
             // Only do this when there is an image
             return;
         }
@@ -102,7 +111,8 @@ ContentHeaderView.prototype._handleAvatarError = function (e) {
 };
 
 ContentHeaderView.prototype.getTemplateContext = function () {
-    return $.extend({}, this._content);
+    var context = $.extend({}, this)
+    return context;
 };
 
 module.exports = ContentHeaderView;

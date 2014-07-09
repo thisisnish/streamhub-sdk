@@ -34,6 +34,10 @@ function ($, Util) {
                 createdAt = addSeconds(1, relativeTo);
                 expect(Util.formatDate(createdAt, relativeTo)).toBe('');
             });
+            it('renders like 1s if content is from < 1s ago', function () {
+                createdAt = relativeTo;
+                expect(Util.formatDate(createdAt, relativeTo)).toBe('1s');
+            });
             it('renders like 1s if content is from 1s ago', function () {
                 createdAt = addSeconds(-1, relativeTo);
                 expect(Util.formatDate(createdAt, relativeTo)).toBe('1s');
