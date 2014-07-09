@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * Mixin to a view to ensure it has a given CSS class when rendered
+ */
 function hasTheme(contentView, themeClassName) {
     if (! themeClassName) {
         return;

@@ -9,6 +9,13 @@ function (Writable, LivefyreWriteClient, Auth, inherits, debug) {
 
     var log = debug('streamhub-sdk/collection/streams/writer');
 
+    /**
+     * A Writable Stream that, when written to, writes into a StreamHub
+     * Collection
+     * @param opts {object} options
+     * @param opts.collection {streamhub-sdk/collection} Collection to write
+     *   into
+     */
     var CollectionWriter = function (opts) {
         this._collection = opts.collection;
         this._writeClient = opts.writeClient || new LivefyreWriteClient();

@@ -8,8 +8,8 @@ var inherits = require('inherits');
 
 
 /**
- * A simple View that displays Content in a list (`<ul>` by default).
- *
+ * An AttachmentListView that tiles up to 4 photo and video attachments into one
+ * square
  * @param opts {Object} A set of options to config the view with
  * @param opts.el {HTMLElement} The element in which to render the streamed content
  * @param opts.content {Content} The content instance with which to display its attachments
