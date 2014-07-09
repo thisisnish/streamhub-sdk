@@ -6,7 +6,7 @@
  */
 function asUrlContentView(contentView, opts) {
     opts = opts || {};
-    var elClass = opts.elClass;
+    var elClass = opts.elClass || 'content-url';
     contentView.$el.addClass(elClass);
 
     /**

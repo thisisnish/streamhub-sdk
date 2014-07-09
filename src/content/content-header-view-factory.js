@@ -9,7 +9,7 @@ var ContentHeaderViewFactory = function (opts) {
 };
 
 ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
-    if(content.typeUrn === TYPE_URNS.URL){
+    if(content.typeUrn === TYPE_URNS.LIVEFYRE_URL){
         return new UrlContentHeaderView({ content: content });
     } else {
         var opts = this._getHeaderViewOptsForContent(content);
