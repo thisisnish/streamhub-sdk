@@ -8,8 +8,12 @@ var ContentHeaderViewFactory = function (opts) {
 };
 
 ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
-    var opts = this._getHeaderViewOptsForContent(content);
-    return new ContentHeaderView(opts);
+    if(content.typeUrn === TYPE_URNS.URL){
+        return new UrlContentHeaderView({ content: content });
+    } else {
+        var opts = this._getHeaderViewOptsForContent(content);
+        return new ContentHeaderView(opts);
+    }
 };
 
 ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (content) {
