@@ -61,7 +61,7 @@ ContentListView.prototype.elClass += ' streamhub-content-list-view';
 
 ContentListView.prototype.events = ListView.prototype.events.extended({
     'removeContentView.hub': function(e, data) {
-        return ListView.prototype.remove.call(this, data.contentView);
+        return this.remove(data.contentView);
     }
 });
 
@@ -206,7 +206,7 @@ ContentListView.prototype.saveForLater = function (content) {
  */
 ContentListView.prototype.remove = function (content) {
     var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
-    contentView.remove();
+    ListView.prototype.remove.call(this, contentView);
 };
 
 ContentListView.prototype.showMore = function (numToShow) {
