@@ -6,7 +6,7 @@
  */
 function asUrlContentView(contentView, opts) {
     opts = opts || {};
-    var elClass = opts.elClass || 'content-instagram';
+    var elClass = opts.elClass;
     contentView.$el.addClass(elClass);
 
     /**

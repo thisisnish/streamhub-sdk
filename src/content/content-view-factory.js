@@ -53,7 +53,7 @@ ContentViewFactory.prototype.contentRegistry = [
     { type: TwitterContent, view: TwitterContentView,
         typeUrn: TYPE_URNS.TWITTER },
     { type: LivefyreUrlContent, view: UrlContentView,
-        typeUrn: TYPE_URNS.URL },
+        typeUrn: TYPE_URNS.LIVEFYRE_URL },
     { type: LivefyreContent, view: LivefyreContentView,
         typeUrn: TYPE_URNS.LIVEFYRE },
     { type: Content, view: ContentView,
