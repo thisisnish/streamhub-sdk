@@ -4,6 +4,7 @@ var debug = require('streamhub-sdk/debug');
 var View = require('streamhub-sdk/view');
 var Writable = require('stream/writable');
 var ListViewTemplate = require('hgn!streamhub-sdk/views/templates/list-view');
+var hasMore = require('streamhub-sdk/views/mixins/more-mixin');
 
 'use strict';
 
@@ -27,6 +28,8 @@ var ListView = function(opts) {
 
     View.call(this, opts);
     Writable.call(this, opts);
+
+    hasMore(this, opts);
 
     this.comparator = opts.comparator || this.comparator;
 

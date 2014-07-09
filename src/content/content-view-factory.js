@@ -14,6 +14,7 @@ var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-vi
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
 var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
 var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
+
 var Command = require('streamhub-sdk/ui/command');
 var Liker = require('streamhub-sdk/collection/liker');
 var CompositeView = require('view/composite-view');

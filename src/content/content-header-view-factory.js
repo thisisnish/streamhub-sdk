@@ -30,7 +30,8 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         opts.authorVerified = content.twitterVerified;
 
         opts.contentSourceName = 'twitter';
-        opts.contentSourceTooltipUrl = '//twitter.com/statuses/'+content.tweetId;
+
+        opts.contentSourceUrl = '//twitter.com';
         opts.contentSourceTooltipText = 'View on Twitter';
     } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FACEBOOK) {
         if (content.author) {
@@ -38,7 +39,7 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         }
 
         opts.contentSourceName = 'facebook'
-        opts.contentSourceTooltipUrl = content.attachments.length ? content.attachments[0].url : undefined;
+        opts.contentSourceUrl = content.attachments.length ? content.attachments[0].url : undefined;
         opts.contentSourceTooltipText = 'View on Facebook';
     }
 

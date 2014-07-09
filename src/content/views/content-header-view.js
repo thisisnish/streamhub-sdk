@@ -27,7 +27,7 @@ var ContentHeaderView = function (opts) {
     this.authorUrl = opts.authorUrl;
     this.authorVerified = opts.authorVerified;
     this.contentSourceName = opts.contentSourceName;
-    this.contentSourceTooltipUrl = opts.contentSourceTooltipUrl;
+    this.contentSourceUrl = opts.contentSourceUrl;
     this.contentSourceTooltipText = opts.contentSourceTooltipText;
 };
 inherits(ContentHeaderView, View);

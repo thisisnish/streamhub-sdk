@@ -20,5 +20,11 @@ function ($, LivefyreTwitterContent, TwitterContentView, verifiedTweetState, unv
             contentView.render();
             expect(contentView.$('.content-author-verified').length).toBe(0);
         });
+        it('has a source logo that links to twitter.com homepage (twitter display requirement...)', function () {
+            var content = new LivefyreTwitterContent(unverifiedTweetState);
+            var contentView = new TwitterContentView({ content: content });
+            contentView.render();
+            expect(contentView.$('.content-source-logo').attr('href')).toBe('//twitter.com');
+        });
     });
 });

@@ -33,8 +33,31 @@ inherits(LivefyreContentView, CardContentView);
  * @returns {LivefyreContentView}
  */
 LivefyreContentView.prototype.render = function () {
+
+    /**
+     * bengo:
+     * This next 3 lines makes me sad, but it is necessary to support IE9.
+     * View.prototype.render will set this.innerHTML to template().
+     * For some reason, this also causes the innerHTML of the buttons to
+     * be set to an empty string. e.g. Like Buttons have their like count
+     * cleared out. When ._renderButtons later re-appendChilds all the
+     * button.els, they are empty. So if we detach them here before
+     * this.innerHTML is set, they are not cleared.
+     * bit.ly/1no8mNk 
+     */
+    if (getIeVersion() === 9) {
+        this._footerView._detachButtons();
+    }
+
     CardContentView.prototype.render.call(this);
     return this;
 };
+
+
+// return the ie version if IE, else false
+function getIeVersion () {
+    var myNav = navigator.userAgent.toLowerCase();
+    return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+}
 
 module.exports = LivefyreContentView;
