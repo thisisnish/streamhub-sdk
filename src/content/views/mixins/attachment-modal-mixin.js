@@ -5,7 +5,7 @@ var GalleryAttachmentListView = require('streamhub-sdk/content/views/gallery-att
 
 /**
  * A mixin that decorates an instance of ContentView 
- * to have default card theme
+ * to add a event handler for focusContent.hub that displays a modal
  */
 function hasAttachmentModal(contentView, modal) {
     if (! modal || modal === true) {
