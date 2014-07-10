@@ -119,5 +119,9 @@ define([
         changeSet.geocode = annotationValue;
     };
 
+    Annotator.prototype.added.generator = function (changeSet, annotationValue) {
+        changeSet.generator = annotationValue;
+    }
+
     return Annotator;
 });
