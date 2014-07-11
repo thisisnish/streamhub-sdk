@@ -13,6 +13,7 @@ require.config({
     inherits: 'lib/inherits/inherits',
     blanket: 'lib/blanket/dist/qunit/blanket',
     'blanket-jasmine': 'lib/blanket/dist/jasmine/blanket_jasmine',
+    'mout': 'lib/mout/src',
     observer: 'lib/observer/src/observer',
     debug: 'lib/debug/debug'
   },
