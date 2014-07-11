@@ -1,3 +1,5 @@
+@import (reference) "bootstrap/less/mixins.less";
+
 .content-structure() {
     display: block;
     position: relative;
@@ -45,11 +47,11 @@
     .content-header {
         display: block;
         width: 100%;
-        min-height: 60px;
         -webkit-transition-property: background 0.1s ease 0;
         -moz-transition-property: background 0.1s ease 0;
 
         .content-header-inner {
+            .clearfix();
             padding: 20px 20px 0px 20px;
             clear: both;
         }
