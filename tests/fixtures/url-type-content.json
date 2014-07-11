@@ -1,0 +1,59 @@
+{
+    "vis": 1,
+    "collectionId": "2487949",
+    "content": {
+        "parentId": "",
+        "bodyHtml": "<p>Comprehensive up-to-date news coverage, aggregated from sources all over the world by Google News.</p>",
+        "id": "0a64e993-d94d-46d0-b91d-af8c6ebd163e-news.google.com@embed.livefyre.com",
+        "updatedAt": 1404768166,
+        "annotations": {
+            "geocode": {
+                "latitude": 0,
+                "name": "",
+                "longitude": 0
+            },
+            "sortOrder": 1404768128
+        },
+        "createdAt": 1404768111
+    },
+    "source": 22,
+    "type": 0,
+    "event": 1404768166840595,
+            "author": {
+                "displayName": "Google",
+                "tags": [],
+                "profileUrl": "http://news.google.com",
+                "avatar": "",
+                "type": 1,
+                "id": "news.google.com@embed.livefyre.com"
+            },
+    "childContent": [
+        {
+            "content": {
+                "targetId": "0a64e993-d94d-46d0-b91d-af8c6ebd163e-news.google.com@embed.livefyre.com",
+                "authorId": "-",
+                "link": null,
+                "oembed": {
+                    "provider_url": "http://news.google.com",
+                    "title": "Google News",
+                    "thumbnail_width": 150,
+                    "height": 0,
+                    "width": 0,
+                    "html": "",
+                    "author_name": "",
+                    "provider_name": "Google",
+                    "thumbnail_url": "http://t2.gstatic.com/images?q=tbn:ANd9GcSpMstSQDP1Ku70hted5CTvrzP9aNHBxhCAwb8_HPL38yz8bz_nlaXdUweGCXd5Qe0U7tckCWhXZ0M",
+                    "type": "link",
+                    "thumbnail_height": 150,
+                    "author_url": ""
+                },
+                "position": 0,
+                "id": "0a64e993-d94d-46d0-b91d-af8c6ebd163e-news.google.com@embed.livefyre.com.None"
+            },
+            "vis": 1,
+            "type": 3,
+            "event": 1404768166840595,
+            "source": 0
+        }
+    ]
+}
