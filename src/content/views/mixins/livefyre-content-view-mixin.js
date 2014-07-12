@@ -63,7 +63,7 @@ function asLivefyreContentView(contentView, opts) {
             return;
         }
         // Don't render a button if contentView isn't actually LivefyreContent
-        if (contentView.content.typeUrn !== LivefyreContent.prototype.typeUrn) {
+        if (! contentView.content.id) {
             return;
         }
         return new HubLikeButton(contentView._commands.like, {

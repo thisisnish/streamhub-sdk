@@ -114,7 +114,7 @@ function (
 
                 expect(twitterContentView.$el.find('.hub-content-like')).toHaveLength(0);
 
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var lfContentView = contentViewFactory.createContentView(lfContent, {
                     liker: new Liker()
                 });
@@ -124,7 +124,7 @@ function (
             });
 
             it("is in the toggle off state when not liked by authenticated user", function () {
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var lfContentView = contentViewFactory.createContentView(lfContent, {
                     liker: new Liker()
                 });
@@ -134,7 +134,7 @@ function (
             });
 
             it("is in the toggle on state when liked by authenticated user", function () {
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var lfOpine = new LivefyreOpine({
                     type: 1,
                     vis: 1,
@@ -150,7 +150,7 @@ function (
             });
 
             it("updates the label when a 'opine' event is emitted on the associated content", function () {
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var lfContentView = contentViewFactory.createContentView(lfContent, {
                     liker: new Liker()
                 });
@@ -170,7 +170,7 @@ function (
             });
 
             it("updates the label when a 'removeOpine' event is emitted on the associated content", function () {
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var lfContentView = contentViewFactory.createContentView(lfContent, {
                     liker: new Liker()
                 });
@@ -194,7 +194,7 @@ function (
             });
 
             it("auto-increments the label when Like button is clicked", function () {
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var liker = new Liker();
                 var lfContentView = contentViewFactory.createContentView(lfContent, {
                     liker: liker
@@ -210,7 +210,7 @@ function (
             });
 
             it("reverts label when the Like request errors", function () {
-                var lfContent = new LivefyreContent({ body: 'lf content' });
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var liker = new Liker();
                 var lfContentView = contentViewFactory.createContentView(lfContent, {
                     liker: liker
@@ -231,7 +231,8 @@ function (
             it("cannot execute when the Like button's associated content is authored by the authenticated user (cannot Like own content)", function () {
                 var lfContent = new LivefyreContent({
                     body: 'lf content',
-                    author: { id: mockAuthResponse.data.profile.id }
+                    author: { id: mockAuthResponse.data.profile.id },
+                    id: '1'
                 });
 
                 // Add like
@@ -253,7 +254,8 @@ function (
             it("can execute when the Like button's associated content is not authored by the authenticated user (can Like other users' content)", function () {
                 var lfContent = new LivefyreContent({
                     body: 'lf content',
-                    author: { id: 'datdude@blah' }
+                    author: { id: 'datdude@blah' },
+                    id: '1'
                 });
 
                 // Add like
