@@ -64,6 +64,10 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
         if (diffMs > 0) {
             return '';
         }
+        // Just now (0s)
+        if (diffMs > -1000) {
+            return '1s';
+        }
         // Less than 60s ago -> 5s
         if (diffMs > -60 * 1000) {
             return Math.round( -1 * diffMs / 1000) + 's';

@@ -12,13 +12,13 @@ function ($, LivefyreTwitterContent, TwitterContentView, verifiedTweetState, unv
             var content = new LivefyreTwitterContent(verifiedTweetState);
             var contentView = new TwitterContentView({ content: content });
             contentView.render();
-            expect(contentView.$('.content-tweet-verified').length).toBe(1);
+            expect(contentView.$('.content-author-verified').length).toBe(1);
         });
         it('does not have a verified user indication if the content author is not a verified twitter user', function () {
             var content = new LivefyreTwitterContent(unverifiedTweetState);
             var contentView = new TwitterContentView({ content: content });
             contentView.render();
-            expect(contentView.$('.content-tweet-verified').length).toBe(0);
+            expect(contentView.$('.content-author-verified').length).toBe(0);
         });
         it('has a source logo that links to twitter.com homepage (twitter display requirement...)', function () {
             var content = new LivefyreTwitterContent(unverifiedTweetState);

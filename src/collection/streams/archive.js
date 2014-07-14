@@ -280,6 +280,7 @@ inherits) {
     CollectionArchive.prototype._createStateToContent = function (opts) {
         opts = opts || {};
         opts.replies = this._replies;
+        opts.collection = this._collection;
         return new StateToContent(opts);
     };
 
