@@ -140,4 +140,18 @@ TiledAttachmentListView.prototype.retile = function () {
     }
 };
 
+/**
+ * A count of the number of attachments for this content item
+ * @returns {int} The number of attachments for this content item
+ */
+TiledAttachmentListView.prototype.count = function () {
+    var count = 0;
+    for (var i=0; i < this.oembedViews.length; i++) {
+        if (this.isTileableAttachment(this.oembedViews[i].oembed)) {
+            count++;
+        }
+    }
+    return count;
+};
+
 module.exports = TiledAttachmentListView;
