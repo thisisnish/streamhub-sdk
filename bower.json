@@ -18,16 +18,20 @@
     "inherits": "git://github.com/Livefyre/inherits.git",
     "view": "git://github.com/Livefyre/view.git#~1.3",
     "auth": "git://github.com/Livefyre/auth.git#~0.2.0",
-    "livefyre-bootstrap": "git://github.com/Livefyre/livefyre-bootstrap.git#1.2.3"
+    "livefyre-bootstrap": "git://github.com/Livefyre/livefyre-bootstrap.git#1.2.3",
+    "streamhub-ui": "Joao-S-Martins/streamhub-ui"
   },
   "devDependencies": {
     "jasmine": "1.3.1",
     "jasmine-jquery": "1.6.0",
     "almond": "0.2.5",
-    "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
+    "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git",
+    "require-less": "~0.1.2"
   },
   "resolutions": {
     "view": "~1.3",
-    "base64": "~0.4.0"
+    "base64": "~0.4.0",
+    "auth": "~0.2.0",
+    "livefyre-bootstrap": "1.2.3"
   }
 }

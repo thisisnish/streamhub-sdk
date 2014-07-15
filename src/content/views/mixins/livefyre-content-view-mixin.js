@@ -4,6 +4,8 @@ var HubButton  = require('streamhub-sdk/ui/hub-button');
 var HubLikeButton = require('streamhub-sdk/ui/hub-like-button');
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-buttons-mixin');
+// TODO: move share to a separate mixin
+var ShareButton = require('streamhub-sdk/ui/share-button');
 
 'use strict';
 
@@ -91,6 +93,11 @@ function asLivefyreContentView(contentView, opts) {
      * @protected
      */
     contentView._createShareButton = function () {
+        var shareButton = new ShareButton({
+            content: this.content
+        });
+        debugger;
+        return shareButton;
         var shareCommand = contentView._commands.share;
         if ( ! (shareCommand && shareCommand.canExecute())) {
             return;

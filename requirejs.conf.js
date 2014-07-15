@@ -58,6 +58,20 @@ require.config({
   },{
     name: "livefyre-auth-tests",
     location: "lib/livefyre-auth/test"
+  },{
+    name: 'streamhub-share',
+    location: 'lib/streamhub-share/src',
+    main: 'share-button.js'
+  },{
+    name: 'streamhub-ui',
+    location: 'lib/streamhub-ui/src'
+  },{
+    name: "livefyre-bootstrap",
+    location: "lib/livefyre-bootstrap/src"
+  },{
+    name: "less",
+    location: "lib/require-less",
+    main: "less"
   }],
   shim: {
     jquery: {
@@ -77,5 +91,8 @@ require.config({
     'jasmine-jquery': {
         deps: ['jquery']
     }
+  },
+  less: {
+    relativeUrls: true
   }
 });

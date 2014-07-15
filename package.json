@@ -32,12 +32,13 @@
     "send-to-coveralls": "find coverage -name 'lcov.info' -print0 | xargs -0 cat | ./node_modules/coveralls/bin/coveralls.js"
   },
   "devDependencies": {
-    "less": "1.6.2",
-    "jshint": "~2.1.0",
-    "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
+    "coveralls": "~2.3.0",
     "ink-docstrap": "git://github.com/michaelward82/docstrap.git#line-number-alignment",
-    "phantomjs": "~1.9.2-2",
+    "jsdoc": "git://github.com/jsdoc3/jsdoc.git",
+    "jshint": "~2.1.0",
+    "jsontool": "^7.0.2",
     "karma": "~0.10.5",
+    "karma-cajon": "*",
     "karma-chrome-launcher": "~0.1.0",
     "karma-coffee-preprocessor": "~0.1.0",
     "karma-coverage": "~0.1.2",
@@ -48,9 +49,9 @@
     "karma-phantomjs-launcher": "~0.1.0",
     "karma-requirejs": "~0.2.0",
     "karma-script-launcher": "~0.1.0",
-    "karma-cajon": "*",
-    "coveralls": "~2.3.0",
-    "jsontool": "^7.0.2",
-    "lfcdn": "git://github.com/Livefyre/lfcdn.git"
+    "less": "1.6.2",
+    "lfcdn": "git://github.com/Livefyre/lfcdn.git",
+    "phantomjs": "~1.9.2-2",
+    "require-less": "0.0.7"
   }
 }
