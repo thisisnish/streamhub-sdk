@@ -7,7 +7,7 @@ function(LivefyreContent, inherits) {
         LivefyreContent.call(this, json);
         var oembed = (json.childContent && json.childContent[0] && json.childContent[0].content.oembed) ? 
             json.childContent[0].content.oembed : null;
-        var generator = json.generator || null;
+        var generator = json.content.generator || null;
 
         if(oembed !== null) {
             this.title = oembed.title;

@@ -115,16 +115,22 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
     for (var i=0, len=this.contentRegistry.length; i < len; i++) {
         var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
+
         if (! (sameTypeUrn || (content instanceof current.type))) {
             continue;
         }
 
         if (content.typeUrn === TYPE_URNS.LIVEFYRE_URL) {
-            if(typeof content.urlContentTypeId === "twitter.com")
+            var typeId = content.urlContentTypeId || "";
+            typeId = typeId.toLowerCase();
+
+            if(typeId.indexOf("twitter.com") >= 0)
                 return TwitterContentView;
-            if(typeof content.urlContentTypeId === "facebook.com")
+
+            if(typeId.indexOf("facebook.com") >= 0)
                 return FacebookContentView;
-            if(typeof content.urlContentTypeId === "instagram.com")
+
+            if(typeId.indexOf("instagram.com") >= 0)
                 return InstagramContentView;
         } 
 
