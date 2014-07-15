@@ -1,11 +1,11 @@
 <div class="content-header-inner">
     <div class="content-byline">
-        {{#contentSourceTooltipUrl}}
-            <a class="hub-tooltip-link tooltip-{{contentSourceName}} content-source-logo" {{#contentSourceTooltipUrl}}href="{{contentSourceTooltipUrl}}" target="_blank"{{/contentSourceTooltipUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
-        {{/contentSourceTooltipUrl}}
-        {{^contentSourceTooltipUrl}}
+        {{#favicon}}
+            <img src="{{ favicon }}"/>
+        {{/favicon}}
+        {{^favicon}}
             <span class="content-source-logo"></span>
-        {{/contentSourceTooltipUrl}}
+        {{/favicon}}
 
         {{#displayNameLink}}
             <a class="content-author-name" href="{{ displayNameLink }}" target="_blank">{{ displayName }}</a>

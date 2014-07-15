@@ -55,5 +55,11 @@
             "event": 1404768166840595,
             "source": 0
         }
-    ]
+    ],
+    "generator": {
+        "id": "google.com",
+        "displayName": "Google",
+        "url": "http://news.google.com",
+        "image": "https://assets-cdn.github.com/favicon.ico"
+    }
 }

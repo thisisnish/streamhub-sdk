@@ -7,11 +7,11 @@ function ($, LivefyreUrlContent, UrlContentView, urlTypeContent) {
     'use strict';
 
     describe('A UrlContentView object', function () {
-        it('has title if the oembed provides one', function () {
-            /*var content = new LivefyreUrlContent(otherTypeUrl);
+        it('has title text', function () {
+            var content = new LivefyreUrlContent(urlTypeContent);
             var contentView = new UrlContentView({ content: content });
             contentView.render();
-            expect(contentView.$('.content-body-title').length).toBe(1);*/
+            expect(contentView.$('.content-body-title').length).toBe(1);
         });
     });
 });

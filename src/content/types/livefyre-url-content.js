@@ -6,12 +6,18 @@ function(LivefyreContent, inherits) {
     var LivefyreUrlContent = function(json) {
         LivefyreContent.call(this, json);
         var oembed = (json.childContent && json.childContent[0] && json.childContent[0].content.oembed) ? 
-            json.childContent[0].content.oembed : null
+            json.childContent[0].content.oembed : null;
+        var generator = json.generator || null;
 
-        if(oembed === null) return;
+        if(oembed !== null) {
+            this.title = oembed.title;
+        }
 
-        this.viaText = oembed.provider_name || oembed.provider_url;
-        this.title = oembed.title;
+        if(generator !== null){
+            this.urlContentTypeId = generator.id;
+            this.viaText = generator.displayName || generator.id || generator.url;
+            this.favicon = generator.image;
+        }
 
     };
     inherits(LivefyreUrlContent, LivefyreContent);

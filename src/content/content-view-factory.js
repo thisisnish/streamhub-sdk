@@ -119,6 +119,15 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
             continue;
         }
 
+        if (content.typeUrn === TYPE_URNS.LIVEFYRE_URL) {
+            if(typeof content.urlContentTypeId === "twitter.com")
+                return TwitterContentView;
+            if(typeof content.urlContentTypeId === "facebook.com")
+                return FacebookContentView;
+            if(typeof content.urlContentTypeId === "instagram.com")
+                return InstagramContentView;
+        } 
+
         var currentType;
         if (current.view) {
             currentType = current.view;
