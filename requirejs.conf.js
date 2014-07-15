@@ -68,10 +68,6 @@ require.config({
   },{
     name: "livefyre-bootstrap",
     location: "lib/livefyre-bootstrap/src"
-  },{
-    name: "less",
-    location: "lib/require-less",
-    main: "less"
   }],
   shim: {
     jquery: {
@@ -91,8 +87,5 @@ require.config({
     'jasmine-jquery': {
         deps: ['jquery']
     }
-  },
-  less: {
-    relativeUrls: true
   }
 });
