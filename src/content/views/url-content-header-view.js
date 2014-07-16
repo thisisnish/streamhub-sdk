@@ -18,6 +18,7 @@ var UrlContentHeaderView = function (opts) {
     this.displayName = opts.content.author.displayName;
     this.displayNameLink = opts.content.author.profileUrl;
     this.viaText = opts.content.viaText;
+    this.favicon = opts.content.favicon;
 
     asUrlContentHeaderView(this, opts);
 };

@@ -1,11 +1,23 @@
 <div class="content-header-inner">
     <div class="content-byline">
-        {{#favicon}}
-            <img src="{{ favicon }}"/>
-        {{/favicon}}
-        {{^favicon}}
-            <span class="content-source-logo"></span>
-        {{/favicon}}
+        {{#contentSourceUrl}}
+            <a class="hub-tooltip-link tooltip-{{contentSourceName}} content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank"{{/contentSourceUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}> 
+                {{#favicon}}
+                    <img class="content-source-logo" src="{{ favicon }}"/>
+                {{/favicon}}
+                {{^favicon}}
+                    <span class="content-source-logo"></span>
+                {{/favicon}}
+            </a>
+        {{/contentSourceUrl}}
+        {{^contentSourceUrl}}
+            {{#favicon}}
+                <img class="content-source-logo" src="{{ favicon }}"/>
+            {{/favicon}}
+            {{^favicon}}
+                <span class="content-source-logo"></span>
+            {{/favicon}}
+        {{/contentSourceUrl}}
 
         {{#displayNameLink}}
             <a class="content-author-name" href="{{ displayNameLink }}" target="_blank">{{ displayName }}</a>

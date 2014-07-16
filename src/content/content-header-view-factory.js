@@ -15,10 +15,10 @@ var ContentHeaderViewFactory = function (opts) {
 };
 
 ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
+    var opts = this._getHeaderViewOptsForContent(content);
     if(content.typeUrn === TYPE_URNS.LIVEFYRE_URL){
         return new UrlContentHeaderView({ content: content });
     } else {
-        var opts = this._getHeaderViewOptsForContent(content);
         return new ContentHeaderView(opts);
     }
 };
@@ -46,8 +46,13 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         }
 
         opts.contentSourceName = 'facebook'
-        opts.contentSourceUrl = content.attachments.length ? content.attachments[0].url : undefined;
         opts.contentSourceTooltipText = 'View on Facebook';
+    }
+
+    if(!opts.contentSourceUrl){
+        opts.contentSourceName = ''
+        opts.contentSourceUrl = content.attachments.length ? content.attachments[0].url : undefined;
+        opts.contentSourceTooltipText = ''
     }
 
     return opts;
