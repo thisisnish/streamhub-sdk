@@ -29,6 +29,8 @@ function hasAttachmentModal(view, modal) {
     if (view.el) {
         view.delegateEvents();
     }
+
+    return modal;
 };
 
 module.exports = hasAttachmentModal;

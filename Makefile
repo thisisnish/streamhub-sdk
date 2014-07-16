@@ -5,7 +5,7 @@ all: build
 build: node_modules
 
 dist: node_modules tools/build.conf.js
-	npm run build
+	mkdir -p dist && npm run build
 
 version:
 	./node_modules/.bin/json -E 'this.version="$(v)"' -f package.json -I
