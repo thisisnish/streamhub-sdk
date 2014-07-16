@@ -345,7 +345,7 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
 
         // Use this._createClient to request a collection creation
         var collectionOpts = this._getBaseOpts();
-        $.extend(opts, {
+        $.extend(collectionOpts, {
             collectionMeta: this._collectionMeta,
             signed: this._signed
         });

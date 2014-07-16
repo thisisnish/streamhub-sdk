@@ -5,27 +5,6 @@ function ($, util) {
     'use strict';
 
     describe('streamhub-sdk/util', function () {
-        describe('abstractFunction', function () {
-            it('is a function', function () {
-                expect(typeof(util.abstractFunction)).toBe('function');
-            });
-            
-            it('thows when invoked', function () {
-                expect(function () {
-                    util.abstractFunction();
-                }).toThrow('This is an abstract function that requires developer implementation');
-            });
-        });
-        
-        describe('nullFunction', function () {
-            it('is a function', function () {
-                expect(typeof(util.nullFunction)).toBe('function');
-            });
-            
-            it('returns nothing', function () {
-                expect(util.nullFunction()).toBeUndefined();
-            });
-        })
         
         describe('formatDate', function () {
             var relativeTo,
@@ -58,7 +37,7 @@ function ($, util) {
             });
             it('renders like 1s if content is from < 1s ago', function () {
                 createdAt = relativeTo;
-                expect(Util.formatDate(createdAt, relativeTo)).toBe('1s');
+                expect(util.formatDate(createdAt, relativeTo)).toBe('1s');
             });
             it('renders like 1s if content is from 1s ago', function () {
                 createdAt = addSeconds(-1, relativeTo);

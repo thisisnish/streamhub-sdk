@@ -129,7 +129,7 @@ describe('streamhub-sdk/content/fetch-content', function () {
             
         beforeEach(function () {
             contentClient = new ContentClient();
-            stateToContent = StateToContent;
+            stateToContent = new StateToContent();
             opts = {
                 network: CONST.NET,
                 collectionId: CONST.COLL,

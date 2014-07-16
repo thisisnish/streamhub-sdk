@@ -93,13 +93,14 @@ function asLivefyreContentView(contentView, opts) {
      * @protected
      */
     contentView._createShareButton = function () {
-        var shareButton = new ShareButton({
-            content: this.content
-        });
-        debugger;
-        return shareButton;
         var shareCommand = contentView._commands.share;
-        if ( ! (shareCommand && shareCommand.canExecute())) {
+
+        if (!shareCommand) {
+            return new ShareButton({
+                content: this.content
+            });
+        }
+        if (! shareCommand.canExecute()) {
             return;
         }
         var shareButton = new HubButton(shareCommand, {

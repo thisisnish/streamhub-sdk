@@ -45,35 +45,33 @@ function (
                 contentView = new LivefyreContentView({
                     content: new Content('blah')
                 });
-
             });
 
             it('can add a button before render', function () {
+                var initialCount = contentView._footerView._controls.left.length;
                 var button = new Button();
                 contentView.addButton(button);
                 contentView.render();
-                expect(contentView._footerView._controls.left.length).toBe(1);
-                expect(contentView._footerView._controls.left[0]).toBe(button);
+                expect(contentView._footerView._controls.left.length).toBe(initialCount+1);
                 expect(contentView.$('.lf-btn').length).toBe(1);
             });
 
             it('can add a button after render', function () {
+                var initialCount = contentView._footerView._controls.left.length;
                 var button = new Button();
                 contentView.render();
                 contentView.addButton(button);
-                expect(contentView._footerView._controls.left.length).toBe(1);
-                expect(contentView._footerView._controls.left[0]).toBe(button);
+                expect(contentView._footerView._controls.left.length).toBe(initialCount+1);
                 expect(contentView.$('.lf-btn').length).toBe(1);
             });
 
             it('can remove a button', function () {
+                var initialCount = contentView._footerView._controls.left.length;
                 var button = new Button();
                 contentView.addButton(button);
-                expect(contentView._footerView._controls.left.length).toBe(1);
-                expect(contentView._footerView._controls.left[0]).toBe(button);
-               
+                expect(contentView._footerView._controls.left.length).toBe(initialCount+1);
                 contentView.removeButton(button);
-                expect(contentView._footerView._controls.left.length).toBe(0);
+                expect(contentView._footerView._controls.left.length).toBe(initialCount);
             });
         });
 
@@ -293,13 +291,13 @@ function (
                 return new Command(onExecute || function () {});
             }
 
-            it('if sharer delegate is undefined, share button does not appear', function () {
+            it('share button appears when sharer delegate is undefined', function () {
                 expect(sharer.hasDelegate()).toBe(false);
                 var contentView = new LivefyreContentView({
                     content: new Content('blah')
                 });
                 contentView.render();
-                expect(hasShareButton(contentView)).toBe(false);
+                expect(hasShareButton(contentView)).toBe(true);
             });
             it('share button appears if passed and canExecute and share delegate is set', function () {
                 var command = createCommand();
