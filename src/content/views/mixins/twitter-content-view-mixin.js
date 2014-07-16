@@ -5,7 +5,9 @@ var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-button
 
 /**
  * A mixin that decorates an instance of ContentView 
- * to have a bounded visible set
+ * to render as a TwitterContentView.
+ * TwitterContentViews have twitter web intent buttons (e.g. retweeet),
+ * and hyperlinks according to twitter display requirements.
  */
 function asTwitterContentView(contentView, opts) {
     opts = opts || {};

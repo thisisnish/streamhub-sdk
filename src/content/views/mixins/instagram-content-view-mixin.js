@@ -2,7 +2,9 @@
 
 /**
  * A mixin that decorates an instance of ContentView 
- * to have a bounded visible set
+ * to display as an Instgram Photo
+ * This includes default behavior of removing itself if its image
+ * fails to load.
  */
 function asInstagramContentView(contentView, opts) {
     opts = opts || {};

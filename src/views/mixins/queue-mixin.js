@@ -1,6 +1,13 @@
 var ShowMoreButton = require('streamhub-sdk/views/show-more-button');
 var More = require('streamhub-sdk/views/streams/more');
 
+/**
+ * Mixin to a ListView to give it 'queueing' behavior.
+ * It adds a .queue writable stream that you can pipe an infinite stream
+ * of views to, and they will be queued
+ * When there are queued items, a queueButton will be rendered that when clicked
+ * lets the queued items into the ListView
+ */
 var HasQueueMixin = function (listView, opts) {
     opts = opts || {};
     listView.showQueueElClass = 'hub-list-queue';

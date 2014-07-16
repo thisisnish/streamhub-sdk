@@ -131,7 +131,7 @@ ContentView.prototype.getTemplateContext = function () {
  * Removes the content view element, and triggers 'removeContentView.hub'
  * event for the instance to be removed from its associated ListView.
  */
-ContentView.prototype.remove = function() {
+ContentView.prototype.remove = function () {
     /**
      * removeContentView.hub
      * @event ContentView#removeContentView.hub

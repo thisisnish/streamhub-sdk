@@ -4,6 +4,12 @@ var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 'use strict';
 
+/**
+ * Object which knows how to create the appropriate ContentHeaderView
+ * for different Content Types.
+ * Specifically, Facebook, Twitter, and the rest have different display
+ * requirements.
+ */
 var ContentHeaderViewFactory = function (opts) {
     opts = opts || {};
 };

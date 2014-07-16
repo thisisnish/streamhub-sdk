@@ -8,8 +8,8 @@ var inherits = require('inherits');
 
 
 /**
- * A simple View that displays Content in a list (`<ul>` by default).
- *
+ * An AttachmentListView that tiles up to 4 photo and video attachments into one
+ * square
  * @param opts {Object} A set of options to config the view with
  * @param opts.el {HTMLElement} The element in which to render the streamed content
  * @param opts.content {Content} The content instance with which to display its attachments
@@ -138,6 +138,20 @@ TiledAttachmentListView.prototype.retile = function () {
             .removeClass(this.horizontalTileClassName)
             .addClass(this.squareTileClassName);
     }
+};
+
+/**
+ * A count of the number of attachments for this content item
+ * @returns {int} The number of attachments for this content item
+ */
+TiledAttachmentListView.prototype.count = function () {
+    var count = 0;
+    for (var i=0; i < this.oembedViews.length; i++) {
+        if (this.isTileableAttachment(this.oembedViews[i].oembed)) {
+            count++;
+        }
+    }
+    return count;
 };
 
 module.exports = TiledAttachmentListView;

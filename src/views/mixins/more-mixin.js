@@ -1,6 +1,13 @@
 var ShowMoreButton = require('streamhub-sdk/views/show-more-button');
 var More = require('streamhub-sdk/views/streams/more');
 
+/**
+ * Mixin to a ListView to give it 'show more' behavior.
+ * It adds a .more writable stream that you can pipe an infinite stream
+ * of views to
+ * It also adds a 'show more' button on render that, when clicked,
+ * gets 50ish more items and adds them to the listview.
+ */
 var HasMoreMixin = function (listView, opts) {
     opts = opts || {};
     listView._moreAmount = opts.showMore || 50;

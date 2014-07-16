@@ -4,21 +4,21 @@ var GalleryAttachmentListView = require('streamhub-sdk/content/views/gallery-att
 'use strict';
 
 /**
- * A mixin that decorates an instance of ContentView 
- * to have default card theme
+ * A mixin that decorates an instance of View (e.g. ListView, ContentView)
+ * to add a event handler for focusContent.hub that displays a modal
  */
-function hasAttachmentModal(contentView, modal) {
+function hasAttachmentModal(view, modal) {
     if (! modal || modal === true) {
         modal = new AttachmentGalleryModal();
     }
 
-    contentView.events = contentView.events.extended({
+    view.events = view.events.extended({
         'focusContent.hub': function(e, context) {
             if (! modal) {
-                if (contentView &&
-                    contentView.attachmentsView &&
-                    typeof contentView.attachmentsView.focus === 'function') {
-                    contentView.attachmentsView.focus(context.attachmentToFocus);
+                if (view &&
+                    view.attachmentsView &&
+                    typeof view.attachmentsView.focus === 'function') {
+                    view.attachmentsView.focus(context.attachmentToFocus);
                 }
             } else {
                 var modalSubView = new GalleryAttachmentListView(context);
@@ -26,9 +26,11 @@ function hasAttachmentModal(contentView, modal) {
             }
         }    
     });
-    if (contentView.el) {
-        contentView.delegateEvents();
+    if (view.el) {
+        view.delegateEvents();
     }
+
+    return modal;
 };
 
 module.exports = hasAttachmentModal;

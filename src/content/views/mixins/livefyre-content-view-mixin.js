@@ -10,6 +10,7 @@ var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-button
 /**
  * A mixin that decorates an instance of ContentView 
  * to be a LivefyreContentView
+ * LivefyreContentViews have streamhub-powered like, reply, and share buttons
  */
 function asLivefyreContentView(contentView, opts) {
     opts = opts || {};
@@ -62,7 +63,7 @@ function asLivefyreContentView(contentView, opts) {
             return;
         }
         // Don't render a button if contentView isn't actually LivefyreContent
-        if (contentView.content.typeUrn !== LivefyreContent.prototype.typeUrn) {
+        if (! contentView.content.id) {
             return;
         }
         return new HubLikeButton(contentView._commands.like, {

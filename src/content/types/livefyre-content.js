@@ -31,13 +31,13 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             json.content = json.content || {};
             json.content.annotations = json.content.annotations || {};
 
-            this.id = json.content.id || json.id;
+            this.set({ id: json.content.id || json.id });
             this.author = json.author;
             this.createdAt = new Date(1000 * json.content.createdAt);
             this.updatedAt = new Date(1000 * json.content.updatedAt);
             this.lastVisibility = Content.enums.visibility[json.lastVis];
             this.visibility = Content.enums.visibility[json.vis];
-            this.parentId = json.content.parentId;
+            this.set({ parentId: json.content.parentId });
             this.meta = json;
             this._annotator.annotate(this, {
                 added: json.content.annotations
