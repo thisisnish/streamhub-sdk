@@ -126,20 +126,27 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
 
             //Set urn so that other bits that rely on it
             //treat content as it should be.
+            var viewToRender = null;
             if(typeId.indexOf("twitter.com") >= 0) {
                 content.typeUrn = TYPE_URNS.TWITTER;
-                return TwitterContentView;
+                viewToRender = TwitterContentView;
             }
 
-            if(typeId.indexOf("facebook.com") >= 0) {
+            if(!viewToRender && typeId.indexOf("facebook.com") >= 0) {
                 content.typeUrn = TYPE_URNS.LIVEFYRE_FACEBOOK;
-                return FacebookContentView;
+                viewToRender = FacebookContentView;
             }
 
-            if(typeId.indexOf("instagram.com") >= 0) {
+            if(!viewToRender && typeId.indexOf("instagram.com") >= 0) {
                 content.typeUrn = TYPE_URNS.LIVEFYRE_INSTAGRAM;
-                return InstagramContentView;
-            }    
+                viewToRender = InstagramContentView;
+            }   
+
+            if(viewToRender !== null) {
+                //unset title to prevent rendering in non-url content bodies
+                content.title = undefined;
+                return viewToRender;
+            } 
         } 
 
         var currentType;
