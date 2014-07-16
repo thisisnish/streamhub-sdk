@@ -97,6 +97,7 @@ function asLivefyreContentView(contentView, opts) {
 
         if (!shareCommand) {
             return new ShareButton({
+                className: 'btn-link content-share',
                 content: this.content
             });
         }
