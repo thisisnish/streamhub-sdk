@@ -30,6 +30,16 @@ function(LivefyreContent, inherits) {
         if (oembed && oembed.type === 'link') {
             return;
         }
+
+        if(oembed){
+            var type = oembed.type || null;
+            var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null; 
+
+            //Don't attach links or facebook rich embeds
+            if (oembed.type === 'link' || (type === 'rich' && provider === "facebook")){
+                return;
+            }
+        }
         return LivefyreContent.prototype.addAttachment.apply(this, arguments);
     }
 
