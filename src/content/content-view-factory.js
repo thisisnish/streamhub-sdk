@@ -124,14 +124,22 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
             var typeId = content.urlContentTypeId || "";
             typeId = typeId.toLowerCase();
 
-            if(typeId.indexOf("twitter.com") >= 0)
+            //Set urn so that other bits that rely on it
+            //treat content as it should be.
+            if(typeId.indexOf("twitter.com") >= 0) {
+                content.typeUrn = TYPE_URNS.TWITTER;
                 return TwitterContentView;
+            }
 
-            if(typeId.indexOf("facebook.com") >= 0)
+            if(typeId.indexOf("facebook.com") >= 0) {
+                content.typeUrn = TYPE_URNS.LIVEFYRE_FACEBOOK;
                 return FacebookContentView;
+            }
 
-            if(typeId.indexOf("instagram.com") >= 0)
+            if(typeId.indexOf("instagram.com") >= 0) {
+                content.typeUrn = TYPE_URNS.LIVEFYRE_INSTAGRAM;
                 return InstagramContentView;
+            }    
         } 
 
         var currentType;
