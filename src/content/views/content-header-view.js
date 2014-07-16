@@ -38,7 +38,7 @@ ContentHeaderView.prototype.elClass = 'content-header';
 
 ContentHeaderView.prototype.headerElSelector = '.content-header';
 ContentHeaderView.prototype.avatarClass = 'content-author-avatar';
-ContentHeaderView.prototype.avatarSelector = '.'+this.avatarClass;
+ContentHeaderView.prototype.avatarSelector = '.'+ContentHeaderView.prototype.avatarClass;
 ContentHeaderView.prototype.tooltipElSelector = '.hub-tooltip-link';
 ContentHeaderView.prototype.contentWithImageClass = 'content-with-image';
 ContentHeaderView.prototype.parentClassSelector = '.content';
