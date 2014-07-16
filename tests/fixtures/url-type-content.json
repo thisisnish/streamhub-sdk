@@ -1,65 +1,66 @@
 {
     "vis": 1,
-    "collectionId": "2487949",
+    "collectionId": "2487990",
     "content": {
+        "generator": {
+            "url": "http://www.nytimes.com",
+            "image": "http://static01.nyt.com/favicon.ico",
+            "displayName": "Nytimes",
+            "id": "www.nytimes.com"
+        },
+        "bodyHtml": "<p>Scientists have discovered a large species of flying \"four-winged\" dinosaur that may have relied on a long, feathery tail to prevent crash landings. The new species, Changyuraptor, found in northeastern China, was four feet long and weighed about nine pounds - by far the largest of the flying nonavian dinosaurs that lived about 125 million years ago.</p>",
+        "id": "11c4c7f0-6ea9-4735-bcc3-d2618542319c-www.nytimes.com@embed.livefyre.com",
+        "authorId": "www.nytimes.com@embed.livefyre.com",
         "parentId": "",
-        "bodyHtml": "<p>Comprehensive up-to-date news coverage, aggregated from sources all over the world by Google News.</p>",
-        "id": "0a64e993-d94d-46d0-b91d-af8c6ebd163e-news.google.com@embed.livefyre.com",
-        "updatedAt": 1404768166,
+        "updatedAt": 1405537397,
         "annotations": {
             "geocode": {
                 "latitude": 0,
                 "name": "",
                 "longitude": 0
             },
-            "sortOrder": 1404768128
+            "sortOrder": 1405537408
         },
-        "createdAt": 1404768111
+        "createdAt": 1405537396
     },
     "source": 22,
     "type": 0,
-    "event": 1404768166840595,
-            "author": {
-                "displayName": "Google",
-                "tags": [],
-                "profileUrl": "http://news.google.com",
-                "avatar": "",
-                "type": 1,
-                "id": "news.google.com@embed.livefyre.com"
-            },
+    "event": 1405537397266513,
     "childContent": [
         {
             "content": {
-                "targetId": "0a64e993-d94d-46d0-b91d-af8c6ebd163e-news.google.com@embed.livefyre.com",
+                "targetId": "11c4c7f0-6ea9-4735-bcc3-d2618542319c-www.nytimes.com@embed.livefyre.com",
                 "authorId": "-",
                 "link": null,
                 "oembed": {
-                    "provider_url": "http://news.google.com",
-                    "title": "Google News",
-                    "thumbnail_width": 150,
+                    "provider_url": "http://www.nytimes.com",
+                    "title": "Changyuraptor, Large Species of Flying Dinosaur, Is Discovered",
+                    "thumbnail_width": 291,
                     "height": 0,
                     "width": 0,
                     "html": "",
                     "author_name": "",
-                    "provider_name": "Google",
-                    "thumbnail_url": "http://t2.gstatic.com/images?q=tbn:ANd9GcSpMstSQDP1Ku70hted5CTvrzP9aNHBxhCAwb8_HPL38yz8bz_nlaXdUweGCXd5Qe0U7tckCWhXZ0M",
+                    "provider_name": "Nytimes",
+                    "thumbnail_url": "http://static01.nyt.com/images/icons/t_logo_291_black.png",
                     "type": "link",
-                    "thumbnail_height": 150,
+                    "thumbnail_height": 291,
                     "author_url": ""
                 },
                 "position": 0,
-                "id": "0a64e993-d94d-46d0-b91d-af8c6ebd163e-news.google.com@embed.livefyre.com.None"
+                "id": "11c4c7f0-6ea9-4735-bcc3-d2618542319c-www.nytimes.com@embed.livefyre.com.None"
             },
             "vis": 1,
             "type": 3,
-            "event": 1404768166840595,
+            "event": 1405537397266513,
             "source": 0
         }
     ],
-    "generator": {
-        "id": "google.com",
-        "displayName": "Google",
-        "url": "http://news.google.com",
-        "image": "https://assets-cdn.github.com/favicon.ico"
-    }
+    "author": {
+                "displayName": "Nytimes",
+                "tags": [],
+                "profileUrl": "http://www.nytimes.com",
+                "avatar": "",
+                "type": 1,
+                "id": "www.nytimes.com@embed.livefyre.com"
+            }
 }
