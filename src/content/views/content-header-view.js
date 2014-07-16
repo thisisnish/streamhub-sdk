@@ -37,14 +37,16 @@ ContentHeaderView.prototype.elTag = 'section';
 ContentHeaderView.prototype.elClass = 'content-header';
 
 ContentHeaderView.prototype.headerElSelector = '.content-header';
-ContentHeaderView.prototype.avatarSelector = '.content-author-avatar';
+ContentHeaderView.prototype.avatarClass = 'content-author-avatar';
+ContentHeaderView.prototype.avatarSelector = '.'+ContentHeaderView.prototype.avatarClass;
 ContentHeaderView.prototype.tooltipElSelector = '.hub-tooltip-link';
 ContentHeaderView.prototype.contentWithImageClass = 'content-with-image';
 ContentHeaderView.prototype.parentClassSelector = '.content';
 
 ContentHeaderView.prototype.events = View.prototype.events.extended({}, function (events) {
     events['click'] = function(e) {
-        if (! this.$el.parents(this.parentClassSelector).hasClass(this.contentWithImageClass)) {
+        if (! this.$el.parents(this.parentClassSelector).hasClass(this.contentWithImageClass) ||
+            $(e.target).parent().hasClass(this.avatarClass)) {
             // Only do this when there is an image
             return;
         }
@@ -111,7 +113,8 @@ ContentHeaderView.prototype._handleAvatarError = function (e) {
 };
 
 ContentHeaderView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this)
+    var context = $.extend({}, this);
+    context.authorAvatarUrl = this.author ? this.author.profileUrl : undefined;
     return context;
 };
 
