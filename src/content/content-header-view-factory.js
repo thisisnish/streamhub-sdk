@@ -34,7 +34,6 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         opts.contentSourceName = 'twitter';
 
         opts.contentSourceUrl = '//twitter.com';
-        opts.contentSourceTooltipText = 'View on Twitter';
     } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FACEBOOK) {
         if (content.author) {
             opts.authorUrl = content.author.profileUrl;
@@ -42,12 +41,6 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
 
         opts.contentSourceName = 'facebook'
         opts.contentSourceTooltipText = 'View on Facebook';
-    }
-
-    if(!opts.contentSourceUrl){
-        opts.contentSourceName = ''
-        opts.contentSourceUrl = content.attachments.length ? content.attachments[0].url : undefined;
-        opts.contentSourceTooltipText = ''
     }
 
     return opts;

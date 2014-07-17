@@ -64,6 +64,9 @@ ContentHeaderView.prototype.events = View.prototype.events.extended({}, function
     events['mouseenter ' + this.tooltipElSelector] = function (e) {
         var target = e.target;
         var title = $(target).attr('title');
+        if ( ! title) {
+            return;
+        }
         var position = $(target).position();
         var positionWidth = $(target).width();
 
