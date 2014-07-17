@@ -138,13 +138,7 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
             if(!viewToRender && typeId.indexOf("instagram.com") >= 0) {
                 content.typeUrn = TYPE_URNS.LIVEFYRE_INSTAGRAM;
                 viewToRender = InstagramContentView;
-            }   
-
-            if(viewToRender !== null) {
-                //unset title to prevent rendering in non-url content bodies
-                content.title = undefined;
-                return viewToRender;
-            } 
+            }
         } 
 
         var currentType;
