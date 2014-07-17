@@ -96,7 +96,7 @@ ContentView.prototype._addInitialChildViews = function (opts) {
     this.add(this._bodyView, { render: false });
 
     this._footerView = opts.footerView || new ContentFooterView(opts);
-    this.add(this._footerView, { render: false });       
+    this.add(this._footerView, { render: false });
 };
 
 /**
