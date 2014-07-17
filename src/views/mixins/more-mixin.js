@@ -11,12 +11,15 @@ var More = require('streamhub-sdk/views/streams/more');
 var HasMoreMixin = function (listView, opts) {
     opts = opts || {};
     listView._moreAmount = opts.showMore || 50;
-    listView.showMoreElClass = 'hub-list-more';
-    listView.showMoreElSelector = '.'+listView.showMoreElClass;
+    if ( ! opts.getButtonEl) {
+        throw new Error('HasMoreMixin must be passed getButtonEl function to '+
+                        'know where to render the showMoreButton');
+    }
 
-    listView.events = listView.events.extended({
+    listView.events = extendEvents(listView.events, {
         // .showMoreButton will trigger showMore.hub when it is clicked
-        'showMore.hub .hub-list-more': function (e) {
+        'showMore.hub': function (e) {
+            e.stopPropagation();
             listView.showMore();
         }
     });
@@ -84,9 +87,7 @@ var HasMoreMixin = function (listView, opts) {
     var oldRender = listView.render;
     listView.render = function () {
         oldRender.call(listView);
-        listView.showMoreButton.setElement(
-            listView.$el.find(listView.showMoreElSelector)
-        );
+        listView.showMoreButton.setElement(opts.getButtonEl());
         listView.showMoreButton.render();
         if (listView.showMoreButton.isHolding()) {
             listView.showMoreButton.$el.show();
@@ -101,3 +102,19 @@ var HasMoreMixin = function (listView, opts) {
 };
 
 module.exports = HasMoreMixin;
+
+
+// add events to the listVIew, handling whether listview.events
+// is a view/event-map or just a normal POJO
+function extendEvents(oldEvents, newEvents) {
+    // if it is an eventmap, use .extended and return
+    if (typeof oldEvents.extended === 'function') {
+        return oldEvents.extended(newEvents);
+    }
+    for (var key in newEvents) {
+        if (newEvents.hasOwnProperty(key)) {
+            oldEvents[key] = newEvents[key];
+        }
+    }
+    return oldEvents;
+}
