@@ -6,18 +6,20 @@ var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 var LivefyreTwitterContent = require('streamhub-sdk/content/types/livefyre-twitter-content');
 var LivefyreFacebookContent = require('streamhub-sdk/content/types/livefyre-facebook-content');
 var LivefyreInstagramContent = require('streamhub-sdk/content/types/livefyre-instagram-content');
+var LivefyreUrlContent = require('streamhub-sdk/content/types/livefyre-url-content');
 var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
 var ContentView = require('streamhub-sdk/content/views/card-content-view');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
 var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
 var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
+var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
+
 var Command = require('streamhub-sdk/ui/command');
 var Liker = require('streamhub-sdk/collection/liker');
 var CompositeView = require('view/composite-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
-var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 /**
@@ -28,7 +30,6 @@ var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 var ContentViewFactory = function(opts) {
     opts = opts || {};
     this.contentRegistry = this.contentRegistry.slice(0);
-    this._headerViewFactory = new ContentHeaderViewFactory();
     if (opts.createAttachmentsView) {
         this._createAttachmentsView = opts.createAttachmentsView;
     }
@@ -49,6 +50,8 @@ ContentViewFactory.prototype.contentRegistry = [
         typeUrn: TYPE_URNS.LIVEFYRE_INSTAGRAM },
     { type: TwitterContent, view: TwitterContentView,
         typeUrn: TYPE_URNS.TWITTER },
+    { type: LivefyreUrlContent, view: UrlContentView,
+        typeUrn: TYPE_URNS.LIVEFYRE_URL },
     { type: LivefyreContent, view: LivefyreContentView,
         typeUrn: TYPE_URNS.LIVEFYRE },
     { type: Content, view: ContentView,
@@ -107,20 +110,44 @@ ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
 };
 
 ContentViewFactory.prototype._getViewTypeForContent = function (content) {
+    var viewToRender = null;
     for (var i=0, len=this.contentRegistry.length; i < len; i++) {
         var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
+
         if (! (sameTypeUrn || (content instanceof current.type))) {
             continue;
         }
 
-        var currentType;
-        if (current.view) {
-            currentType = current.view;
-        } else if (current.viewFunction) {
-            currentType = current.viewFunction(content);
+        if (content.typeUrn === TYPE_URNS.LIVEFYRE_URL) {
+            var typeId = content.urlContentTypeId || "";
+            typeId = typeId.toLowerCase();
+
+            //Set urn so that other bits that rely on it
+            //treat content as it should be.
+            if(typeId.indexOf("twitter.com") >= 0) {
+                viewToRender = TwitterContentView;
+            }
+
+            if(!viewToRender && typeId.indexOf("facebook.com") >= 0) {
+                viewToRender = FacebookContentView;
+            }
+
+            if(!viewToRender && typeId.indexOf("instagram.com") >= 0) {
+                viewToRender = InstagramContentView;
+            }
+        } 
+
+        if (viewToRender) {
+            return viewToRender;
         }
-        return currentType;
+
+        if (current.view) {
+            viewToRender = current.view;
+        } else if (current.viewFunction) {
+            viewToRender = current.viewFunction(content);
+        }
+        return viewToRender;
     }
 };
 

@@ -376,12 +376,18 @@
         line-height: 18px;
     }
 
+
     .content-source-logo {
         background-image: data-uri('../../images/social-icons.png');
         background-repeat: no-repeat;
         background-position: left top;
+
         height: 22px;
         width: 22px;    
+    }
+
+    img.content-source-logo{
+        background-image: none;
     }
 
     &.content-instagram {
@@ -450,5 +456,15 @@
 
     &.hub-content-image-loading {
         display: none;
+    }
+
+    &.content-url { 
+        .content-body {
+            font-size: 14px;
+            line-height: 24px;
+        }
+        .content-footer {
+            display: none;
+        }
     }
 }

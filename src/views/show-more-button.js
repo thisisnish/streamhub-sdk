@@ -21,7 +21,8 @@ function (inherits, View) {
     ShowMoreButton.prototype.events = View.prototype.events.extended({
         // Hide the button on click. When more content is held and can be shown,
         // It will reappear
-        'click': function () {
+        'click': function (e) {
+            e.stopPropagation();
             this._holding = false;
             this.$el.hide();
             this.$el.trigger('showMore.hub');

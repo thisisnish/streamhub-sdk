@@ -6,13 +6,14 @@ define([
     'streamhub-sdk/content/types/livefyre-oembed',
     'streamhub-sdk/content/types/livefyre-opine',
     'streamhub-sdk/content/types/livefyre-instagram-content',
+    'streamhub-sdk/content/types/livefyre-url-content',
     'streamhub-sdk/storage',
     'streamhub-sdk/debug',
     'stream/transform',
     'inherits'
 ], function (LivefyreContent, LivefyreTwitterContent, LivefyreFacebookContent,
-Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, Storage, debug, Transform,
-inherits) {
+Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
+Storage, debug, Transform, inherits) {
     'use strict';
 
 
@@ -206,6 +207,8 @@ inherits) {
             return new LivefyreOpine(state);
         } else if (sourceName === 'twitter') {
             return new LivefyreTwitterContent(state);
+        } else if (sourceName === 'url') {
+            return new LivefyreUrlContent(state);
         } else if (sourceName === 'facebook') {
             return new LivefyreFacebookContent(state);
         } else if (sourceName === 'instagram') {

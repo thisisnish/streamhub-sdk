@@ -17,18 +17,34 @@ var log = debug('streamhub-sdk/views/list-view');
  * @param [opts.el] {HTMLElement} The element in which to render the streamed content
  * @param [opts.comparator] {function(view, view): number}
  * @param [opts.autoRender] Whether to call #render in the constructor
+ * @param [opts.template] {function<string>} A function that returns the HTML
+ *   that should be initially rendered
  * @exports streamhub-sdk/views/list-view
  * @constructor
  */
 var ListView = function(opts) {
     opts = opts || {};
     opts.autoRender = opts.autoRender === undefined ? true : opts.autoRender;
-
+    if (opts.template) {
+        this.template = opts.template
+    }
     this.views = [];
 
     View.call(this, opts);
     Writable.call(this, opts);
-    hasMore(this, opts);
+    hasMore(this, {
+        more: opts.more,
+        initial: opts.initial,
+        showMore: opts.showMore,
+        showMoreButton: opts.showMoreButton,
+        getButtonEl: function () {
+            var el = this.$(this.showMoreElSelector)[0];
+            if ( ! el) {
+                throw new Error("Can't get show more button for ListView");
+            }
+            return el;
+        }.bind(this)
+    });
 
     this.comparator = opts.comparator || this.comparator;
 
@@ -58,8 +74,15 @@ ListView.prototype.template = ListViewTemplate;
 
 /**
  * Selector of .el child that contentViews should be inserted into
+ * @protected
  */
 ListView.prototype.listElSelector = '.hub-list';
+
+/**
+ * Selector for descendant that should be used as the show more button
+ * @protected
+ */
+ListView.prototype.showMoreElSelector = '> .hub-list-more';
 
 ListView.prototype.comparators = {
     CREATEDAT_ASCENDING: function (a, b) {
@@ -245,7 +268,7 @@ ListView.prototype.remove = function (view) {
 
     // Remove from this.views[]
     this.views.splice(viewIndex, 1);
-
+    this.emit('removed', view);
     return true;
 };
 

@@ -7,11 +7,12 @@
 
     <div class="content-byline">
         {{#contentSourceUrl}}
-            <a class="hub-tooltip-link tooltip-{{contentSourceName}} content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank"{{/contentSourceUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
+            <a class="hub-tooltip-link {{#contentSourceName}}tooltip-{{contentSourceName}}{{/contentSourceName}} content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank"{{/contentSourceUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
         {{/contentSourceUrl}}
         {{^contentSourceUrl}}
             <span class="content-source-logo"></span>
         {{/contentSourceUrl}}
+
         {{#authorUrl}}
             <a class="content-author-name" href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
         {{/authorUrl}}

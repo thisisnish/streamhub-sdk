@@ -124,20 +124,20 @@ function (
             }
             it('wraps the body in some html element if needed', function () {
                 var $body = renderedBodyEl('what');
-                expect($body.find('.content-body *').length).toBe(1);
+                expect($body.find('.content-body-main *').length).toBe(1);
                 // html but not starting with
                 $body = renderedBodyEl('what <b>the heck</b>');
-                expect($body.find('.content-body *').length).toBe(2);
-                expect($body.find('.content-body > p').length).toBe(1);
+                expect($body.find('.content-body-main *').length).toBe(2);
+                expect($body.find('.content-body-main > p').length).toBe(1);
                 // html but not a block level thing
                 $body = renderedBodyEl('<a>the heck</a>');
-                expect($body.find('.content-body *').length).toBe(2);
-                expect($body.find('.content-body > p').length).toBe(1);
+                expect($body.find('.content-body-main *').length).toBe(2);
+                expect($body.find('.content-body-main > p').length).toBe(1);
             });
             it('doesnt wrap bodyHtml with paragraphs', function () {
                 ['<p>what</p><p>1</p>', '  <p>what</p><p>1</p>'].forEach(function (body) {
                     var $body = renderedBodyEl(body);
-                    expect($body.find('.content-body *').length).toBe(2);
+                    expect($body.find('.content-body-main *').length).toBe(2);
                 });
             });
         });

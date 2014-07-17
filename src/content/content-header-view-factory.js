@@ -32,15 +32,14 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         opts.authorVerified = content.twitterVerified;
 
         opts.contentSourceName = 'twitter';
+
         opts.contentSourceUrl = '//twitter.com';
-        opts.contentSourceTooltipText = 'View on Twitter';
     } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FACEBOOK) {
         if (content.author) {
             opts.authorUrl = content.author.profileUrl;
         }
 
         opts.contentSourceName = 'facebook'
-        opts.contentSourceUrl = content.attachments.length ? content.attachments[0].url : undefined;
         opts.contentSourceTooltipText = 'View on Facebook';
     }
 
