@@ -1,5 +1,4 @@
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
-var UrlContentHeaderView = require('streamhub-sdk/content/views/url-content-header-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 'use strict';
@@ -16,11 +15,7 @@ var ContentHeaderViewFactory = function (opts) {
 
 ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
     var opts = this._getHeaderViewOptsForContent(content);
-    if(content.typeUrn === TYPE_URNS.LIVEFYRE_URL){
-        return new UrlContentHeaderView({ content: content });
-    } else {
-        return new ContentHeaderView(opts);
-    }
+    return new ContentHeaderView(opts);
 };
 
 ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (content) {

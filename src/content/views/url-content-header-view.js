@@ -19,6 +19,7 @@ var UrlContentHeaderView = function (opts) {
     this.displayNameLink = opts.content.author.profileUrl;
     this.viaText = opts.content.viaText;
     this.favicon = opts.content.favicon;
+    this.contentSourceUrl = content.attachments && content.attachments.length ? content.attachments[0].url : undefined;
 
     asUrlContentHeaderView(this, opts);
 };
