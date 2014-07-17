@@ -20,7 +20,6 @@ var Liker = require('streamhub-sdk/collection/liker');
 var CompositeView = require('view/composite-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
-var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 /**
@@ -31,7 +30,6 @@ var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 var ContentViewFactory = function(opts) {
     opts = opts || {};
     this.contentRegistry = this.contentRegistry.slice(0);
-    this._headerViewFactory = new ContentHeaderViewFactory();
     if (opts.createAttachmentsView) {
         this._createAttachmentsView = opts.createAttachmentsView;
     }
