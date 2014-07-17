@@ -22,10 +22,10 @@ function (inherits, View) {
         // Hide the button on click. When more content is held and can be shown,
         // It will reappear
         'click': function (e) {
+            e.stopPropagation();
             this._holding = false;
             this.$el.hide();
             this.$el.trigger('showMore.hub');
-            e.stopPropagation();
         }
     });
 
