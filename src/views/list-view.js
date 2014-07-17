@@ -268,7 +268,7 @@ ListView.prototype.remove = function (view) {
 
     // Remove from this.views[]
     this.views.splice(viewIndex, 1);
-
+    this.emit('removed', view);
     return true;
 };
 

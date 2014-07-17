@@ -33,6 +33,7 @@ inherits(LivefyreContentView, CardContentView);
  * @returns {LivefyreContentView}
  */
 LivefyreContentView.prototype.render = function () {
+
     /**
      * bengo:
      * This next 3 lines makes me sad, but it is necessary to support IE9.
@@ -47,9 +48,11 @@ LivefyreContentView.prototype.render = function () {
     if (getIeVersion() === 9) {
         this._footerView._detachButtons();
     }
+
     CardContentView.prototype.render.call(this);
     return this;
 };
+
 
 // return the ie version if IE, else false
 function getIeVersion () {
