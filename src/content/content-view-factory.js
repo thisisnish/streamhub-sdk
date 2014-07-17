@@ -110,6 +110,7 @@ ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
 };
 
 ContentViewFactory.prototype._getViewTypeForContent = function (content) {
+    var viewToRender = null;
     for (var i=0, len=this.contentRegistry.length; i < len; i++) {
         var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
@@ -124,30 +125,29 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
 
             //Set urn so that other bits that rely on it
             //treat content as it should be.
-            var viewToRender = null;
             if(typeId.indexOf("twitter.com") >= 0) {
-                content.typeUrn = TYPE_URNS.TWITTER;
                 viewToRender = TwitterContentView;
             }
 
             if(!viewToRender && typeId.indexOf("facebook.com") >= 0) {
-                content.typeUrn = TYPE_URNS.LIVEFYRE_FACEBOOK;
                 viewToRender = FacebookContentView;
             }
 
             if(!viewToRender && typeId.indexOf("instagram.com") >= 0) {
-                content.typeUrn = TYPE_URNS.LIVEFYRE_INSTAGRAM;
                 viewToRender = InstagramContentView;
             }
         } 
 
-        var currentType;
-        if (current.view) {
-            currentType = current.view;
-        } else if (current.viewFunction) {
-            currentType = current.viewFunction(content);
+        if (viewToRender) {
+            return viewToRender;
         }
-        return currentType;
+
+        if (current.view) {
+            viewToRender = current.view;
+        } else if (current.viewFunction) {
+            viewToRender = current.viewFunction(content);
+        }
+        return viewToRender;
     }
 };
 
