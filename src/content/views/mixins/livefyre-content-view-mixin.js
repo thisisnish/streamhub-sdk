@@ -4,6 +4,8 @@ var HubButton  = require('streamhub-sdk/ui/hub-button');
 var HubLikeButton = require('streamhub-sdk/ui/hub-like-button');
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-buttons-mixin');
+// TODO: move share to a separate mixin
+var ShareButton = require('streamhub-sdk/ui/share-button');
 
 'use strict';
 
@@ -75,6 +77,10 @@ function asLivefyreContentView(contentView, opts) {
      * Create a Button to be used for replying
      */
     contentView._createReplyButton = function () {
+        // Don't render a button when no auth delegate
+        if ( ! auth.hasDelegate('login')) {
+            return;
+        }
         var replyCommand = contentView._commands.reply;
         if ( ! (replyCommand && replyCommand.canExecute())) {
             return;
@@ -92,7 +98,14 @@ function asLivefyreContentView(contentView, opts) {
      */
     contentView._createShareButton = function () {
         var shareCommand = contentView._commands.share;
-        if ( ! (shareCommand && shareCommand.canExecute())) {
+
+        if (!shareCommand) {
+            return new ShareButton({
+                className: 'btn-link content-share',
+                content: this.content
+            });
+        }
+        if (! shareCommand.canExecute()) {
             return;
         }
         var shareButton = new HubButton(shareCommand, {

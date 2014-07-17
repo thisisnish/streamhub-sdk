@@ -1,18 +1,2 @@
-@import (reference) "./buttons";
-@import (reference) "./mixins";
-
-.hub-btn {
-    .lf-btn();
-
-    &:active {
-        .box-shadow(none);
-    }
-}
-
-.hub-btn-link {
-    .lf-btn-link();
-}
-
-.hub-btn-xs {
-    .lf-btn-xs();
-}
+@streamhub-ui: "../../../lib/streamhub-ui/src/css";
+@import "@{streamhub-ui}/ui.less";
