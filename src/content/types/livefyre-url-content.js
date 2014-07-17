@@ -25,12 +25,6 @@ function(LivefyreContent, inherits) {
     LivefyreUrlContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-url';
 
     LivefyreUrlContent.prototype.addAttachment = function (oembed) {
-        // link attachments are just metadata about this content as a whole.
-        // not things that should be rendered in attachmentListViews
-        if (oembed && oembed.type === 'link') {
-            return;
-        }
-
         if(oembed){
             var type = oembed.type || null;
             var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null; 

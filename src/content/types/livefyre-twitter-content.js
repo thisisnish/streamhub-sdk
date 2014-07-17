@@ -68,12 +68,12 @@ define([
 
 
     LivefyreTwitterContent.prototype.addAttachment = function (oembed) {
-        // link attachments are just metadata about this content as a whole.
-        // not things that should be rendered in attachmentListViews
         if (oembed && oembed.type === 'link') {
-            return;
+            var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null; 
+            if(provider && provider === "twitter") 
+                return;
         }
-        
+
         return LivefyreContent.prototype.addAttachment.apply(this, arguments);
     }
 
