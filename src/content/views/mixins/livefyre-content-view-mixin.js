@@ -77,7 +77,10 @@ function asLivefyreContentView(contentView, opts) {
      * Create a Button to be used for replying
      */
     contentView._createReplyButton = function () {
-        // Don't render a button when no auth delegate
+        if ( ! contentView._replying) {
+            return;
+        }
+        // Don't render reply button when no auth delegate
         if ( ! auth.hasDelegate('login')) {
             return;
         }
