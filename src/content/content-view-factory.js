@@ -115,7 +115,7 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
 
-        if (! (sameTypeUrn || (content instanceof current.type))) {
+        if (!sameTypeUrn || !(content instanceof current.type)) {
             continue;
         }
 
