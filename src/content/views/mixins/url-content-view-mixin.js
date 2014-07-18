@@ -1,3 +1,5 @@
+var UrlContentHeaderView = require('streamhub-sdk/content/views/url-content-header-view');
+
 'use strict';
 
 /**
@@ -9,12 +11,17 @@ function asUrlContentView(contentView, opts) {
     var elClass = opts.elClass || 'content-url';
     contentView.$el.addClass(elClass);
 
+
     /**
      * Render the content inside of the LivefyreContentView's element.
      * @returns {LivefyreContentView}
      */
     var oldRender = contentView.render;
     contentView.render = function () {
+        contentView._headerView.destroy();
+        var headerView = new UrlContentHeaderView(opts);
+        contentView._headerView = contentView._childViews[0] = headerView;
+
         oldRender.apply(contentView, arguments);
         contentView.$el.addClass(elClass);
     };
