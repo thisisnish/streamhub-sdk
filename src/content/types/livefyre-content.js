@@ -31,17 +31,20 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             json.content = json.content || {};
             json.content.annotations = json.content.annotations || {};
 
-            this.id = json.content.id || json.id;
+            this.set({ id: json.content.id || json.id });
             this.author = json.author;
             this.createdAt = new Date(1000 * json.content.createdAt);
             this.updatedAt = new Date(1000 * json.content.updatedAt);
             this.lastVisibility = Content.enums.visibility[json.lastVis];
             this.visibility = Content.enums.visibility[json.vis];
-            this.parentId = json.content.parentId;
+            this.set({ parentId: json.content.parentId });
             this.meta = json;
             this._annotator.annotate(this, {
                 added: json.content.annotations
             }, true);  // Silently add b/c this is new Content.
+            if (json.content.attachments) {
+                json.content.attachments.map(this.addAttachment.bind(this));
+            }
         }
 
         this.body = json ? json.content.bodyHtml : '';
@@ -93,6 +96,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             }
         }
         if (!found) {
+            obj.setParent && obj.setParent(this);
             this.replies.push(obj);
             this.emit('reply', obj);
         }
@@ -162,6 +166,34 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         this._likes--;
         this.emit('removeOpine', obj);
     };
+    
+    /**
+     * Sets a reference to the provided Content as its parent Content.
+     * Can only be set once and if the id matches.
+     * @param parent {!Content}
+     */
+    LivefyreContent.prototype.setParent = function (parent) {
+        if (this._parent || !parent) {
+            //Can only set once and can't set to falsy value
+            return
+        }
+        if (this.parentId && parent.id === this.parentId) {
+            //If parent is valid, set it
+            this._parent = parent;
+        }
+    };
+    
+    /**
+     * Returns a reference to this._parent if it exists, null if it doesn't, and
+     * undefined if this object doesn't even have a parentId.
+     * @returns {?Content=}
+     */
+    LivefyreContent.prototype.getParent = function (parent) {
+        if (this._parent) {
+            return this._parent;
+        }
+        return (this.parentId) ? null : undefined;
+    };
 
     LivefyreContent.prototype.getLikeCount = function () {
         return this._likes;
@@ -220,7 +252,8 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         "unknown",
         "instagram",   // 19
         "twitter",     // 20
-        "facebook"     // 21
+        "facebook",     // 21
+        "url"     // 22
     ];
 
     return LivefyreContent;

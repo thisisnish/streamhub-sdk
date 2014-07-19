@@ -5,7 +5,6 @@
     <style>
     #listView {
         width:500px;
-        overflow: hidden;
     }
     </style>
 </head>
@@ -27,11 +26,10 @@
             'streamhub-sdk/sharer',
         ],function (Auth, ListView, Collection, Content, Liker, sharer) {
             var opts = {
-                "network": "labs-t402.fyre.co",
-                "siteId": "303827",
-                "articleId": "xbox-0",
-                "environment": "t402.livefyre.com",
-                "replies": true
+                "network": "livefyre.com",
+                siteId: '290634',
+                articleId: 'joe-test',
+                "environment": "qa-ext.livefyre.com"
             };
 
             var listView = window.view = new ListView({

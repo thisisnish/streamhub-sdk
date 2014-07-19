@@ -52,13 +52,6 @@ function ($, ContentListView, Content, ContentView) {
                 });
             });
 
-            it('uses a modal when constructecd with opts.modal = true', function () {
-                var listView = new ContentListView({
-                    modal: true
-                });
-                expect(typeof listView.modal).toBe('object');
-            });
-
             describe("with opts.sharer", function () {
                 it('passes the sharer to .contentViewFactory.createContentView on .createContentView', function () {
                     var sharer = {
@@ -161,47 +154,16 @@ function ($, ContentListView, Content, ContentView) {
             });
         });
 
-        describe('handles focusContent.hub event', function () {
-
-            var content;
-
-            beforeEach(function() {
-                listView = new ContentListView();
-
-                content = new Content();
-                listView.add(content);
-            });
-
-            it('shows the modal when a modal is set on the ContentListView instance', function () {
-                spyOn(listView.modal, 'show');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(listView.modal.show).toHaveBeenCalled();
-            });
-
-            it('shows finds the correct ContentView instance and invokes .attachmentsView.focus when no modal is set on the ContentListView instance', function () {
-                listView.modal = false;
-                var targetContentView = listView.getContentView(content);
-                targetContentView.attachmentsView.focus = function () {};
-                spyOn(targetContentView.attachmentsView, 'focus');
-
-                listView.$el.trigger('focusContent.hub', { content: content });
-
-                expect(targetContentView.attachmentsView.focus).toHaveBeenCalled();
-            });
-        });
-
         describe("handles showMore.hub event", function () {
             it("is called on showMore.hub event", function () {
                 spyOn(listView, 'showMore').andCallThrough();
-                listView.$el.trigger('showMore.hub');
-                expect(listView.showMore).toHaveBeenCalledWith();
+                listView.showMoreButton.$el.trigger('showMore.hub');
+                expect(listView.showMore).toHaveBeenCalled();
             });
             it("is called when .showMoreButton.$el is clicked", function () {
                 spyOn(listView, 'showMore').andCallThrough();
                 listView.showMoreButton.$el.click();
-                expect(listView.showMore).toHaveBeenCalledWith();
+                expect(listView.showMore).toHaveBeenCalled();
             });
         });
 
@@ -434,7 +396,7 @@ function ($, ContentListView, Content, ContentView) {
         var contentView;
 
         beforeEach(function () {
-            contentView = new ContentView('');
+            contentView = new ContentView({ content: new Content });
         });
 
         describe("when constructed", function () {

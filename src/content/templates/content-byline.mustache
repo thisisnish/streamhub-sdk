@@ -1,25 +1,19 @@
-<div class="content-header-inner">
-    {{#author.avatar}}
-        <a class="content-author-avatar">
-            <img src="{{ author.avatar }}" />
-        </a>
-    {{/author.avatar}}
-    <div class="content-byline">
-        {{#author.url}}
-            <a class="content-author-name" href="{{ author.url }}" target="_blank">{{ author.displayName }}</a>
-        {{/author.url}}
-        {{^author.url}}
-            {{#author.profileUrl}}
-                <div class="content-author-name">
-                    <a href="{{ author.profileUrl }}" target="_blank">{{ author.displayName }}</a>
-                </div>
-                {{#author.twitterUserId}}
-                	<a class="content-author-username" href="https://twitter.com/intent/user?user_id={{author.twitterUserId}}" target="_blank">@{{ author.twitterUsername }}</a>
-                {{/author.twitterUserId}}
-            {{/author.profileUrl}}
-            {{^author.profileUrl}}
-                <span class="content-author-name">{{ author.displayName }}</span>
-            {{/author.profileUrl}}
-        {{/author.url}}
-    </div>
+<div class="content-byline">
+    {{#contentSourceTooltipUrl}}
+        <a class="hub-tooltip-link tooltip-{{contentSourceName}} content-source-logo" {{#contentSourceTooltipUrl}}href="{{contentSourceTooltipUrl}}" target="_blank"{{/contentSourceTooltipUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
+    {{/contentSourceTooltipUrl}}
+    {{^contentSourceTooltipUrl}}
+        <span class="content-source-logo"></span>
+    {{/contentSourceTooltipUrl}}
+    {{#authorUrl}}
+        <a class="content-author-name" href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
+    {{/authorUrl}}
+    {{^authorUrl}}
+        <span class="content-author-name">{{ author.displayName }}</span>
+    {{/authorUrl}}
+    {{#authorUserName}}
+        {{#authorUrl}}
+            <a class="content-author-username" href="{{authorUrl}}" target="_blank">{{authorUserNamePrefix}}{{ authorUserName }}</a>
+        {{/authorUrl}}
+    {{/authorUserName}}
 </div>

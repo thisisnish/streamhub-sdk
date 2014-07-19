@@ -8,16 +8,9 @@ require([
     'streamhub-sdk/content/views/content-list-view',
     'streamhub-sdk/collection',
     'streamhub-sdk/content',
-    'streamhub-sdk/auth',
-    'streamhub-sdk/sharer'
+    'streamhub-sdk/auth'
 ],function (auth, authLivefyre, createAuthButton, livefyreAuthDelegate, debug,
-$, ListView, Collection, Content, Auth, sharer) {
-    sharer.delegate({
-        share: function (content) {
-            alert('share!', content);
-        }
-    });
-
+$, ListView, Collection, Content, Auth) {
     window.auth = auth;
     var log = debug('streamhub-sdk/auth-demo');
     var authButton = createAuthButton(auth, document.getElementById('auth-button'));
@@ -47,7 +40,6 @@ $, ListView, Collection, Content, Auth, sharer) {
     };
     var listView = window.view = new ListView({
         el: document.getElementById("listView"),
-        sharer: sharer
     });
 
     var collection = window.collection = new Collection(opts);

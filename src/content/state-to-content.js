@@ -6,13 +6,14 @@ define([
     'streamhub-sdk/content/types/livefyre-oembed',
     'streamhub-sdk/content/types/livefyre-opine',
     'streamhub-sdk/content/types/livefyre-instagram-content',
+    'streamhub-sdk/content/types/livefyre-url-content',
     'streamhub-sdk/storage',
     'streamhub-sdk/debug',
     'stream/transform',
     'inherits'
 ], function (LivefyreContent, LivefyreTwitterContent, LivefyreFacebookContent,
-Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, Storage, debug, Transform,
-inherits) {
+Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
+Storage, debug, Transform, inherits) {
     'use strict';
 
 
@@ -22,13 +23,14 @@ inherits) {
     /**
      * An Object that transforms state objects from Livefyre APIs
      * into streamhub-sdk Content instances
-     * @param authors {object} A mapping of authorIds to author information
-     * @param [replies=false] {boolean} Whether to read out reply Content
-     * @param storage {Storage} A storage mechanism that supports get/set functions.
+     * @param [opts.authors] {object} A mapping of authorIds to author information
+     * @param [opts.collection] {Collection}
+     * @param [opts.replies=false] {boolean} Whether to read out reply Content
+     * @param [opts.storage] {Storage} A storage mechanism that supports get/set functions.
      */
     var StateToContent = function (opts) {
         opts = opts || {};
-        this._authors = opts.authors || {};
+        this.setAuthors(opts.authors || {});
         this._replies = opts.replies;
         this._collection = opts.collection;
         this._storage = opts.storage || Storage;
@@ -172,6 +174,10 @@ inherits) {
         return instance.transform(state, authors, opts);
     };
 
+    StateToContent.prototype.setAuthors = function (authors) {
+        this._authors = authors;
+    };
+
     StateToContent.prototype._addChildren = function (content, children) {
         var child;
         for (var i=0, numChildren=children.length; i < numChildren; i++) {
@@ -201,6 +207,8 @@ inherits) {
             return new LivefyreOpine(state);
         } else if (sourceName === 'twitter') {
             return new LivefyreTwitterContent(state);
+        } else if (sourceName === 'url') {
+            return new LivefyreUrlContent(state);
         } else if (sourceName === 'facebook') {
             return new LivefyreFacebookContent(state);
         } else if (sourceName === 'instagram') {
@@ -292,7 +300,7 @@ inherits) {
     StateToContent._addReplyOrStore = StateToContent.prototype._addReplyOrStore;
 
     StateToContent.prototype._addOpineOrStore = function (opine, targetId) {
-        var target = Storage.get(targetId);
+        var target = this._storage.get(targetId);
         if (target) {
             log('attaching attachment', arguments);
             target.addOpine(opine);

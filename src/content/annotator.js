@@ -105,7 +105,7 @@ define([
         changeSet.sortOrder = null;
     };
 
-    // moderator
+    // moderator - Whether the user who authored the content is a moderator
 
     Annotator.prototype.added.moderator = function(changeSet) {
         changeSet.moderator = true;
@@ -118,6 +118,15 @@ define([
     Annotator.prototype.added.geocode = function (changeSet, annotationValue) {
         changeSet.geocode = annotationValue;
     };
+
+    /**
+     * Generator annotations indicate the original source of the content
+     * before Livefyre procured it.
+     * Inspired by http://activitystrea.ms/specs/json/1.0/#activity
+     */
+    Annotator.prototype.added.generator = function (changeSet, annotationValue) {
+        changeSet.generator = annotationValue;
+    }
 
     return Annotator;
 });

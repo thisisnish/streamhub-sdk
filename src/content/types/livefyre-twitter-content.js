@@ -66,5 +66,16 @@ define([
         return match[1];
     };
 
+
+    LivefyreTwitterContent.prototype.addAttachment = function (oembed) {
+        if (oembed && oembed.type === 'link') {
+            var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null; 
+            if(provider && provider === "twitter") 
+                return;
+        }
+
+        return LivefyreContent.prototype.addAttachment.apply(this, arguments);
+    }
+
     return LivefyreTwitterContent;
  });

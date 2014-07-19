@@ -95,12 +95,12 @@ function (
             beforeEach(function () {
                 livefyreContent = new LivefyreContent({"vis": 1, "content": {"replaces": "", "feedEntry": {"transformer": "lfcore.v2.procurement.feed.transformer.instagram", "feedType": 2, "description": "#gayrights #lgbt #equality #marriageequality <img src=\"http://distilleryimage2.instagram.com/18ea2500970c11e294f522000a9f30b8_7.jpg\" />", "pubDate": 1364409052, "channelId": "http://instagram.com/tags/marriageequality/feed/recent.rss", "link": "http://distilleryimage2.instagram.com/18ea2500970c11e294f522000a9f30b8_7.jpg", "id": "bffcb85a-2976-4396-bb60-3cf5b1e2c3a8", "createdAt": 1364409052}, "bodyHtml": "#gayrights #lgbt #equality #marriageequality ", "annotations": {}, "authorId": "7759cd005d95d8cc5bd93718b2ac0064@instagram.com", "parentId": "", "updatedAt": 1364409052, "id": "bffcb85a-2976-4396-bb60-3cf5b1e2c3a8", "createdAt": 1364409052}, "source": 13, "lastVis": 0, "type": 0, "event": 1364409052662964, author: {displayName: "sara",tags: [ ],profileUrl: "https://twitter.com/#!/135sara",avatar: "http://a0.twimg.com/profile_images/1349672055/Baqueira_29-01-2010_13-54-52_normal.jpg",type: 3,id: "123568642@twitter.com"}});
                 contentView = new ContentView({ content: livefyreContent });
-                spyOn(contentView, 'formatDate').andCallThrough();
+                spyOn(contentView._footerView, 'formatDate').andCallThrough();
                 contentView.render();
             });
             it('renders .createdAt into a formatted date string', function () {
-                expect(contentView.formatDate).toHaveBeenCalled();
-                expect(typeof contentView.$el.find('.content-created-at').html()).toBe('string');
+                expect(contentView._footerView.formatDate).toHaveBeenCalled();
+                expect(typeof contentView._footerView.$el.find('.content-created-at').html()).toBe('string');
             });
         });
 
@@ -124,20 +124,20 @@ function (
             }
             it('wraps the body in some html element if needed', function () {
                 var $body = renderedBodyEl('what');
-                expect($body.find('.content-body *').length).toBe(1);
+                expect($body.find('.content-body-main *').length).toBe(1);
                 // html but not starting with
                 $body = renderedBodyEl('what <b>the heck</b>');
-                expect($body.find('.content-body *').length).toBe(2);
-                expect($body.find('.content-body > p').length).toBe(1);
+                expect($body.find('.content-body-main *').length).toBe(2);
+                expect($body.find('.content-body-main > p').length).toBe(1);
                 // html but not a block level thing
                 $body = renderedBodyEl('<a>the heck</a>');
-                expect($body.find('.content-body *').length).toBe(2);
-                expect($body.find('.content-body > p').length).toBe(1);
+                expect($body.find('.content-body-main *').length).toBe(2);
+                expect($body.find('.content-body-main > p').length).toBe(1);
             });
             it('doesnt wrap bodyHtml with paragraphs', function () {
                 ['<p>what</p><p>1</p>', '  <p>what</p><p>1</p>'].forEach(function (body) {
                     var $body = renderedBodyEl(body);
-                    expect($body.find('.content-body *').length).toBe(2);
+                    expect($body.find('.content-body-main *').length).toBe(2);
                 });
             });
         });
@@ -154,7 +154,7 @@ function (
                 var contentView = new ContentView({
                     content: content
                 });
-                var _handleAvatarError = spyOn(contentView, '_handleAvatarError').andCallThrough();
+                var _handleAvatarError = spyOn(contentView._headerView, '_handleAvatarError').andCallThrough();
                 contentView.render();
                 waitsFor(function () {
                     return _handleAvatarError.callCount;
@@ -191,7 +191,8 @@ function (
                 view = new ContentView({ content: content });
             });
             it('renders with the content-featured class in its view', function () {
-                var $el = view.render().$el.find('.content-featured');
+                view.render();
+                var $el = view.$el.find('.content-featured');
 
                 expect($el.length).toBe(1);
             });

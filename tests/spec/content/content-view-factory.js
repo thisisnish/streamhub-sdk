@@ -55,7 +55,7 @@ Oembed, sharer) {
                 sharer._delegate = undefined;
             });
 
-            it('creates a content with a ._commands.share', function () {
+            it('creates a content with a #_commands.share', function () {
 
                 var content = new LivefyreContent();
                 var contentViewFactory = new ContentViewFactory();
@@ -111,12 +111,13 @@ Oembed, sharer) {
             it('after render, has an .attachmentsListView that is a descendant of .el', function () {
                 var contentView = contentViewFactory.createContentView(content);
                 contentView.render();
-                expect(contentView.$el).toContain(contentView.attachmentsView.$el);
+                expect(contentView.$el).toContain(contentView._attachmentsView.$el);
             });
 
             it('.attachmentsListView has oembedViews for each attachment', function () {
                 var contentView = contentViewFactory.createContentView(content);
-                expect(contentView.attachmentsView.count()).toBe(2);
+                contentView.render();
+                expect(contentView.$el.find('.content-attachment').length).toBe(2);
             });
         });
     });

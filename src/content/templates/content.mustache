@@ -1,61 +1,9 @@
-<div class="content-header">
-    <div class="content-header-inner">
-        {{#author.avatar}}
-            <a class="content-author-avatar" {{#authorAvatarUrl}}href="{{authorAvatarUrl}}" target="_blank"{{/authorAvatarUrl}}>
-                <img src="{{ author.avatar }}" />
-            </a>
-        {{/author.avatar}}
-        <div class="content-byline">
-            {{#contentSourceUrl}}
-                <a class="{{#contentSourceTooltipText}}hub-tooltip-link tooltip-{{contentSourceName}}{{/contentSourceTooltipText}} content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank"{{/contentSourceUrl}} {{#contentSourceTooltipText}}title="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}></a>
-            {{/contentSourceUrl}}
-            {{^contentSourceUrl}}
-                <span class="content-source-logo"></span>
-            {{/contentSourceUrl}}
-            {{#authorUrl}}
-                <a class="content-author-name" href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
-            {{/authorUrl}}
-            {{^authorUrl}}
-                <span class="content-author-name">{{ author.displayName }}</span>
-            {{/authorUrl}}
-            {{#authorTwitterVerified}}
-                <span class="content-tweet-verified"></span>
-            {{/authorTwitterVerified}}
-            {{#authorUserName}}
-                {{#authorUrl}}
-                    <a class="content-author-username" href="{{authorUrl}}" target="_blank">{{authorUserNamePrefix}}{{ authorUserName }}</a>
-                {{/authorUrl}}
-            {{/authorUserName}}
-        </div>
-    </div>
-</div>
+{{> content-header }}
 
-<div class="content-attachments"></div>
+{{> content-thumbnail-attachments }}
+{{> content-block-attachments }}
 
-<div class="content-body">
-	{{{ body }}}
-</div>
+{{> content-body }}
 
-{{#featured}}
-    <div class="content-featured">Featured</div>
-{{/featured}}
+{{> content-footer }}
 
-<div class="content-footer">
-    <div class="content-footer-left">
-        <span class="content-control-list"></span>
-    </div>
-    <div class="content-footer-right">
-        <span class="content-control-list"></span>
-        {{#formattedCreatedAt}}
-            <div class="content-created-at">
-                {{#createdAtUrl}}
-                <a href="{{createdAtUrl}}" target="_blank">
-                {{/createdAtUrl}}
-                {{{formattedCreatedAt}}}
-                {{#createdAtUrl}}
-                </a>
-                {{/createdAtUrl}}
-            </div>
-        {{/formattedCreatedAt}}
-    </div>
-</div>
