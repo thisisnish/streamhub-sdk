@@ -118,6 +118,7 @@ ContentHeaderView.prototype._handleAvatarError = function (e) {
 ContentHeaderView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this);
     context.authorAvatarUrl = this.author ? this.author.profileUrl : undefined;
+    context.authorUrl = context.authorUrl ? context.authorUrl : context.authorAvatarUrl;
     return context;
 };
 
