@@ -57,6 +57,7 @@ Storage, debug, Transform, inherits) {
         done();
     };
 
+
     /**
      * Creates the correct content type given the supplied "state".
      * @param state {Object} The livefyre content "state" as received by the
@@ -71,6 +72,7 @@ Storage, debug, Transform, inherits) {
      */
     StateToContent.prototype.transform = function (state, authors, opts) {
         opts = opts || {};
+
         var isPublic = (typeof state.vis === 'undefined') || (state.vis === 1),
             isReply = state.content.parentId,
             type = StateToContent.enums.type[state.type],
@@ -110,7 +112,6 @@ Storage, debug, Transform, inherits) {
             } else {
                 this._storage.set(content.id, content);
             }
-            childContent = this._storage.get('children_'+content.id) || [];
         }
 
         // Get child states (replies and attachments)
@@ -123,6 +124,7 @@ Storage, debug, Transform, inherits) {
         }
 
         // Add any children that are awaiting the new content
+        childContent = this._storage.get('children_'+content.id) || [];
         if (childContent.length) {
             this._addChildren(content, childContent);
         }
@@ -165,6 +167,7 @@ Storage, debug, Transform, inherits) {
         if (opts.replies) {
             return [content].concat(descendantContent);
         }
+
         return [content];
     };
 
@@ -199,7 +202,7 @@ Storage, debug, Transform, inherits) {
         var sourceName = StateToContent.enums.source[state.source],
             ContentType;
 
-        state.author = authors && authors[state.content.authorId];
+        state.author = authors ? authors[state.content.authorId] : state.content.author;
 
         if ('OEMBED' === StateToContent.enums.type[state.type]) {
             return new LivefyreOembed(state);
