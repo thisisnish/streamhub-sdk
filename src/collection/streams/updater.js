@@ -2,12 +2,11 @@ define([
     'inherits',
     'stream/readable',
     'stream/util',
-    'streamhub-sdk/collection/clients/bootstrap-client',
     'streamhub-sdk/collection/clients/stream-client',
     'streamhub-sdk/content/state-to-content',
     'streamhub-sdk/content/annotator',
     'streamhub-sdk/debug'],
-function (inherits, Readable, streamUtil, BootstrapClient, StreamClient,
+function (inherits, Readable, streamUtil, StreamClient,
 StateToContent, Annotator, debug) {
     'use strict';
 
@@ -25,8 +24,6 @@ StateToContent, Annotator, debug) {
      *     resides on (e.g. t402.livefyre.com for UAT)
      * @param [opts.streamClient] {LivefyreStreamClient} A Client object that
      *     can request StreamHub's Stream web service
-     * @param [opts.bootstrapClient] {LivefyreBootstrapClient} A Client object
-     *     that can request StreamHub's Bootstrap web service
      * @param [opts.replies=false] {boolean} Whether to read out reply Content
      * @param [opts.createStateToContent] {function} Creates a custem Content adapter
      */
