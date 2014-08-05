@@ -24,17 +24,19 @@ var FeaturedUpdater = function (opts) {
 
     this._updater.on('annotation.add', function (contentId, addAnnotations) {
         var featuredMessage = addAnnotations.featuredmessage;
-        if (featuredMessage) {
-            var content = Storage.get(contentId);
-            if (!content) {
-                this._collection.fetchContent(contentId, function (err, content) {
-                    if (! content) {
-                        return;
-                    }
-                    this._annotator.annotate(content, { added: addAnnotations });
-                    this.write(content);
-                }.bind(this));
-            }
+        if (! featuredMessage) {
+            return;
+        }
+
+        var content = Storage.get(contentId);
+        if (! content) {
+            this._collection.fetchContent(contentId, function (err, content) {
+                if (! content) {
+                    return;
+                }
+                this._annotator.annotate(content, { added: addAnnotations });
+                this.write(content);
+            }.bind(this));
         }
     }.bind(this));
 
