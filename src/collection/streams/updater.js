@@ -188,13 +188,13 @@ StateToContent, Annotator, debug) {
     };
 
     CollectionUpdater.prototype._handleAnnotationDiff = function (contentId, annotationDiff) {
-        if (Object.keys(annotationDiff.added).length) {
+        if (annotationDiff.added && Object.keys(annotationDiff.added).length) {
             this.emit('annotation.add', contentId, annotationDiff.added);
         }
-        if (Object.keys(annotationDiff.removed).length) {
+        if (annotationDiff.removed && Object.keys(annotationDiff.removed).length) {
             this.emit('annotation.remove', contentId, annotationDiff.removed);
         }
-        if (Object.keys(annotationDiff.updated).length) {
+        if (annotationDiff.updated && Object.keys(annotationDiff.updated).length) {
             this.emit('annotation.update', contentId, annotationDiff.updated);
         }
     };
