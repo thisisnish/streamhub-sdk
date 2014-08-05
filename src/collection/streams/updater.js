@@ -37,7 +37,7 @@ StateToContent, Annotator, debug) {
             this._createStateToContent = opts.createStateToContent;
         }
         if (opts.createAnnotator) {
-            this._createAnnotator = opts.createAnnotator;
+            this.createAnnotator = opts.createAnnotator;
         }
         Readable.call(this, opts);
     };
@@ -154,7 +154,7 @@ StateToContent, Annotator, debug) {
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
         var annotationDiff,
-            annotator = this._createAnnotator(),
+            annotator = this.createAnnotator(),
             annotations = streamData.annotations,
             contentId,
             contents = [],
@@ -176,6 +176,7 @@ StateToContent, Annotator, debug) {
         for (contentId in annotations) {
             if (annotations.hasOwnProperty(contentId)) {
                 annotationDiff = annotations[contentId];
+                this._handleAnnotationDiff(contentId, annotationDiff);
                 annotator.write({
                     contentId: contentId,
                     annotationDiff: annotationDiff
@@ -186,6 +187,9 @@ StateToContent, Annotator, debug) {
         return contents;
     };
 
+    CollectionUpdater.prototype._handleAnnotationDiff = function (contentId, annotationDiff) {
+        this.emit('annotationDiff', contentId, annotationDiff);
+    };
 
     /**
      * Get an Object that can be passed to LivefyreStreamClient to get new
@@ -216,7 +220,7 @@ StateToContent, Annotator, debug) {
     /**
      * Create an Annotator that will mutate Content in Storage.
      */
-    CollectionUpdater.prototype._createAnnotator = function () {
+    CollectionUpdater.prototype.createAnnotator = function () {
         return new Annotator();
     };
 

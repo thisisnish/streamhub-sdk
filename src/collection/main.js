@@ -193,14 +193,19 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         }
     };
 
+    Collection.prototype.getOrCreateUpdater = function () {
+        if (! this._updater) {
+            return this.createUpdater();
+        }
+        return this._updater;
+    };
+
     Collection.prototype._read = function () {
         var self = this,
             content;
 
         // Create an internal updater the first time the Collection is piped
-        if ( ! this._updater) {
-            this._updater = this.createUpdater();
-        }
+        this._updater = this.getOrCreateUpdater();
 
         content = this._updater.read();
 

@@ -60,7 +60,7 @@ define([
      */
     Annotator.prototype._write = function(opts) {
         var content = opts.content || Storage.get(opts.contentId);
-        if (!content) {
+        if (! content) {
             return;
         }
         this.annotate(content, opts.annotationDiff, opts.silence);

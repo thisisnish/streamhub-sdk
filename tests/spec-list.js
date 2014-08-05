@@ -20,6 +20,7 @@ define(function () {
         'tests/spec/collection/streams/writer',
         'tests/spec/collection/featured-contents',
         'tests/spec/collection/streams/featured-archive',
+        'tests/spec/collection/streams/featured-updater',
         'tests/spec/auth/main',
         'tests/spec/content/state-to-content',
         'tests/spec/content/annotator',
