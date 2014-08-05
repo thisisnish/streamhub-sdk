@@ -176,6 +176,7 @@ StateToContent, Annotator, debug) {
         for (contentId in annotations) {
             if (annotations.hasOwnProperty(contentId)) {
                 annotationDiff = annotations[contentId];
+                this._handleAnnotationDiff(contentId, annotationDiff);
                 annotator.write({
                     contentId: contentId,
                     annotationDiff: annotationDiff
@@ -186,6 +187,17 @@ StateToContent, Annotator, debug) {
         return contents;
     };
 
+    CollectionUpdater.prototype._handleAnnotationDiff = function (contentId, annotationDiff) {
+        if (Object.keys(annotationDiff.added).length) {
+            this.emit('annotation.add', contentId, annotationDiff.added);
+        }
+        if (Object.keys(annotationDiff.removed).length) {
+            this.emit('annotation.remove', contentId, annotationDiff.removed);
+        }
+        if (Object.keys(annotationDiff.updated).length) {
+            this.emit('annotation.update', contentId, annotationDiff.updated);
+        }
+    };
 
     /**
      * Get an Object that can be passed to LivefyreStreamClient to get new
