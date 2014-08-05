@@ -16,7 +16,7 @@ var FeaturedUpdater = function (opts) {
     PassThrough.apply(this, arguments);
 
     this._collection = opts.collection;
-    this._updater = this._collection._updater;
+    this._updater = this._collection.getOrCreateUpdater();
     if (! this._updater) {
         this._updater = this._collection.createUpdater();
     }
@@ -32,6 +32,7 @@ var FeaturedUpdater = function (opts) {
 inherits(FeaturedUpdater, PassThrough);
 
 FeaturedUpdater.prototype.handleAnnotations = function (contentId, annotations) {
+    // Filter out only annotations related to featuring (e.g. featuredmessage)
     var featuredAnnotations = {};
     for (var annotationType in annotations) {
         if (annotations.hasOwnProperty(annotationType)) {
@@ -48,6 +49,8 @@ FeaturedUpdater.prototype.handleAnnotations = function (contentId, annotations) 
     }
 
     var content = Storage.get(contentId);
+    // Only handle case where content is not in Storage,
+    // as CollectionUpdater already handles that.
     if (! content) {
         this._collection.fetchContent(contentId, function (err, content) {
             if (! content) {
