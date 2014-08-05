@@ -37,7 +37,7 @@ StateToContent, Annotator, debug) {
             this._createStateToContent = opts.createStateToContent;
         }
         if (opts.createAnnotator) {
-            this._createAnnotator = opts.createAnnotator;
+            this.createAnnotator = opts.createAnnotator;
         }
         Readable.call(this, opts);
     };
@@ -154,7 +154,7 @@ StateToContent, Annotator, debug) {
      */
     CollectionUpdater.prototype._contentsFromStreamData = function (streamData) {
         var annotationDiff,
-            annotator = this._createAnnotator(),
+            annotator = this.createAnnotator(),
             annotations = streamData.annotations,
             contentId,
             contents = [],
@@ -220,7 +220,7 @@ StateToContent, Annotator, debug) {
     /**
      * Create an Annotator that will mutate Content in Storage.
      */
-    CollectionUpdater.prototype._createAnnotator = function () {
+    CollectionUpdater.prototype.createAnnotator = function () {
         return new Annotator();
     };
 
