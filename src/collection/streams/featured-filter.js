@@ -7,10 +7,10 @@ var FeaturedFilter = function (opts) {
 };
 inherits(FeaturedFilter, Transform);
 
-FeaturedFilter.prototype._transform = function (chunk, done) {
-    console.log(chunk);
-    debugger;
-    this.push(chunk);
+FeaturedFilter.prototype._transform = function (content, done) {
+    if (content.featured) {
+        this.push(content);
+    }
     done();
 };
 
