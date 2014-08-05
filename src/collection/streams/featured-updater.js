@@ -20,7 +20,7 @@ var FeaturedUpdater = function (opts) {
     if (! this._updater) {
         this._updater = this._collection.createUpdater();
     }
-    this._annotator = this._updater._createAnnotator();
+    this._annotator = this._updater.createAnnotator();
 
     this._updater.on('annotationDiff', this.handleAnnotations.bind(this));
 
