@@ -22,23 +22,7 @@ var FeaturedUpdater = function (opts) {
     }
     this._annotator = this._updater._createAnnotator();
 
-    this._updater.on('annotation.add', function (contentId, addAnnotations) {
-        var featuredMessage = addAnnotations.featuredmessage;
-        if (! featuredMessage) {
-            return;
-        }
-
-        var content = Storage.get(contentId);
-        if (! content) {
-            this._collection.fetchContent(contentId, function (err, content) {
-                if (! content) {
-                    return;
-                }
-                this._annotator.annotate(content, { added: addAnnotations });
-                this.write(content);
-            }.bind(this));
-        }
-    }.bind(this));
+    this._updater.on('annotationDiff', this.handleAnnotations.bind(this));
 
     this._updater
         .pipe(new FeaturedFilter())
@@ -46,5 +30,33 @@ var FeaturedUpdater = function (opts) {
 
 };
 inherits(FeaturedUpdater, PassThrough);
+
+FeaturedUpdater.prototype.handleAnnotations = function (contentId, annotations) {
+    var featuredAnnotations = {};
+    for (var annotationType in annotations) {
+        if (annotations.hasOwnProperty(annotationType)) {
+            var annotation = annotations[annotationType];
+            if (annotation.featuredmessage) {
+                featuredAnnotations[annotationType] = featuredAnnotations[annotationType] || {};
+                featuredAnnotations[annotationType].featuredmessage = annotation.featuredmessage;
+            }
+        }
+    }
+
+    if (! Object.keys(featuredAnnotations).length) {
+        return;
+    }
+
+    var content = Storage.get(contentId);
+    if (! content) {
+        this._collection.fetchContent(contentId, function (err, content) {
+            if (! content) {
+                return;
+            }
+            this._annotator.annotate(content, featuredAnnotations);
+            this.write(content);
+        }.bind(this));
+    }
+};
 
 module.exports = FeaturedUpdater;
