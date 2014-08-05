@@ -22,7 +22,7 @@ var FeaturedUpdater = function (opts) {
     }
     this._annotator = this._updater.createAnnotator();
 
-    this._updater.on('annotationDiff', this.handleAnnotations.bind(this));
+    this._updater.on('annotationDiff', function () { this.handleAnnotations.apply(this, arguments); }.bind(this));
 
     this._updater
         .pipe(new FeaturedFilter())
