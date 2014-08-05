@@ -61,7 +61,6 @@ define([
     Annotator.prototype._write = function(opts) {
         var content = opts.content || Storage.get(opts.contentId);
         if (!content) {
-            // Emit event: annotation.add
             return;
         }
         this.annotate(content, opts.annotationDiff, opts.silence);
