@@ -23,7 +23,6 @@ var FeaturedUpdater = function (opts) {
     this._annotator = this._updater._createAnnotator();
 
     this._updater.on('annotation.add', function (contentId, addAnnotations) {
-        console.log(addAnnotations);
         var featuredMessage = addAnnotations.featuredmessage;
         if (featuredMessage) {
             var content = Storage.get(contentId);
