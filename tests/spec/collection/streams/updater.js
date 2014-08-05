@@ -27,7 +27,7 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
 
                 createAnnotator = jasmine.createSpy('createAnnotator')
                     .andCallFake(function() {
-                        return CollectionUpdater.prototype._createAnnotator.call(this);
+                        return CollectionUpdater.prototype.createAnnotator.call(this);
                     });
 
                 streamClient = new MockLivefyreStreamClient();
@@ -63,7 +63,7 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
             });
 
             it('can be passed opts.createAnnotator', function () {
-                expect(updater._createAnnotator).toEqual(createAnnotator);
+                expect(updater.createAnnotator).toEqual(createAnnotator);
             });
 
             describe('when .read() for the first time', function () {
