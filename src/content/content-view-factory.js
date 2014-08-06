@@ -73,6 +73,7 @@ ContentViewFactory.prototype._createAttachmentsView = function (content) {
 ContentViewFactory.prototype.createContentView = function(content, opts) {
     opts = opts || {};
     var ContentViewType = this._getViewTypeForContent(content);
+    if (ContentViewType === undefined) debugger;
     var attachmentsView = this._createAttachmentsView(content);
 
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
@@ -110,11 +111,12 @@ ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
 
 ContentViewFactory.prototype._getViewTypeForContent = function (content) {
     var viewToRender = null;
+   
     for (var i=0, len=this.contentRegistry.length; i < len; i++) {
         var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
 
-        if (!sameTypeUrn || !(content instanceof current.type)) {
+        if (!sameTypeUrn) {
             continue;
         }
 
@@ -124,18 +126,18 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
 
             //Set urn so that other bits that rely on it
             //treat content as it should be.
-            if(typeId.indexOf("twitter.com") >= 0) {
+            if (typeId.indexOf("twitter.com") >= 0) {
                 viewToRender = TwitterContentView;
             }
 
-            if(!viewToRender && typeId.indexOf("facebook.com") >= 0) {
+            if (!viewToRender && typeId.indexOf("facebook.com") >= 0) {
                 viewToRender = FacebookContentView;
             }
 
-            if(!viewToRender && typeId.indexOf("instagram.com") >= 0) {
+            if (!viewToRender && typeId.indexOf("instagram.com") >= 0) {
                 viewToRender = InstagramContentView;
             }
-        } 
+        }
 
         if (viewToRender) {
             return viewToRender;
@@ -147,6 +149,12 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
             viewToRender = current.viewFunction(content);
         }
         return viewToRender;
+    }
+    if (viewToRender === null) {
+        console.log('<<< ', content.id, ' ', content.typeUrn);
+        console.log(content.body);
+        console.log(TYPE_URNS);
+        debugger;
     }
 };
 
