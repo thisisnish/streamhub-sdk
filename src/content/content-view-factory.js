@@ -73,7 +73,6 @@ ContentViewFactory.prototype._createAttachmentsView = function (content) {
 ContentViewFactory.prototype.createContentView = function(content, opts) {
     opts = opts || {};
     var ContentViewType = this._getViewTypeForContent(content);
-    if (ContentViewType === undefined) debugger;
     var attachmentsView = this._createAttachmentsView(content);
 
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
