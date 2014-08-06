@@ -150,12 +150,6 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         }
         return viewToRender;
     }
-    if (viewToRender === null) {
-        console.log('<<< ', content.id, ' ', content.typeUrn);
-        console.log(content.body);
-        console.log(TYPE_URNS);
-        debugger;
-    }
 };
 
 /**
