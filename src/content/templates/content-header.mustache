@@ -23,7 +23,9 @@
                 <span>{{ author.displayName }}</span>
             </div>
         {{/authorUrl}}
+        {{#authorVerified}}
             <span class="content-author-verified"></span>
+        {{/authorVerified}}
         {{#authorUserName}}
             {{#authorUrl}}
                 <div class="content-author-username">
