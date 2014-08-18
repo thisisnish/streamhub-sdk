@@ -9,11 +9,15 @@
         <a class="content-author-name" href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
     {{/authorUrl}}
     {{^authorUrl}}
-        <span class="content-author-name">{{ author.displayName }}</span>
+        <div class="content-author-name">
+            <span>{{ author.displayName }}</span>
+        </div>
     {{/authorUrl}}
     {{#authorUserName}}
         {{#authorUrl}}
-            <br/><a class="content-author-username" href="{{authorUrl}}" target="_blank">{{authorUserNamePrefix}}{{ authorUserName }}</a>
+            <div class="content-author-username">
+                <a href="{{authorUrl}}" target="_blank">{{authorUserNamePrefix}}{{ authorUserName }}</a>
+            </div>
         {{/authorUrl}}
     {{/authorUserName}}
 </div>
