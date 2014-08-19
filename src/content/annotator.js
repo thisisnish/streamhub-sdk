@@ -79,6 +79,38 @@ define([
     Annotator.prototype.updated = {};
     Annotator.prototype.removed = {};
 
+    // likedBy
+    Annotator.prototype.added.likedBy = function (changeSet, annotation, content) {
+        var likes = content.likedBy.splice(0);
+        for (var i=0; i < annotation.length; i++) {
+            var a = annotation[i]
+            if (likes.indexOf(a) < 0){
+                likes.push(a);
+            }
+        }
+        changeSet.likedBy = likes;
+    };
+
+    Annotator.prototype.updated.likedBy = function (changeSet, annotation, content) {
+        var likes = content.likedBy.splice(0);
+        for (var i=0; i < annotation.length; i++) {
+            var a = annotation[i]
+            if (likes.indexOf(a) < 0){
+                continue;
+            }
+            likes.push(a);
+        }
+        changeSet.likedBy = likes;
+    };
+
+    Annotator.prototype.removed.likedBy = function (changeSet, annotation, content) {
+        var likes = content.likedBy.splice(0);
+        for (var i=0; i < annotation.length; i++) {
+            likes.splice(likes.indexOf(annotation[i]), 1);
+        }
+        changeSet.likedBy = likes;
+    };
+
     // featuredmessage
 
     Annotator.prototype.added.featuredmessage = function (changeSet, annotation) {
