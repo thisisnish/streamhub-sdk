@@ -16,6 +16,7 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
 
         var annotator = new Annotator();
         var featuredmessage = { "featuredmessage": { "rel_collectionId": "10739960", "value": 1381771896 }};
+        var likedBy = { "likedBy": ['authorId1', 'authordId2'] };
         var moderatorTrue = {"moderator": true};
         var lfContent;
         var vote = {"vote": [{"collectionId": "2486003", "value": 1, "author": "default@livefyre.com"}]};
@@ -26,6 +27,25 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
         });
 
         describe('Annotator#annotate', function () {
+            it('can add likedBy annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': likedBy
+                });
+
+                expect(lfContent.getLikeCount()).toEqual(likedBy.likedBy.length);
+            });
+
+            it('can remove likedBy annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': likedBy
+                });
+                annotator.annotate(lfContent, {
+                    'removed': likedBy
+                });
+
+                expect(lfContent.getLikeCount()).toEqual(0);
+            });
+
             it('can add featuredmessage annotations', function () {
                 annotator.annotate(lfContent, {
                     'added': featuredmessage
