@@ -86,13 +86,13 @@ ListView.prototype.showMoreElSelector = '> .hub-list-more';
 
 ListView.prototype.comparators = {
     CREATEDAT_ASCENDING: function (a, b) {
-        var aDate = (a.content && a.content.createdAt) || a.createdAt,
-            bDate = (b.content && b.content.createdAt) || b.createdAt;
+        var aDate = (a.content && a.content.sortedAt) || a.sortedAt || (a.content && a.content.createdAt) || a.createdAt,
+            bDate = (b.content && b.content.sortedAt) || b.sortedAt || (b.content && b.content.createdAt) || b.createdAt;
         return aDate - bDate;
     },
     CREATEDAT_DESCENDING: function (a, b) {
-        var aDate = (a.content && a.content.createdAt) || a.createdAt,
-            bDate = (b.content && b.content.createdAt) || b.createdAt;
+        var aDate = (a.content && a.content.sortedAt) || a.sortedAt || (a.content && a.content.createdAt) || a.createdAt,
+            bDate = (b.content && b.content.sortedAt) || b.sortedAt || (b.content && b.content.createdAt) || b.createdAt;
         return bDate - aDate;
     }
 };

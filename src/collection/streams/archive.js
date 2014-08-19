@@ -260,13 +260,13 @@ inherits) {
         var sortedContentList;
         if (this._comparator === CollectionArchive.comparators.CREATED_AT_ASCENDING) {
             contentListComparator = function (contentA, contentB) {
-                return contentA.createdAt - contentB.createdAt;
+                return (contentA.sortedAt || contentA.createdAt) - (contentB.sortedAt || contentB.createdAt);
             };
         } else {
             // Must be descending. That's the default.
             // Change this if there are ever 3 comparator options
             contentListComparator = function (contentA, contentB) {
-                return contentB.createdAt - contentA.createdAt;
+                return (contentB.sortedAt || contentB.createdAt) - (contentA.sortedAt || contentA.createdAt);
             };
         }
         sortedContentList = contentList.sort(contentListComparator);
