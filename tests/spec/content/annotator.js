@@ -16,6 +16,8 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
 
         var annotator = new Annotator();
         var featuredmessage = { "featuredmessage": { "rel_collectionId": "10739960", "value": 1381771896 }};
+        var likedBy = { "likedBy": ['authorId1', 'authordId2'] };
+        var sortOrder = { "sortOrder": 10 }; // epoch time
         var moderatorTrue = {"moderator": true};
         var lfContent;
         var vote = {"vote": [{"collectionId": "2486003", "value": 1, "author": "default@livefyre.com"}]};
@@ -26,6 +28,42 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
         });
 
         describe('Annotator#annotate', function () {
+            it('can add likedBy annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': likedBy
+                });
+
+                expect(lfContent.getLikeCount()).toEqual(likedBy.likedBy.length);
+            });
+
+            it('can remove likedBy annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': likedBy
+                });
+                annotator.annotate(lfContent, {
+                    'removed': likedBy
+                });
+
+                expect(lfContent.getLikeCount()).toEqual(0);
+            });
+
+            it('can add sortOrder annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': sortOrder
+                });
+
+                expect(lfContent.sortOrder).toEqual(sortOrder.sortOrder);
+            });
+
+            it('can remove sortOrder annotations', function () {
+                annotator.annotate(lfContent, {
+                    'removed': sortOrder
+                });
+
+                expect(lfContent.sortOrder).toEqual(null);
+
+            });
+
             it('can add featuredmessage annotations', function () {
                 annotator.annotate(lfContent, {
                     'added': featuredmessage

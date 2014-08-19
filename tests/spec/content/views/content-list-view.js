@@ -266,6 +266,27 @@ function ($, ContentListView, Content, ContentView) {
                     expect(listView.comparator(a, b)).toBeGreaterThan(0);
                 });
             });
+
+            describe("and a.content has .sortOrder newer than a.content.createdAt", function () {
+                var contentA = new Content('a');
+                contentA.createdAt = 0;
+                contentA.sortOrder = 10; // assigned by annotator
+
+                var contentB = new Content('b');
+
+                var a = new ContentView({ content: contentA });
+                var b = new ContentView({ content: contentB });
+
+                it("returns < 0 if a.content.sortOrder after b.content.createdAt", function () {
+                    contentB.createdAt = 9;
+                    expect(listView.comparator(a, b)).toBeLessThan(0);
+                });
+
+                it("returns > 0 if a.content.sortOrder before b.content.createdAt", function () {
+                    contentB.createdAt = 11;
+                    expect(listView.comparator(a, b)).toBeGreaterThan(0);
+                });
+            });
         });
 
         describe("when adding Content", function () {

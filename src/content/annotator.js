@@ -79,6 +79,28 @@ define([
     Annotator.prototype.updated = {};
     Annotator.prototype.removed = {};
 
+    // likedBy
+    Annotator.prototype.added.likedBy = function (changeSet, annotation, content) {
+        var likes = content.likedBy.splice(0);
+        for (var i=0; i < annotation.length; i++) {
+            var a = annotation[i]
+            if (likes.indexOf(a) < 0){
+                likes.push(a);
+            }
+        }
+        changeSet.likedBy = likes;
+    };
+
+    Annotator.prototype.updated.likedBy = Annotator.prototype.added.likedBy;
+
+    Annotator.prototype.removed.likedBy = function (changeSet, annotation, content) {
+        var likes = content.likedBy.splice(0);
+        for (var i=0; i < annotation.length; i++) {
+            likes.splice(likes.indexOf(annotation[i]), 1);
+        }
+        changeSet.likedBy = likes;
+    };
+
     // featuredmessage
 
     Annotator.prototype.added.featuredmessage = function (changeSet, annotation) {
@@ -97,9 +119,7 @@ define([
         changeSet.sortOrder = annotation;
     };
 
-    Annotator.prototype.updated.sortOrder = function (changeSet, annotation, content) {
-        changeSet.sortOrder = annotation;
-    };
+    Annotator.prototype.updated.sortOrder = Annotator.prototype.added.sortOrder;
 
     Annotator.prototype.removed.sortOrder = function (changeSet, annotation, content) {
         changeSet.sortOrder = null;
