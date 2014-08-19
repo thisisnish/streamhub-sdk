@@ -91,17 +91,7 @@ define([
         changeSet.likedBy = likes;
     };
 
-    Annotator.prototype.updated.likedBy = function (changeSet, annotation, content) {
-        var likes = content.likedBy.splice(0);
-        for (var i=0; i < annotation.length; i++) {
-            var a = annotation[i]
-            if (likes.indexOf(a) < 0){
-                continue;
-            }
-            likes.push(a);
-        }
-        changeSet.likedBy = likes;
-    };
+    Annotator.prototype.updated.likedBy = Annotator.prototype.added.likedBy;
 
     Annotator.prototype.removed.likedBy = function (changeSet, annotation, content) {
         var likes = content.likedBy.splice(0);
