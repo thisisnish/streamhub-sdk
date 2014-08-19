@@ -119,9 +119,7 @@ define([
         changeSet.sortOrder = annotation;
     };
 
-    Annotator.prototype.updated.sortOrder = function (changeSet, annotation, content) {
-        changeSet.sortOrder = annotation;
-    };
+    Annotator.prototype.updated.sortOrder = Annotator.prototype.added.sortOrder;
 
     Annotator.prototype.removed.sortOrder = function (changeSet, annotation, content) {
         changeSet.sortOrder = null;
