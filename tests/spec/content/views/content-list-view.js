@@ -268,8 +268,11 @@ function ($, ContentListView, Content, ContentView) {
             });
 
             describe("and a.content has .sortOrder newer than a.content.createdAt", function () {
+                // sortOrder annotations are unix timestamps
+                // content.createdAt are date objects, which must be constructed
+                //     with unixtimestamp * 1000
                 var contentA = new Content('a');
-                contentA.createdAt = 0;
+                contentA.createdAt = new Date(0);
                 contentA.sortOrder = 10; // assigned by annotator
 
                 var contentB = new Content('b');
@@ -278,12 +281,12 @@ function ($, ContentListView, Content, ContentView) {
                 var b = new ContentView({ content: contentB });
 
                 it("returns < 0 if a.content.sortOrder after b.content.createdAt", function () {
-                    contentB.createdAt = 9;
+                    contentB.createdAt = new Date(9 * 1000);
                     expect(listView.comparator(a, b)).toBeLessThan(0);
                 });
 
                 it("returns > 0 if a.content.sortOrder before b.content.createdAt", function () {
-                    contentB.createdAt = 11;
+                    contentB.createdAt = new Date(11 * 1000);
                     expect(listView.comparator(a, b)).toBeGreaterThan(0);
                 });
             });
