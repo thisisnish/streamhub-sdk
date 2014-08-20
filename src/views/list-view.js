@@ -102,18 +102,17 @@ ListView.prototype.comparators = comparators = {
  */
 function getContentViewDate(contentView) {
     var content = contentView.content;
-    var date = new Date();
-    // if some random view, use its createdAt or now
-    if ( ! content) {
-        return contentView.createdAt || date;
-    }
     // if sortOrder on content, cast to date
     var sortOrder = content.sortOrder;
     if (typeof sortOrder === 'number') {
         return new Date(sortOrder * 1000);
     }
     // default to content.createdAt or now
-    return content.createdAt || date;
+    if (content && content.createdAt) {
+        return content.createdAt;
+    }
+    // if some random view, use its createdAt or now
+    return contentView.createdAt || new Date();
 }
 
 /**
