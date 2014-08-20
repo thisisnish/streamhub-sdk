@@ -84,18 +84,37 @@ ListView.prototype.listElSelector = '.hub-list';
  */
 ListView.prototype.showMoreElSelector = '> .hub-list-more';
 
-ListView.prototype.comparators = {
+var comparators;
+ListView.prototype.comparators = comparators = {
     CREATEDAT_ASCENDING: function (a, b) {
-        var aDate = (a.content && a.content.sortOrder) || a.sortOrder || (a.content && a.content.createdAt) || a.createdAt,
-            bDate = (b.content && b.content.sortOrder) || b.sortOrder || (b.content && b.content.createdAt) || b.createdAt;
+        var aDate = getContentViewDate(a);
+            bDate = getContentViewDate(b);
         return aDate - bDate;
     },
     CREATEDAT_DESCENDING: function (a, b) {
-        var aDate = (a.content && a.content.sortOrder) || a.sortOrder || (a.content && a.content.createdAt) || a.createdAt,
-            bDate = (b.content && b.content.sortOrder) || b.sortOrder || (b.content && b.content.createdAt) || b.createdAt;
-        return bDate - aDate;
+        return -1 * comparators.CREATEDAT_ASCENDING(a, b);
     }
 };
+
+/**
+ * Given a ContentView, get a date object to use when sorting the most common
+ * way, prioritizing: .content.sortOrder, .content.createdAt, .createdAt
+ */
+function getContentViewDate(contentView) {
+    var content = contentView.content;
+    var date = new Date();
+    // if some random view, use its createdAt or now
+    if ( ! content) {
+        return contentView.createdAt || date;
+    }
+    // if sortOrder on content, cast to date
+    var sortOrder = content.sortOrder;
+    if (typeof sortOrder === 'number') {
+        return new Date(sortOrder * 1000);
+    }
+    // default to content.createdAt or now
+    return content.createdAt || date;
+}
 
 /**
  * Keys are views that were forcibly indexed into this view.
