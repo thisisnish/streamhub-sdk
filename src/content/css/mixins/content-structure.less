@@ -1,4 +1,6 @@
 @import (reference) "bootstrap/less/mixins.less";
+@import (reference) "livefyre-bootstrap/src/styles/fycon-chars.less";
+@import (reference) "livefyre-bootstrap/src/styles/variables.less";
 
 .content-structure() {
     display: block;
@@ -382,12 +384,10 @@
 
 
     .content-source-logo {
-        background-image: data-uri('../../images/social-icons.png');
-        background-repeat: no-repeat;
-        background-position: left top;
-
+        .fycon-source-livefyre();
+        font-size: 18px;
         height: 22px;
-        width: 22px;    
+        width: 22px; 
     }
 
     img.content-source-logo{
@@ -396,7 +396,8 @@
 
     &.content-instagram {
         .content-source-logo {
-            background-position: -45px 0;
+            .fycon-source-instagram();
+            color: @brand-instagram;
         }
     }
 
@@ -405,7 +406,8 @@
             min-height: 34px;
         }
         .content-source-logo {
-            background-position: -24px 0;
+            .fycon-source-twitter();
+            color: @brand-twitter;
         }
 
         .hub-btn.hub-content-action:first-child {
@@ -454,7 +456,8 @@
     }
     &.content-facebook {
         .content-source-logo {
-            background-position: -72px 0;
+            .fycon-source-facebook();
+            color: @brand-facebook;
         }
     }
 
