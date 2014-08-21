@@ -43,6 +43,11 @@
         }
     }
 
+
+    .content-source-logo {
+        color: #b2b2b2;
+    }
+
     .content-byline {
         font-weight: bold;
         line-height: 18px;
@@ -91,6 +96,10 @@
         @footer-line-height: 22px;
         line-height: @footer-line-height;
         color: #999;
+
+        .hub-btn-link:before {
+            color:  #999;
+        }
 
         .hub-content-like.hub-btn-toggle-on {
             color: @like_color;
@@ -255,22 +264,7 @@
 
     &.content-with-image {
         .content-source-logo {
-            background-position: left bottom;
-        }
-    }
-    &.content-with-image.content-instagram {
-        .content-source-logo {
-            background-position: -45px -24px;
-        }
-    }
-    &.content-with-image.content-tweet {
-        .content-source-logo {
-            background-position: -24px -24px;
-        }
-    }
-    &.content-with-image.content-facebook {
-        .content-source-logo {
-            background-position: -72px -24px;
+            color: #FFF;
         }
     }
 }
