@@ -329,12 +329,6 @@
             vertical-align: bottom;
             margin-right: 2px;
         }
-        .content-action {
-            display:inline;
-            .content-action-tooltip {
-
-            }
-        }
     }
 
 
@@ -410,48 +404,37 @@
             color: @brand-twitter;
         }
 
+        .hub-btn.hub-content-action {
+            font-size: 18px;
+            line-height: 18px;
+            vertical-align: text-bottom;
+        }
         .hub-btn.hub-content-action:first-child {
             margin-left: -10px;
         }
         
-        .hub-content-action-favorite {
-            width: 18px;
-            height: 16px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-image: data-uri('../../images/favorite.png');
-            &:hover {
-                background-image: data-uri('../../images/favorite_hover.png');
-            }
-            &:active {
-                background-image: data-uri('../../images/favorite_active.png');
-            }
-        }
-        .hub-content-action-reply {
+        .hub-btn.hub-content-action-reply {
+            .fycon-action-reply();
+            vertical-align: top;
+            font-size: 20px;
+            line-height: 20px;
             width: 23px;
             height: 16px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-image: data-uri('../../images/reply.png');
-            &:hover {
-                background-image: data-uri('../../images/reply_hover.png');
-            }
-            &:active {
-                background-image: data-uri('../../images/reply_active.png');
-            }
         }
-        .hub-content-action-retweet {
+        .hub-btn.hub-content-action-retweet {
+            .fycon-action-retweet();
+            font-size: 21px;
+            line-height: 21px;
             width: 27px;
             height: 16px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-image: data-uri('../../images/retweet.png');
-            &:hover {
-                background-image: data-uri('../../images/retweet_hover.png');
-            }
-            &:active {
-                background-image: data-uri('../../images/retweet_active.png');
-            }
+        }
+        .hub-btn.hub-content-action-favorite {
+            .fycon-action-favorite();
+            font-size: 16px;
+            line-height: 16px;
+            vertical-align: middle;
+            width: 18px;
+            height: 16px;
         }
     }
     &.content-facebook {
