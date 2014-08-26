@@ -1,18 +1,13 @@
-@icon-font-path: "http://cdn.livefyre.com/libs/livefyre-bootstrap/v1.3.3/fonts/";
+@import (reference) "lib/livefyre-bootstrap/src/styles/fycon-styles.less";
+
 @font-face {
-  font-family: "fycons";
-  src:url("@{icon-font-path}@{fycon-font-name}.eot");
-  src:url("@{icon-font-path}@{fycon-font-name}.eot?#iefix") format("embedded-opentype"),
-    url("@{icon-font-path}@{fycon-font-name}.woff") format("woff"),
-    url("@{icon-font-path}@{fycon-font-name}.ttf") format("truetype"),
-    url("@{icon-font-path}@{fycon-font-name}.svg#fycons") format("svg");
-  font-weight: normal;
-  font-style: normal;
+    .fycons-font-face(@icon-font-path: "http://cdn.livefyre.com/libs/livefyre-bootstrap/v1.3.4/fonts/");
 }
-[class^="fycon-"]:before, [class*=" fycon-"]:before,
+.fycons-styles();
+
 .content-source-logo:before,
 .hub-btn:before {
-    font-family: "fycons";
+    font-family: "fycons-@{fycon-font-version}";
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
