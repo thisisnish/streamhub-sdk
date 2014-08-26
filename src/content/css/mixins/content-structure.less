@@ -1,6 +1,6 @@
-@import (reference) "bootstrap/less/mixins.less";
-@import (reference) "livefyre-bootstrap/src/styles/fycon-chars.less";
-@import (reference) "livefyre-bootstrap/src/styles/variables.less";
+@import (reference) "lib/bootstrap/less/mixins.less";
+@import (reference) "lib/livefyre-bootstrap/src/styles/fycon-chars.less";
+@import (reference) "lib/livefyre-bootstrap/src/styles/variables.less";
 
 .content-structure() {
     display: block;
@@ -326,41 +326,6 @@
             margin-right: 2px;
         }
     }
-
-
-    .content-action-tooltip {
-        position: absolute;
-        display: none;
-        z-index: 3;
-
-        .content-action-tooltip-bubble {
-            font-size: 14px;
-            line-height: 18px;
-            font-weight: normal;
-            white-space: nowrap;
-            color: #CDCDCD;
-            color: rgba(255, 255, 255, 0.8);
-            padding: 4px 15px;
-            border: 1px solid rgba(0, 0, 0, 0.9);
-            border-radius: 3px;
-            text-shadow: 0 -1px 0 #000;
-            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
-            background: -moz-linear-gradient(top,  rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 100%); /* FF3.6+ */
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.8)), color-stop(100%,rgba(0,0,0,0.9))); /* Chrome,Safari4+ */
-            background: -webkit-linear-gradient(top,  rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.9) 100%); /* Chrome10+,Safari5.1+ */
-            background: -o-linear-gradient(top,  rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.9) 100%); /* Opera 11.10+ */
-            background: -ms-linear-gradient(top,  rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.9) 100%); /* IE10+ */
-            background: linear-gradient(to bottom,  rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.9) 100%); /* W3C */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc000000', endColorstr='#e6000000',GradientType=0 ); /* IE6-9 */
-        }
-        .content-action-tooltip-tail {
-            background: no-repeat left top url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAICAYAAADwdn+XAAAAT0lEQVQoFZ2RQQoAIAgE15/7c2slgtKiFNSQnbkEANrbiq0wI1uSqLMcBYnDi+BDMuEgeJAscCq4SAJ8FCSSFGZORpg/EUpElMee8c33Xg3nK8NJYv1kigAAAABJRU5ErkJggg==');
-            height: 8px;
-            width: 16px;
-            display: block;
-            margin: -1px auto 0 auto;
-        }
-    }
     
     .content-featured {
         font-weight: 500;
@@ -385,12 +350,10 @@
         background-image: none;
     }
 
-    &.content-instagram {
-        .content-source-logo {
-            .fycon-source-instagram();
-            color: @brand-instagram;
-        }
+    &.hub-content-image-loading {
+        display: none;
     }
+
 
     &.content-tweet {
         .content-author-avatar + .content-main {
@@ -439,17 +402,14 @@
             line-height: 16px;
         }
     }
-    &.content-facebook {
-        .content-source-logo {
-            .fycon-source-facebook();
-            color: @brand-facebook;
-        }
+    &.content-facebook .content-source-logo {
+        .fycon-source-facebook();
+        color: @brand-facebook;
     }
-
-    &.hub-content-image-loading {
-        display: none;
+    &.content-instagram .content-source-logo {
+        .fycon-source-instagram();
+        color: @brand-instagram;
     }
-
     &.content-url { 
         .content-body {
             font-size: 14px;
