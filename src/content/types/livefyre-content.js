@@ -43,9 +43,6 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             this._annotator.annotate(this, {
                 added: json.content.annotations
             }, true);  // Silently add b/c this is new Content.
-            if (json.content.attachments) {
-                json.content.attachments.map(this.addAttachment.bind(this));
-            }
         }
 
         this.body = json ? json.content.bodyHtml : '';

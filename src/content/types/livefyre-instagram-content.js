@@ -17,5 +17,12 @@ function(LivefyreContent, inherits) {
 
     LivefyreInstagramContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram';
 
+    LivefyreInstagramContent.prototype.addAttachment = function (oembed) {
+        if (oembed && oembed.title) {
+            this.body = oembed.title
+        }
+        return LivefyreContent.prototype.addAttachment.apply(this, arguments);
+    };
+
     return LivefyreInstagramContent;
 });
