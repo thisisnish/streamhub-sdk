@@ -20,7 +20,9 @@
         {{/contentSourceUrl}}
 
         {{#displayNameLink}}
-            <a class="content-author-name" href="{{ displayNameLink }}" target="_blank">{{ displayName }}</a>
+            <div class="content-author-name">
+                <a href="{{ displayNameLink }}" target="_blank">{{ displayName }}</a>
+            </div>
         {{/displayNameLink}}
         {{^displayNameLink}}
             <div class="content-author-name">{{ displayName }}</div>
