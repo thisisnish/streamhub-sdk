@@ -94,11 +94,6 @@ Storage, debug, Transform, inherits) {
             content.collection = opts.collection;
         }
 
-        // Add v3.1-style attachments
-        if (state.content.attachments) {
-            state.content.attachments.map(content.addAttachment.bind(content));
-        }
-
         // Store content with IDs in case we later get
         // replies or attachments targeting it
         if (content && content.id) {
@@ -274,9 +269,6 @@ Storage, debug, Transform, inherits) {
         }
         if (content.updatedAt) {
             updatedProperties.updatedAt = content.updatedAt;
-        }
-        if (content.attachments && content.attachments[0] && content.attachments[0].title) {
-            updatedProperties.title = content.attachments[0].title;
         }
         return updatedProperties;
     };

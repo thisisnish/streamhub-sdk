@@ -16,7 +16,6 @@ function LivefyreUrlContent(json) {
         this.viaText = generator.displayName || generator.id || generator.url;
         this.favicon = generator.image;
     }
-
 };
 inherits(LivefyreUrlContent, LivefyreContent);
 
