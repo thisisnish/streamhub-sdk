@@ -19,7 +19,7 @@ function(LivefyreContent, inherits) {
     LivefyreInstagramContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram';
 
     LivefyreInstagramContent.prototype._setBody = function () {
-        if (this.attachments && this.attachments[0].title) {
+        if (this.attachments.length && this.attachments[0].title) {
             this.body = this.attachments[0].title
         }
     };
