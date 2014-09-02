@@ -33,6 +33,9 @@ StateToContent, Annotator, debug) {
         this._streamClient = opts.streamClient || new StreamClient();
         this._request = null;
         this._replies = opts.replies || false;
+        // keep track of up to 100 maxEventIds I've seen, so that if a
+        // response comes back with a duplicate, we dont re-request
+        this._seenEventIds = [];
         if (opts.createStateToContent) {
             this._createStateToContent = opts.createStateToContent;
         }
@@ -73,7 +76,7 @@ StateToContent, Annotator, debug) {
                 if (latestEvent === undefined) {
                     throw new Error("Couldn't get latestEvent after initFromBootstrap");
                 }
-                self._latestEvent = latestEvent;
+                self._setLatestEvent(latestEvent);
                 self._stream();
             });
         }
@@ -108,8 +111,13 @@ StateToContent, Annotator, debug) {
                 return pollAgain();
             }
             var contents = self._contentsFromStreamData(data);
+            var nextEventId = data.maxEventId;
+
+            // If nextEventId is one we've seen before, dont use it!
+            // increment the highest of what we've seen by one instead
+
             // Update _latestEvent so we only get new data
-            self._latestEvent = data.maxEventId;
+            self._setLatestEvent(data.maxEventId);
 
             if (contents.length) {
                 self.push.apply(self, contents);
@@ -132,6 +140,22 @@ StateToContent, Annotator, debug) {
         this._request = request;
     };
 
+    /**
+     * Record the latest eventId that we've seen, so it can be provided
+     * on subsequent long-polling requests.
+     * Also maintain a buffer of historically seen eventIds so we can detect
+     * duplicates which may indicate a loop in the stream service.
+     */
+    CollectionUpdater.prototype._setLatestEvent = function (eventId) {
+        var seenEventIds = this._seenEventIds;
+        // add to seenEventIds
+        seenEventIds.push(eventId);
+        // but cap at 100
+        if (seenEventIds.length > 100) {
+            seenEventIds.shift();
+        }
+        this._latestEvent = eventId;
+    };
 
     /**
      * Pause the Updater
