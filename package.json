@@ -17,8 +17,8 @@
   "scripts": {
     "postinstall": "./node_modules/bower/bin/bower install && ./node_modules/less/bin/lessc -ru --include-path=lib --compress src/css/style.less src/css/style.css",
     "start": "./node_modules/http-server/bin/http-server .",
-    "build": "./node_modules/requirejs/bin/r.js -o ./tools/build.conf.js && npm run lessc && npm run-script build-css",
-    "build-css": "mkdir -p dist && ./node_modules/csso/bin/csso src/css/style.css dist/streamhub-sdk.min.css",
+    "build": "./node_modules/requirejs/bin/r.js -o ./tools/build.conf.js && npm run-script build-css",
+    "build-css": "npm run lessc && mkdir -p dist && ./node_modules/csso/bin/csso src/css/style.css dist/streamhub-sdk.min.css",
     "hint": "./node_modules/jshint/bin/jshint src/ tests/spec; echo",
     "hint-jenkins": "./node_modules/jshint/bin/jshint --reporter=jslint src/**/*.js > lint.log; echo",
     "test": "./node_modules/karma/bin/karma start tools/karma.conf.js --singleRun",
@@ -27,7 +27,7 @@
     "test-jenkins": "npm test",
     "karma": "./node_modules/karma/bin/karma start tools/karma.conf.js",
     "build-version": "node tools/build_version.js",
-    "lessc": "./node_modules/less/bin/lessc -ru --include-path=lib --compress src/css/style.{less,css} && ./node_modules/less/bin/lessc -ru --include-path=lib --compress src/content/css/content.{less,css} && ./node_modules/less/bin/lessc -ru --include-path=lib --compress src/views/css/list-view.{less,css}",
+    "lessc": "./node_modules/less/bin/lessc -ru --include-path=lib --compress src/css/style.less src/css/style.css && ./node_modules/less/bin/lessc -ru --include-path=lib --compress src/content/css/content.less src/content/css/content.css && ./node_modules/less/bin/lessc -ru --include-path=lib --compress src/views/css/list-view.less src/views/css/list-view.css",
     "jsdoc": "rm -rf docs/api && ./node_modules/jsdoc/jsdoc README.md -c tools/jsdoc.conf.json",
     "send-to-coveralls": "find coverage -name 'lcov.info' -print0 | xargs -0 cat | ./node_modules/coveralls/bin/coveralls.js"
   },
