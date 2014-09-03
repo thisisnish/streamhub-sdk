@@ -29,6 +29,7 @@ define(function () {
         'tests/spec/content/clients/content-client',
         'tests/spec/content/types/livefyre-content',
         'tests/spec/content/types/livefyre-facebook-content',
+        'tests/spec/content/types/livefyre-instagram-content',
         'tests/spec/content/types/livefyre-twitter-content',
         'tests/spec/content/types/oembed',
         'tests/spec/content/types/livefyre-oembed',
