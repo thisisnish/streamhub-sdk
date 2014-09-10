@@ -33,6 +33,8 @@ StateToContent, Annotator, debug) {
         this._streamClient = opts.streamClient || new StreamClient();
         this._request = null;
         this._replies = opts.replies || false;
+        this._storage = opts.storage;
+
         if (opts.createStateToContent) {
             this._createStateToContent = opts.createStateToContent;
         }
@@ -214,6 +216,7 @@ StateToContent, Annotator, debug) {
         opts = opts || {};
         opts.replies = this._replies;
         opts.collection = this._collection;
+        opts.storage = this._storage;
         return new StateToContent(opts);
     };
 

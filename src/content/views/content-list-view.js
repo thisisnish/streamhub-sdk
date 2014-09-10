@@ -26,8 +26,8 @@ var log = debug('streamhub-sdk/content/views/content-list-view');
  */
 var ContentListView = function (opts) {
     opts = opts || {};
-
     this.modal = hasAttachmentModal(this, opts.modal);
+    this.limit = opts.limit;
 
     var listOpts = $.extend({}, opts);
     listOpts.autoRender = false;
@@ -107,7 +107,7 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
 
     var newView = ListView.prototype.add.call(this, contentView, forcedIndex);
 
-    if (this._bound && ! this._hasVisibleVacancy()) {
+    if (this._bound && !this._hasVisibleVacancy()) {
         if (opts.tail) {
             var viewToRemove = this.views[0];
         } else {
@@ -124,6 +124,12 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         this.remove(viewToRemove);
     }
     
+    var count = document.querySelector(this.listElSelector).children.length;
+    if(typeof this.limit === 'number' && count > this.limit){
+        var index = opts.tail ? this.views.length -1 : 0;
+        this.remove(this.views[index]);
+    }
+
     return newView;
 };
 

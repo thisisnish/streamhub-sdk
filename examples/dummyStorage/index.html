@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/src/css/style.css">
+    <style>
+    #listView {
+        width:500px;
+    }
+    </style>
+</head>
+    <body>
+        <div id="listView"></div>
+
+        <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
+        <script src="/requirejs.conf.js" type="text/javascript"></script>
+        <script>
+        requirejs.config({
+            baseUrl: '../../'
+        });
+        require([
+            'streamhub-sdk/auth',
+            'streamhub-sdk/content/views/content-list-view',
+            'streamhub-sdk/collection',
+            'streamhub-sdk/content',
+            'streamhub-sdk/dummyStorage'
+        ],function (Auth, ListView, Collection, Content, Dummy) {
+            var opts = {
+                "network": "livefyre.com",
+                siteId: '290596',
+                articleId: 51,
+                "environment": "qa-ext.livefyre.com",
+                storage: new Dummy()
+            };
+
+            var listView = window.view = new ListView({
+                el: document.getElementById("listView"),
+                limit: 2
+            });
+
+            var collection = window.collection =  new Collection(opts);
+
+            collection.pipe(listView);
+
+        });
+        </script>
+    </body>
+</html>

@@ -25,6 +25,7 @@ var log = debug('streamhub-sdk/views/list-view');
 var ListView = function(opts) {
     opts = opts || {};
     opts.autoRender = opts.autoRender === undefined ? true : opts.autoRender;
+
     if (opts.template) {
         this.template = opts.template
     }

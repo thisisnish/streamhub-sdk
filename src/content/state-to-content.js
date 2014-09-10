@@ -7,13 +7,11 @@ define([
     'streamhub-sdk/content/types/livefyre-opine',
     'streamhub-sdk/content/types/livefyre-instagram-content',
     'streamhub-sdk/content/types/livefyre-url-content',
-    'streamhub-sdk/storage',
     'streamhub-sdk/debug',
     'stream/transform',
     'inherits'
 ], function (LivefyreContent, LivefyreTwitterContent, LivefyreFacebookContent,
-Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
-Storage, debug, Transform, inherits) {
+Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent, debug, Transform, inherits) {
     'use strict';
 
 
@@ -33,7 +31,7 @@ Storage, debug, Transform, inherits) {
         this.setAuthors(opts.authors || {});
         this._replies = opts.replies;
         this._collection = opts.collection;
-        this._storage = opts.storage || Storage;
+        this._storage = opts.storage;
         Transform.call(this, opts);
     };
 

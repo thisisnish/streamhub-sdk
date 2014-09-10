@@ -40,6 +40,7 @@ inherits) {
         this._contentIdsInHeadDocument = [];
         this._replies = opts.replies || false;
         this._comparator = opts.comparator || CollectionArchive.comparators.CREATED_AT_DESCENDING;
+        this._storage = opts.storage;
 
         Readable.call(this, opts);
     };
@@ -281,6 +282,7 @@ inherits) {
         opts = opts || {};
         opts.replies = this._replies;
         opts.collection = this._collection;
+        opts.storage = this._storage;
         return new StateToContent(opts);
     };
 
