@@ -125,6 +125,10 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
     }
     
     var count = document.querySelector(this.listElSelector).children.length;
+    console.log('add count ', count)
+    console.log('add limit ', this.limit)
+    console.log('add tail ', opts.tail)
+    console.log(document.querySelector(this.listElSelector).children);
     if(typeof this.limit === 'number' && count > this.limit){
         var index = opts.tail ? this.views.length -1 : 0;
         this.remove(this.views[index]);
