@@ -12,11 +12,12 @@ define([
     'streamhub-sdk/content/fetch-content',
     'streamhub-sdk/auth',
     'streamhub-sdk/storage',
+    'streamhub-sdk/dummyStorage',
     'inherits',
     'streamhub-sdk/debug'],
 function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
         Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyrePermalinkClient,
-        LivefyreWriteClient, fetchContent, Auth, Storage, inherits, debug) {
+        LivefyreWriteClient, fetchContent, Auth, Storage, DummyStorage, inherits, debug) {
     'use strict';
 
 
@@ -30,8 +31,10 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
      * @param [opts.autoCreate] {boolean} Set false to prevent from automatically
      *      creating this collection if it doesn't alreayd exist.
      * @param [opts.storage] {Storage Object} If a storage object is passed it 
-     * is used by stateToContent to create content from API data, otherwise a new
-     * default storage object is created.
+     *      is used by stateToContent to create content from API data, otherwise a new
+     *      default storage object is created.
+     * @param [opts.streamOnly] {Boolean} If true this collection will not store any 
+     *      content after it has been recieved. 
      */
     var Collection = function (opts) {
         opts = opts || {};
@@ -55,7 +58,11 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         this._writer = opts.writer || null;
         this._pipedArchives = [];
 
-        this._storage = opts.storage || new Storage();
+        if (opts.streamOnly) {
+            this._storage = new DummyStorage();
+        } else {
+            this._storage = opts.storage || new Storage();
+        }
 
         Duplex.call(this, opts);
 

@@ -21,13 +21,14 @@ var log = debug('streamhub-sdk/content/views/content-list-view');
  * @param [opts.animate] {Boolean} Whether to add animations when content is
  *                               rendered in the ContentListView
  * @param [opts.sharer] {Sharer} 
+ * @param [opts.streamOnly] {Boolean} Toggles if visible views are stored and ifthe Show More 
+ *                                      button is rendered
  * @exports streamhub-sdk/views/list-view
  * @constructor
  */
 var ContentListView = function (opts) {
     opts = opts || {};
     this.modal = hasAttachmentModal(this, opts.modal);
-    this.limit = opts.limit;
 
     var listOpts = $.extend({}, opts);
     listOpts.autoRender = false;
@@ -39,7 +40,17 @@ var ContentListView = function (opts) {
         this.render();
     }
 
-    this._stash = opts.stash || this.more;
+    if (opts.streamOnly) {
+        this._stash = { stack : function(){} };
+        var btn = this.$el.find(this.showMoreElSelector)
+        if (btn.length) {
+            btn.remove();
+        }
+        console.log('stream only')
+    } else {
+        this._stash = opts.stash || this.more;
+    }
+
     this._maxVisibleItems = opts.maxVisibleItems || 50;
     this._bound = true;
     this._animate = opts.animate === undefined ? true : opts.animate;
@@ -124,16 +135,6 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         this.remove(viewToRemove);
     }
     
-    var count = document.querySelector(this.listElSelector).children.length;
-    console.log('add count ', count)
-    console.log('add limit ', this.limit)
-    console.log('add tail ', opts.tail)
-    console.log(document.querySelector(this.listElSelector).children);
-    if(typeof this.limit === 'number' && count > this.limit){
-        var index = opts.tail ? this.views.length -1 : 0;
-        this.remove(this.views[index]);
-    }
-
     return newView;
 };
 
@@ -256,6 +257,8 @@ ContentListView.prototype.createContentView = function (content) {
 ContentListView.prototype.destroy = function () {
     ListView.prototype.destroy.call(this);
     this.contentViewFactory = null;
+    this._liker = null;
+    this._sharer = null;
 };
 
 module.exports = ContentListView;
