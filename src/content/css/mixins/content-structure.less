@@ -411,6 +411,11 @@
         color: @brand-instagram;
     }
     &.content-url { 
+        // disable livefyre fycon in corner since logo will be added with
+        // data-driven img element
+        .content-source-logo:before {
+            content: none;
+        }
         .content-body {
             font-size: 14px;
             line-height: 24px;
