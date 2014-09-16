@@ -124,10 +124,11 @@ mockBootstrapData) {
                         "type": 0,
                         "event": 1.3842088245838e+15
                     };
-                    var content = StateToContent.transform(visState, authors, { storage: new Storage()})[0];
+                    var storage = new Storage();
+                    var content = StateToContent.transform(visState, authors, { storage: storage})[0];
                     expect(content.author.displayName).toBe('reflect');
                     // This will mutate the above `content`, but not return anything
-                    StateToContent.transform(deleteState, undefined, {storage: new Storage()});
+                    StateToContent.transform(deleteState, undefined, {storage: storage});
                     expect(content.visibility).toBe(Content.enums.visibility[deleteState.vis]);
                     expect(content.author.displayName).toBe('reflect');
                     expect(content.createdAt).toEqual(jasmine.any(Date));
@@ -337,9 +338,10 @@ mockBootstrapData) {
         });
 
         it('can transform the same nested state twice and be returned the same object', function () {
+            var storage = new Storage();
             var state = mockBootstrapData.content['2 Tiled Attachments'];
-            var content1 = StateToContent.transform(state, undefined, {storage: new Storage()})[0];
-            var content2 = StateToContent.transform(state, undefined, {storage: new Storage()})[0];
+            var content1 = StateToContent.transform(state, undefined, {storage: storage})[0];
+            var content2 = StateToContent.transform(state, undefined, {storage: storage})[0];
             expect(content1.attachments).toBe(content2.attachments);
             expect(content1).toBe(content2);
         });
@@ -359,7 +361,7 @@ mockBootstrapData) {
                 inherits(CustomStateToContent, StateToContent);
                 CustomStateToContent.prototype._createContent = customCreateContent;
 
-                var myStateToContent = new CustomStateToContent();
+                var myStateToContent = new CustomStateToContent({ storage: new Storage()});
                 myStateToContent.write(state);
                 var content = myStateToContent.read();
                 // The test state here has two attachments, so 1+2 Content
@@ -376,7 +378,7 @@ mockBootstrapData) {
                 inherits(CustomStateToContent, StateToContent);
                 CustomStateToContent.prototype._getUpdatedProperties = customGetUpdatedProperties;
 
-                var myStateToContent = new CustomStateToContent();
+                var myStateToContent = new CustomStateToContent({ storage: new Storage() });
                 // Write the same thing twice, which will ensure
                 // getUpdatedProperties is used
                 myStateToContent.write(state);
