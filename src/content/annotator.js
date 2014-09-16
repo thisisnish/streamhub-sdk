@@ -52,21 +52,6 @@ define([
     };
 
     /**
-     * @param opts {object}
-     * @param opts.contentId [string]
-     * @param opts.content {Content}
-     * @param opts.annotationDiff {object} A set of 'added', 'updated', and 'removed' annotations.
-     * @param opts.silence [boolean] Mute any events that would be fired
-     */
-    Annotator.prototype._write = function(opts) {
-        var content = opts.content || Storage.get(opts.contentId);
-        if (! content) {
-            return;
-        }
-        this.annotate(content, opts.annotationDiff, opts.silence);
-    };
-
-    /**
      * AnnotationTypes
      * featuredmessage
      * moderator

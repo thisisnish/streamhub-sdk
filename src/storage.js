@@ -7,8 +7,8 @@ define(['inherits', 'event-emitter'], function(inherits, EventEmitter) {
 	 */
     var Storage = function() {
         this.cache = {}
+        EventEmitter.call(this);
     };
-    EventEmitter.call(Storage);
     inherits(Storage, EventEmitter);
     
     /**

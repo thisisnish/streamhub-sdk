@@ -171,7 +171,7 @@ Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlCont
 
     // Keep static for legacy API compatibility.
     StateToContent.transform = function (state, authors, opts) {
-        var instance = new StateToContent();
+        var instance = new StateToContent(opts);
         return instance.transform(state, authors, opts);
     };
 
