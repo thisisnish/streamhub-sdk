@@ -46,7 +46,6 @@ var ContentListView = function (opts) {
         if (btn.length) {
             btn.remove();
         }
-        console.log('stream only')
     } else {
         this._stash = opts.stash || this.more;
     }
