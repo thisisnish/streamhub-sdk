@@ -11,10 +11,7 @@ define([
      */
     var Annotator = function (opts) {
         opts = opts || {};
-        Writable.call(this, opts);
     };
-
-    inherits(Annotator, Writable);
 
     /**
      * @param content {Content}

@@ -173,16 +173,21 @@ StateToContent, Annotator, debug) {
                 state = states[contentId];
                 stateToContent.write(state);
             }
-        }
+        }    
 
         for (contentId in annotations) {
             if (annotations.hasOwnProperty(contentId)) {
                 annotationDiff = annotations[contentId];
                 this._handleAnnotationDiff(contentId, annotationDiff);
-                annotator.write({
-                    contentId: contentId,
-                    annotationDiff: annotationDiff
-                });
+                
+                var content;
+                for(var i=0; i < contents.length; i++){
+                    if(contents[i].id = contentId){
+                        content = contents[i];
+                        break;
+                    }
+                }
+                annotator.annotate(content, annotationDiff);
             }
         }
 
