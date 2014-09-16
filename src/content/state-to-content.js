@@ -31,7 +31,7 @@ Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlCont
         this.setAuthors(opts.authors || {});
         this._replies = opts.replies;
         this._collection = opts.collection;
-        this._storage = opts.storage;
+        this._storage = opts.storage || (opts.collection ? opts.collection._storage : undefined);
         Transform.call(this, opts);
     };
 
@@ -353,7 +353,5 @@ Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlCont
         'OEMBED'
     ];
 
-
-    StateToContent.Storage = Storage;
     return StateToContent;
 });

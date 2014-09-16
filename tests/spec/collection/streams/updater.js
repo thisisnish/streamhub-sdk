@@ -6,9 +6,10 @@ define([
     'streamhub-sdk-tests/mocks/collection/clients/mock-bootstrap-client',
     'streamhub-sdk-tests/mocks/collection/clients/mock-stream-client',
     'streamhub-sdk/jquery',
-    'streamhub-sdk/content/types/livefyre-content'],
+    'streamhub-sdk/content/types/livefyre-content',
+    'streamhub-sdk/storage'],
 function (CollectionUpdater, Readable, StateToContent, MockCollection,
-MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
+MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent, Storage) {
     "use strict";
 
     describe('streamhub-sdk/collection/streams/updater', function () {
@@ -35,14 +36,15 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
                     collection: new MockCollection(),
                     streamClient: streamClient,
                     createStateToContent: createStateToContent,
-                    createAnnotator: createAnnotator
+                    createAnnotator: createAnnotator,
+                    storage: new Storage()
                 });
                 spyOn(updater._collection._bootstrapClient, 'getContent').andCallThrough();
             });
 
             afterEach(function () {
                 updater.pause();
-                StateToContent.Storage.cache = {};
+                updater._storage.cache = {};
             });
 
             it('is instanceof CollectionUpdater', function () {
@@ -321,7 +323,7 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
                 var content = new LivefyreContent({});
                 expect(content.getFeaturedValue()).toEqual(undefined);
 
-                StateToContent.Storage.set(id, content);
+                updater._storage.set(id, content);
 
                 spyOn(updater, '_read').andCallThrough();
                 var contents = [];
@@ -336,7 +338,7 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
 
                 runs(function () {
                     updater.pause();
-                    var featuredContent = StateToContent.Storage.get(id);
+                    var featuredContent = updater._storage.get(id);
                     expect(featuredContent.getFeaturedValue()).toEqual(jasmine.any(Number));
                 });
             });

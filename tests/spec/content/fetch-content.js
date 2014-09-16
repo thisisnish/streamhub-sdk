@@ -222,6 +222,7 @@ describe('streamhub-sdk/content/fetch-content', function () {
         });
         
         it('passes the desired Content to the callback function as the second parameter', function () {
+          
             fetchContent(opts, callback);
             expect(contentClient.getContent).toHaveBeenCalled();
             waitsFor(function () {

@@ -1,9 +1,8 @@
 define([
     'streamhub-sdk/storage',
     'streamhub-sdk/util',
-    'stream/writable',
     'inherits'
-], function (Storage, util, Writable, inherits) {
+], function (Storage, util, inherits) {
     'use strict';
 
     /**
