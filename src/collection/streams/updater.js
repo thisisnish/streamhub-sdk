@@ -183,13 +183,11 @@ StateToContent, Annotator, debug) {
             if (annotations.hasOwnProperty(contentId)) {
                 annotationDiff = annotations[contentId];
                 this._handleAnnotationDiff(contentId, annotationDiff);
-                
-                var content;
-                for(var i=0; i < contents.length; i++){
-                    if(contents[i].id = contentId){
-                        content = contents[i];
-                        break;
-                    }
+                var content = this._storage.get(contentId);
+                if ( ! content) {
+                    // This is an annotation update for a contentId we dont
+                    // know about. Which is fine and normal.
+                    continue;
                 }
                 annotator.annotate(content, annotationDiff);
             }

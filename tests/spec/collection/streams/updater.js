@@ -317,11 +317,10 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent, Stora
                 });
             });
 
-            it('can .read() annotations from the stream', function () {
+            it('updates content in Storage with annotation updates from stream', function () {
                 var id = 'ContentInStorage123';
                 var content = new LivefyreContent({});
                 expect(content.getFeaturedValue()).toEqual(undefined);
-
                 updater._storage.set(id, content);
 
                 spyOn(updater, '_read').andCallThrough();
