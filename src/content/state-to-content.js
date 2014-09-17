@@ -46,7 +46,7 @@ Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlCont
                 collection: this._collection
             });
         } catch (err) {
-            this.emit('error transforming state-to-content', err);
+            this.emit('error', err);
             log('StateToContent.transform threw', err);
         }
         if (contents && contents.length) {
