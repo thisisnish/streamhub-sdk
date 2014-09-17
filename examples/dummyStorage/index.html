@@ -21,25 +21,37 @@
             'streamhub-sdk/auth',
             'streamhub-sdk/content/views/content-list-view',
             'streamhub-sdk/collection',
-            'streamhub-sdk/content',
-            'streamhub-sdk/dummyStorage'
-        ],function (Auth, ListView, Collection, Content, Dummy) {
+            'streamhub-sdk/content'
+        ],function (Auth, ListView, Collection, Content) {
             var opts = {
                 "network": "livefyre.com",
-                siteId: '290634',
-                articleId: 'joe-test',
+                siteId: '290596',
+                articleId: 51,
                 "environment": "qa-ext.livefyre.com",
-                storage: new Dummy()
+                replies: true,
+                streamOnly: true
             };
 
+
+            window.Content = Content;
             var listView = window.view = new ListView({
                 el: document.getElementById("listView"),
-                limit: 2
+                initial: 100,
+                showMore: 10,
+                maxVisibleItems: 10,
+                streamOnly: true
             });
 
-            var collection = window.collection =  new Collection(opts);
+            //var collection = window.collection =  new Collection(opts);
 
-            collection.pipe(listView);
+            //collection.pipe(listView);
+            var i = 0;
+            window.interval = setInterval(function(){
+                view.add(new Content('Rawr rawr rawr ' + i++));
+                if(i > 50000) {
+                    clearInterval(window.interval);
+                }
+            }, 10);
 
         });
         </script>

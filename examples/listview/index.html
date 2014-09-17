@@ -21,23 +21,25 @@
             'streamhub-sdk/auth',
             'streamhub-sdk/content/views/content-list-view',
             'streamhub-sdk/collection',
-            'streamhub-sdk/content',
-            'streamhub-sdk/collection/liker',
-            'streamhub-sdk/sharer',
-        ],function (Auth, ListView, Collection, Content, Liker, sharer) {
+            'streamhub-sdk/content'
+        ],function (Auth, ListView, Collection, Content) {
             var opts = {
                 "network": "livefyre.com",
-                siteId: '290634',
-                articleId: 'joe-test',
-                "environment": "qa-ext.livefyre.com"
+                siteId: '290596',
+                articleId: 51,
+                "environment": "qa-ext.livefyre.com",
+                replies: true,
+                streamOnly: false
             };
 
+
+            window.Content = Content;
             var listView = window.view = new ListView({
-                initial: 50,
-                showMore: 50,
                 el: document.getElementById("listView"),
-                liker: new Liker(),
-                sharer: sharer
+                initial: 100,
+                showMore: 10,
+                maxVisibleItems: 10,
+                streamOnly: false
             });
 
             var collection = window.collection =  new Collection(opts);

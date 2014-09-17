@@ -36,8 +36,7 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent, Stora
                     collection: new MockCollection(),
                     streamClient: streamClient,
                     createStateToContent: createStateToContent,
-                    createAnnotator: createAnnotator,
-                    storage: new Storage()
+                    createAnnotator: createAnnotator
                 });
                 spyOn(updater._collection._bootstrapClient, 'getContent').andCallThrough();
             });

@@ -129,15 +129,16 @@ describe('streamhub-sdk/content/fetch-content', function () {
             stateToContent;
             
         beforeEach(function () {
+            var storage = new Storage();
             contentClient = new ContentClient();
-            stateToContent = new StateToContent();
+            stateToContent = new StateToContent({ storage: storage});
             opts = {
                 network: CONST.NET,
                 collectionId: CONST.COLL,
                 contentId: CONST.CONT,
                 contentClient: contentClient,
                 stateToContent: stateToContent,
-                storage: new Storage()
+                storage: storage
             };
             callback = jasmine.createSpy('callback');
             

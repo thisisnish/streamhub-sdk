@@ -1,8 +1,9 @@
 define([
     'streamhub-sdk/collection/streams/featured-archive',
     'streamhub-sdk-tests/mocks/collection/mock-collection',
-    'stream/readable'],
-function (FeaturedArchive, MockCollection, Readable) {
+    'stream/readable',
+    'streamhub-sdk/storage'],
+function (FeaturedArchive, MockCollection, Readable, Storage) {
     'use strict';
 
     describe('streamhub-sdk/streams/featured-content', function () {
@@ -11,7 +12,8 @@ function (FeaturedArchive, MockCollection, Readable) {
         beforeEach(function(){
             // This collection has no Featured
             collection = new MockCollection({
-                withFeaturedInit: true
+                withFeaturedInit: true,
+                storage: new Storage()
             });
         });
 
