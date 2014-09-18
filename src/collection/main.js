@@ -33,8 +33,9 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
      * @param [opts.storage] {Storage Object} If a storage object is passed it 
      *      is used by stateToContent to create content from API data, otherwise a new
      *      default storage object is created.
-     * @param [opts.streamOnly] {Boolean} If true this collection will not store any 
-     *      content after it has been recieved. 
+     * @param [opts.disableStorage] {Boolean} If true this collection will not store any 
+     *      content after it has been recieved. This prevents many default behaviors from 
+     *      occuring. 
      */
     var Collection = function (opts) {
         opts = opts || {};
@@ -58,7 +59,7 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         this._writer = opts.writer || null;
         this._pipedArchives = [];
 
-        if (opts.streamOnly) {
+        if (opts.disableStorage) {
             this._storage = new DummyStorage();
         } else {
             this._storage = opts.storage || new Storage();
