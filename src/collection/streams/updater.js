@@ -164,9 +164,14 @@ StateToContent, Annotator, debug) {
             annotations = streamData.annotations,
             contentId,
             contents = [],
+            self = this,
             state,
             states = streamData.states,
             stateToContent = this._createStateToContent(streamData);
+
+        stateToContent.on('error', function(e){
+            self.emit('error', e);
+        });
 
         stateToContent.on('data', function (content) {
             contents.push(content);

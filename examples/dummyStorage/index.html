@@ -25,33 +25,32 @@
         ],function (Auth, ListView, Collection, Content) {
             var opts = {
                 "network": "livefyre.com",
-                siteId: '290596',
-                articleId: 51,
+                siteId: '290634',
+                articleId: 'joe-test',
                 "environment": "qa-ext.livefyre.com",
-                replies: true,
-                streamOnly: true
+                replies: true
             };
 
 
             window.Content = Content;
             var listView = window.view = new ListView({
                 el: document.getElementById("listView"),
-                initial: 100,
+                initial: 10,
                 showMore: 10,
                 maxVisibleItems: 10,
                 streamOnly: true
             });
 
-            //var collection = window.collection =  new Collection(opts);
+            var collection = window.collection =  new Collection(opts);
 
-            //collection.pipe(listView);
-            var i = 0;
+            collection.pipe(listView);
+            /*var i = 0;
             window.interval = setInterval(function(){
                 view.add(new Content('Rawr rawr rawr ' + i++));
                 if(i > 50000) {
                     clearInterval(window.interval);
                 }
-            }, 10);
+            }, 10);*/
 
         });
         </script>

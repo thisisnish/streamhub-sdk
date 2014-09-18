@@ -224,6 +224,10 @@ inherits) {
         }
         var stateToContent = this._createStateToContent(bootstrapDoc);
 
+        stateToContent.on('error', function(e){
+            self.emit('error', e);
+        });
+
         stateToContent.on('data', function (content) {
             if (! content ||
                 self._contentIdsInHeadDocument.indexOf(content.id) !== -1) {
