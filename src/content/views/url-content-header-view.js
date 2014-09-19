@@ -12,12 +12,12 @@ var template = require('hgn!streamhub-sdk/content/templates/url-content-header')
  */
 var UrlContentHeaderView = function (opts) {
     ContentHeaderView.call(this, opts);
-
+    var content = opts.content;
     this.template = template;
-    this.displayName = opts.content.author.displayName;
-    this.displayNameLink = opts.content.author.profileUrl;
-    this.viaText = opts.content.viaText;
-    this.favicon = opts.content.favicon;
+    this.displayName = content.author.displayName;
+    this.displayNameLink = content.author.profileUrl;
+    this.viaText = content.viaText;
+    this.favicon = content.favicon;
     this.contentSourceUrl = content.attachments && content.attachments.length ? content.attachments[0].url : undefined;
 };
 inherits(UrlContentHeaderView, ContentHeaderView);

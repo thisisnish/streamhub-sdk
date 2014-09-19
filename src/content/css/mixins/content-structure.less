@@ -1,6 +1,7 @@
 @import (reference) "lib/bootstrap/less/mixins.less";
 @import (reference) "lib/livefyre-bootstrap/src/styles/fycon-chars.less";
 @import (reference) "lib/livefyre-bootstrap/src/styles/variables.less";
+@import (reference) "../../../css/fycons.less";
 
 .content-structure() {
     display: block;
@@ -139,6 +140,7 @@
         .hub-content-like {
             .fycon-action-like();
             &:before {
+                .fycon-font-styles();
                 font-size: 15px;
             }
         }
@@ -150,6 +152,9 @@
         .hub-content-share {
             position: relative;
             .fycon-action-share();
+            &:before {
+                .fycon-font-styles();
+            }
         }
     }
 
@@ -339,6 +344,7 @@
 
 
     .content-source-logo {
+        .fycon-font-styles();
         .fycon-source-livefyre();
         font-size: 16px;
         text-align: right;
@@ -373,34 +379,51 @@
             margin-left: -10px;
         }
         
+        .hub-btn.hub-content-action > a {
+            text-decoration: none;
+        }
+
         .hub-btn.hub-content-action-reply {
-            .fycon-action-reply();
+            & > a {
+                .fycon-font-styles();
+                .fycon-action-reply();
+                color: inherit;
+                vertical-align: top;
+                font-size: 20px;
+                line-height: 20px;
+            }
             width: 23px;
             height: 16px;
         }
-        .hub-btn.hub-content-action-reply:before {
-            vertical-align: top;
-            font-size: 20px;
-            line-height: 20px;
-        }
+
         .hub-btn.hub-content-action-retweet {
-            .fycon-action-retweet();
+            & > a {
+                .fycon-font-styles();
+                .fycon-action-retweet();
+                color: inherit;
+                vertical-align: top;
+                font-size: 21px;
+                line-height: 21px;
+            }
             width: 27px;
             height: 16px;
         }
-        .hub-btn.hub-content-action-retweet:before {
-            font-size: 21px;
-            line-height: 21px;
-        }
+
         .hub-btn.hub-content-action-favorite {
-            .fycon-action-favorite();
+            & > a {
+                .fycon-font-styles();
+                .fycon-action-favorite();
+                color: inherit;
+                vertical-align: top;
+                font-size: 16px;
+                line-height: 16px;
+                position: relative;
+                top: 2px;
+            }
             width: 18px;
             height: 16px;
         }
-        .hub-btn.hub-content-action-favorite:before {
-            font-size: 16px;
-            line-height: 16px;
-        }
+
     }
     &.content-facebook .content-source-logo {
         .fycon-source-facebook();
@@ -411,6 +434,11 @@
         color: @brand-instagram;
     }
     &.content-url { 
+        // disable livefyre fycon in corner since logo will be added with
+        // data-driven img element
+        .content-source-logo:before {
+            content: none;
+        }
         .content-body {
             font-size: 14px;
             line-height: 24px;
