@@ -31,7 +31,7 @@ Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlCont
         this.setAuthors(opts.authors || {});
         this._replies = opts.replies;
         this._collection = opts.collection;
-        this._storage = opts.storage || (opts.collection ? opts.collection._storage : undefined);
+        this._storage = opts.storage || (opts.collection ? opts.collection.storage : undefined);
         Transform.call(this, opts);
     };
 

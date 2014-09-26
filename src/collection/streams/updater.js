@@ -35,8 +35,8 @@ StateToContent, Annotator, debug) {
         this._replies = opts.replies || false;
         this._storage = opts.storage;
 
-        if(this._collection && this._collection._storage) {
-            this._storage = this._collection._storage;
+        if(this._collection && this._collection.storage) {
+            this._storage = this._collection.storage;
         }
 
         if (opts.createStateToContent) {

@@ -62,7 +62,7 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         if (opts.disableStorage) {
             this._storage = new MockStorage();
         } else {
-            this._storage = opts.storage || new Storage();
+            this.storage = opts.storage || new Storage();
         }
 
         Duplex.call(this, opts);
