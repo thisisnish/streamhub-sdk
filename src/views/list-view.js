@@ -292,7 +292,7 @@ ListView.prototype.remove = function (view) {
 
     //Clean up views that will no longer be rendered
     //if streaming
-    if(this._streamOnly){
+    if(this._streamOnly) {
         view.destroy();
     //Or let the thing using this View clean it up
     } else {

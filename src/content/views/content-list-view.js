@@ -41,7 +41,7 @@ var ContentListView = function (opts) {
     }
 
     if (opts.streamOnly) {
-        this._stash = { stack : function(){} };
+        this._stash = { stack : function() {} };
         var btn = this.$el.find(this.showMoreElSelector)
         if (btn.length) {
             btn.remove();

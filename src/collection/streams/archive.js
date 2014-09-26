@@ -224,7 +224,7 @@ inherits) {
         }
         var stateToContent = this._createStateToContent(bootstrapDoc);
 
-        stateToContent.on('error', function(e){
+        stateToContent.on('error', function(e) {
             self.emit('error', e);
         });
 

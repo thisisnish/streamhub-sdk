@@ -64,7 +64,7 @@ define([
         var likes = content.likedBy.splice(0);
         for (var i=0; i < annotation.length; i++) {
             var a = annotation[i]
-            if (likes.indexOf(a) < 0){
+            if (likes.indexOf(a) < 0) {
                 likes.push(a);
             }
         }

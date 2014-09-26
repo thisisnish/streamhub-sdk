@@ -35,7 +35,7 @@ StateToContent, Annotator, debug) {
         this._replies = opts.replies || false;
         this._storage = opts.storage;
 
-        if(this._collection && this._collection._storage){
+        if(this._collection && this._collection._storage) {
             this._storage = this._collection._storage;
         }
 
@@ -169,7 +169,7 @@ StateToContent, Annotator, debug) {
             states = streamData.states,
             stateToContent = this._createStateToContent(streamData);
 
-        stateToContent.on('error', function(e){
+        stateToContent.on('error', function(e) {
             self.emit('error', e);
         });
 
