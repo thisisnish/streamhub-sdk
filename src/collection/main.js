@@ -12,12 +12,12 @@ define([
     'streamhub-sdk/content/fetch-content',
     'streamhub-sdk/auth',
     'streamhub-sdk/storage',
-    'streamhub-sdk/dummyStorage',
+    'streamhub-sdk-tests/mocks/mock-storage',
     'inherits',
     'streamhub-sdk/debug'],
 function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
         Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyrePermalinkClient,
-        LivefyreWriteClient, fetchContent, Auth, Storage, DummyStorage, inherits, debug) {
+        LivefyreWriteClient, fetchContent, Auth, Storage, MockStorage, inherits, debug) {
     'use strict';
 
 
@@ -60,7 +60,7 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         this._pipedArchives = [];
 
         if (opts.disableStorage) {
-            this._storage = new DummyStorage();
+            this._storage = new MockStorage();
         } else {
             this._storage = opts.storage || new Storage();
         }
