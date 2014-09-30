@@ -12,11 +12,24 @@ define(['streamhub-sdk/jquery'], function($) {
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
         this._serviceName = opts.serviceName;
-        this._protocol = opts.protocol || document.location.protocol;
+        this._protocol = opts.protocol || getDefaultProtocol();
         if (this._protocol.slice(-1) !== ':') {
             this._protocol += ':';
         }
     };
+
+    /**
+     * Return the protocol string that should be used in this document
+     * if one is not provided. If document.location.protocol is not http or
+     * https, use http
+     */
+    function getDefaultProtocol() {
+        var docProtocol = document.location.protocol;
+        if (docProtocol.indexOf('http') === 0) {
+            return docProtocol;
+        }
+        return 'http:';
+    }
 
     /**
      * Make an HTTP Request
