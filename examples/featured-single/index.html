@@ -6,6 +6,7 @@
     #listView {
         width:500px;
     }
+    .hub-list-more {display: none;}
     </style>
     <script type="text/javascript" src="//platform.twitter.com/widgets.js"></script>
 </head>
@@ -33,17 +34,25 @@
                 "articleId": "custom-1380083232878",
                 "environment": "t402.livefyre.com"
             };
+            var paulC = {
+                "network": "bskyb-int-0.fyre.co",
+                "siteId": "305071",
+                "articleId": "custom-1412721646176"
+            };
             var listView = window.view = new ListView({
-                initial: 5,
-                showMore: 2,
+                initial: 1,
+                showMore: 0,
                 el: document.getElementById("listView")
             });
 
             // Show the featuredValue in the content body to verify sort order
             var ogAdd = listView.add;
+            var previousView;
             listView.add = function (content) {
+                previousView && listView.remove(previousView);
                 content.body = String(content.getFeaturedValue()) + ' ' + content.body;
                 ogAdd.apply(this, arguments);
+                previousView = content;
             }
 
             // Order descending by featuredValue
@@ -54,7 +63,7 @@
                 }
             };
 
-            var collection = window.collection = new Collection(opts);
+            var collection = window.collection = new Collection(paulC);
 
             var featuredContents = collection.createFeaturedContents();
 
