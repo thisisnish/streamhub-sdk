@@ -59,6 +59,9 @@ FeaturedUpdater.prototype.handleAnnotations = function (contentId, annotations) 
             this._annotator.annotate(content, featuredAnnotations);
             this.write(content);
         }.bind(this));
+    } else {
+        this._annotator.annotate(content, featuredAnnotations);
+        this.write(content);
     }
 };
 
