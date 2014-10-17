@@ -100,8 +100,8 @@ Storage, debug, Transform, inherits) {
             var stored = this._storage.get(content.id);
             if (stored) {
                 // If existing content, update properties on existing instance
-                // only if the update is newer than the current content
-                if (isContent && ((content.updatedAt > stored.updatedAt) || isNaN(content.updatedAt.getTime()))) {
+                // only if the update is newer than the current content or if it is a visibility update
+                if (isContent && ((content.updatedAt > stored.updatedAt) || isValidDate(content.updatedAt))) {
                     // This could be a delete state, so only update
                     // properties that are actually set
                     stored.set(this._getUpdatedProperties(content));
@@ -249,6 +249,10 @@ Storage, debug, Transform, inherits) {
         }
     }
 
+    function isValidDate (date) {
+        return !isNaN(date.getTime());
+    }
+
 
     /**
      * For a piece of Content, get the the properties and values that should
@@ -271,10 +275,10 @@ Storage, debug, Transform, inherits) {
         if (content.author) {
             updatedProperties.author = content.author;
         }
-        if (content.createdAt) {
+        if (content.createdAt && isValidDate(content.createdAt)) {
             updatedProperties.createdAt = content.createdAt;
         }
-        if (content.updatedAt) {
+        if (content.updatedAt && isValidDate(content.createdAt)) {
             updatedProperties.updatedAt = content.updatedAt;
         }
         return updatedProperties;
