@@ -97,7 +97,12 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
     log("add", content);
     opts = opts || {};
     if (!content.el && this.getContentView(content)) {
-    //No double-adds
+        if (content.isEdit) {
+            var view = this.getContentView(content);
+            view.content = content;
+            view.render();
+        }
+
         log('already added', content);
         return;
     }

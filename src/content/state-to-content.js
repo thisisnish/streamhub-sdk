@@ -100,7 +100,8 @@ Storage, debug, Transform, inherits) {
             var stored = this._storage.get(content.id);
             if (stored) {
                 // If existing content, update properties on existing instance
-                if (isContent) {
+                // only if the update is newer than the current content
+                if (isContent && (content.updatedAt > stored.updatedAt)) {
                     // This could be a delete state, so only update
                     // properties that are actually set
                     stored.set(this._getUpdatedProperties(content));
@@ -108,8 +109,14 @@ Storage, debug, Transform, inherits) {
                 // Use the stored object, now that its properties have been
                 // updated
                 content = stored;
+                content.isEdit = true;
                 // Don't handle attachment updating.
             } else {
+                //This is an update to something that is
+                //no longer in the collection. Skip it.
+                if (content.updatedBy) {
+                    return;
+                }
                 this._storage.set(content.id, content);
             }
         }

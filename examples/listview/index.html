@@ -10,6 +10,7 @@
 </head>
     <body>
         <div id="listView"></div>
+        <div id="livefyre-app-edit-test"></div>
 
         <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
         <script src="/requirejs.conf.js" type="text/javascript"></script>
@@ -28,7 +29,7 @@
             var opts = {
                 "network": "livefyre.com",
                 siteId: '290634',
-                articleId: 'joe-test',
+                articleId: 'edit-test',
                 "environment": "qa-ext.livefyre.com"
             };
 
@@ -46,5 +47,25 @@
 
         });
         </script>
+
+          <script src="http://zor.qa-ext.fyre.co/wjs/v3.0/javascripts/livefyre.js"></script>
+  <div id="livefyre-app-edit-test"></div>
+  <!-- Scripts -->
+  <script>
+  (function() {
+    fyre.conv.load({
+      network: 'livefyre.com'
+      }, [{
+        app: 'main',
+        siteId: '290634',
+        articleId: 'edit-test',
+        el: 'livefyre-app-edit-test',
+        checksum: 'bd0210d2aa6b4c1b8e7dc361249e0dff',
+        collectionMeta: 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJ1cmwiOiAiaHR0cDovL3d3dy5nb29nbGUuY29tLyIsICJ0YWdzIjogW10sICJhcnRpY2xlSWQiOiAiZWRpdC10ZXN0IiwgInRpdGxlIjogIkVkaXQgQ29sbGVjdGlvbiJ9.Gpm6RgKRk5cjV8ipR9A5rtZ4zVwwudshnRZH8z_HNiw'
+      }], function (widget) {
+
+      });
+  }());
+  </script>
     </body>
 </html>
