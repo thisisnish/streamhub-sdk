@@ -101,7 +101,7 @@ Storage, debug, Transform, inherits) {
             if (stored) {
                 // If existing content, update properties on existing instance
                 // only if the update is newer than the current content
-                if (isContent && (content.updatedAt > stored.updatedAt)) {
+                if (isContent && ((content.updatedAt > stored.updatedAt) || isNaN(content.updatedAt.getTime()))) {
                     // This could be a delete state, so only update
                     // properties that are actually set
                     stored.set(this._getUpdatedProperties(content));
