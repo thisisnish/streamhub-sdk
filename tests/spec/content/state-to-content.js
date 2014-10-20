@@ -373,17 +373,28 @@ mockBootstrapData) {
                 }
                 inherits(CustomStateToContent, StateToContent);
                 CustomStateToContent.prototype._getUpdatedProperties = customGetUpdatedProperties;
-
                 var myStateToContent = new CustomStateToContent();
                 // Write the same thing twice, which will ensure
                 // getUpdatedProperties is used
                 myStateToContent.write(state);
-                myStateToContent.write(state);
+
+                // Make sure state2 and state2.content are distinct
+                // objects from initial state so we don't accidentally
+                // all mutate the same object in storage.
+                var state2 = Object.create(state);
+                state2.content = Object.create(state2.content);
+                //Increment a date to force an update
+                state2.content.updatedAt = 2366506462;
+                
+                myStateToContent.write(state2);
                 var content = myStateToContent.read();
                 var contentAgain = myStateToContent.read();
-                // The test state here has two attachments, so 1+2 Content
-                // objects will be created
-                expect(customGetUpdatedProperties.callCount).toBe(1);
+                waitsFor(function () {
+                    return customGetUpdatedProperties.callCount > 0;
+                });
+                runs(function () {
+                    expect(customGetUpdatedProperties.callCount).toBe(1);
+                });
             });
         });
     });
