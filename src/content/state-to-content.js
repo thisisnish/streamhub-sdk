@@ -105,7 +105,6 @@ Storage, debug, Transform, inherits) {
                     // This could be a delete state, so only update
                     // properties that are actually set
                     stored.set(this._getUpdatedProperties(content));
-                    stored.isEdit = true;
                 }
                 // Use the stored object, now that its properties have been
                 // updated
