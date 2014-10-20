@@ -106,6 +106,14 @@ Storage, debug, Transform, inherits) {
                     // properties that are actually set
                     stored.set(this._getUpdatedProperties(content));
                 }
+
+                //Store to prevent old data from rendering, but
+                //don't return a content to be rendered if this
+                //update shouldn't be visible
+                if (!isPublic || !content.body) {
+                    return;
+                }
+
                 // Use the stored object, now that its properties have been
                 // updated
                 content = stored;
