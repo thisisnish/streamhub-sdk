@@ -47,6 +47,10 @@ var ContentView = function (opts) {
         this.content.on("change:featured", function (newVal, oldVal) {
             this._handleFeaturedChange(newVal, oldVal);
         }.bind(this));
+
+        this.content.on("change:body", function(newVal, oldVal){
+            this._handleBodyChange();
+        }.bind(this));
         // TODO: Re-render on change.
         // Removed for now because re-rendering a ContentView and
         // AttachmentsListView can unbind handlers important for modal
@@ -154,6 +158,10 @@ ContentView.prototype._handleVisibilityChange = function(newVis, oldVis) {
 };
 
 ContentView.prototype._handleFeaturedChange = function (newVal, oldVal) {
+    this._bodyView.render();
+};
+
+ContentView.prototype._handleBodyChange = function (newVal, oldVal) {
     this._bodyView.render();
 };
 

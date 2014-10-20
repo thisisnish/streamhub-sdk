@@ -100,16 +100,30 @@ Storage, debug, Transform, inherits) {
             var stored = this._storage.get(content.id);
             if (stored) {
                 // If existing content, update properties on existing instance
-                if (isContent) {
+                // only if the update is newer than the current content or if it is a visibility update
+                if (isContent && ((content.updatedAt > stored.updatedAt) || !isValidDate(content.updatedAt))) {
                     // This could be a delete state, so only update
                     // properties that are actually set
                     stored.set(this._getUpdatedProperties(content));
                 }
+
+                //Store to prevent old data from rendering, but
+                //don't return a content to be rendered if this
+                //update shouldn't be visible
+                if (!isPublic || !content.body) {
+                    return;
+                }
+
                 // Use the stored object, now that its properties have been
                 // updated
                 content = stored;
                 // Don't handle attachment updating.
             } else {
+                //This is an update to something that is
+                //no longer in the collection. Skip it.
+                if (content.updatedBy) {
+                    return;
+                }
                 this._storage.set(content.id, content);
             }
         }
@@ -242,6 +256,10 @@ Storage, debug, Transform, inherits) {
         }
     }
 
+    function isValidDate (date) {
+        return !isNaN(date.getTime());
+    }
+
 
     /**
      * For a piece of Content, get the the properties and values that should
@@ -255,6 +273,7 @@ Storage, debug, Transform, inherits) {
         var updatedProperties = {
             visibility: content.visibility
         };
+
         if (content.attachments && content.attachments.length) {
             updatedProperties.attachments = content.attachments;
         }
@@ -264,10 +283,10 @@ Storage, debug, Transform, inherits) {
         if (content.author) {
             updatedProperties.author = content.author;
         }
-        if (content.createdAt) {
+        if (content.createdAt && isValidDate(content.createdAt)) {
             updatedProperties.createdAt = content.createdAt;
         }
-        if (content.updatedAt) {
+        if (content.updatedAt && isValidDate(content.createdAt)) {
             updatedProperties.updatedAt = content.updatedAt;
         }
         return updatedProperties;
