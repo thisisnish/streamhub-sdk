@@ -366,7 +366,6 @@ mockBootstrapData) {
             });
             it('can have custom ._getUpdatedProperties', function () {
                 var customGetUpdatedProperties = jasmine.createSpy().andCallFake(function () {
-                    console.log('in fake')
                     return StateToContent.prototype._getUpdatedProperties.apply(this, arguments);
                 });
                 function CustomStateToContent () {
@@ -379,10 +378,15 @@ mockBootstrapData) {
                 // getUpdatedProperties is used
                 myStateToContent.write(state);
 
+                // Make sure state2 and state2.content are distinct
+                // objects from initial state so we don't accidentally
+                // all mutate the same object in storage.
+                var state2 = Object.create(state);
+                state2.content = Object.create(state2.content);
                 //Increment a date to force an update
-                state.updatedAt = 2366506462 ;
+                state2.content.updatedAt = 2366506462;
                 
-                myStateToContent.write(state);
+                myStateToContent.write(state2);
                 var content = myStateToContent.read();
                 var contentAgain = myStateToContent.read();
                 waitsFor(function () {
@@ -390,9 +394,7 @@ mockBootstrapData) {
                 });
                 runs(function () {
                     expect(customGetUpdatedProperties.callCount).toBe(1);
-                })
-                // The test state here has two attachments, so 1+2 Content
-                // objects will be created
+                });
             });
         });
     });
