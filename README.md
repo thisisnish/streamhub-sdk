@@ -30,19 +30,23 @@ To render Content from a StreamHub Collection as a list
 
 ## Getting Started
 
-You can use streamhub-sdk either by including a built version from a CDN or using this repository locally.
+You can use streamhub-sdk either by including a built version from Livefyre.js or using this repository locally.
 
 ### CDN
 
 To include it in your page from the CDN, add a script tag to your HTML file.
 
-    <script src="http://cdn.livefyre.com/libs/sdk/v2.6.1/streamhub-sdk.min.js"></script>
+    <script src="http://cdn.livefyre.com/Livefyre.js"></script>
 
-You can also include the default stylesheet
+Then use `Livefyre.require` to load streamhub-sdk
 
-    <link rel="stylesheet" href="http://cdn.livefyre.com/libs/sdk/v2.6.1/streamhub-sdk.min.css" />
+```javascript
+Livefyre.require(['streamhub-sdk#2'], function (SDK) {
+    console.log('streamhub-sdk', SDK);
+});
+```
 
-See this in action in this jsfiddle: http://jsfiddle.net/K9qH3/25/
+See this in action in this example: http://jsbin.com/locufi/1/edit?html,console
 
 Note: Any styling customization of Tweets rendered by streamhub-sdk must be done in accordance with Twitter's [Display Requirements](https://dev.twitter.com/terms/display-requirements).
 
