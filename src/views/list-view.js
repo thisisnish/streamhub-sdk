@@ -74,14 +74,14 @@ var ListView = function(opts) {
     this.comparator = opts.comparator || this.comparator;
 
     // Errors when adding new content via streams are someone common, yet
-    // hard to track down. If there is no 'error.add' listener, log for the
-    // developer to know what's going on.
+    // hard to track down. If there is no 'error.add' listener (other than this
+    // one, log for the developer to know what's going on.
     this.on('error.add', function (err) {
-        if (EventEmitter.listenerCount(this) === 0) {
+        if (EventEmitter.listenerCount(this, 'error.add') <= 1) {
             logError("There was an unexpected error when adding to a ListView. Bind a listener to the error.add event to handle this yourself.", err);
         }
-        if (err && err.name === 'ListViewInsertError' && typeof this._onListViewInsertError === 'function') {
-            this._onListViewInsertError(err);
+        if (err && typeof this.catchListViewAddError === 'function') {
+            this.catchListViewAddError(err);
         }
     }.bind(this))
 
@@ -395,8 +395,8 @@ ListView.prototype._insert = function (view, forcedIndex) {
  * Override this if you do not want the defaults.
  * @protected
  */
-ListView.prototype._onListViewInsertError = function (err) {
-    var badView = err.view;
+ListView.prototype.catchListViewAddError = function (err) {
+    var badView = err && err.view;
     if ( ! badView) {
         return;
     }

@@ -129,8 +129,7 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
 ContentListView.prototype._insert = function (contentView, forcedIndex) {
     var newContentViewIndex,
         $previousEl,
-        $wrappedEl,
-        _insertArgs = arguments;
+        $wrappedEl;
 
     newContentViewIndex = forcedIndex || this.views.indexOf(contentView);
 

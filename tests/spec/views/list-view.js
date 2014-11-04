@@ -140,7 +140,7 @@ function ($, ListView, View) {
             });
             it('fires "error.add" event if you .write() a view that throws when added to document', function () {
                 var listView = new ListView({ el: sandboxEl });
-                var defaultListViewInsertErrorHandler = spyOn(listView, '_onListViewInsertError').andCallThrough();
+                var defaultListViewAddErrorHandler = spyOn(listView, 'catchListViewAddError').andCallThrough();
 
                 var script = document.createElement('script');
                 script.setAttribute('type', 'text/javascript');
@@ -168,8 +168,8 @@ function ($, ListView, View) {
                 runs(function () {
                     expect(onErrorAddSpy.callCount).toBe(1);
                     // This was called
-                    expect(defaultListViewInsertErrorHandler.callCount).toBe(1);
-                    expect(defaultListViewInsertErrorHandler.mostRecentCall.args[0].view).toBe(badSubView);
+                    expect(defaultListViewAddErrorHandler.callCount).toBe(1);
+                    expect(defaultListViewAddErrorHandler.mostRecentCall.args[0].view).toBe(badSubView);
                     // Which removed the offending view
                     expect(listView.views.length).toBe(0);
                 })
