@@ -129,7 +129,8 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
 ContentListView.prototype._insert = function (contentView, forcedIndex) {
     var newContentViewIndex,
         $previousEl,
-        $wrappedEl;
+        $wrappedEl,
+        _insertArgs = arguments;
 
     newContentViewIndex = forcedIndex || this.views.indexOf(contentView);
 
@@ -141,10 +142,10 @@ ContentListView.prototype._insert = function (contentView, forcedIndex) {
         contentView.$el.wrap($containerEl);
     }
     $wrappedEl = contentView.$el.parent();
-
     if (newContentViewIndex === 0) {
         // Beginning!
         $wrappedEl.prependTo(this.$listEl);
+
         $wrappedEl.css('margin-top', (-1*$wrappedEl.height())+'px');
 
         // Wait for the element to be rendered, before removing class which 
@@ -159,13 +160,14 @@ ContentListView.prototype._insert = function (contentView, forcedIndex) {
         if (this._animate) {
             $wrappedEl.addClass(this.hiddenClassName);
         }
-        $wrappedEl.insertAfter($previousEl.parent('.'+this.contentContainerClassName));
 
         // Wait for the element to be rendered, before remvoing class which
         // transitions the opacity from 0 to 1
         setTimeout($.proxy(function () {
             $wrappedEl.removeClass(this.hiddenClassName);
         }, this), 0.1);
+
+        $wrappedEl.insertAfter($previousEl.parent('.'+this.contentContainerClassName));
     }
 };
 

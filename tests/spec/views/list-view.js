@@ -128,5 +128,53 @@ function ($, ListView, View) {
                 });
             });
         });
+        describe('when in a document', function () {
+            var sandboxEl;
+            beforeEach(function () {
+                sandboxEl = document.createElement('div');
+                sandboxEl.id = 'listViewSandbox';
+                document.body.appendChild(sandboxEl);
+            })
+            afterEach(function () {
+                document.body.removeChild(sandboxEl);
+            });
+            it('fires "error.add" event if you .write() a view that throws when added to document', function () {
+                var listView = new ListView({ el: sandboxEl });
+                var defaultListViewInsertErrorHandler = spyOn(listView, '_onListViewInsertError').andCallThrough();
+
+                var script = document.createElement('script');
+                script.setAttribute('type', 'text/javascript');
+                var badJs = "throw new Error('Throwing on purpose from a test');";
+                script.appendChild(document.createTextNode(badJs));
+                var divWithScript = document.createElement('div');
+                divWithScript.appendChild(script);
+
+                var badSubView = new View();
+                badSubView.render = function () {}
+                badSubView.setElement(divWithScript);
+
+                var onErrorAddSpy = jasmine.createSpy();
+                listView.on('error.add', onErrorAddSpy);
+
+                var written = false;
+                listView.write(badSubView, function () {
+                    written = true;
+                });
+
+                waitsFor(function () {
+                    return written;
+                })
+
+                runs(function () {
+                    expect(onErrorAddSpy.callCount).toBe(1);
+                    // This was called
+                    expect(defaultListViewInsertErrorHandler.callCount).toBe(1);
+                    expect(defaultListViewInsertErrorHandler.mostRecentCall.args[0].view).toBe(badSubView);
+                    // Which removed the offending view
+                    expect(listView.views.length).toBe(0);
+                })
+
+            })
+        });
     });
 });

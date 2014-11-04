@@ -1,5 +1,6 @@
 var ShowMoreButton = require('streamhub-sdk/views/show-more-button');
 var More = require('streamhub-sdk/views/streams/more');
+var Writable = require('stream/writable');
 
 /**
  * Mixin to a ListView to give it 'show more' behavior.
@@ -56,12 +57,21 @@ var HasMoreMixin = function (listView, opts) {
      * @private
      */
     function pipeMore() {
-        listView.more.on('readable', function () {
-            var content;
-            while (content = listView.more.read()) {
-                listView.add(content);
-            }
+        var writableAdder = new Writable({
+            objectMode: true,
+            highWaterMark: 0,
+            lowWaterMark: 0
         });
+        writableAdder._write = function (chunkToAdd, done) {
+            try {
+                listView.add(chunkToAdd);
+            } catch (err) {
+                listView.emit('error.add', err);
+            }
+            return done();
+        };
+
+        listView.more.pipe(writableAdder);
     };
 
     /**

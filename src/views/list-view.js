@@ -1,6 +1,7 @@
 var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var debug = require('streamhub-sdk/debug');
+var EventEmitter = require('event-emitter');
 var View = require('streamhub-sdk/view');
 var Writable = require('stream/writable');
 var ListViewTemplate = require('hgn!streamhub-sdk/views/templates/list-view');
@@ -9,6 +10,25 @@ var hasMore = require('streamhub-sdk/views/mixins/more-mixin');
 'use strict';
 
 var log = debug('streamhub-sdk/views/list-view');
+
+var logError = (function () {
+    if (typeof console === 'undefined') {
+        return log;
+    }
+    if (typeof console.error === 'function') {
+        return function () {
+            var args = [].slice.call(arguments);
+            return console.error.apply(console, args);            
+        };
+    }
+    if (typeof console.log === 'function') {
+        return function () {
+            var args = [].slice.call(arguments);
+            return console.log.apply(console, args);            
+        };
+    }
+    return log;
+}());
 
 /**
  * A simple View that displays Content in a list (`<ul>` by default).
@@ -19,6 +39,10 @@ var log = debug('streamhub-sdk/views/list-view');
  * @param [opts.autoRender] Whether to call #render in the constructor
  * @param [opts.template] {function<string>} A function that returns the HTML
  *   that should be initially rendered
+ *
+ * @fires ListView#error.add - If there is an error when asynchronously adding
+ *   new subviews
+ *
  * @exports streamhub-sdk/views/list-view
  * @constructor
  */
@@ -32,6 +56,7 @@ var ListView = function(opts) {
 
     View.call(this, opts);
     Writable.call(this, opts);
+
     hasMore(this, {
         more: opts.more,
         initial: opts.initial,
@@ -47,6 +72,18 @@ var ListView = function(opts) {
     });
 
     this.comparator = opts.comparator || this.comparator;
+
+    // Errors when adding new content via streams are someone common, yet
+    // hard to track down. If there is no 'error.add' listener, log for the
+    // developer to know what's going on.
+    this.on('error.add', function (err) {
+        if (EventEmitter.listenerCount(this) === 0) {
+            logError("There was an unexpected error when adding to a ListView. Bind a listener to the error.add event to handle this yourself.", err);
+        }
+        if (err && err.name === 'ListViewInsertError' && typeof this._onListViewInsertError === 'function') {
+            this._onListViewInsertError(err);
+        }
+    }.bind(this))
 
     //TODO(ryanc): This is out of convention to call #render
     // in the constructor. However it is convenient/intuitive
@@ -151,7 +188,11 @@ ListView.prototype.render = function () {
  *     that _write will be called again with more data
  */
 ListView.prototype._write = function (view, requestMore) {
-    this.add(view);
+    try {
+        this.add(view);        
+    } catch (err) {
+        this.emit('error.add', err);
+    }
     requestMore();
 };
 
@@ -242,6 +283,7 @@ ListView.prototype._binarySearch = function(newView, array) {
 ListView.prototype.add = function(newView, forcedIndex) {
     log("add", newView, forcedIndex);
     var index;
+    var self = this;
 
     if ( ! newView) {
         log("Called add with a falsy parameter, returning");
@@ -262,11 +304,36 @@ ListView.prototype.add = function(newView, forcedIndex) {
 
     newView.render();
     // Add to DOM
-    this._insert(newView, forcedIndex);
+    insertOrThrow(newView, forcedIndex);
     this.emit('added', newView);
     return newView;
-};
 
+    /**
+     * Try to call this._insert with the provided arguments.
+     * Catch any errors and rethrow as ListViewInsertError
+     */
+    function insertOrThrow() {
+        var insertArgs = [].slice.call(arguments);
+        try {
+            return self._insert.apply(self, insertArgs);
+        } catch (e) {
+            throw createInsertionError(e);
+        }
+        /**
+         * If there is an error adding a new subview to the list, we
+         * should throw a standard ListViewInsertError
+         */
+        function createInsertionError(innerError) {
+            var insertionError = new Error();
+            insertionError.name = 'ListViewInsertError';
+            insertionError.message = 'Error inserting new subview in ListView#el';
+            insertionError.innerError = innerError;
+            insertionError.arguments = insertArgs;
+            insertionError.view = newView;
+            return insertionError;
+        }
+    }
+};
 
 /**
  * Remove a View from this ListView
@@ -322,6 +389,24 @@ ListView.prototype._insert = function (view, forcedIndex) {
         view.$el.insertAfter($previousEl);
     }
 };
+
+/**
+ * Default error handler for ListViewInsertErrors.
+ * Override this if you do not want the defaults.
+ * @protected
+ */
+ListView.prototype._onListViewInsertError = function (err) {
+    var badView = err.view;
+    if ( ! badView) {
+        return;
+    }
+    // Try to remove the bad view
+    try {
+        this.remove(badView);
+    } catch (e) {
+        log('Error in default ListViewInsertError, which tries to remove the erroring subview', e);
+    }
+}
 
 /**
  * Detaches list item view elements.
