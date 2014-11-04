@@ -73,7 +73,7 @@ var ListView = function(opts) {
 
     this.comparator = opts.comparator || this.comparator;
 
-    // Errors when adding new content via streams are someone common, yet
+    // Errors when adding new content via streams are somewhat common, yet
     // hard to track down. If there is no 'error.add' listener (other than this
     // one, log for the developer to know what's going on.
     this.on('error.add', function (err) {
