@@ -330,6 +330,7 @@ ListView.prototype.add = function(newView, forcedIndex) {
             insertionError.innerError = innerError;
             insertionError.arguments = insertArgs;
             insertionError.view = newView;
+            insertionError.listView = self;
             return insertionError;
         }
     }
