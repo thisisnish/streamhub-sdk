@@ -1,6 +1,8 @@
-define(function () {
-    'use strict';
+var SDK = require('streamhub-sdk');
 
-    describe('A Streamhub SDK', function () {
-    });
+describe('streamhub-sdk', function () {
+  it('exposes things on its main export namespace obj', function () {
+    expect(typeof SDK.LivefyreHttpClient).toBe('function');
+    expect(typeof SDK.StateToContent).toBe('function');
+  });
 });

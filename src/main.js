@@ -1,18 +1,13 @@
-define([
-    'streamhub-sdk/jquery',
-    'text!streamhub-sdk/version.txt',
-    'streamhub-sdk/collection',
-    'streamhub-sdk/content',
-    'streamhub-sdk/content/views/content-list-view',
-    'streamhub-sdk/views/list-view'],
-function($, version, Collection, Content, ContentListView, ListView) {
-    'use strict';
+var $ = require('streamhub-sdk/jquery');
 
-    return {
-        version: $.trim(version),
-        Collection: Collection,
-        Content: Content,
-        ContentListView: ContentListView,
-        ListView: ListView
-    };
-});
+module.exports = {
+    version: $.trim(require('text!streamhub-sdk/version.txt')),
+    Collection: require('streamhub-sdk/collection'),
+    Content: require('streamhub-sdk/content'),
+    ContentView: require('streamhub-sdk/content/views/content-view'),
+    ContentViewFactory: require('streamhub-sdk/content/content-view-factory'),
+    ContentListView: require('streamhub-sdk/content/views/content-list-view'),
+    ListView: require('streamhub-sdk/views/list-view'),
+    LivefyreHttpClient: require('streamhub-sdk/collection/clients/http-client'),
+    StateToContent: require('streamhub-sdk/content/state-to-content')
+};
