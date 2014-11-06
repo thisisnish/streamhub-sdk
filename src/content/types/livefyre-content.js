@@ -281,7 +281,8 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         "instagram",   // 19
         "twitter",     // 20
         "facebook",     // 21
-        "url"     // 22
+        "url",     // 22
+        "facebook" // 23 - Facebook public feed
     ];
 
     return LivefyreContent;
