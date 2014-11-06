@@ -394,6 +394,9 @@ ListView.prototype._insert = function (view, forcedIndex) {
 /**
  * Default error handler for ListViewInsertErrors.
  * Override this if you do not want the defaults.
+ * @param err {Error} And error that happened when asynchronously calling .add
+ *   If truthy, err.view should be the offending view that was .added but threw.
+ *   err.innerError may be another error that caused this one.
  * @protected
  */
 ListView.prototype.catchListViewAddError = function (err) {
