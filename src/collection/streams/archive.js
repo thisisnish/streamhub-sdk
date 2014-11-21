@@ -258,20 +258,39 @@ inherits) {
     CollectionArchive.prototype._sortContents = function (contentList) {
         var contentListComparator;
         var sortedContentList;
+        var ascendingComparator = function (contentA, contentB) {
+            return getContentSortDate(contentA) - getContentSortDate(contentB);
+        };
         if (this._comparator === CollectionArchive.comparators.CREATED_AT_ASCENDING) {
-            contentListComparator = function (contentA, contentB) {
-                return (contentA.sortOrder || contentA.createdAt) - (contentB.sortOrder || contentB.createdAt);
-            };
+            contentListComparator = ascendingComparator
         } else {
             // Must be descending. That's the default.
             // Change this if there are ever 3 comparator options
-            contentListComparator = function (contentA, contentB) {
-                return (contentB.sortOrder || contentB.createdAt) - (contentA.sortOrder || contentA.createdAt);
-            };
+            contentListComparator = function () {
+                return -1 * ascendingComparator.apply(this, arguments);
+            }
         }
-        sortedContentList = contentList.sort(contentListComparator);
+        sortedContentList = contentList.slice().sort(contentListComparator);
         return sortedContentList;
     };
+
+    /**
+     * Given a Content, get a date object to use when sorting the most common
+     * way, prioritizing: .content.sortOrder, .content.createdAt
+     */
+    function getContentSortDate(content) {
+        // if sortOrder on content, cast to date
+        var sortOrder = content.sortOrder;
+        if (typeof sortOrder === 'number') {
+            return new Date(sortOrder * 1000);
+        }
+        // default to content.createdAt or now
+        if (content && content.createdAt) {
+            return content.createdAt;
+        }
+        // if some random content, use now
+        return new Date();
+    }
 
     /**
      * Create a StateToContent Transform that will have states written in,
