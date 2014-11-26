@@ -50,7 +50,10 @@ LivefyreContentClient.prototype.getContent = function(opts, callback) {
         content_id: opts.contentId,
         depth_only: opts.depthOnly || false
     };
-    opts.lftoken && (getData.lftoken = opts.lftoken);
+    if (opts.lftoken) {
+        getData.lftoken = opts.lftoken;
+        getData.show_hidden_content = true;
+    }
 
     var request = this._request({
         url: url,
