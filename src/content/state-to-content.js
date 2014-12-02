@@ -316,7 +316,7 @@ Storage, debug, Transform, inherits) {
         var parentKey = getContentStorageKey({
             id: parentId,
             collection: reply.collection
-        })
+        });
         var parent = this._storage.get(parentKey);
         if (parent) {
             log('adding reply', arguments);
