@@ -26,6 +26,7 @@ StateToContent, Annotator, debug) {
      *     can request StreamHub's Stream web service
      * @param [opts.replies=false] {boolean} Whether to read out reply Content
      * @param [opts.createStateToContent] {function} Creates a custem Content adapter
+     * @param [opts.maxErrors] {integer} Limit of exponential backoff
      */
     var CollectionUpdater = function (opts) {
         opts = opts || {};
@@ -33,8 +34,14 @@ StateToContent, Annotator, debug) {
         this._streamClient = opts.streamClient || new StreamClient();
         this._request = null;
         this._replies = opts.replies || false;
-        // keep track of up to 100 maxEventIds I've seen, so that if a
-        // response comes back with a duplicate, we dont re-request
+
+        // fail for up to ~4 minutes before announcing an a fatal streaming error:
+        //   integral 2*x*x dx x=0..maxErrors
+        // http://www.wolframalpha.com/input/?i=integral+of+2*%28x*x%29+dx%2C+x%3D0..7
+        this._maxErrors = opts.maxErrors || 7;
+        this._errors = 0;
+
+        // for cycle detection
         this._seenEventIds = [];
         if (opts.createStateToContent) {
             this._createStateToContent = opts.createStateToContent;
@@ -57,7 +64,7 @@ StateToContent, Annotator, debug) {
         var self = this;
         log('_read', 'Buffer length is ' + this._readableState.buffer.length);
 
-        if ( ! this._latestEvent || ! this._collection.id) {
+        if ( ! this._streamPosition || ! this._collection.id) {
             // Get the latest event and/or collection ID by initing
             // the collection from bootstrap
             return this._collection.initFromBootstrap(function (err, initData) {
@@ -76,7 +83,7 @@ StateToContent, Annotator, debug) {
                 if (latestEvent === undefined) {
                     throw new Error("Couldn't get latestEvent after initFromBootstrap");
                 }
-                self._setLatestEvent(latestEvent);
+                self._updateStreamPosition(latestEvent);
                 self._stream();
             });
         }
@@ -101,8 +108,15 @@ StateToContent, Annotator, debug) {
                 return;
             }
             if (err) {
-                return self.emit('error', err);
+                self._errors++;
+                if (self._errors > self._maxErrors) {
+                    return self.emit('error', err);
+                }
+                setTimeout(pollAgain, 2000 * (self._errors * self._errors));
+                return;
             }
+            // reset
+            self._errors = 0;
             if (data.timeout) {
                 // Timed out on the long poll. This just means there
                 // was no real-time data. So we should keep streaming
@@ -116,8 +130,8 @@ StateToContent, Annotator, debug) {
             // If nextEventId is one we've seen before, dont use it!
             // increment the highest of what we've seen by one instead
 
-            // Update _latestEvent so we only get new data
-            self._setLatestEvent(data.maxEventId);
+            // Update _streamPosition so we only get new data
+            self._updateStreamPosition(data.maxEventId);
 
             if (contents.length) {
                 self.push.apply(self, contents);
@@ -141,20 +155,30 @@ StateToContent, Annotator, debug) {
     };
 
     /**
-     * Record the latest eventId that we've seen, so it can be provided
-     * on subsequent long-polling requests.
-     * Also maintain a buffer of historically seen eventIds so we can detect
-     * duplicates which may indicate a loop in the stream service.
+     * Maintains the stream cursor, with logic to ensure cycles are broken.
      */
-    CollectionUpdater.prototype._setLatestEvent = function (eventId) {
+    CollectionUpdater.prototype._updateStreamPosition = function (eventId) {
         var seenEventIds = this._seenEventIds;
+        var seenBefore = seenEventIds.indexOf(eventId) !== -1;
+
         // add to seenEventIds
         seenEventIds.push(eventId);
-        // but cap at 100
-        if (seenEventIds.length > 100) {
+
+        // we've detected a cycle which can occur under some
+        // rare data conditions. This will break the cycle.
+        if (seenBefore) {
+            seenEventIds.sort();
+            // find the oldest event, and move past it
+            // this will break the cycle in the cached data.
+            eventId = seenEventIds[seenEventIds.length] + 1;
+        }
+
+        // cap at 100
+        while (seenEventIds.length > 100) {
             seenEventIds.shift();
         }
-        this._latestEvent = eventId;
+
+        this._streamPosition = eventId;
     };
 
     /**
@@ -226,7 +250,7 @@ StateToContent, Annotator, debug) {
             collectionId: this._collection.id,
             network: this._collection.network,
             environment: this._collection.environment,
-            commentId: this._latestEvent
+            commentId: this._streamPosition
         };
     };
 

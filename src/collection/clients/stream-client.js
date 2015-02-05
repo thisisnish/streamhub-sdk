@@ -40,7 +40,7 @@ function(LivefyreHttpClient, inherits) {
             opts.collectionId,
             "/",
             opts.commentId || "0",
-            "/"
+            "/?backend=js-sdk"
         ].join("");
 
         var request = this._request({
