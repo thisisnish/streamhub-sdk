@@ -81,10 +81,18 @@ function ($, ContentListView, Content, ContentView) {
                 var content1 = new Content('1', '111111'),
                     content2 = new Content('2', '222222'),
                     content3 = new Content('3', '333333');
-                listView.add(content1);
-                listView.add(content2);
-                listView.add(content3);
-                expect(listView.views.length).toBe(3);
+                var cv1 = listView.add(content1);
+                var cv2 = listView.add(content2);
+                var cv3 = listView.add(content3);
+                /** -@bengo 02/17/15
+                this used to be:
+                // expect(listView.views.length).toBe(3);
+                However, that's not a valid assertion after the .hasVisibleVacancy
+                changes. Because when one is added above initial, the last one
+                is also removed. So the following assertion is more specific.
+                */
+                expect(listView.getContentView(content3)).toBe(cv3);
+                expect(listView.getContentView(content1)).toBe(null);
             });
             it(".writing one more than initial results in only initial contentViews", function () {
                 var origInitial = initial;
@@ -100,19 +108,54 @@ function ($, ContentListView, Content, ContentView) {
                 expect(listView.more.getGoal()).toBe(numToAdd);
             });
             describe("and a ton of Content is written to .more", function () {
-                var toAdd,
-                    remaining;
-                beforeEach(function () {
-                    toAdd = 50;
-                    remaining = toAdd;
+                it("only results in initial # of contentViews", function () {
+                    var toAdd = 50;
+                    var remaining = toAdd;
+                    var written = 0;
+
                     spyOn(listView, '_write').andCallThrough();
                     while (remaining--) {
-                        listView.more.write(new Content(remaining.toString(), remaining.toString()));
+                        console.log('writing', remaining, written);
+                        listView.more.write(
+                            new Content(remaining.toString(), remaining.toString()),
+                            function () {
+                                written++;
+                            });
                     }
-                });
-                it("only results in initial # of contentViews", function () {
                     // ContentViews may not be created until nextTick
-                    waits(1);
+                    waitsFor(function () {
+                        // enough written things have been fully
+                        // written (through more and into view)
+                        return written >= initial;
+                    })
+                    runs(function () {
+                        expect(listView.views.length).toBe(initial);
+                    });
+                });
+                it("when opts.initial > 100, only results in initial # of contentViews", function () {
+                    var initial = 200;
+                    var listView = new ContentListView({
+                        initial: initial
+                    });
+                    var toAdd = 300;
+                    var remaining = toAdd;
+                    var written = 0;
+
+                    spyOn(listView, '_write').andCallThrough();
+                    while (remaining--) {
+                        listView.more.write(
+                            new Content(remaining.toString(), remaining.toString()),
+                            function () {
+                                console.log('written cb', written);
+                                written++;
+                            });
+                    }
+                    // ContentViews may not be created until nextTick
+                    waitsFor(function () {
+                        // enough written things have been fully
+                        // written (through more and into view)
+                        return written >= initial;
+                    })
                     runs(function () {
                         expect(listView.views.length).toBe(initial);
                     });
