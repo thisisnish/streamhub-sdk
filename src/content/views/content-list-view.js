@@ -40,7 +40,7 @@ var ContentListView = function (opts) {
     }
 
     this._stash = opts.stash || this.more;
-    this._maxVisibleItems = opts.maxVisibleItems || 50;
+    this._maxVisibleItems = maxVisibleItemsFromOpts(opts);
     this._bound = true;
     this._animate = opts.animate === undefined ? true : opts.animate;
     this._liker = opts.liker;
@@ -49,6 +49,19 @@ var ContentListView = function (opts) {
 };
 
 inherits(ContentListView, ListView);
+
+// get initial value for this._maxVisibleItems
+// can be provided expliticly, or defaults to 'initial' || DEFAULT
+function maxVisibleItemsFromOpts(opts) {
+    var DEFAULT = 50;
+    if ('maxVisibleItems' in opts) {
+        return opts.maxVisibleItems;
+    } else if ('initial' in opts) {
+        return opts.initial
+    } else {
+        return DEFAULT
+    }
+};
 
 ContentListView.prototype.insertingClassName = 'hub-wall-is-inserting';
 ContentListView.prototype.hiddenClassName = 'hub-content-container-hidden';
