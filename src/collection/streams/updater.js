@@ -64,7 +64,7 @@ StateToContent, Annotator, debug) {
         var self = this;
         log('_read', 'Buffer length is ' + this._readableState.buffer.length);
 
-        if ( ! this._streamPosition || ! this._collection.id) {
+        if ( ! this._latestEvent || ! this._collection.id) {
             // Get the latest event and/or collection ID by initing
             // the collection from bootstrap
             return this._collection.initFromBootstrap(function (err, initData) {
@@ -130,7 +130,7 @@ StateToContent, Annotator, debug) {
             // If nextEventId is one we've seen before, dont use it!
             // increment the highest of what we've seen by one instead
 
-            // Update _streamPosition so we only get new data
+            // Update _latestEvent so we only get new data
             self._updateStreamPosition(data.maxEventId);
 
             if (contents.length) {
@@ -178,7 +178,7 @@ StateToContent, Annotator, debug) {
             seenEventIds.shift();
         }
 
-        this._streamPosition = eventId;
+        this._latestEvent = eventId;
     };
 
     /**
@@ -250,7 +250,7 @@ StateToContent, Annotator, debug) {
             collectionId: this._collection.id,
             network: this._collection.network,
             environment: this._collection.environment,
-            commentId: this._streamPosition
+            commentId: this._latestEvent
         };
     };
 
