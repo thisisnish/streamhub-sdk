@@ -112,7 +112,7 @@ StateToContent, Annotator, debug) {
                 if (self._errors > self._maxErrors) {
                     return self.emit('error', err);
                 }
-                setTimeout(pollAgain, 2000 * (self._errors * self._errors));
+                setTimeout(pollAgain, self._getTimeoutAfterError());
                 return;
             }
             // reset
@@ -131,7 +131,7 @@ StateToContent, Annotator, debug) {
             // increment the highest of what we've seen by one instead
 
             // Update _latestEvent so we only get new data
-            self._updateStreamPosition(data.maxEventId);
+            self._updateStreamPosition(nextEventId);
 
             if (contents.length) {
                 self.push.apply(self, contents);
@@ -155,23 +155,33 @@ StateToContent, Annotator, debug) {
     };
 
     /**
+     * Get the number of milliseconds before trying another stream request
+     * after an error
+     */
+    CollectionUpdater.prototype._getTimeoutAfterError = function () {
+        var numErrorsSinceSuccess = this._errors;
+        var timeout = 2000 * Math.pow(numErrorsSinceSuccess, 2);
+        return timeout;
+    };
+
+    /**
      * Maintains the stream cursor, with logic to ensure cycles are broken.
      */
     CollectionUpdater.prototype._updateStreamPosition = function (eventId) {
         var seenEventIds = this._seenEventIds;
         var seenBefore = seenEventIds.indexOf(eventId) !== -1;
 
-        // add to seenEventIds
-        seenEventIds.push(eventId);
-
         // we've detected a cycle which can occur under some
         // rare data conditions. This will break the cycle.
         if (seenBefore) {
-            seenEventIds.sort();
-            // find the oldest event, and move past it
+            seenEventIds.sort(ascendingComparator);
+            // find the newest event, and move past it
             // this will break the cycle in the cached data.
-            eventId = seenEventIds[seenEventIds.length] + 1;
+            eventId = seenEventIds[seenEventIds.length - 1] + 1;
         }
+
+        // add to seenEventIds
+        seenEventIds.push(eventId);
 
         // cap at 100
         while (seenEventIds.length > 100) {
@@ -180,6 +190,10 @@ StateToContent, Annotator, debug) {
 
         this._latestEvent = eventId;
     };
+
+    function ascendingComparator(a,b) {
+        return a - b;
+    }
 
     /**
      * Pause the Updater
