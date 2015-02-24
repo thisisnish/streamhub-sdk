@@ -174,26 +174,21 @@ StateToContent, Annotator, debug) {
         // we've detected a cycle which can occur under some
         // rare data conditions. This will break the cycle.
         if (seenBefore) {
-            seenEventIds.sort(ascendingComparator);
+            seenEventIds.sort();
             // find the newest event, and move past it
             // this will break the cycle in the cached data.
             eventId = seenEventIds[seenEventIds.length - 1] + 1;
         }
-
-        // add to seenEventIds
-        seenEventIds.push(eventId);
 
         // cap at 100
         while (seenEventIds.length > 100) {
             seenEventIds.shift();
         }
 
+        seenEventIds.push(eventId);
+
         this._latestEvent = eventId;
     };
-
-    function ascendingComparator(a,b) {
-        return a - b;
-    }
 
     /**
      * Pause the Updater
