@@ -5,6 +5,7 @@ define([
     'use strict';
 
     function LivefyreYoutubeContent(json) {
+        json.content = Object.create(json.content);
         json.content.generator = {
             url: "https://www.youtube.com/",
             displayName: "YouTube",

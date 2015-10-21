@@ -226,6 +226,8 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
                 expect(youtubeContent.attachments.length).toBe(1);
                 expect(youtubeContent.body).toBe('<p>Hallmark photo stylist, Erin Marinez teaches her neighbor how to turn Crayola Air-Dry Clay into marbled beads and make a cute and crafty necklace.</p>');
                 expect(youtubeContent.title).toBe('Craft for Kids: Make Crayola® Clay Beads Necklace');
+                expect(youtubeContent.urlContentTypeId).toBe('www.youtube.com');
+                expect(youtubeContent.viaText).toBe('YouTube');
             });
 
             it('transforms youtube RSS content states into streamhub-sdk-content/types/livefyre-youtube-content', function () {
@@ -237,6 +239,8 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
                 expect(youtubeContent.attachments.length).toBe(1);
                 expect(youtubeContent.body).toBe('<p>something</p>');
                 expect(youtubeContent.title).toBe('Shoebox: Dictionary Day');
+                expect(youtubeContent.urlContentTypeId).toBe('www.youtube.com');
+                expect(youtubeContent.viaText).toBe('YouTube');
             });
 
             it("can transform a state with an opine childContent", function () {
