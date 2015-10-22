@@ -7,13 +7,14 @@ define([
     'streamhub-sdk/content/types/livefyre-opine',
     'streamhub-sdk/content/types/livefyre-instagram-content',
     'streamhub-sdk/content/types/livefyre-url-content',
+    'streamhub-sdk/content/types/livefyre-youtube-content',
     'streamhub-sdk/storage',
     'streamhub-sdk/debug',
     'stream/transform',
     'inherits'
 ], function (LivefyreContent, LivefyreTwitterContent, LivefyreFacebookContent,
 Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
-Storage, debug, Transform, inherits) {
+LivefyreYoutubeContent, Storage, debug, Transform, inherits) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/state-to-content');
@@ -237,6 +238,9 @@ Storage, debug, Transform, inherits) {
             if (isInstagramState(state)) {
                 ContentType = LivefyreInstagramContent;
             }
+            if (isYoutubeState(state)) {
+                ContentType = LivefyreYoutubeContent;
+            }
             return new ContentType(state);
         } else if (sourceName === 'livefyre') {
             return new LivefyreContent(state);
@@ -248,13 +252,20 @@ Storage, debug, Transform, inherits) {
     StateToContent._createContent = StateToContent.prototype._createContent;
 
 
-    function isInstagramState (state) {
-        var pattern = /\/\/instagram\.com/i;
+    function isProviderState (state, pattern) {
         try {
-            return state.content.feedEntry.channelId.match(pattern);
+            return pattern.test(state.content.feedEntry.channelId);
         } catch (err) {
             return false;
         }
+    }
+
+    function isInstagramState (state) {
+        return isProviderState(state, /\/\/instagram\.com/i);
+    }
+
+    function isYoutubeState (state) {
+        return isProviderState(state, /\/\/(www\.)?youtube\.com/i);
     }
 
     function isValidDate (date) {
