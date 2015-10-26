@@ -64,7 +64,7 @@ function ($, LivefyreWriteClient) {
                 "lftoken": "my token"
             };
             writeClient.postContent(opts, callback);
-    
+
             waitsFor(function() {
                 return callback.callCount > 0;
             });
@@ -78,6 +78,27 @@ function ($, LivefyreWriteClient) {
                 expect(callback.mostRecentCall.args[0]).toBeNull();
                 expect(callback.mostRecentCall.args[1]).toBeDefined();
                 expect(callback.mostRecentCall.args[1]).toBe(mockData);
+            });
+        });
+
+        it('should post a title', function () {
+            var callback = jasmine.createSpy();
+            var opts = {
+                "network": "labs-t402.fyre.co",
+                "collectionId": "33129653",
+                "body": "oh <strong>hi</strong> there",
+                "lftoken": "my token",
+                "title": "hai"
+            };
+
+            writeClient.postContent(opts, callback);
+            waitsFor(function() {
+                return callback.callCount > 0;
+            });
+            runs(function() {
+                var ajaxArgs = writeClient._request.mostRecentCall.args[0];
+                expect(ajaxArgs.url).toBe("http://quill.labs-t402.fyre.co/api/v3.0/collection/33129653/post/");
+                expect(ajaxArgs.data.title).toBe("hai");
             });
         });
 

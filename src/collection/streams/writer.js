@@ -66,6 +66,10 @@ function (Writable, LivefyreWriteClient, Auth, inherits, debug) {
             }
         }
 
+        if (content.title) {
+            postParams.title = content.title;
+        }
+
         if (content.parentId) {
             postParams.parent_id = content.parentId;
         }
