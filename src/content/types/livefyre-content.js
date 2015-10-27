@@ -34,6 +34,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
 
             this.set({ id: json.content.id || json.id });
             this.author = json.author;
+            this.title = json.content.title;
             this.createdAt = new Date(1000 * json.content.createdAt);
             this.updatedAt = new Date(1000 * json.content.updatedAt);
             this.lastVisibility = Content.enums.visibility[json.lastVis];
@@ -165,7 +166,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         this.opines.splice(indexToRemove, 1);
         this.emit('removeOpine', obj);
     };
-    
+
     /**
      * Sets a reference to the provided Content as its parent Content.
      * Can only be set once and if the id matches.
@@ -181,7 +182,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             this._parent = parent;
         }
     };
-    
+
     /**
      * Returns a reference to this._parent if it exists, null if it doesn't, and
      * undefined if this object doesn't even have a parentId.
