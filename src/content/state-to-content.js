@@ -292,6 +292,9 @@ LivefyreYoutubeContent, Storage, debug, Transform, inherits) {
         if (content.body) {
             updatedProperties.body = content.body;
         }
+        if (content.title) {
+            updatedProperties.title = content.title;
+        }
         if (content.author) {
             updatedProperties.author = content.author;
         }

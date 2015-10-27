@@ -90,7 +90,7 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
                           "parentId": "",
                           "bodyHtml": "<a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:1654035270\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/Spivid\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">Spivid<\/span><\/a> i'm not wasting money on an ugly game and i haven't played xbox in 3 months",
                           "annotations": {
-                            
+
                           },
                           "authorId": "1859538097@twitter.com",
                           "updatedAt": 1383774488,
@@ -106,7 +106,7 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
                         "1859538097@twitter.com": {
                             "displayName": "reflect",
                             "tags": [
-                              
+
                             ],
                             "profileUrl": "https:\/\/twitter.com\/#!\/eRaReflect",
                             "avatar": "http:\/\/pbs.twimg.com\/profile_images\/378800000644211494\/9cb6b3a9424d813fc6f424c69cf1944e_normal.png",
@@ -158,7 +158,7 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
             });
             it('uses author information passed on construction as opts.authors', function () {
                 var state = mockStreamData.states["tweet-312328006913904641@twitter.com"];
-                
+
                 stateToContent.write(state);
                 var content = stateToContent.read();
 
@@ -190,6 +190,14 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
                 stateToContent.write(mockThreadState);
                 var bootstrapContent = stateToContent.read();
                 expect(bootstrapContent.replies.length).toBe(32);
+            });
+
+            it('can transform a state with a title', function () {
+                var titleState = {"childContent":[],"vis":1,"content":{"parentId":"","bodyHtml":"<p>asdfe333</p>","title": "A Title","id":"21447893","authorId":"system@labs-t402.fyre.co","ancestorId":"","updatedAt":1372787639,"annotations":{"moderator":true,"procurementmeta":[{"networkId":"labs-t402.fyre.co","siteId":"303827","collectionRuleId":"10712944@fyre.io","collectionId":"10712944"}]},"createdAt":1372787639},"source":5,"type":0,"event":1372717639502487};
+                stateToContent.write(titleState);
+                var content = stateToContent.read();
+                expect(content).toBeTruthy();
+                expect(content.title).toBe('A Title');
             });
 
             it('transforms Facebook Public Feed states into LivefyreFacebookContent', function () {
@@ -304,7 +312,7 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
 
                     // ._write will be passed the state
                     expect(stateToContent._write).toHaveBeenCalledWith(mockThreadState, jasmine.any(Function));
-                    
+
                     // readable will fire
                     waitsFor(function () {
                         return onReadable.callCount;
@@ -421,7 +429,7 @@ LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
                 state2.content = Object.create(state2.content);
                 //Increment a date to force an update
                 state2.content.updatedAt = 2366506462;
-                
+
                 myStateToContent.write(state2);
                 var content = myStateToContent.read();
                 var contentAgain = myStateToContent.read();
