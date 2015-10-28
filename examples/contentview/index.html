@@ -43,6 +43,9 @@
         <h2>Livefyre Video Content</h2>
         <div id="c8"></div>
 
+        <h2>Livefyre Pending Video Content</h2>
+        <div id="c9"></div>
+
         <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
         <script src="/requirejs.conf.js" type="text/javascript"></script>
 
@@ -170,6 +173,29 @@
             c8v.setElement(document.getElementById('c8'));
             c8v.render();
 
+            var c9 = new LivefyreContent({
+                content: {
+                    bodyHtml: '<p>video pending</p>',
+                    title: 'video pending title',
+                    createdAt: 1359696267
+                },
+                author: {
+                    displayName: "Joe Smith",
+                    profileUrl: "http://www.google.com",
+                    avatar: "http://a0.twimg.com/profile_images/2190838404/me_normal.jpg",
+                    id: "16275037@twitter.com"
+                }
+            });
+            c9.attachments = [{
+                "version": "1.0",
+                "type": "video_promise",
+                 "url": "http://lf-test-video-output.s3.amazonaws.com/matt/test-1.mp4",
+                "provider_name": "Livefyre",
+                "provider_url": "http://www.livefyre.com"
+            }];
+            var c9v = contentViewFactory.createContentView(c9);
+            c9v.setElement(document.getElementById('c9'));
+            c9v.render();
         });
         </script>
     </body>
