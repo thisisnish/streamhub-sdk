@@ -18,7 +18,7 @@ var log = debug('streamhub-sdk/content/views/content-view');
  * and loading of images.
  *
  * @param opts {Object} The set of options to configure this view with.
- * @param opts.content {Content} The content object to use when rendering. 
+ * @param opts.content {Content} The content object to use when rendering.
  * @param opts.el {?HTMLElement} The element to render this object in.
  * @param opts.headerView {View}
  * @param opts.bodyView {View}
@@ -51,6 +51,11 @@ var ContentView = function (opts) {
         this.content.on("change:body", function(newVal, oldVal){
             this._handleBodyChange();
         }.bind(this));
+
+        this.content.on("change:attachments", function(newVal, oldVal){
+            this._handleAttachmentsChange();
+        }.bind(this));
+
         // TODO: Re-render on change.
         // Removed for now because re-rendering a ContentView and
         // AttachmentsListView can unbind handlers important for modal
@@ -101,6 +106,13 @@ ContentView.prototype._addInitialChildViews = function (opts) {
 
     this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, { render: false });
+};
+
+ContentView.prototype._removeInitialChildViews = function () {
+    this.remove(this._headerView);
+    this.remove(this._attachmentsView);
+    this.remove(this._bodyView);
+    this.remove(this._footerView);
 };
 
 /**
@@ -163,6 +175,12 @@ ContentView.prototype._handleFeaturedChange = function (newVal, oldVal) {
 
 ContentView.prototype._handleBodyChange = function (newVal, oldVal) {
     this._bodyView.render();
+};
+
+ContentView.prototype._handleAttachmentsChange = function () {
+    this._removeInitialChildViews();
+    this._addInitialChildViews(this.opts);
+    this.render();
 };
 
 ContentView.prototype.destroy = function () {
