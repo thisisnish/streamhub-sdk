@@ -92,20 +92,25 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
     }
 });
 
-ContentView.prototype._addInitialChildViews = function (opts) {
+/**
+ * @param {Object} opts
+ * @param {boolean=} shouldRender
+ */
+ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
+    shouldRender = shouldRender || false;
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
-    this.add(this._headerView, { render: false });
+    this.add(this._headerView, { render: shouldRender });
 
     this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
-    this.add(this._attachmentsView, { render: false });
+    this.add(this._attachmentsView, { render: shouldRender });
 
     this._bodyView = opts.bodyView || new ContentBodyView(opts);
-    this.add(this._bodyView, { render: false });
+    this.add(this._bodyView, { render: shouldRender });
 
     this._footerView = opts.footerView || new ContentFooterView(opts);
-    this.add(this._footerView, { render: false });
+    this.add(this._footerView, { render: shouldRender });
 };
 
 ContentView.prototype._removeInitialChildViews = function () {
@@ -179,8 +184,7 @@ ContentView.prototype._handleBodyChange = function (newVal, oldVal) {
 
 ContentView.prototype._handleAttachmentsChange = function () {
     this._removeInitialChildViews();
-    this._addInitialChildViews(this.opts);
-    this.render();
+    this._addInitialChildViews(this.opts, true);
 };
 
 ContentView.prototype.destroy = function () {
