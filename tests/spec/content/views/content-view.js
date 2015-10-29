@@ -24,12 +24,12 @@ function (
                 expect(contentView.createdAt instanceof Date).toBe(true);
             });
         });
-        
+
         describe('.remove', function () {
             var content,
                 contentView,
                 countListeners = function ($el) {
-                //obj.on('', $el) and not $el.on('', obj); 
+                //obj.on('', $el) and not $el.on('', obj);
                     var obj = $._data($el, 'events');
                     var ownPropertyNames = [];
                     if ( ! obj) {
@@ -47,7 +47,7 @@ function (
                 contentView = new ContentView({'content': content});
                 contentView.render();
             });
-            
+
             it('can remove its elements from the dom', function () {
                 var $obj = contentView.$el,
                     elem = $obj[0],
@@ -55,10 +55,10 @@ function (
                 $obj.prependTo(doc);
                 expect($.contains(doc, elem)).toBe(true);
                 contentView.remove();
-                
+
                 expect($.contains(doc, elem)).toBe(false);
             });
-            
+
             it('retains its listeners', function () {
                 var listenersCount = countListeners(contentView.$el[0]);
                 expect(countListeners(contentView.$el[0])).toBeGreaterThan(0);
@@ -67,22 +67,22 @@ function (
 
                 expect(countListeners(contentView.$el[0])).toBe(listenersCount);
             });
-            
+
             it('is called when its content visibility changes to "NONE"', function () {
                 spyOn(contentView, 'remove').andCallThrough();
-                
+
                 content.set({visibility: 'NONE'});
 
                 expect(contentView.remove).toHaveBeenCalled();
             });
-            
+
             it('emits \'removeContentView.hub\'', function () {
                 var spy = jasmine.createSpy('removed handler');
-                
+
                 contentView.$el.on('removeContentView.hub', spy);
-                
+
                 contentView.remove();
-                
+
                 expect(spy).toHaveBeenCalled();
                 expect(spy.calls[0].args[1]).toEqual({ contentView: contentView });
             });
@@ -273,6 +273,29 @@ function (
                         expect(contentView.$el.find('.content-attachment')).toHaveLength(0);
                     });
                 });
+            });
+        });
+
+        describe('when Content attachments are updated', function () {
+            it('should re-render', function () {
+                var attachment = {
+                    provider_name: "Twimg",
+                    provider_url: "http://pbs.twimg.com",
+                    type: "photo",
+                    url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg"
+                };
+                var content = new Content({ body: 'what' });
+                var attachmentListView = new TiledAttachmentListView({ content: content });
+                var contentView = new ContentView({ content: content, attachmentsView: attachmentListView });
+
+                contentView.render();
+
+                spyOn(contentView, 'add').andCallThrough();
+                spyOn(contentView, 'remove').andCallThrough();
+                content.set({attachments: [attachment]});
+
+                expect(contentView.remove.calls.length).toBe(4);
+                expect(contentView.add.calls.length).toBe(4);
             });
         });
 

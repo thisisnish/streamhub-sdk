@@ -90,6 +90,13 @@ MockLivefyreWriteClient, Auth, Writable) {
 	                    writer.write(content);
 	                    expect(writer._writeClient.postTweet).toHaveBeenCalled();
 	                });
+
+	                it('posts Content with a title', function () {
+	                    var content = new Content('ima body');
+	                    content.title = 'ima title';
+	                    writer.write(content);
+	                    expect(writer._writeClient.postContent.argsForCall[0][0].title).toEqual(content.title);
+	                });
 	            });
 			});
 		});

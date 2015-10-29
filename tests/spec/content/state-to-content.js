@@ -4,9 +4,11 @@ define([
     'inherits',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/livefyre-instagram-content',
+    'streamhub-sdk/content/types/livefyre-url-content',
+    'streamhub-sdk/content/types/livefyre-youtube-content',
     'json!streamhub-sdk-tests/mocks/bootstrap-data.json'],
 function (StateToContent, Transform, inherits, Content, LivefyreInstagramContent,
-mockBootstrapData) {
+LivefyreUrlContent, LivefyreYoutubeContent, mockBootstrapData) {
     'use strict';
 
     describe('streamhub-sdk/streams/transforms/state-to-content', function () {
@@ -88,7 +90,7 @@ mockBootstrapData) {
                           "parentId": "",
                           "bodyHtml": "<a vocab=\"http:\/\/schema.org\" typeof=\"Person\" rel=\"nofollow\" resource=\"acct:1654035270\" data-lf-handle=\"\" data-lf-provider=\"twitter\" property=\"url\" href=\"https:\/\/twitter.com\/#!\/Spivid\" target=\"_blank\" class=\"fyre-mention fyre-mention-twitter\">@<span property=\"name\">Spivid<\/span><\/a> i'm not wasting money on an ugly game and i haven't played xbox in 3 months",
                           "annotations": {
-                            
+
                           },
                           "authorId": "1859538097@twitter.com",
                           "updatedAt": 1383774488,
@@ -104,7 +106,7 @@ mockBootstrapData) {
                         "1859538097@twitter.com": {
                             "displayName": "reflect",
                             "tags": [
-                              
+
                             ],
                             "profileUrl": "https:\/\/twitter.com\/#!\/eRaReflect",
                             "avatar": "http:\/\/pbs.twimg.com\/profile_images\/378800000644211494\/9cb6b3a9424d813fc6f424c69cf1944e_normal.png",
@@ -156,7 +158,7 @@ mockBootstrapData) {
             });
             it('uses author information passed on construction as opts.authors', function () {
                 var state = mockStreamData.states["tweet-312328006913904641@twitter.com"];
-                
+
                 stateToContent.write(state);
                 var content = stateToContent.read();
 
@@ -190,6 +192,14 @@ mockBootstrapData) {
                 expect(bootstrapContent.replies.length).toBe(32);
             });
 
+            it('can transform a state with a title', function () {
+                var titleState = {"childContent":[],"vis":1,"content":{"parentId":"","bodyHtml":"<p>asdfe333</p>","title": "A Title","id":"21447893","authorId":"system@labs-t402.fyre.co","ancestorId":"","updatedAt":1372787639,"annotations":{"moderator":true,"procurementmeta":[{"networkId":"labs-t402.fyre.co","siteId":"303827","collectionRuleId":"10712944@fyre.io","collectionId":"10712944"}]},"createdAt":1372787639},"source":5,"type":0,"event":1372717639502487};
+                stateToContent.write(titleState);
+                var content = stateToContent.read();
+                expect(content).toBeTruthy();
+                expect(content.title).toBe('A Title');
+            });
+
             it('transforms Facebook Public Feed states into LivefyreFacebookContent', function () {
                 var fbState = {"vis":1,"collectionId":"99638416","content":{"parentId":"","bodyHtml":"eu ies ! premile vi le dau maine ! Paaaaaaaaaa\nMeow :3","annotations":{},"authorId":"295658337302843@facebook.com","updatedAt":1415302295,"id":"fb-post-313829482152395","createdAt":1415302295},"source":23,"type":0,"event":1415302295802639,"childContent":[]};
                 stateToContent.write(fbState);
@@ -213,6 +223,32 @@ mockBootstrapData) {
                 instagramContent = stateToContent.read();
                 expect(instagramContent instanceof LivefyreInstagramContent).toBe(true);
                 expect(instagramContent.attachments.length).toBe(1);
+            });
+
+            it('transforms native youtube curate states into streamhub-sdk-content/types/livefyre-url-content', function () {
+                var youtubeState = {"source": 22, "collectionId": "145524614", "content": {"attachments": [{"provider_url": "https://www.youtube.com/", "title": "Craft for Kids: Make Crayola\u00ae Clay Beads Necklace", "url": "http://www.youtube.com/watch?v=xvpnS2zZpZs", "type": "video", "thumbnail_width": 480, "height": 276, "width": 490, "html": "<iframe class=\"embedly-embed\" src=\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FxvpnS2zZpZs%3Ffeature%3Doembed&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DxvpnS2zZpZs&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FxvpnS2zZpZs%2Fhqdefault.jpg&key=e582b10318464a55acff2cd426d3327f&type=text%2Fhtml&schema=youtube\" width=\"490\" height=\"276\" scrolling=\"no\" frameborder=\"0\" allowfullscreen></iframe>", "author_name": "Hallmark", "provider_name": "YouTube", "thumbnail_url": "https://i.ytimg.com/vi/xvpnS2zZpZs/mqdefault.jpg", "thumbnail_height": 360, "author_url": "https://www.youtube.com/user/hallmarkcards"}], "generator": {"url": "https://www.youtube.com/", "image": "http://g.etfv.co///youtube.com", "displayName": "YouTube", "id": "www.youtube.com"}, "bodyHtml": "<p>Hallmark photo stylist, Erin Marinez teaches her neighbor how to turn Crayola Air-Dry Clay into marbled beads and make a cute and crafty necklace.</p>", "annotations": {"sortOrder": 1445214122.021083}, "authorId": "youtube.com/user/Hallmark/videos@embed.hallmark.fyre.co", "parentId": "", "updatedAt": 1445214122, "id": "15608811756944026-youtube.com@embed.hallmark.fyre.co", "createdAt": 1445025112}, "vis": 1, "type": 0, "event": 1445214122071189};
+                var youtubeContent;
+                stateToContent.write(youtubeState);
+                youtubeContent = stateToContent.read();
+                expect(youtubeContent instanceof LivefyreUrlContent).toBe(true);
+                expect(youtubeContent.attachments.length).toBe(1);
+                expect(youtubeContent.body).toBe('<p>Hallmark photo stylist, Erin Marinez teaches her neighbor how to turn Crayola Air-Dry Clay into marbled beads and make a cute and crafty necklace.</p>');
+                expect(youtubeContent.title).toBe('Craft for Kids: Make Crayola® Clay Beads Necklace');
+                expect(youtubeContent.urlContentTypeId).toBe('www.youtube.com');
+                expect(youtubeContent.viaText).toBe('YouTube');
+            });
+
+            it('transforms youtube RSS content states into streamhub-sdk-content/types/livefyre-youtube-content', function () {
+                var youtubeState = {"source": 13, "collectionId": "147481170", "content": {"attachments": [{"provider_url": "https://www.youtube.com/", "title": "Shoebox: Dictionary Day", "url": "http://www.youtube.com/watch?v=6bnjIIAvcyU", "type": "video", "html": "<iframe class=\"embedly-embed\" src=\"//cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2F6bnjIIAvcyU%3Fwmode%3Dtransparent%26feature%3Doembed&wmode=transparent&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D6bnjIIAvcyU&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2F6bnjIIAvcyU%2Fhqdefault.jpg&key=9a490b23ba72460b82aa369e9dfb1234&type=text%2Fhtml&schema=youtube\" width=\"854\" height=\"480\" scrolling=\"no\" frameborder=\"0\" allowfullscreen></iframe>", "author_name": "Hallmark", "height": 480, "width": 854, "version": "1.0", "link": "http://www.youtube.com/watch?v=6bnjIIAvcyU", "thumbnail_width": 480, "provider_name": "YouTube", "thumbnail_url": "https://i.ytimg.com/vi/6bnjIIAvcyU/hqdefault.jpg", "thumbnail_height": 360, "author_url": "https://www.youtube.com/user/hallmarkcards"}], "generator": {"id": "www.youtube.com"}, "title": "Shoebox: Dictionary Day", "feedEntry": {"description": "<p></p>", "pubDate": 1445085417, "title": "Shoebox: Dictionary Day", "channelId": "https://www.youtube.com/feeds/videos.xml?playlist_id=PLRKBYUHyyoSon9e9cH8YS2_VmN7hDGiXZ", "link": "http://www.youtube.com/watch?v=6bnjIIAvcyU", "feedSource": 4, "type": 2, "createdAt": 1445288361}, "bodyHtml": "<p>something</p>", "annotations": {}, "authorId": "feed-b29aa76229158546baba70d609359874@www.youtube.com", "parentId": "", "updatedAt": 1445287871, "id": "c57661e0eb52706afca9d90594fde1ba", "createdAt": 1445287870}, "vis": 1, "type": 0, "event": 1445288361146783};
+                var youtubeContent;
+                stateToContent.write(youtubeState);
+                youtubeContent = stateToContent.read();
+                expect(youtubeContent instanceof LivefyreYoutubeContent).toBe(true);
+                expect(youtubeContent.attachments.length).toBe(1);
+                expect(youtubeContent.body).toBe('<p>something</p>');
+                expect(youtubeContent.title).toBe('Shoebox: Dictionary Day');
+                expect(youtubeContent.urlContentTypeId).toBe('www.youtube.com');
+                expect(youtubeContent.viaText).toBe('YouTube');
             });
 
             it("can transform a state with an opine childContent", function () {
@@ -276,7 +312,7 @@ mockBootstrapData) {
 
                     // ._write will be passed the state
                     expect(stateToContent._write).toHaveBeenCalledWith(mockThreadState, jasmine.any(Function));
-                    
+
                     // readable will fire
                     waitsFor(function () {
                         return onReadable.callCount;
@@ -393,7 +429,7 @@ mockBootstrapData) {
                 state2.content = Object.create(state2.content);
                 //Increment a date to force an update
                 state2.content.updatedAt = 2366506462;
-                
+
                 myStateToContent.write(state2);
                 var content = myStateToContent.read();
                 var contentAgain = myStateToContent.read();

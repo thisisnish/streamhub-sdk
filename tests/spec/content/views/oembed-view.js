@@ -4,9 +4,10 @@ define([
     'streamhub-sdk/content/views/oembed-view',
     'hgn!streamhub-sdk/content/templates/oembed-photo',
     'hgn!streamhub-sdk/content/templates/oembed-video',
+    'hgn!streamhub-sdk/content/templates/oembed-video-promise',
     'hgn!streamhub-sdk/content/templates/oembed-link',
     'hgn!streamhub-sdk/content/templates/oembed-rich'],
-function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate) {
+function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTemplate, OembedLinkTemplate, OembedRichTemplate) {
     'use strict';
 
     describe('OembedView', function () {
@@ -96,6 +97,16 @@ function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate,
 
                 it('uses OembedRichTemplate', function() {
                     expect(oembedView.template).toBe(OembedRichTemplate);
+                });
+            });
+
+            describe('a oembed video promise', function() {
+                oembedAttachment.type = 'video_promise';
+                var oembedView = new OembedView({ oembed: oembedAttachment });
+                oembedView.render();
+
+                it('uses OembedVideoPromiseTemplate', function() {
+                    expect(oembedView.template).toBe(OembedVideoPromiseTemplate);
                 });
             });
         });

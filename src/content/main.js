@@ -29,6 +29,10 @@ define([
         this.attachments = obj.attachments || [];
         this.replies = obj.replies || [];
         this.opines = obj.opines || [];
+
+        if (obj.title) {
+            this.title = obj.title;
+        }
     };
     inherits(Content, EventEmitter);
 

@@ -3,11 +3,12 @@ define([
     'streamhub-sdk/view',
     'hgn!streamhub-sdk/content/templates/oembed-photo',
     'hgn!streamhub-sdk/content/templates/oembed-video',
+    'hgn!streamhub-sdk/content/templates/oembed-video-promise',
     'hgn!streamhub-sdk/content/templates/oembed-link',
     'hgn!streamhub-sdk/content/templates/oembed-rich',
     'inherits'
 ],
-function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, OembedRichTemplate, inherits) {
+function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTemplate, OembedLinkTemplate, OembedRichTemplate, inherits) {
     'use strict';
 
     /**
@@ -33,13 +34,14 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedLinkTemplate, 
     inherits(OembedView, View);
 
     /**
-     * A mapping of oembed type to its mustache template for rendering 
+     * A mapping of oembed type to its mustache template for rendering
      * @readonly
      * @enum {Template}
      */
     OembedView.prototype.OEMBED_TEMPLATES = {
         'photo': OembedPhotoTemplate,
         'video': OembedVideoTemplate,
+        'video_promise': OembedVideoPromiseTemplate,
         'link':  OembedLinkTemplate,
         'rich':  OembedRichTemplate
     };

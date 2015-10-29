@@ -43,6 +43,10 @@ function(LivefyreHttpClient, inherits) {
             lftoken: opts.lftoken
         };
 
+        if (opts.title) {
+            postData.title = opts.title;
+        }
+
         if (opts.parent_id) {
             postData.parent_id = opts.parent_id;
         }
