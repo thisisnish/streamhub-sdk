@@ -1,4 +1,6 @@
 @import (reference) "/lib/livefyre-bootstrap/src/styles/mixins.less";
+@import (reference) "lib/livefyre-bootstrap/src/styles/fycon-chars.less";
+@import (reference) "../../../css/fycons.less";
 
 /**
  * Variables
@@ -169,9 +171,23 @@
     }
 
     .content-attachment-video-pending {
-        background: @lf-gray-light;
+        background: @lf-gray-lighter;
+        color: @lf-gray;
         padding: 20%;
         text-align: center;
+
+        span {
+            color: @lf-gray-light;
+            display: block;
+            font-size: 500%;
+            line-height: 1;
+            .fycon-film();
+        }
+
+        p {
+            margin-top: 30px;
+            font-weight: 700;
+        }
     }
 
     &.content-with-image {
