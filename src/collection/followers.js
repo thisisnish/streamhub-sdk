@@ -99,6 +99,21 @@ define([
     };
 
     /**
+     * Removes all items from the buffer.
+     */
+    Followers.prototype.clearBuffer = function () {
+        this._buffer = {};
+    };
+
+    /**
+     * Destroys the instance.
+     */
+    Followers.prototype.destroy = function () {
+        this.removeAllListeners();
+        this.clearBuffer();
+    };
+
+    /**
      * Send missed events to the event name that was added if there are some.
      * @override
      */
