@@ -43,7 +43,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         if (opts.content) {
             this.setContent(opts.content);
         }
-        
+
         if (opts.attachmentToFocus) {
             this.setFocusedAttachment(opts.attachmentToFocus);
         }
@@ -219,7 +219,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     };
 
     /**
-     * Add a Oembed attachment to the Attachments view. 
+     * Add a Oembed attachment to the Attachments view.
      * @param oembed {Oembed} A Oembed instance to render in the View
      * @returns {AttachmentListView} By convention, return this instance for chaining
      */
@@ -269,7 +269,12 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             videoContentEl.addClass(this.focusedAttachmentClassName);
             videoContentEl.html(this.getAttachmentVideoHtml());
             if (this.tile) {
-                videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
+                if (oembed.width && oembed.height) {
+                    videoContentEl.find('iframe').attr('width', oembed.width);
+                    videoContentEl.find('iframe').attr('height', oembed.height);
+                } else {
+                    videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
+                }
             }
             videoContentEl.show();
         }
@@ -291,7 +296,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             this.$el.find(this.galleryTotalPagesSelector).html(attachmentsCount);
 
             var galleryCountEl = this.$el.find(this.galleryCountSelector);
-            
+
             if (attachmentsCount > 1) {
                 galleryCountEl.show();
             } else {
@@ -412,4 +417,3 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
     return GalleryAttachmentListView;
 });
- 
