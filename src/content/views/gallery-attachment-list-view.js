@@ -269,12 +269,11 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             videoContentEl.addClass(this.focusedAttachmentClassName);
             videoContentEl.html(this.getAttachmentVideoHtml());
             if (this.tile) {
-                if (oembed.width && oembed.height) {
-                    videoContentEl.find('iframe').attr('width', oembed.width);
-                    videoContentEl.find('iframe').attr('height', oembed.height);
-                } else {
-                    videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
-                }
+                videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
+            }
+            if (oembed.width && oembed.height) {
+                videoContentEl.find('iframe').attr('width', oembed.width);
+                videoContentEl.find('iframe').attr('height', oembed.height);
             }
             videoContentEl.show();
         }
