@@ -5,25 +5,29 @@ define([
     'use strict';
 
     /**
-     * [Followers description]
-     * @param {[type]} collection [description]
+     * Service for retrieving all followers for a collection and handling them
+     * as they stream in.
+     * @constructor
+     * @extends {EventEmitter}
+     * @param {streamhub-sdk/collection/main} collection
      */
     function Followers(collection) {
         EventEmitter.call(this);
 
         /**
-         * Event buffer. Keeps data around until events are bound.
-         * @type {Object}
+         * Collection object.
+         * @type {streamhub-sdk/collection/main}
          * @private
          */
-        this._buffer = {};
+        this._collection = collection;
 
-        // Init bootstrap to handle initial set of followers.
-        collection.initFromBootstrap(this._handleBootstrapInit.bind(this));
-
-        // Get updater and listen for stream data.
-        var updater = collection.getOrCreateUpdater();
-        updater.on('streamData', this._handleStreamData.bind(this));
+        /**
+         * Whether the collection has been initialized and the stream has been
+         * set up yet.
+         * @type {boolean}
+         * @private
+         */
+        this._collectionInitialized = false;
     }
     inherits(Followers, EventEmitter);
 
@@ -35,11 +39,13 @@ define([
      */
     Followers.prototype._handleBootstrapInit = function (err, initData) {
         if (err) {
-            return;
+            throw new Error('Bootstrap init failed.');
         }
         var headDocument = initData.headDocument;
         if ('followers' in headDocument) {
-            this._sendEvent('followers', headDocument.followers);
+            this.emit('followers', headDocument.followers.map(function (f) {
+                return { id: f, following: true };
+            }));
         }
         this._stream();
     };
@@ -57,52 +63,11 @@ define([
         var follower;
         for (var i=0; i<streamData.followers.length; i++) {
             follower = streamData.followers[i];
-            this._sendEvent('follower', {
+            this.emit('followers', [{
                 id: follower.authorId,
                 following: follower.following
-            });
+            }]);
         }
-    };
-
-    /**
-     * Send an event. If there are no listeners, add the event to the buffer
-     * so that it can be emitted once there is a listener.
-     * @param {string} name Event name.
-     * @param {Object} data Event data.
-     * @private
-     */
-    Followers.prototype._sendEvent = function (name, data) {
-        if (this._listeners[name] && this._listeners[name].length) {
-            return this.emit(name, data);
-        }
-        if (!this._buffer[name]) {
-            this._buffer[name] = [];
-        }
-        this._buffer[name].push(data);
-    };
-
-    /**
-     * Send missed events to listeners if there are any.
-     * @param {string} name Event name to send missed events for.
-     * @private
-     */
-    Followers.prototype._sendMissedEvents = function (name) {
-        if (!this._buffer[name]) {
-            return;
-        }
-        var evts = this._buffer[name];
-        var evt = evts.pop();
-        while (evt) {
-            this._sendEvent(name, evt);
-            evt = evts.pop();
-        }
-    };
-
-    /**
-     * Removes all items from the buffer.
-     */
-    Followers.prototype.clearBuffer = function () {
-        this._buffer = {};
     };
 
     /**
@@ -110,7 +75,6 @@ define([
      */
     Followers.prototype.destroy = function () {
         this.removeAllListeners();
-        this.clearBuffer();
     };
 
     /**
@@ -119,7 +83,20 @@ define([
      */
     Followers.prototype.on = function (name, fn) {
         EventEmitter.prototype.on.apply(this, arguments);
-        this._sendMissedEvents(name);
+
+        // Only start streaming data the first time an event is bound.
+        if (this._collectionInitialized) {
+            return;
+        }
+
+        // Init bootstrap to handle initial set of followers.
+        this._collection.initFromBootstrap(this._handleBootstrapInit.bind(this));
+
+        // Get updater and listen for stream data.
+        var updater = this._collection.getOrCreateUpdater();
+        updater.on('streamData', this._handleStreamData.bind(this));
+
+        this._collectionInitialized = true;
     };
 
     return Followers;

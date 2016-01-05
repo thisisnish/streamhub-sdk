@@ -58,12 +58,9 @@ $, ListView, Collection, Content, Auth, Followers) {
         console.log('STREAM: User', data.id, 'is', (data.following ? 'following' : 'not following'));
     }
 
-    followers.on('follower', xyz);
-    followers.removeListener('follower', xyz);
-
-    // followers.on('followers', function (data) {
-    //     console.log('I CAN HAZ ALL DATA:', data);
-    // });
+    followers.on('followers', function (data) {
+        console.log('I CAN HAZ ALL DATA:', data);
+    });
 
     var $writeForm = $('#write-form');
     $writeForm.submit(function (e) {

@@ -28,15 +28,16 @@ define([
         it('calls bootstrap init', function () {
             var spy = jasmine.createSpy('spy');
             followers.on('followers', spy);
-            expect(spy).toHaveBeenCalledWith(['system@labs-t402.fyre.co']);
+            expect(spy).toHaveBeenCalledWith([{
+                id: 'system@labs-t402.fyre.co',
+                following: true
+            }]);
         });
 
         it('listens for stream data', function () {
             var contents = [];
             var spy = jasmine.createSpy('spy');
-            followers.on('follower', spy);
-
-            var contents = [];
+            followers.on('followers', spy);
 
             updater.on('data', function (content) {
                 contents.push(content);
@@ -48,18 +49,26 @@ define([
 
             runs(function () {
                 updater.pause();
-                expect(spy).toHaveBeenCalledWith({
+                expect(spy).toHaveBeenCalledWith([{
                     id: '_up4729638@livefyre.com',
                     following: true
-                });
+                }]);
             });
         });
 
-        it('waits to send data until listeners have been attached', function () {
-            expect(followers._buffer['followers'].length).toBe(1);
-            var spy = jasmine.createSpy('spy');
-            followers.on('followers', spy);
-            expect(followers._buffer['followers'].length).toBe(0);
+        it('waits to retrieve data until listeners have been attached', function () {
+            expect(collection.getOrCreateUpdater).not.toHaveBeenCalled();
+            followers.on('followers', jasmine.createSpy('spy'));
+            expect(collection.getOrCreateUpdater).toHaveBeenCalled();
+        });
+
+        it('only initializes the collection once if multiple listeners are attached', function () {
+            expect(collection.getOrCreateUpdater).not.toHaveBeenCalled();
+            followers.on('followers', jasmine.createSpy('spy'));
+            expect(collection.getOrCreateUpdater).toHaveBeenCalled();
+            expect(collection.getOrCreateUpdater.calls.length).toEqual(1);
+            followers.on('followers', jasmine.createSpy('spy'));
+            expect(collection.getOrCreateUpdater.calls.length).toEqual(1);
         });
     });
 });
