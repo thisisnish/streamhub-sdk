@@ -142,6 +142,19 @@ that returns a `stream/readable` that you can pipe into a ListView to display th
     featuredArchive.pipe(listView);
     listView.$el.appendTo('body');
 
+### Followers
+
+Users can follow/unfollow collections. Followers (`streamhub-sdk/collection/followers`)
+provides access to all of the users currently following the collection as well
+as new following or unfollowing updates from the stream.
+
+    var followers = new Followers(collection);
+    followers.on('followers', function (followersArray) {
+        followersArray.forEach(function (follower) {
+            controller[follower.following ? 'addFollower' || 'removeFollower'](follower.id);
+        });
+    }
+
 ## ListViews
 
 ListViews can render a Stream of Content into ContentViews to create real-time social Content experiences.
