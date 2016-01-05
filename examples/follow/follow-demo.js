@@ -60,7 +60,9 @@ $, ListView, Collection, Content, Auth, Followers) {
 
     followers.on('followers', function (data) {
         console.log('I CAN HAZ ALL DATA:', data);
-    });
+    }).on('error', function (err) {
+        console.error(err);
+    })
 
     var $writeForm = $('#write-form');
     $writeForm.submit(function (e) {

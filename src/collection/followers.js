@@ -39,7 +39,8 @@ define([
      */
     Followers.prototype._handleBootstrapInit = function (err, initData) {
         if (err) {
-            throw new Error('Bootstrap init failed.');
+            this.emit('error', err);
+            return;
         }
         var headDocument = initData.headDocument;
         if ('followers' in headDocument) {
@@ -75,6 +76,7 @@ define([
      */
     Followers.prototype.destroy = function () {
         this.removeAllListeners();
+        this._collection = null;
     };
 
     /**
@@ -86,7 +88,7 @@ define([
 
         // Only start streaming data the first time an event is bound.
         if (this._collectionInitialized) {
-            return;
+            return this;
         }
 
         // Init bootstrap to handle initial set of followers.
@@ -97,6 +99,7 @@ define([
         updater.on('streamData', this._handleStreamData.bind(this));
 
         this._collectionInitialized = true;
+        return this;
     };
 
     return Followers;

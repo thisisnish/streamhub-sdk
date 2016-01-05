@@ -153,7 +153,9 @@ as new following or unfollowing updates from the stream.
         followersArray.forEach(function (follower) {
             controller[follower.following ? 'addFollower' || 'removeFollower'](follower.id);
         });
-    }
+    }).on('error', function (err) {
+        console.error(err);
+    });
 
 ## ListViews
 
