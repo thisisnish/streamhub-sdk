@@ -9,6 +9,8 @@ define([
 function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentHeaderViewFactory, inherits) {
     'use strict';
 
+    var AUTOPLAY_PROVIDER_REGEX = /YouTube|Livefyre/;
+
     /**
      * A view that displays a content's attachments as a gallery
      *
@@ -41,7 +43,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         if (opts.content) {
             this.setContent(opts.content);
         }
-        
+
         if (opts.attachmentToFocus) {
             this.setFocusedAttachment(opts.attachmentToFocus);
         }
@@ -217,7 +219,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     };
 
     /**
-     * Add a Oembed attachment to the Attachments view. 
+     * Add a Oembed attachment to the Attachments view.
      * @param oembed {Oembed} A Oembed instance to render in the View
      * @returns {AttachmentListView} By convention, return this instance for chaining
      */
@@ -265,9 +267,14 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             photoContentEl.hide().removeClass(this.focusedAttachmentClassName);
             var videoContentEl = focusedEl.find('.content-attachment-video');
             videoContentEl.addClass(this.focusedAttachmentClassName);
-            videoContentEl.html(this._focusedAttachment.html);
+            videoContentEl.html(this.getAttachmentVideoHtml());
+            var videoIframe = videoContentEl.find('iframe');
             if (this.tile) {
-                videoContentEl.find('iframe').css({'width': '100%', 'height': '100%'});
+                videoIframe.css({'width': '100%', 'height': '100%'});
+            }
+            if (oembed.width && oembed.height) {
+                videoIframe.attr('width', oembed.width);
+                videoIframe.attr('height', oembed.height);
             }
             videoContentEl.show();
         }
@@ -289,7 +296,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             this.$el.find(this.galleryTotalPagesSelector).html(attachmentsCount);
 
             var galleryCountEl = this.$el.find(this.galleryCountSelector);
-            
+
             if (attachmentsCount > 1) {
                 galleryCountEl.show();
             } else {
@@ -331,6 +338,32 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         } else {
             this.resizeFocusedAttachment();
         }
+    };
+
+    /**
+     * Gets the attachment's video html embed string. If supported, also attach
+     * the autoplay query param so that the video will auto-play.
+     * @return {string} Attachment's html embed.
+     */
+    GalleryAttachmentListView.prototype.getAttachmentVideoHtml = function () {
+        var attachment = this._focusedAttachment;
+
+        // If the provider is not available for autoplay, nothing more to do.
+        if (!AUTOPLAY_PROVIDER_REGEX.test(attachment.provider_name)) {
+            return attachment.html;
+        }
+
+        var $html = $(attachment.html);
+        var iframe = $html[0].tagName === 'IFRAME' ? $html[0] : $html.find('iframe')[0];
+
+        // If there isn't an iframe in the attachment html, nothing more to do.
+        if (!iframe) {
+          return attachment.html;
+        }
+
+        var queryChar = iframe.src.indexOf('?') > -1 ? '&' : '?';
+        iframe.src += queryChar + 'autoplay=1';
+        return $('<div>').append($html).html();
     };
 
     /**
@@ -384,4 +417,3 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
     return GalleryAttachmentListView;
 });
- 
