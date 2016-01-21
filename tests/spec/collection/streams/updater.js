@@ -316,6 +316,26 @@ MockLivefyreBootstrapClient, MockLivefyreStreamClient, $, LivefyreContent) {
                 });
             });
 
+            it('emits a streamData event', function () {
+                var spy = jasmine.createSpy('spy');
+                updater.on('streamData', spy);
+                spyOn(updater, '_read').andCallThrough();
+                var contents = [];
+
+                updater.on('data', function (content) {
+                    contents.push(content);
+                });
+
+                waitsFor(function () {
+                    return contents.length;
+                });
+
+                runs(function () {
+                    updater.pause();
+                    expect(spy).toHaveBeenCalledWith(MockLivefyreStreamClient.mockStreamResponse.data);
+                });
+            });
+
             it('can .read() annotations from the stream', function () {
                 var id = 'ContentInStorage123';
                 var content = new LivefyreContent({});
