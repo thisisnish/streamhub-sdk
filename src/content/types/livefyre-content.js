@@ -3,8 +3,9 @@ define([
     'streamhub-sdk/content',
     'streamhub-sdk/content/annotator',
     'streamhub-sdk/content/types/livefyre-opine',
+    'streamhub-sdk/content/util',
     'inherits'],
-function($, Content, Annotator, LivefyreOpine, inherits) {
+function($, Content, Annotator, LivefyreOpine, util, inherits) {
     'use strict';
 
     /**
@@ -52,7 +53,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             }
         }
 
-        this.body = json ? json.content.bodyHtml : '';
+        this.body = util.linkify(json ? json.content.bodyHtml : '');
         this.source = json ? LivefyreContent.SOURCES[json.source] : 'livefyre';
     };
     inherits(LivefyreContent, Content);
