@@ -370,7 +370,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         var nextAmpersand = iframe.src.indexOf('&', srcIndex);
         // youtube is in the source
         if (youtubeIndex < nextAmpersand && srcIndex > -1 && nextAmpersand > -1) {
-          iframe.src = iframe.src.substring(0, nextAmpersand) + '%26rel%3D0' + iframe.src.substring(nextAmpersand);
+            iframe.src = iframe.src.substring(0, nextAmpersand) + '%26rel%3D0' + iframe.src.substring(nextAmpersand);
         }
 
         return $('<div>').append($html).html();
