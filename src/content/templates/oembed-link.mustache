@@ -1,16 +1,10 @@
 <div class="content-attachment content-attachment-link">
     <div class="content-attachment-frame"></div>
     {{#thumbnail_url}}
-        <div class="content-attachment-link-thumbnail" style="background-image: url({{{ thumbnail_url }}}); background-size: cover;"/>
-        <div class="content-attachment-link-body">
-            <a href="{{{ url }}}" target="_blank">{{{ title }}}</a>
-            <p class="content-attachment-provider">via {{{ provider_name }}}</p>
-        </div>
+        <div class="content-attachment-link-thumbnail"><img class="img-thumb-new" src ="{{{ thumbnail_url }}}" /></div>
     {{/thumbnail_url}}
-    {{^thumbnail_url}}
-        <div class="content-attachment-link-body" style="padding-left:0px;">
-            <a href="{{{ url }}}" target="_blank">{{{ title }}}</a>
-            <p class="content-attachment-provider">via {{{ provider_name }}}</p>
-        </div>
-    {{/thumbnail_url}}
+    <div class="content-attachment-link-body">
+        <a href="{{{ url }}}" target="_blank">{{{ title }}}</a>
+        <p class="content-attachment-provider">via {{{ provider_name }}}</p>
+    </div>
 </div>
