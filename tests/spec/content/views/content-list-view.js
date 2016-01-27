@@ -115,7 +115,6 @@ function ($, ContentListView, Content, ContentView) {
 
                     spyOn(listView, '_write').andCallThrough();
                     while (remaining--) {
-                        console.log('writing', remaining, written);
                         listView.more.write(
                             new Content(remaining.toString(), remaining.toString()),
                             function () {
@@ -146,7 +145,6 @@ function ($, ContentListView, Content, ContentView) {
                         listView.more.write(
                             new Content(remaining.toString(), remaining.toString()),
                             function () {
-                                console.log('written cb', written);
                                 written++;
                             });
                     }
