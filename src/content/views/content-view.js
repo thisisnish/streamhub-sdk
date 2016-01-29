@@ -6,6 +6,7 @@ var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
+var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
 var inherits = require('inherits');
 var debug = require('debug');
 
@@ -35,6 +36,7 @@ var ContentView = function (opts) {
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
+    this._thumbnailViewFactory = new ContentThumbnailViewFactory(opts);
 
     CompositeView.call(this, opts);
 
@@ -102,7 +104,7 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, { render: shouldRender });
 
-    this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
+    this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
     this.add(this._attachmentsView, { render: shouldRender });
