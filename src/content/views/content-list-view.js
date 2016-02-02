@@ -48,6 +48,10 @@ var ContentListView = function (opts) {
     this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
 };
 
+var impressionScript = document.createElement("script");
+impressionScript.setAttribute("src", "//platform.twitter.com/impressions.js");
+document.getElementsByTagName("head")[0].appendChild(impressionScript);
+
 inherits(ContentListView, ListView);
 
 // get initial value for this._maxVisibleItems
@@ -134,6 +138,21 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         
         // Remove non visible view
         this.remove(viewToRemove);
+    }
+
+    // Recording of Tweet impressions
+    if (content.tweetId) {
+        var tweetId = content.tweetId;
+        twttr.impressions.ready(function (t){
+            t.impressions.logTweets([tweetId], {'partner': 'livefyre'});
+
+            /**
+             * Ensure if signal is received by twitter.
+             */
+            //t.impressions.attachDebugger(function myDebugger(tweetResponse) {
+            //    console.log(tweetResponse);
+            //});
+        });
     }
     
     return newView;
