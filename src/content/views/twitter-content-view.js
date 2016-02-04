@@ -17,10 +17,13 @@ var TwitterContentView = function (opts) {
     this.content = opts.content;
 
     ContentView.apply(this, arguments);
+    asCardContentView(this);
+    asTwitterContentView(this);
+};
 
-    // Recording of Tweet impressions
-    if (opts.content.tweetId) {
-        var tweetId = opts.content.tweetId;
+// Recording of Tweet impressions
+TwitterContentView.recordTweet = function(tweetId) {
+    if (tweetId) {
         twttr.impressions.ready(function (t){
             t.impressions.logTweets([tweetId], {'partner': 'livefyre'});
 
@@ -32,10 +35,8 @@ var TwitterContentView = function (opts) {
             //});
         });
     }
-
-    asCardContentView(this);
-    asTwitterContentView(this);
 };
+
 inherits(TwitterContentView, ContentView);
 
 module.exports = TwitterContentView;
