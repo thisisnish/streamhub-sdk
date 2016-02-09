@@ -304,7 +304,7 @@
         margin: 0 auto !important; // Override twitter inline styles on tweet embeds
     }
 
-    .content-attachment > .content-attachment-link-thumbnail,
+    .content-attachment.content-attachment-link > .content-attachment-link-thumbnail,
     &.content-with-image  > .content-attachment-link-thumbnail {
         display: block;
         position: absolute;
@@ -313,7 +313,11 @@
         margin-left: @linkAttachmentThumbnailMargin * 2;
         width: 66px;
         height: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
         min-height: @linkAttachmentMinHeight - (@linkAttachmentThumbnailMargin * 2);
+
     }
     .content-attachment-link-body {
         display: block;
@@ -451,9 +455,6 @@
         .content-body {
             font-size: 14px;
             line-height: 24px;
-        }
-        .content-footer {
-            display: none;
         }
     }
 }
