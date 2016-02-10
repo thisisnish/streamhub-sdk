@@ -23,18 +23,16 @@ var TwitterContentView = function (opts) {
 
 // Recording of Tweet impressions
 TwitterContentView.recordTweet = function(tweetId) {
-    if (tweetId) {
         twttr.impressions.ready(function (t){
             t.impressions.logTweets([tweetId], {'partner': 'livefyre'});
 
             /**
              * Ensure if signal is received by twitter.
              */
-            //t.impressions.attachDebugger(function myDebugger(tweetResponse) {
-            //    console.log(tweetResponse);
-            //});
+            t.impressions.attachDebugger(function myDebugger(tweetResponse) {
+                console.log(tweetResponse);
+            });
         });
-    }
 };
 
 inherits(TwitterContentView, ContentView);

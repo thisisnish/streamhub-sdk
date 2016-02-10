@@ -137,9 +137,15 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         this.remove(viewToRemove);
     }
 
-    TwitterContentView.recordTweet.call(this, content.tweetId);
+    this.recordImpression(content);
     return newView;
 };
+
+ContentListView.prototype.recordImpression = function (content) {
+    if(content.tweetId) {
+        TwitterContentView.recordTweet.call(this, content.tweetId);
+    }
+}
 
 ContentListView.prototype._insert = function (contentView, forcedIndex) {
     var newContentViewIndex,
