@@ -29,9 +29,9 @@ TwitterContentView.recordTweet = function(tweetId) {
             /**
              * Ensure if signal is received by twitter.
              */
-            t.impressions.attachDebugger(function myDebugger(tweetResponse) {
-                console.log(tweetResponse);
-            });
+            //t.impressions.attachDebugger(function myDebugger(tweetResponse) {
+            //    console.log(tweetResponse);
+            //});
         });
 };
 
