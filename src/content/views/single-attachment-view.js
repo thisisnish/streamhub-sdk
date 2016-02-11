@@ -18,15 +18,24 @@ var SingleAttachmentListView = function (opts) {
 };
 inherits(SingleAttachmentListView, TiledAttachmentListView);
 
+SingleAttachmentListView.prototype.additionalImagesSelector = '.content-attachment-additional-images';
+SingleAttachmentListView.prototype.photoContentSelector = '.content-attachment-photo';
+
 SingleAttachmentListView.prototype.retile = function () {
     if ( ! this.el ) {
         return;
     }
     var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
+    var firstItemEl = tiledAttachmentsEl.find(this.contentAttachmentSelector + ':first');
 
     // Add classes so only the first media shows and the other remain hidden
     tiledAttachmentsEl.addClass('content-attachments-1');
-    tiledAttachmentsEl.find(this.contentAttachmentSelector + ':first').addClass(this.squareTileClassName);
+    firstItemEl.addClass(this.squareTileClassName);
+
+    if (firstItemEl.length === 1 && this.tileableCount() > 1 && firstItemEl.find(this.additionalImagesSelector).length === 0) {
+        var imageCountDom = '<span class="content-attachment-additional-images">+' + this.tileableCount() + '</span>';
+        firstItemEl.find(this.photoContentSelector).append(imageCountDom);
+    }
 };
 
 module.exports = SingleAttachmentListView;
