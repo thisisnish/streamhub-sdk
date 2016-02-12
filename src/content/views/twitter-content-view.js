@@ -2,7 +2,6 @@ var inherits = require('inherits');
 var ContentView = require('streamhub-sdk/content/views/content-view');
 var asCardContentView = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
 var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
-var tweetImpressions = require('tweetImpressions');
 
 'use strict';
 
@@ -19,20 +18,6 @@ var TwitterContentView = function (opts) {
     ContentView.apply(this, arguments);
     asCardContentView(this);
     asTwitterContentView(this);
-};
-
-// Recording of Tweet impressions
-TwitterContentView.recordTweet = function(tweetId) {
-        twttr.impressions.ready(function (t){
-            t.impressions.logTweets([tweetId], {'partner': 'livefyre'});
-
-            /**
-             * Ensure if signal is received by twitter.
-             */
-            //t.impressions.attachDebugger(function myDebugger(tweetResponse) {
-            //    console.log(tweetResponse);
-            //});
-        });
 };
 
 inherits(TwitterContentView, ContentView);

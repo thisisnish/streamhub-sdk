@@ -6,7 +6,6 @@ var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var hasAttachmentModal = require('streamhub-sdk/content/views/mixins/attachment-modal-mixin');
 var hasQueue = require('streamhub-sdk/views/mixins/queue-mixin');
 var debug = require('streamhub-sdk/debug');
-var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
 
 'use strict';
 
@@ -137,15 +136,8 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         this.remove(viewToRemove);
     }
 
-    this.recordImpression(content);
     return newView;
 };
-
-ContentListView.prototype.recordImpression = function (content) {
-    if(content.tweetId) {
-        TwitterContentView.recordTweet.call(this, content.tweetId);
-    }
-}
 
 ContentListView.prototype._insert = function (contentView, forcedIndex) {
     var newContentViewIndex,
