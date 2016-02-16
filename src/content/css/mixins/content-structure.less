@@ -318,7 +318,7 @@
         margin: 0 auto !important; // Override twitter inline styles on tweet embeds
     }
 
-    .content-attachment > .content-attachment-link-thumbnail,
+    .content-attachment.content-attachment-link > .content-attachment-link-thumbnail,
     &.content-with-image  > .content-attachment-link-thumbnail {
         display: block;
         position: absolute;
@@ -327,7 +327,11 @@
         margin-left: @linkAttachmentThumbnailMargin * 2;
         width: 66px;
         height: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
         min-height: @linkAttachmentMinHeight - (@linkAttachmentThumbnailMargin * 2);
+
     }
     .content-attachment-link-body {
         display: block;
@@ -409,11 +413,15 @@
         .hub-btn.hub-content-action-reply {
             & > a {
                 .fycon-font-styles();
-                .fycon-action-reply();
+                .fycon-twitter-reply();
                 color: inherit;
                 vertical-align: top;
                 font-size: 20px;
                 line-height: 20px;
+
+                &:active {
+                    opacity: .5;
+                }
             }
             width: 23px;
             height: 16px;
@@ -422,11 +430,21 @@
         .hub-btn.hub-content-action-retweet {
             & > a {
                 .fycon-font-styles();
-                .fycon-action-retweet();
+                .fycon-twitter-retweet();
                 color: inherit;
                 vertical-align: top;
                 font-size: 21px;
                 line-height: 21px;
+
+                &:active {
+                    opacity: .5;
+                }
+                &:active:hover {
+                    color: #89E8C2;
+                }
+                &:hover {
+                    color: #00D084;
+                }
             }
             width: 27px;
             height: 16px;
@@ -435,13 +453,23 @@
         .hub-btn.hub-content-action-favorite {
             & > a {
                 .fycon-font-styles();
-                .fycon-action-favorite();
+                .fycon-twitter-like();
                 color: inherit;
                 vertical-align: top;
                 font-size: 16px;
                 line-height: 16px;
                 position: relative;
                 top: 2px;
+
+                &:active {
+                    opacity: .5;
+                }
+                &:active:hover {
+                    color: #F68DA6;
+                }
+                &:hover {
+                    color: #EB144C;
+                }
             }
             width: 18px;
             height: 16px;
