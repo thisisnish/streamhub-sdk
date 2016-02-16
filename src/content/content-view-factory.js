@@ -33,7 +33,7 @@ var ContentViewFactory = function(opts) {
     if (opts.createAttachmentsView) {
         this._createAttachmentsView = opts.createAttachmentsView;
     }
-    this._singleMediaView = false || opts.singleMediaView;
+    this._useSingleMediaView = false || opts.useSingleMediaView;
 };
 
 /**
@@ -84,7 +84,7 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         attachmentsView: opts.attachmentsView,
         likeCommand: likeCommand,
         shareCommand: shareCommand,
-        singleMediaView: this._singleMediaView
+        useSingleMediaView: this._useSingleMediaView
     });
 
     return contentView;

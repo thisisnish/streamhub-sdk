@@ -13,7 +13,7 @@ var ContentThumbnailViewFactory = function (opts) {
 ContentThumbnailViewFactory.prototype.createThumbnailView = function (opts) {
     var thumbnailView;
 
-    if (this.opts.singleMediaView) {
+    if (this.opts.useSingleMediaView) {
         thumbnailView = new SingleAttachmentView(opts);
     } else {
         thumbnailView = new TiledAttachmentListView(opts);
