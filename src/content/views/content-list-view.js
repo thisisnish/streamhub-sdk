@@ -135,7 +135,7 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         // Remove non visible view
         this.remove(viewToRemove);
     }
-    
+
     return newView;
 };
 

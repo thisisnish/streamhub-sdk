@@ -8,6 +8,7 @@ var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachm
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var inherits = require('inherits');
 var debug = require('debug');
+var impressionUtil = require('streamhub-sdk/impressionUtil');
 
 'use strict';
 
@@ -39,6 +40,7 @@ var ContentView = function (opts) {
     CompositeView.call(this, opts);
 
     this._addInitialChildViews(opts);
+    impressionUtil.recordImpression(opts.content);
 
     if (this.content) {
         this.content.on("change:visibility", function(newVis, oldVis) {
