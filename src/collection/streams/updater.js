@@ -107,6 +107,7 @@ StateToContent, Annotator, debug) {
                 log('long poll timeout, requesting again on next tick');
                 return pollAgain();
             }
+            self.emit('streamData', data);
             var contents = self._contentsFromStreamData(data);
             // Update _latestEvent so we only get new data
             self._latestEvent = data.maxEventId;

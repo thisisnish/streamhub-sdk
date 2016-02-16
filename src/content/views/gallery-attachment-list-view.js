@@ -363,6 +363,16 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         var queryChar = iframe.src.indexOf('?') > -1 ? '&' : '?';
         iframe.src += queryChar + 'autoplay=1';
+
+        // make youtube videos not show related videos
+        var srcIndex = iframe.src.indexOf('src=');
+        var youtubeIndex = iframe.src.indexOf('youtube', srcIndex);
+        var nextAmpersand = iframe.src.indexOf('&', srcIndex);
+        // youtube is in the source
+        if (youtubeIndex < nextAmpersand && srcIndex > -1 && nextAmpersand > -1) {
+            iframe.src = iframe.src.substring(0, nextAmpersand) + '%26rel%3D0' + iframe.src.substring(nextAmpersand);
+        }
+
         return $('<div>').append($html).html();
     };
 

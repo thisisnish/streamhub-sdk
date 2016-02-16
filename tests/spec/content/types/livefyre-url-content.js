@@ -34,5 +34,10 @@ function ($, LivefyreUrlContent, urlTypeContent) {
             var content = new LivefyreUrlContent(urlTypeContent);
             expect(typeof content.title !== "undefined").toBe(true);
         });
+
+        it('has .feedUrl if oembed has one', function () {
+            var content = new LivefyreUrlContent(urlTypeContent);
+            expect(typeof content.feedUrl !== "undefined").toBe(true);
+        });
     });
 });

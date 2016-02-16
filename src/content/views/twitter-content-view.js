@@ -1,6 +1,5 @@
 var inherits = require('inherits');
-var ContentView = require('streamhub-sdk/content/views/content-view');
-var asCardContentView = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
+var CardContentView = require('streamhub-sdk/content/views/card-content-view');
 var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
 
 'use strict';
@@ -15,11 +14,9 @@ var TwitterContentView = function (opts) {
     opts = opts || {};
     this.content = opts.content;
 
-    ContentView.apply(this, arguments);
-    asCardContentView(this);
-    asTwitterContentView(this);
+    CardContentView.apply(this, arguments);
+    asTwitterContentView(this, opts);
 };
-
-inherits(TwitterContentView, ContentView);
+inherits(TwitterContentView, CardContentView);
 
 module.exports = TwitterContentView;
