@@ -4,7 +4,7 @@ var tweetImpressions = require('tweetImpressions');
  * Recording of Tweet impressions
  */
 function recordTwitterImpression(content) {
-    twttr.impressions.ready(function (t){
+    twttr.impressions.ready(function (t) {
         t.impressions.logTweets([content.tweetId], {'partner': 'livefyre'});
 
         /**
@@ -18,7 +18,7 @@ function recordTwitterImpression(content) {
 
 module.exports = {
     recordImpression: function (content) {
-        switch(content.source) {
+        switch (content.source) {
             case 'twitter':
                 recordTwitterImpression(content);
                 break;
