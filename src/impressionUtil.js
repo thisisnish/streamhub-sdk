@@ -1,4 +1,7 @@
-var tweetImpressions = require('tweetImpressions');
+//forced to inject here as require/almond does not support dynamic load
+var impressionScript = document.createElement("script");
+impressionScript.setAttribute("src", "//platform.twitter.com/impressions.js");
+document.getElementsByTagName("head")[0].appendChild(impressionScript);
 
 /**
  * Recording of Tweet impressions

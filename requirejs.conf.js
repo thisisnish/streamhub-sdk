@@ -15,8 +15,7 @@ require.config({
     'blanket-jasmine': 'lib/blanket/dist/jasmine/blanket_jasmine',
     'mout': 'lib/mout/src',
     observer: 'lib/observer/src/observer',
-    debug: 'lib/debug/debug',
-    tweetImpressions : "//platform.twitter.com/impressions"
+    debug: 'lib/debug/debug'
   },
   packages: [{
     name: "streamhub-sdk",
