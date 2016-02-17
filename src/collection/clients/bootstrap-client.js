@@ -48,7 +48,7 @@ function(LivefyreHttpClient, inherits, base64) {
         var url = [
             this._protocol,
             '//',
-            this._getCDNHost(opts)
+            this._getCDNHost(opts),
             "/bs3/",
             this._version ? this._version + '/' : '',
             includeEnvironment ? opts.environment + "/" : "",
