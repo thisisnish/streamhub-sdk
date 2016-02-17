@@ -16,11 +16,11 @@ var log = debug('streamhub-sdk/content/views/content-list-view');
  *
  * @param [opts] {Object} A set of options to config the view with
  * @param [opts.el] {HTMLElement} The element in which to render the streamed content
- * @param [opts.modal] {Boolean} Whether a modal is displayed when interacting 
+ * @param [opts.modal] {Boolean} Whether a modal is displayed when interacting
  *                               with photo/video thumbnail
  * @param [opts.animate] {Boolean} Whether to add animations when content is
  *                               rendered in the ContentListView
- * @param [opts.sharer] {Sharer} 
+ * @param [opts.sharer] {Sharer}
  * @exports streamhub-sdk/views/list-view
  * @constructor
  */
@@ -45,7 +45,7 @@ var ContentListView = function (opts) {
     this._animate = opts.animate === undefined ? true : opts.animate;
     this._liker = opts.liker;
     this._sharer = opts.sharer;
-    this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory();
+    this.contentViewFactory = opts.contentViewFactory || new ContentViewFactory(opts);
 };
 
 inherits(ContentListView, ListView);
@@ -125,13 +125,13 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         } else {
             var viewToRemove = this.views[this.views.length-1];
         }
-        
+
         // Ensure .more won't let more through right away,
         // we already have more than we want.
         this.more.setGoal(0);
         // Unshift content to more stream
         this.saveForLater(viewToRemove.content);
-        
+
         // Remove non visible view
         this.remove(viewToRemove);
     }
@@ -160,7 +160,7 @@ ContentListView.prototype._insert = function (contentView, forcedIndex) {
 
         $wrappedEl.css('margin-top', (-1*$wrappedEl.height())+'px');
 
-        // Wait for the element to be rendered, before removing class which 
+        // Wait for the element to be rendered, before removing class which
         // transitions the margin-top from -100% to 0
         setTimeout($.proxy(function () {
             $wrappedEl.removeClass(this.insertingClassName).css('margin-top', '');
