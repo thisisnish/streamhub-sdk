@@ -11,14 +11,19 @@ function(LivefyreHttpClient, inherits, base64) {
      */
     var LivefyreBootstrapClient = function (opts) {
         opts = opts || {};
-        opts.serviceName = 'bootstrap';
+        opts.serviceName = 'bootstrap-cdn';
         this._version = opts.version || 'v3.1';
         LivefyreHttpClient.call(this, opts);
     };
 
     inherits(LivefyreBootstrapClient, LivefyreHttpClient);
 
-    LivefyreBootstrapClient.prototype._serviceName = 'bootstrap';
+    LivefyreBootstrapClient.prototype._serviceName = 'bootstrap-cdn';
+
+    LivefyreBootstrapClient.prototype._getCDNHost = function(opts) {
+        var environment = opts.environment || 'livefyre.com';
+        var host = this._serviceName + '.' + environment;
+    };
 
     /**
      * Fetches data from the livefyre bootstrap service with the arguments given.
@@ -41,7 +46,9 @@ function(LivefyreHttpClient, inherits, base64) {
         var includeEnvironment = !this._isProdEnvironment(environment) &&
             environment !== 'fyre' && environment !== 'fy.re';
         var url = [
-            this._getUrlBase(opts),
+            this._protocol,
+            '//',
+            this._getCDNHost(opts)
             "/bs3/",
             this._version ? this._version + '/' : '',
             includeEnvironment ? opts.environment + "/" : "",
