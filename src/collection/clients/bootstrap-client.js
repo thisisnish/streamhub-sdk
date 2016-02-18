@@ -23,6 +23,7 @@ function(LivefyreHttpClient, inherits, base64) {
     LivefyreBootstrapClient.prototype._getCDNHost = function(opts) {
         var environment = opts.environment || 'livefyre.com';
         var host = this._serviceName + '.' + environment;
+        return host;
     };
 
     /**
