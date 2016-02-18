@@ -33,7 +33,7 @@ SingleAttachmentListView.prototype.retile = function () {
     firstItemEl.addClass(this.squareTileClassName);
 
     if (firstItemEl.length === 1 && this.tileableCount() > 1 && firstItemEl.find(this.additionalImagesSelector).length === 0) {
-        var imageCountDom = '<span class="content-attachment-additional-images">+' + this.tileableCount() + '</span>';
+        var imageCountDom = '<span class="content-attachment-additional-images">+' + (this.tileableCount() - 1) + '</span>';
         firstItemEl.find(this.photoContentSelector).append(imageCountDom);
     }
 };
