@@ -34,11 +34,11 @@ run: server
 
 server: build
 	npm start
-	
-lint: build
+
+lint:
 	npm run hint
 
-lessc: build
+lessc:
 	npm run lessc
 
 env=dev
