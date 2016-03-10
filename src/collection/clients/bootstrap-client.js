@@ -11,14 +11,14 @@ function(LivefyreHttpClient, inherits, base64) {
      */
     var LivefyreBootstrapClient = function (opts) {
         opts = opts || {};
-        opts.serviceName = 'bootstrap-cdn';
+        opts.serviceName = 'data';
         this._version = opts.version || 'v3.1';
         LivefyreHttpClient.call(this, opts);
     };
 
     inherits(LivefyreBootstrapClient, LivefyreHttpClient);
 
-    LivefyreBootstrapClient.prototype._serviceName = 'bootstrap-cdn';
+    LivefyreBootstrapClient.prototype._serviceName = 'data';
 
     LivefyreBootstrapClient.prototype._getCDNHost = function(opts) {
         var environment = opts.environment || 'livefyre.com';
