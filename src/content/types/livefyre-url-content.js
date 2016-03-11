@@ -8,7 +8,8 @@ module.exports = LivefyreUrlContent;
 function LivefyreUrlContent(json) {
     LivefyreContent.call(this, json);
 
-    this._setTitle(json);
+    this.title = this._setAttr('title', json);
+    this.feedUrl = this._setAttr('url', json);
     var generator = json.content.generator || null;
 
     if (generator !== null) {
@@ -26,7 +27,8 @@ LivefyreUrlContent.prototype.addAttachment = function (oembed) {
         var type = oembed.type || null;
         var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null;
 
-        this._setTitle(oembed);
+        this.title = this._setAttr('title', oembed);
+        this.feedUrl = this._setAttr('url', oembed);
 
         //Don't attach links or facebook rich embeds
         if (type === 'link' || (type === 'rich' && provider === "facebook")) {
@@ -36,13 +38,14 @@ LivefyreUrlContent.prototype.addAttachment = function (oembed) {
     return LivefyreContent.prototype.addAttachment.apply(this, arguments);
 }
 
-LivefyreUrlContent.prototype._setTitle = function (json) {
-    if (this.title) {
-        return;
+LivefyreUrlContent.prototype._setAttr = function (attr, json) {
+    // Don't change the value.
+    if (this[attr]) {
+        return this[attr];
     }
 
     var oembed;
-    if (json.title) {
+    if (json[attr]) {
         oembed = json;
     } else if (json.childContent) {
         oembed = (json.childContent[0] && json.childContent[0].content.oembed) ?
@@ -51,15 +54,16 @@ LivefyreUrlContent.prototype._setTitle = function (json) {
         oembed = json.content.attachments[0];
     }
 
-    if (! oembed || ! shouldHaveTitle(oembed)) {
-        return;
+    // Don't change the value.
+    if (! oembed || ! shouldHaveAttr(attr, oembed)) {
+        return this[attr];
     }
 
-    this.title = oembed.title;
+    return oembed[attr];
 };
 
-function shouldHaveTitle(oembed) {
-    if (! oembed.title) {
+function shouldHaveAttr(attr, oembed) {
+    if (! oembed[attr]) {
         return false;
     }
     var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null;

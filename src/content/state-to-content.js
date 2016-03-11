@@ -264,7 +264,10 @@ LivefyreYoutubeContent, Storage, debug, Transform, inherits) {
             if ('feedEntry' in state.content) {
                 return pattern.test(state.content.feedEntry.channelId);
             }
-            return pattern.test(state.content.generator.url);
+            if (state.content.generator.url) {
+                return pattern.test(state.content.generator.url);
+            }
+            return pattern.test(state.content.generator.id);
         } catch (err) {
             return false;
         }
@@ -275,7 +278,7 @@ LivefyreYoutubeContent, Storage, debug, Transform, inherits) {
     }
 
     function isYoutubeState (state) {
-        return isProviderState(state, /\/\/(www\.)?youtube\.com/i);
+        return isProviderState(state, /(\/\/)?(www\.)?youtube\.com/i);
     }
 
     function isValidDate (date) {

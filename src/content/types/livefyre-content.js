@@ -284,7 +284,10 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         "twitter",     // 20
         "facebook",     // 21
         "url",     // 22
-        "facebook" // 23 - Facebook public feed
+        "facebook", // 23 - Facebook public feed
+        "unknown",
+        "feed", // 25 streams using rss
+        "feed" // 26 tumblr using rss
     ];
 
     return LivefyreContent;

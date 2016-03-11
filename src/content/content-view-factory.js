@@ -33,6 +33,7 @@ var ContentViewFactory = function(opts) {
     if (opts.createAttachmentsView) {
         this._createAttachmentsView = opts.createAttachmentsView;
     }
+    this._useSingleMediaView = false || opts.useSingleMediaView;
 };
 
 /**
@@ -82,7 +83,8 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         content: content,
         attachmentsView: opts.attachmentsView,
         likeCommand: likeCommand,
-        shareCommand: shareCommand
+        shareCommand: shareCommand,
+        useSingleMediaView: this._useSingleMediaView
     });
 
     return contentView;
@@ -110,7 +112,7 @@ ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
 
 ContentViewFactory.prototype._getViewTypeForContent = function (content) {
     var viewToRender = null;
-   
+
     for (var i=0, len=this.contentRegistry.length; i < len; i++) {
         var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
@@ -180,7 +182,7 @@ ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
             sharer.share(content);
         });
     }
-    
+
     shareCommand.canExecute = function () {
         if (typeof sharer.canShare !== 'function') {
             return true;

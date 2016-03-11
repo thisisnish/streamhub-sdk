@@ -133,7 +133,7 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 provider_url: "http://youtube.com",
                 type: "video",
                 thumbnail_url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg",
-                html: "<iframe src='http://video.source.html'>here's your video player</iframe>"
+                html: "<iframe src='http://video.source.html?src=http://youtube.com&anotherParam=1'>here's your video player</iframe>"
             },
             noAutoplayVideoAttachment = {
                 provider_name: "Vimeo",
@@ -141,6 +141,13 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 type: "video",
                 thumbnail_url: "http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg",
                 html: "<iframe src='http://video.source.html'>here's your video player</iframe>"
+            },
+            noRelatedVideoAttachment = {
+                provider_name: "Vimeo",
+                provider_url: "http://vimeo.com",
+                type: "video",
+                thumbnail_url: "http://i.vimeocdn.com/video/447095475_1280.jpg",
+                html: "<iframe src='http://video.source.html?src=https://player.vimeo.com/video/73096254&anotherParam=1'>here's your video player</iframe>"
             },
             galleryAttachmentListView,
             tiledAttachmentEl,
@@ -160,7 +167,7 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 tiledAttachmentEl = galleryAttachmentListView.$el.find('.content-attachment:first');
             });
 
-            it('shows the video player as the focused attachment and auto plays youtube', function() {
+            it('shows the video player as the focused attachment and auto plays youtube and no related content at the end', function() {
                 tiledAttachmentEl.trigger('click');
                 var focusedAttachmentsEl = galleryAttachmentListView.$el.find('.content-attachments-gallery');
                 var focusedVideoAttachmentEl = focusedAttachmentsEl.find('.content-attachment:first .content-attachment-video');
@@ -170,9 +177,34 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
                 expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
                 expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('autoplay=1');
+                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('%26rel%3D0');
             });
 
             it('does not auto play non Youtube and Livefyre videos', function() {
+                content = new Content();
+                galleryAttachmentListView = new GalleryAttachmentListView({ content: content, attachmentToFocus: noRelatedVideoAttachment });
+
+                galleryAttachmentListView.setElement($('<div></div>'));
+                galleryAttachmentListView.render();
+                for (var i=0; i < 4; i++) {
+                    var attachment = $.extend({}, noAutoplayVideoAttachment);
+                    attachment.id = i;
+                    content.addAttachment(attachment);
+                }
+                tiledAttachmentEl = galleryAttachmentListView.$el.find('.content-attachment:first');
+                tiledAttachmentEl.trigger('click');
+                var focusedAttachmentsEl = galleryAttachmentListView.$el.find('.content-attachments-gallery');
+                var focusedVideoAttachmentEl = focusedAttachmentsEl.find('.content-attachment:first .content-attachment-video');
+                expect(focusedVideoAttachmentEl).not.toBeEmpty();
+                expect(focusedVideoAttachmentEl).toBe('div');
+                expect(focusedVideoAttachmentEl).toHaveClass('content-attachments-focused');
+                expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
+                expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
+                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
+                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+            });
+
+            it('does show related videos at end of non Youtube and Livefyre videos', function() {
                 content = new Content();
                 galleryAttachmentListView = new GalleryAttachmentListView({ content: content, attachmentToFocus: noAutoplayVideoAttachment });
 
@@ -193,6 +225,7 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
                 expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
                 expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
+                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
             });
         });
 
@@ -258,4 +291,3 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
     });
 
 });
-

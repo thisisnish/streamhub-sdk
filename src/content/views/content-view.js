@@ -6,11 +6,14 @@ var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
+var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
 var inherits = require('inherits');
 var debug = require('debug');
+var impressionUtil = require('streamhub-sdk/impressionUtil');
 
 'use strict';
 
+var hasInnerHtmlBug = null;
 var log = debug('streamhub-sdk/content/views/content-view');
 
 /**
@@ -34,10 +37,12 @@ var ContentView = function (opts) {
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
+    this._thumbnailViewFactory = new ContentThumbnailViewFactory(opts);
 
     CompositeView.call(this, opts);
 
     this._addInitialChildViews(opts);
+    impressionUtil.recordImpression(opts.content);
 
     if (this.content) {
         this.content.on("change:visibility", function(newVis, oldVis) {
@@ -101,7 +106,7 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, { render: shouldRender });
 
-    this._thumbnailAttachmentsView = new TiledAttachmentListView(opts);
+    this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
     this.add(this._attachmentsView, { render: shouldRender });
@@ -191,5 +196,43 @@ ContentView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
 };
+
+/**
+ * Render the content inside of the ContentView's element.
+ * @returns {ContentView}
+ */
+ContentView.prototype.render = function () {
+    /**
+     * bengo:
+     * This next 3 lines makes me sad, but it is necessary to support IE9.
+     * View.prototype.render will set this.innerHTML to template().
+     * For some reason, this also causes the innerHTML of the buttons to
+     * be set to an empty string. e.g. Like Buttons have their like count
+     * cleared out. When ._renderButtons later re-appendChilds all the
+     * button.els, they are empty. So if we detach them here before
+     * this.innerHTML is set, they are not cleared.
+     * bit.ly/1no8mNk 
+     */
+    if (hasInnerHtmlBug = testHasInnerHtmlBug()) {
+        this._footerView._detachButtons();
+    }
+
+    CompositeView.prototype.render.call(this);
+    return this;
+};
+
+function testHasInnerHtmlBug() {
+    // only test once
+    if (hasInnerHtmlBug !== null) {
+        return hasInnerHtmlBug
+    }
+    var txt = 'hi';
+    var parent = document.createElement('div');
+    var child = document.createElement('span');
+    child.appendChild(document.createTextNode(txt));
+    parent.appendChild(child);
+    parent.innerHTML = '';
+    return child.innerHTML === '';
+}
 
 module.exports = ContentView;
