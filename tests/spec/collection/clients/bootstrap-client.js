@@ -74,7 +74,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 }, '.getContent to respond');
                 runs(function () {
                     var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
-                    expect(mostRecentRequest.url).toBe('http://data.livefyre.com/bs3/v3.1/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init');
+                    expect(mostRecentRequest.url).toBe('http://bootstrap.playstation.fyre.co/bs3/v3.1/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init');
                 });
             });
         });

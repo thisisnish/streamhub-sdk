@@ -20,10 +20,17 @@ function(LivefyreHttpClient, inherits, base64) {
 
     LivefyreBootstrapClient.prototype._serviceName = 'data';
 
-    LivefyreBootstrapClient.prototype._getCDNHost = function(opts) {
-        var environment = opts.environment || 'livefyre.com';
+    LivefyreBootstrapClient.prototype._getHost = function(opts) {
+      var environment = opts.environment || 'livefyre.com';
+      // use bootstrap directly for custom networks in prod and UAT
+      // TODO: remove after Fastly is tested on Community network in prod
+      if (environment != 'qa-ext.livefyre.com' && opts.network != 'livefyre.com') {
+        this._serviceName = 'bootstrap';
+        var host = LivefyreHttpClient.prototype._getHost.call(this, opts);
+      } else {
         var host = this._serviceName + '.' + environment;
-        return host;
+      }
+      return host;
     };
 
     /**
@@ -49,7 +56,7 @@ function(LivefyreHttpClient, inherits, base64) {
         var url = [
             this._protocol,
             '//',
-            this._getCDNHost(opts),
+            this._getHost(opts),
             "/bs3/",
             this._version ? this._version + '/' : '',
             includeEnvironment ? opts.environment + "/" : "",
