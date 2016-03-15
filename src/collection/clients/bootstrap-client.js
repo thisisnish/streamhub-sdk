@@ -21,19 +21,17 @@ function(LivefyreHttpClient, inherits, base64) {
     LivefyreBootstrapClient.prototype._serviceName = 'data';
 
     LivefyreBootstrapClient.prototype._getHost = function(opts) {
-      var environment = opts.environment || 'livefyre.com';
-      var isProdOrUat = (environment == 'livefyre.com' ||
-                         environment == 't402.livefyre.com');
-      // use bootstrap directly for custom networks in prod and UAT
-      // use data/Fastly if qa or if network == livefyre.com
-      // TODO: remove after Fastly is tested on Community network in prod
-      if (isProdOrUat && opts.network != 'livefyre.com') {
-        this._serviceName = 'bootstrap';
-        var host = LivefyreHttpClient.prototype._getHost.call(this, opts);
-      } else {
-        var host = this._serviceName + '.' + environment;
-      }
-      return host;
+        var environment = opts.environment || 'livefyre.com';
+        var isProdOrUat = (environment === 'livefyre.com' ||
+                         environment === 't402.livefyre.com');
+        // use bootstrap directly for custom networks in prod and UAT
+        // use data/Fastly if qa or if network == livefyre.com
+        // TODO: remove after Fastly is tested on Community network in prod
+        if (isProdOrUat && opts.network !== 'livefyre.com') {
+          this._serviceName = 'bootstrap';
+          return LivefyreHttpClient.prototype._getHost.call(this, opts);
+        }
+        return this._serviceName + '.' + environment;
     };
 
     /**
