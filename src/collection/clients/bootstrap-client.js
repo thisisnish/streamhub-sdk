@@ -19,17 +19,17 @@ function(LivefyreHttpClient, inherits, base64) {
     inherits(LivefyreBootstrapClient, LivefyreHttpClient);
 
     LivefyreBootstrapClient.prototype._serviceName = 'data';
+    var BS_ENVS = ['livefyre.com', 't402.livefyre.com'];
 
     LivefyreBootstrapClient.prototype._getHost = function(opts) {
         var environment = opts.environment || 'livefyre.com';
-        var isProdOrUat = (environment === 'livefyre.com' ||
-                         environment === 't402.livefyre.com');
         // use bootstrap directly for custom networks in prod and UAT
         // use data/Fastly if qa or if network == livefyre.com
         // TODO: remove after Fastly is tested on Community network in prod
-        if (isProdOrUat && opts.network !== 'livefyre.com') {
-          this._serviceName = 'bootstrap';
-          return LivefyreHttpClient.prototype._getHost.call(this, opts);
+        var isBsEnv = BS_ENVS.indexOf(environment) > -1;
+        if (isBsEnv && opts.network !== 'livefyre.com') {
+            this._serviceName = 'bootstrap';
+            return LivefyreHttpClient.prototype._getHost.call(this, opts);
         }
         return this._serviceName + '.' + environment;
     };
@@ -55,9 +55,7 @@ function(LivefyreHttpClient, inherits, base64) {
         var includeEnvironment = !this._isProdEnvironment(environment) &&
             environment !== 'fyre' && environment !== 'fy.re';
         var url = [
-            this._protocol,
-            '//',
-            this._getHost(opts),
+            this._getUrlBase(opts),
             "/bs3/",
             this._version ? this._version + '/' : '',
             includeEnvironment ? opts.environment + "/" : "",
