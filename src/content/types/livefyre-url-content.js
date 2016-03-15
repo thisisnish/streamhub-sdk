@@ -25,7 +25,7 @@ LivefyreUrlContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:ty
 LivefyreUrlContent.prototype.addAttachment = function (oembed) {
     if (oembed) {
         var type = oembed.type || null;
-        var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null; 
+        var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null;
 
         this.title = this._setAttr('title', oembed);
         this.feedUrl = this._setAttr('url', oembed);
@@ -50,7 +50,7 @@ LivefyreUrlContent.prototype._setAttr = function (attr, json) {
     } else if (json.childContent) {
         oembed = (json.childContent[0] && json.childContent[0].content.oembed) ?
             json.childContent[0].content.oembed : null;
-    } else if (json.content.attachments) {
+    } else if (json.content && json.content.attachments) {
         oembed = json.content.attachments[0];
     }
 
