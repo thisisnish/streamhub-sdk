@@ -8,13 +8,14 @@ define([
     'streamhub-sdk/content/types/livefyre-instagram-content',
     'streamhub-sdk/content/types/livefyre-url-content',
     'streamhub-sdk/content/types/livefyre-youtube-content',
+    'streamhub-sdk/content/types/livefyre-feed-content',
     'streamhub-sdk/storage',
     'streamhub-sdk/debug',
     'stream/transform',
     'inherits'
 ], function (LivefyreContent, LivefyreTwitterContent, LivefyreFacebookContent,
 Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
-LivefyreYoutubeContent, Storage, debug, Transform, inherits) {
+LivefyreYoutubeContent, LivefyreFeedContent, Storage, debug, Transform, inherits) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/state-to-content');
@@ -233,7 +234,7 @@ LivefyreYoutubeContent, Storage, debug, Transform, inherits) {
         } else if (sourceName === 'instagram') {
             return new LivefyreInstagramContent(state);
         } else if (sourceName === 'feed') {
-            ContentType = LivefyreContent;
+            ContentType = LivefyreFeedContent;
             // Use specific Content type for states from instagram RSS feeds
             if (isInstagramState(state)) {
                 ContentType = LivefyreInstagramContent;

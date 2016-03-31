@@ -7,6 +7,7 @@ var LivefyreTwitterContent = require('streamhub-sdk/content/types/livefyre-twitt
 var LivefyreFacebookContent = require('streamhub-sdk/content/types/livefyre-facebook-content');
 var LivefyreInstagramContent = require('streamhub-sdk/content/types/livefyre-instagram-content');
 var LivefyreUrlContent = require('streamhub-sdk/content/types/livefyre-url-content');
+var LivefyreFeedContent = require('streamhub-sdk/content/types/livefyre-feed-content');
 var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
 var ContentView = require('streamhub-sdk/content/views/card-content-view');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
@@ -14,6 +15,7 @@ var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-vi
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
 var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
 var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
+var FeedContentView = require('streamhub-sdk/content/views/feed-content-view');
 
 var Command = require('streamhub-sdk/ui/command');
 var Liker = require('streamhub-sdk/collection/liker');
@@ -49,6 +51,8 @@ ContentViewFactory.prototype.contentRegistry = [
         typeUrn: TYPE_URNS.LIVEFYRE_FACEBOOK},
     { type: LivefyreInstagramContent, view: InstagramContentView,
         typeUrn: TYPE_URNS.LIVEFYRE_INSTAGRAM },
+    { type: LivefyreFeedContent, view: FeedContentView,
+        typeUrn: TYPE_URNS.LIVEFYRE_FEED },
     { type: TwitterContent, view: TwitterContentView,
         typeUrn: TYPE_URNS.TWITTER },
     { type: LivefyreUrlContent, view: UrlContentView,
