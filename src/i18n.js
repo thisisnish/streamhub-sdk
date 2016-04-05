@@ -217,8 +217,8 @@ Translations.prototype.set = function (key, value, opts) {
  * @private
  */
 Translations.prototype._set = function (opts) {
-    var fn = opts.fillIn ? fillIn : mixIn;
     var merged = {};
+    var mergeFn = opts.fillIn ? fillIn : mixIn;
 
     // Only keep translations whose values are strings. It's possible that there
     // could be non-string values due to how custom strings have been supported
@@ -227,7 +227,7 @@ Translations.prototype._set = function (opts) {
         return typeof(v) === 'string';
     });
 
-    fn(merged, this._i18n, data);
+    mergeFn(merged, this._i18n, data);
     var changed = this._changed = !equals(merged, this._i18n);
     var shouldTrigger = 'silent' in opts ? !opts.silent : true;
     this._i18n = merged;
