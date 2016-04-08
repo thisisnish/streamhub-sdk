@@ -1,6 +1,16 @@
 var i18n = require('streamhub-sdk/i18n');
 
 describe('src/i18n.js', function () {
+    var mockTranslationResponse = {
+        data: {
+            translations: {
+                'streamhub-wall': {
+                    abc: 'def'
+                }
+            }
+        }
+    };
+
     beforeEach(function () {
         i18n._changed = false;
         i18n._i18n = {};
@@ -24,7 +34,8 @@ describe('src/i18n.js', function () {
     describe('#_handleTranslationsReceived', function () {
         it('translates data if there is no error', function () {
             spyOn(i18n, 'translate').andCallThrough();
-            i18n._handleTranslationsReceived(null, {data: {abc: 'def'}});
+            i18n._appType = 'streamhub-wall';
+            i18n._handleTranslationsReceived(null, mockTranslationResponse);
             expect(i18n.translate.callCount).toEqual(1);
         });
 
@@ -38,7 +49,8 @@ describe('src/i18n.js', function () {
             spyOn(i18n, 'emit');
 
             // No error
-            i18n._handleTranslationsReceived(null, {data: {abc: 'def'}});
+            i18n._appType = 'streamhub-wall';
+            i18n._handleTranslationsReceived(null, mockTranslationResponse);
             expect(i18n.emit.callCount).toEqual(2);
 
             // Has error

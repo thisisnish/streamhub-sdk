@@ -115,7 +115,8 @@ Translations.prototype.getAll = function () {
  */
 Translations.prototype._handleTranslationsReceived = function (err, res) {
     if (!err) {
-        this.translate({data: res.data, fillIn: true, merge: true});
+        var data = res.data.translations[this._appType] || {};
+        this.translate({data: data, fillIn: true, merge: true});
     }
     this.emit(EVENTS.RECEIVED);
 };

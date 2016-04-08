@@ -11,7 +11,6 @@ function(LivefyreHttpClient, inherits, urnlib) {
      */
     var LivefyreTranslationClient = function (opts) {
         opts = opts || {};
-        opts.serviceName = 'bootstrap';
         this._version = opts.version || 'v4';
         LivefyreHttpClient.call(this, opts);
     };
@@ -20,40 +19,55 @@ function(LivefyreHttpClient, inherits, urnlib) {
 
     LivefyreTranslationClient.prototype._serviceName = 'bootstrap';
 
+    /** @override */
+    LivefyreTranslationClient.prototype._getHost = function (opts) {
+        var environment = opts.environment || 'livefyre.com';
+        var host = 'bootstrap.' + environment;
+        if (isLocaldev(environment)) {
+            host = 'bsserver.' + environment;
+        }
+        return host;
+    };
+
+    /**
+     * Is the provided environment local dev?
+     * @param {string=} env - Environment to check.
+     * @return {boolean}
+     */
+    function isLocaldev(env) {
+        return env === 'fyre' || env === 'fy.re';
+    }
+
     /**
      * Fetches data from the livefyre translation service with the arguments given.
      * @param opts {Object} The livefyre collection options.
      * @param opts.network {string} The name of the network in the livefyre platform
      * @param opts.siteId {string} The livefyre siteId for the conversation
-     * @param [opts.environment] {string} Optional livefyre environment to use dev/prod environment
-     * @param [opts.version] {string} Version string to include in Bootstrap API
-     *     resource paths. By default, one will not be added, which usually means '3.0'
-     * @param callback {function} A callback that is called upon success/failure of the
+     * @param [opts.appType] {string} Optional type of the app.
+     * @param [opts.environment] {string} Optional environment.
+     * @param [opts.language] {string} Optional language to request translations for.
+     * @param callback {function()} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is "function(error, data)".
      */
-    LivefyreTranslationClient.prototype.getTranslations = function(opts, callback) {
+    LivefyreTranslationClient.prototype.getTranslations = function (opts, callback) {
         opts = opts || {};
         callback = callback || function() {};
-        var scopeUrn = new urnlib.URN([
-            [null, opts.network],
-            ['site', opts.siteId],
-            [null, 'translationsets']
-        ]);
-        var environment = opts.environment || 'livefyre.com';
-        if (environment === 'fyre' || environment === 'fy.re') {
-            opts.network = 'fyre';
-        }
-        var url = [
-            this._getUrlBase(opts),
-            '/api/',
-            this._version ? this._version + '/' : '',
-            scopeUrn.toString()
-        ].join('');
 
-        var requestOpts = {url: url};
+        var url = this._getUrlBase(opts) +
+            '/api/' + this._version +
+            '/configuration/' + opts.network +
+            '/site/' + opts.siteId + '/';
+
+        var requestOpts = {
+            data: {
+                'section': 'translations',
+                'translations.lang_code': opts.language || window.navigator.language
+            },
+            url: url
+        };
 
         if (opts.appType) {
-            requestOpts.data = {app_type: opts.appType};
+            requestOpts.data['translations.app'] = opts.appType;
         }
 
         this._request(requestOpts, callback);
