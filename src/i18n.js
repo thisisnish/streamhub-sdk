@@ -114,11 +114,13 @@ Translations.prototype.getAll = function () {
  * @private
  */
 Translations.prototype._handleTranslationsReceived = function (err, res) {
+    var translated = false;
     if (!err) {
         var data = res.data.translations[this._appType] || {};
         this.translate({data: data, fillIn: true, merge: true});
+        translated = true;
     }
-    this.emit(EVENTS.RECEIVED);
+    this.emit(EVENTS.RECEIVED, {translated: translated});
 };
 
 /**
