@@ -61,6 +61,12 @@ var ContentView = function (opts) {
             this._handleAttachmentsChange();
         }.bind(this));
 
+        this.$el.on('insights:local', function (evt, data) {
+            if (data.type.search(/^Share(?:T|F|U)/) < 0) {
+                data.content = opts.content;
+            }
+        });
+
         // TODO: Re-render on change.
         // Removed for now because re-rendering a ContentView and
         // AttachmentsListView can unbind handlers important for modal

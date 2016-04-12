@@ -35,15 +35,18 @@ function asTwitterContentView(contentView, opts) {
     contentView._addInitialButtons = function () {
         var replyButton = new HubButton(undefined, {
             className: 'content-action content-action-reply',
-            buttonUrl: 'https://twitter.com/intent/tweet?in_reply_to=' + contentView.content.tweetId
+            buttonUrl: 'https://twitter.com/intent/tweet?in_reply_to=' + contentView.content.tweetId,
+            insightsVerb: 'TwitterReplyClick'
         });
         var retweetButton = new HubButton(undefined, {
             className: 'content-action content-action-retweet',
-            buttonUrl: 'https://twitter.com/intent/retweet?tweet_id=' + contentView.content.tweetId
+            buttonUrl: 'https://twitter.com/intent/retweet?tweet_id=' + contentView.content.tweetId,
+            insightsVerb: 'TwitterRetweetClick'
         });
         var favoriteButton = new HubButton(undefined, {
             className: 'content-action content-action-favorite',
-            buttonUrl: 'https://twitter.com/intent/favorite?tweet_id=' + contentView.content.tweetId
+            buttonUrl: 'https://twitter.com/intent/favorite?tweet_id=' + contentView.content.tweetId,
+            insightsVerb: 'TwitterLikeClick'
         });
 
         contentView.addButton(replyButton);
