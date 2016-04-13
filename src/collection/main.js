@@ -12,10 +12,11 @@ define([
     'streamhub-sdk/content/fetch-content',
     'streamhub-sdk/auth',
     'inherits',
-    'streamhub-sdk/debug'],
+    'streamhub-sdk/debug',
+    'mout/object/merge'],
 function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
         Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyrePermalinkClient,
-        LivefyreWriteClient, fetchContent, Auth, inherits, debug) {
+        LivefyreWriteClient, fetchContent, Auth, inherits, debug, merge) {
     'use strict';
 
 
@@ -273,6 +274,8 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         }
         var collectionSettings = initData.collectionSettings;
         this.id = collectionSettings && collectionSettings.collectionId;
+        initData.settings = merge(initData.networkSettings,
+            initData.siteSettings, collectionSettings);
         this.emit('_initFromBootstrap', err, initData);
     };
 

@@ -1,9 +1,10 @@
 var auth = require('auth');
 var Command = require('streamhub-sdk/ui/command');
+var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-buttons-mixin');
 var HubButton  = require('streamhub-sdk/ui/hub-button');
 var HubLikeButton = require('streamhub-sdk/ui/hub-like-button');
+var i18n = require('streamhub-sdk/i18n');
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
-var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-buttons-mixin');
 // TODO: move share to a separate mixin
 var ShareButton = require('streamhub-sdk/ui/share-button');
 
@@ -100,12 +101,14 @@ function asLivefyreContentView(contentView, opts) {
      * @protected
      */
     contentView._createShareButton = function () {
+        var label = i18n.get('shareButtonText', 'Share');
         var shareCommand = contentView._commands.share;
 
         if (!shareCommand) {
             return new ShareButton({
                 className: 'btn-link content-share',
-                content: this.content
+                content: this.content,
+                label: label
             });
         }
         if (! shareCommand.canExecute()) {
@@ -113,7 +116,7 @@ function asLivefyreContentView(contentView, opts) {
         }
         var shareButton = new HubButton(shareCommand, {
             className: 'btn-link content-share',
-            label: 'Share'
+            label: label
         });
         return shareButton;
     };

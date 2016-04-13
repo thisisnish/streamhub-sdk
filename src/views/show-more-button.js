@@ -1,5 +1,5 @@
-define(['inherits', 'streamhub-sdk/view', 'streamhub-sdk/jquery'],
-function (inherits, View) {
+define(['inherits', 'streamhub-sdk/view', 'streamhub-sdk/i18n', 'streamhub-sdk/jquery'],
+function (inherits, View, i18n) {
     'use strict';
 
     /**
@@ -43,7 +43,7 @@ function (inherits, View) {
      * @return {string}
      */
     ShowMoreButton.prototype.template = function () {
-        return "Load More";
+        return i18n.get('showMoreButtonText', 'Load More');
     };
 
 
