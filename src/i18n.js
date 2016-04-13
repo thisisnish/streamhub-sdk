@@ -85,6 +85,12 @@ inherits(Translations, EventEmitter);
  */
 Translations.prototype.fetch = function (opts) {
     opts.appType = this._appType;
+
+    // Don't request translations for the livefyre.com network.
+    if (opts.network === 'livefyre.com') {
+        this.emit(EVENTS.RECEIVED, {translated: false});
+        return;
+    }
     this._client.getTranslations(opts, bind(this._handleTranslationsReceived, this));
 };
 

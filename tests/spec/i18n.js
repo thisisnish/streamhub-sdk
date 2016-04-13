@@ -17,6 +17,27 @@ describe('src/i18n.js', function () {
         i18n._translationMap;
     });
 
+    describe('#fetch', function () {
+        beforeEach(function () {
+            spyOn(i18n._client, 'getTranslations');
+        });
+
+        it('does not get translations for livefyre.com network', function () {
+            var called = false;
+            i18n.once(i18n.EVENTS.RECEIVED, function () {
+                called = true;
+            });
+            i18n.fetch({network: 'livefyre.com'});
+            expect(called).toEqual(true);
+            expect(i18n._client.getTranslations.callCount).toEqual(0);
+        });
+
+        it('gets translations for custom networks', function () {
+            i18n.fetch({network: 'test.fyre.co'});
+            expect(i18n._client.getTranslations.callCount).toEqual(1);
+        });
+    });
+
     describe('#get', function () {
         it('returns the translations', function () {
             i18n._i18n = {abc: 'def'};
