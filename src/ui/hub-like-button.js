@@ -22,6 +22,7 @@ function HubLikeButton (fnOrCommand, opts) {
         className: 'content-like',
         enabled: enabled,
         label: likeCount.toString(),
+        insightsVerb: 'Like',
         errback: function (err) {
             if (err) {
                 this._enabled = !this._enabled;
@@ -59,15 +60,18 @@ HubLikeButton.prototype._execute = function () {
     this.$el.removeClass('hub-btn-toggle-on').removeClass('hub-btn-toggle-off');
     this._enabled ? this.$el.addClass('hub-btn-toggle-on') : this.$el.addClass('hub-btn-toggle-off');
     this._handleClick();
+    this.$el.trigger('insights:local', {type: this._insightsVerb});
 };
 
 HubLikeButton.prototype._handleClick = function () {
     if (this._enabled) {
         //increment
         this.updateLabel(this._content.getLikeCount() + 1);
+        this.updateInsightsVerb('Like');
     } else {
         //decrement
         this.updateLabel(Math.max(0, this._content.getLikeCount() - 1));
+        this.updateInsightsVerb('Unlike');
     }
 }
 
