@@ -121,7 +121,7 @@ Translations.prototype.getAll = function () {
  */
 Translations.prototype._handleTranslationsReceived = function (err, res) {
     var translated = false;
-    if (!err) {
+    if (!err && res.code === 200) {
         var data = res.data.translations[this._appType] || {};
         this.translate({data: data, fillIn: true, merge: true});
         translated = true;
