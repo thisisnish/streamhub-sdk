@@ -2,6 +2,7 @@ var i18n = require('streamhub-sdk/i18n');
 
 describe('src/i18n.js', function () {
     var mockTranslationResponse = {
+        code: 200,
         data: {
             translations: {
                 'streamhub-wall': {
