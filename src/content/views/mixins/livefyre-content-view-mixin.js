@@ -40,9 +40,11 @@ function asLivefyreContentView(contentView, opts) {
 
     contentView._addInitialButtons = function () {
         // Expand
-        contentView._expandButton = contentView._createExpandButton();
-        if (contentView._expandButton) {
-            contentView.addButton(contentView._expandButton);
+        if(opts.showExpandButton !== false) {
+            contentView._expandButton = contentView._createExpandButton();
+            if (contentView._expandButton) {
+                contentView.addButton(contentView._expandButton);
+            }
         }
         // Like
         contentView._likeButton = contentView._createLikeButton();

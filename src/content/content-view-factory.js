@@ -31,6 +31,7 @@ var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
  */
 var ContentViewFactory = function(opts) {
     opts = opts || {};
+    this.showExpandButton = opts.showExpandButton;
     this.contentRegistry = this.contentRegistry.slice(0);
     if (opts.createAttachmentsView) {
         this._createAttachmentsView = opts.createAttachmentsView;
@@ -88,7 +89,8 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         attachmentsView: opts.attachmentsView,
         likeCommand: likeCommand,
         shareCommand: shareCommand,
-        useSingleMediaView: this._useSingleMediaView
+        useSingleMediaView: this._useSingleMediaView,
+        showExpandButton: this.showExpandButton
     });
 
     return contentView;

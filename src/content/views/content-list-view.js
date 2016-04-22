@@ -6,6 +6,8 @@ var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var hasAttachmentModal = require('streamhub-sdk/content/views/mixins/attachment-modal-mixin');
 var hasQueue = require('streamhub-sdk/views/mixins/queue-mixin');
 var debug = require('streamhub-sdk/debug');
+var ModalView = require('streamhub-sdk/modal/main');
+var GalleryAttachmentListView = require('streamhub-sdk/content/views/gallery-attachment-list-view');
 
 'use strict';
 
@@ -26,6 +28,7 @@ var log = debug('streamhub-sdk/content/views/content-list-view');
  */
 var ContentListView = function (opts) {
     opts = opts || {};
+    opts.showExpandButton = opts.showExpandButton || false;
 
     this.modal = hasAttachmentModal(this, opts.modal);
 
@@ -135,6 +138,14 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         // Remove non visible view
         this.remove(viewToRemove);
     }
+
+    this.$expand = contentView.$el.find('.hub-content-action-expand');
+    this.$el.find('.content-attachment').click(false);
+    this.$expand.click(function (){
+        var modal = new ModalView();
+        var modalSubView = new GalleryAttachmentListView(contentView);
+        modal.show(modalSubView);
+    });
 
     return newView;
 };
