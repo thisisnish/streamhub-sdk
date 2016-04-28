@@ -1,5 +1,6 @@
 var HubButton = require('streamhub-sdk/ui/hub-button');
 var hasFooterButtons = require('streamhub-sdk/content/views/mixins/footer-buttons-mixin');
+var ExpandButton = require('streamhub-sdk/ui/expand-button');
 
 'use strict';
 
@@ -33,9 +34,9 @@ function asTwitterContentView(contentView, opts) {
     };
 
     contentView._addInitialButtons = function () {
-        var expandButton = new HubButton(undefined, {
-            className: 'content-action content-action-expand',
-            buttonUrl: '#'
+        var expandButton = new ExpandButton(undefined, {
+            elClassPrefix: 'hub-btn hub-content-action-expand ',
+            contentView: contentView
         });
         var replyButton = new HubButton(undefined, {
             className: 'content-action content-action-reply',
@@ -53,7 +54,7 @@ function asTwitterContentView(contentView, opts) {
             insightsVerb: 'TwitterLikeClick'
         });
 
-        if(opts.showExpandButton !== false) {
+        if(opts.showExpandButton) {
             contentView.addButton(expandButton);
         }
         contentView.addButton(replyButton);

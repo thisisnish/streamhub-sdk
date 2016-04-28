@@ -7,6 +7,7 @@ var i18n = require('streamhub-sdk/i18n');
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 // TODO: move share to a separate mixin
 var ShareButton = require('streamhub-sdk/ui/share-button');
+var ExpandButton = require('streamhub-sdk/ui/expand-button');
 
 'use strict';
 
@@ -40,7 +41,7 @@ function asLivefyreContentView(contentView, opts) {
 
     contentView._addInitialButtons = function () {
         // Expand
-        if(opts.showExpandButton !== false) {
+        if(opts.showExpandButton) {
             contentView._expandButton = contentView._createExpandButton();
             if (contentView._expandButton) {
                 contentView.addButton(contentView._expandButton);
@@ -68,9 +69,9 @@ function asLivefyreContentView(contentView, opts) {
      * @protected
      */
     contentView._createExpandButton = function () {
-        return new HubButton(undefined, {
-            className: 'content-action content-action-expand',
-            buttonUrl: '#'
+        return new ExpandButton(undefined, {
+            elClassPrefix: 'hub-btn hub-content-action-expand ',
+            contentView: contentView
         });
     };
 
