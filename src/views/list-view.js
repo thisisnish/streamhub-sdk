@@ -303,6 +303,8 @@ ListView.prototype.add = function(newView, forcedIndex) {
     this.views.splice(forcedIndex || index, 0, newView);
 
     newView.render();
+    newView.$el.find('.content-attachment').click(false);
+
     // Add to DOM
     insertOrThrow(newView, forcedIndex);
     this.emit('added', newView);

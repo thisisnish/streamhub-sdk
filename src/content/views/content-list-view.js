@@ -137,7 +137,6 @@ ContentListView.prototype.add = function(content, forcedIndex, opts) {
         this.remove(viewToRemove);
     }
 
-    contentView.$el.find('.content-attachment').click(false);
     return newView;
 };
 
