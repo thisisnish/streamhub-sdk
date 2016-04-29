@@ -1,4 +1,10 @@
 var i18n = require('streamhub-sdk/i18n');
+var merge = require('mout/object/merge');
+
+function setAppLevel(translations) {
+    i18n._appLevelTranslations = translations;
+    i18n._translations = merge(i18n._translationSet, i18n._appLevelTranslations);
+}
 
 describe('src/i18n.js', function () {
     var mockTranslationResponse = {
@@ -13,9 +19,11 @@ describe('src/i18n.js', function () {
     };
 
     beforeEach(function () {
+        i18n._appLevelTranslations = {};
         i18n._changed = false;
-        i18n._i18n = {};
-        i18n._translationMap;
+        i18n._translations = {};
+        i18n._translationTransformMap = {};
+        i18n._translationSet = {};
     });
 
     describe('#fetch', function () {
@@ -41,14 +49,14 @@ describe('src/i18n.js', function () {
 
     describe('#get', function () {
         it('returns the translations', function () {
-            i18n._i18n = {abc: 'def'};
+            i18n._translations = {abc: 'def'};
             expect(i18n.get('abc')).toEqual('def');
         });
     });
 
     describe('#getAll', function () {
         it('returns the translations', function () {
-            i18n._i18n = {abc: 'def'};
+            i18n._translations = {abc: 'def'};
             expect(i18n.getAll()).toEqual({abc: 'def'});
         });
     });
@@ -59,6 +67,13 @@ describe('src/i18n.js', function () {
             i18n._appType = 'streamhub-wall';
             i18n._handleTranslationsReceived(null, mockTranslationResponse);
             expect(i18n.translate.callCount).toEqual(1);
+        });
+
+        it('merges the app-level translations over the received translations', function () {
+            setAppLevel({abc: 'ghi'});
+            i18n._appType = 'streamhub-wall';
+            i18n._handleTranslationsReceived(null, mockTranslationResponse);
+            expect(i18n.getAll()).toEqual({abc: 'ghi'});
         });
 
         it('does not translate if error', function () {
@@ -73,11 +88,11 @@ describe('src/i18n.js', function () {
             // No error
             i18n._appType = 'streamhub-wall';
             i18n._handleTranslationsReceived(null, mockTranslationResponse);
-            expect(i18n.emit.callCount).toEqual(2);
+            expect(i18n.emit.callCount).toEqual(1);
 
             // Has error
             i18n._handleTranslationsReceived({}, {});
-            expect(i18n.emit.callCount).toEqual(3);
+            expect(i18n.emit.callCount).toEqual(2);
         });
     });
 
@@ -99,24 +114,23 @@ describe('src/i18n.js', function () {
         });
 
         it('returns `false` if translations are set', function () {
-            i18n._i18n['abc'] = 'def';
+            i18n._translations['abc'] = 'def';
             expect(i18n.isEmpty()).toEqual(false);
         });
     });
 
     describe('#remove', function () {
         it('supports a string argument', function () {
-            i18n._i18n['abc'] = 'def';
+            setAppLevel({abc: 'def'});
             i18n.remove('abc');
-            expect('abc' in i18n._i18n).toEqual(false);
+            expect('abc' in i18n._translations).toEqual(false);
         });
 
         it('supports an array of strings argument', function () {
-            i18n._i18n['abc'] = 'def';
-            i18n._i18n['def'] = 'ghi';
+            setAppLevel({abc: 'def', def: 'ghi'});
             i18n.remove(['abc', 'def']);
-            expect('abc' in i18n._i18n).toEqual(false);
-            expect('def' in i18n._i18n).toEqual(false);
+            expect('abc' in i18n._translations).toEqual(false);
+            expect('def' in i18n._translations).toEqual(false);
         });
     });
 
@@ -127,14 +141,17 @@ describe('src/i18n.js', function () {
 
         it('supports key, value, opts arguments', function () {
             i18n.set('abc', 'def', {silent: true});
-            expect(i18n._i18n['abc']).toEqual('def');
+            expect(i18n._appLevelTranslations['abc']).toEqual('def');
+            expect(i18n._translations['abc']).toEqual('def');
             expect(i18n.emit.callCount).toEqual(0);
         });
 
         it('supports object of pairs and opts arguments', function () {
             i18n.set({abc: 'def', def: 'ghi'}, {silent: true});
-            expect(i18n._i18n['abc']).toEqual('def');
-            expect(i18n._i18n['def']).toEqual('ghi');
+            expect(i18n._appLevelTranslations['abc']).toEqual('def');
+            expect(i18n._appLevelTranslations['def']).toEqual('ghi');
+            expect(i18n._translations['abc']).toEqual('def');
+            expect(i18n._translations['def']).toEqual('ghi');
             expect(i18n.emit.callCount).toEqual(0);
         });
 
@@ -156,19 +173,19 @@ describe('src/i18n.js', function () {
 
     describe('#_set', function () {
         it('sets translations on the i18n object', function () {
-            expect(i18n._i18n).toEqual({});
             i18n._set({data: {foo: 'bar'}});
-            expect(i18n._i18n).toEqual({foo: 'bar'});
+            expect(i18n._appLevelTranslations).toEqual({foo: 'bar'});
+            expect(i18n._translations).toEqual({foo: 'bar'});
         });
 
         it('fills in missing data if `opt_fillIn` is truthy', function () {
-            i18n._i18n = {foo: 'bar', yup: 'nope'};
+            setAppLevel({foo: 'bar', yup: 'nope'});
             i18n._set({data: {foo: 'baz', blah: 'gah'}, fillIn: true});
             expect(i18n.getAll()).toEqual({foo: 'bar', blah: 'gah', yup: 'nope'});
         });
 
         it('overrides existing data if `opt_fillIn` is falsy', function () {
-            i18n._i18n = {foo: 'bar', yup: 'nope'};
+            setAppLevel({foo: 'bar', yup: 'nope'});
             i18n._set({data: {foo: 'baz', blah: 'gah'}});
             expect(i18n.getAll()).toEqual({foo: 'baz', blah: 'gah', yup: 'nope'});
         });
@@ -176,6 +193,12 @@ describe('src/i18n.js', function () {
         it('sets the _changed flag to true', function () {
             i18n._set({data: {foo: 'bar'}});
             expect(i18n.hasChanged()).toEqual(true);
+        });
+
+        it('it can remove keys if set to `undefined`', function () {
+            setAppLevel({abc: 'def'});
+            i18n._set({data: {abc: undefined}});
+            expect(i18n.getAll()).toEqual({});
         });
 
         it('triggers an event telling listeners there are updates', function () {
@@ -189,7 +212,7 @@ describe('src/i18n.js', function () {
 
         it('does not trigger an event if nothing changed', function () {
             var evtFired = false;
-            i18n._i18n = {foo: 'bar'};
+            setAppLevel({foo: 'bar'});
             i18n.on(i18n.EVENTS.UPDATED, function () {
                 evtFired = true;
             });
@@ -222,19 +245,24 @@ describe('src/i18n.js', function () {
             expect(i18n.getAll()).toEqual({derp: 'blah'});
         });
 
-        it('merges the root data with translated data if `merge` option is passed', function () {
-            i18n.initialize({translationMap: {postButtonText: ['derp']}});
-            i18n.translate({
-                data: {
-                    postButtonText: 'blah',
-                    moar: 'test'
-                },
-                merge: true
-            });
-            expect(i18n.getAll()).toEqual({
-                derp: 'blah',
-                moar: 'test'
-            });
+        it('it skips setting the values and returns them if `skipSet` is passed', function () {
+            spyOn(i18n, '_set').andCallThrough();
+            i18n.initialize({translationMap: {abc: ['abc'], def: ['def']}});
+
+            var result = i18n.translate({data: {abc: 'def'}});
+            expect(result).toBe(true);
+            expect(i18n._set.callCount).toEqual(1);
+
+            result = i18n.translate({data: {def: 'ghi'}, skipSet: true});
+            expect(result).toEqual({def: 'ghi'});
+            expect(i18n._set.callCount).toEqual(1);
+        });
+
+        it('removes entries whose values are `undefined`', function () {
+            setAppLevel({abc: 'def'});
+            i18n.initialize({translationMap: {abc: ['abc'], def: ['def']}});
+            i18n.translate({data: {abc: undefined}});
+            expect(i18n.getAll()).toEqual({});
         });
     });
 });

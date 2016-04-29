@@ -26,10 +26,15 @@ var EVENTS = {
  * @const {Object}
  */
 var I18N_MAP = {
+    PLACEHOLDERTEXT: ['PLACEHOLDERTEXT'],
+    POST: ['POST', 'POST_PHOTO'],
+    POST_MODAL_BUTTON: ['POST_MODAL_BUTTON'],
+    POST_MODAL_TITLE: ['POST_MODAL_TITLE'],
+    POST_PHOTO: ['POST', 'POST_PHOTO'],
     postButtonText: ['POST', 'POST_PHOTO'],
-    postModalTitle: ['POST_MODAL_TITLE'],
     postModalButton: ['POST_MODAL_BUTTON'],
-    postModalPlaceholder: ['PLACEHOLDERTEXT']
+    postModalPlaceholder: ['PLACEHOLDERTEXT'],
+    postModalTitle: ['POST_MODAL_TITLE']
 };
 
 /**
@@ -41,6 +46,13 @@ var I18N_MAP = {
  */
 function Translations() {
     EventEmitter.call(this);
+
+    /**
+     * The translations object that stores key-value pairs of translations.
+     * @type {Object}
+     * @private
+     */
+    this._appLevelTranslations = {};
 
     /**
      * App type to request translations for.
@@ -64,18 +76,26 @@ function Translations() {
     this._client = new LivefyreTranslationClient();
 
     /**
-     * The translations object that stores key-value pairs of translations.
+     * Translations object that is the combination of remote translation set
+     * and the app level translations.
      * @type {Object}
      * @private
      */
-    this._i18n = {};
+    this._translations = {};
 
     /**
      * Map for transforming the translations into a usable form.
      * @type {Object=}
      * @private
      */
-    this._translationMap;
+    this._translationTransformMap || {};
+
+    /**
+     * Translation set from the server.
+     * @type {Object=}
+     * @private
+     */
+    this._translationSet = {};
 }
 inherits(Translations, EventEmitter);
 
@@ -101,7 +121,7 @@ Translations.prototype.fetch = function (opts) {
  * @return {string=}
  */
 Translations.prototype.get = function (key, defaultValue) {
-    return this._i18n[key] || defaultValue;
+    return this._translations[key] || defaultValue;
 };
 
 /**
@@ -109,7 +129,7 @@ Translations.prototype.get = function (key, defaultValue) {
  * @return {Object}
  */
 Translations.prototype.getAll = function () {
-    return this._i18n;
+    return this._translations;
 };
 
 /**
@@ -123,7 +143,8 @@ Translations.prototype._handleTranslationsReceived = function (err, res) {
     var translated = false;
     if (!err && res.code === 200) {
         var data = res.data.translations[this._appType] || {};
-        this.translate({data: data, fillIn: true, merge: true});
+        this._translationSet = this.translate({data: data, skipSet: true});
+        this._translations = merge(this._translationSet, this._appLevelTranslations);
         translated = true;
     }
     this.emit(EVENTS.RECEIVED, {translated: translated});
@@ -150,8 +171,8 @@ Translations.prototype.hasChanged = function () {
  */
 Translations.prototype.initialize = function (opts) {
     this._appType = opts.appType;
-    this._translationMap = opts.translationMap;
-    this._i18n = {};
+    this._translationTransformMap = opts.translationMap || {};
+    this._translations = {};
 };
 
 /**
@@ -159,7 +180,7 @@ Translations.prototype.initialize = function (opts) {
  * @return {boolean}
  */
 Translations.prototype.isEmpty = function () {
-    return size(this._i18n) === 0;
+    return size(this._translations) === 0;
 };
 
 /**
@@ -171,8 +192,9 @@ Translations.prototype.remove = function (keys) {
         keys = [keys];
     }
     for (var i = 0; i < keys.length; i++) {
-        delete this._i18n[keys[i]];
+        delete this._appLevelTranslations[keys[i]];
     }
+    this._translations = merge(this._translationSet, this._appLevelTranslations);
 };
 
 /**
@@ -181,7 +203,9 @@ Translations.prototype.remove = function (keys) {
  */
 Translations.prototype.reset = function (opt_emitChanged) {
     this._changed = true;
-    this._i18n = {};
+    this._appLevelTranslations = {};
+    this._translations = {};
+    this._translationSet = {};
     opt_emitChanged && this.emit(EVENTS.UPDATED);
 };
 
@@ -195,13 +219,13 @@ Translations.prototype.set = function (key, value, opts) {
     // The key is a string, so that means `key` can be used as the key and
     // `value` can be used as a string value.
     if (typeof(key) === 'string') {
-        this._i18n[key] = value;
+        this._appLevelTranslations[key] = value;
 
     // The key is an object, so that means it contains any number of key/value
     // pairs and we can just mix the 2 objects together. This also means that
     // the options object is now in the `value` argument position.
     } else if (typeof(key) === 'object') {
-        mixIn(this._i18n, key);
+        mixIn(this._appLevelTranslations, key);
         opts = value;
 
     // All supported types have been checked, so now there is nothing to do.
@@ -210,6 +234,7 @@ Translations.prototype.set = function (key, value, opts) {
         return;
     }
 
+    this._translations = merge(this._translationSet, this._appLevelTranslations);
     this._changed = true;
     // If the silent option was passed, don't trigger an update event.
     (opts || {}).silent || this.emit(EVENTS.UPDATED);
@@ -229,17 +254,17 @@ Translations.prototype._set = function (opts) {
     var merged = {};
     var mergeFn = opts.fillIn ? fillIn : mixIn;
 
-    // Only keep translations whose values are strings. It's possible that there
-    // could be non-string values due to how custom strings have been supported
-    // in the past (passed as a top level attribute on the `opts` object).
-    var data = filter(opts.data, function (v) {
-        return typeof(v) === 'string';
+    mergeFn(merged, this._appLevelTranslations, opts.data);
+
+    // Filter out the undefined values if there are any.
+    merged = filter(merged, function (v) {
+        return v !== undefined;
     });
 
-    mergeFn(merged, this._i18n, data);
-    var changed = this._changed = !equals(merged, this._i18n);
+    var changed = this._changed = !equals(merged, this._appLevelTranslations);
     var shouldTrigger = 'silent' in opts ? !opts.silent : true;
-    this._i18n = merged;
+    this._appLevelTranslations = merged;
+    this._translations = merge(this._translationSet, this._appLevelTranslations);
     changed && shouldTrigger && this.emit(EVENTS.UPDATED);
     return changed;
 };
@@ -251,15 +276,14 @@ Translations.prototype._set = function (opts) {
  * @param {Object} opts - Configuration options.
  * @param {Object} opts.data - Data to translate.
  * @param {boolean=} opts.fillIn - Whether to fillIn the new data or override.
- * @param {boolean=} opts.merge - Whether to merge the original opts strings
- *   with the translations.
- * @return {Object}
+ * @param {boolean=} opts.skipSet - Whether to skip setting the translation data.
+ * @return {Object|boolean}
  */
 Translations.prototype.translate = function (opts) {
     var data = opts.data;
     var _i18n = {};
     var key;
-    var map = merge(I18N_MAP, this._translationMap || {});
+    var map = merge(I18N_MAP, this._translationTransformMap);
     var value;
     delete opts.data;
 
@@ -274,10 +298,8 @@ Translations.prototype.translate = function (opts) {
         delete data[key];
     }
 
-    // Possibly merge the transformed translations with the original data
-    // object to catch any translations that didn't need to be transformed.
-    opts.data = opts.merge ? merge(data, _i18n) : _i18n;
-    return this._set(opts);
+    opts.data = _i18n;
+    return opts.skipSet ? _i18n : this._set(opts);
 };
 
 module.exports = new Translations();
