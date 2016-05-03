@@ -103,11 +103,13 @@
         margin: 72px 0;
 
         .content-attachments-gallery-focused {
+            width: 75vm;   /* fallback for IE9 */
             width: 75vmin;
             margin: 0 auto;
         }
 
         .content-attachment-photo {
+            height: 75vm;   /* fallback for IE9 */
             height: 75vmin;
             background-image: none !important;
             background-size: auto;
@@ -117,6 +119,7 @@
         }
 
         .content-attachment-video.content-attachments-focused{
+            height: 75vm;   /* fallback for IE9 */
             height: 75vmin;
         }
 
