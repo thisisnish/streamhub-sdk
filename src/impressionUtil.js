@@ -15,7 +15,7 @@ function recordTwitterImpression(content) {
             return tw;
         })();
         var impressionScript = document.createElement("script");
-        impressionScript.setAttribute("src", "//platform.twitter.com/impressions.js");
+        impressionScript.setAttribute("src", "https://platform.twitter.com/impressions.js");
         impressionScript.setAttribute('async', true);
         document.getElementsByTagName("head")[0].appendChild(impressionScript);
         impressionScriptLoaded = true;

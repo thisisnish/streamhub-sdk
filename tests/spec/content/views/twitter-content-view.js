@@ -24,7 +24,7 @@ function ($, LivefyreTwitterContent, TwitterContentView, verifiedTweetState, unv
             var content = new LivefyreTwitterContent(unverifiedTweetState);
             var contentView = new TwitterContentView({ content: content });
             contentView.render();
-            expect(contentView.$('.content-source-logo').attr('href')).toBe('//twitter.com');
+            expect(contentView.$('.content-source-logo').attr('href')).toBe('https://twitter.com');
         });
     });
 });
