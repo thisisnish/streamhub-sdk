@@ -258,7 +258,7 @@ Translations.prototype._set = function (opts) {
 
     // Filter out the undefined values if there are any.
     merged = filter(merged, function (v) {
-        return v !== undefined;
+        return v !== undefined && v !== null;
     });
 
     var changed = this._changed = !equals(merged, this._appLevelTranslations);

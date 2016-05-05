@@ -264,5 +264,12 @@ describe('src/i18n.js', function () {
             i18n.translate({data: {abc: undefined}});
             expect(i18n.getAll()).toEqual({});
         });
+
+        it('removes entries whose values are `null`', function () {
+            setAppLevel({abc: 'def'});
+            i18n.initialize({translationMap: {abc: ['abc'], def: ['def']}});
+            i18n.translate({data: {abc: null}});
+            expect(i18n.getAll()).toEqual({});
+        });
     });
 });

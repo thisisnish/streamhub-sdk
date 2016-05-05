@@ -26,19 +26,15 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         if (content.author && typeof content.author.profileUrl === 'string') {
             opts.authorUserNamePrefix = '@';
             opts.authorUserName = content.author.profileUrl.split('/').pop();
-            opts.authorUrl = '//twitter.com/intent/user?user_id='+content.author.twitterUserId;
+            opts.authorUrl = 'https://twitter.com/intent/user?user_id=' + content.author.twitterUserId;
         }
-
         opts.authorVerified = content.twitterVerified;
-
         opts.contentSourceName = 'twitter';
-
-        opts.contentSourceUrl = '//twitter.com';
+        opts.contentSourceUrl = 'https://twitter.com';
     } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FACEBOOK) {
         if (content.author) {
             opts.authorUrl = content.author.profileUrl;
         }
-
         opts.contentSourceName = 'facebook'
         opts.contentSourceTooltipText = 'View on Facebook';
     }
