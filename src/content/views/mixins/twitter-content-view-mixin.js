@@ -54,7 +54,7 @@ function asTwitterContentView(contentView, opts) {
             insightsVerb: 'TwitterLikeClick'
         });
 
-        if(opts.showExpandButton) {
+        if (opts.showExpandButton) {
             contentView.addButton(expandButton);
         }
         contentView.addButton(replyButton);

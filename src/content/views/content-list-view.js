@@ -26,7 +26,6 @@ var log = debug('streamhub-sdk/content/views/content-list-view');
  */
 var ContentListView = function (opts) {
     opts = opts || {};
-    opts.showExpandButton = opts.showExpandButton || false;
 
     this.modal = hasAttachmentModal(this, opts.modal);
 

@@ -41,7 +41,7 @@ function asLivefyreContentView(contentView, opts) {
 
     contentView._addInitialButtons = function () {
         // Expand
-        if(opts.showExpandButton) {
+        if (opts.showExpandButton) {
             contentView._expandButton = contentView._createExpandButton();
             if (contentView._expandButton) {
                 contentView.addButton(contentView._expandButton);
