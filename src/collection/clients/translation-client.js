@@ -1,8 +1,7 @@
 define([
     'streamhub-sdk/collection/clients/http-client',
-    'inherits',
-    'urnlib'],
-function(LivefyreHttpClient, inherits, urnlib) {
+    'inherits'],
+function(LivefyreHttpClient, inherits) {
     'use strict';
 
     /**
