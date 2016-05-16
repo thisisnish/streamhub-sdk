@@ -1,7 +1,8 @@
 var $ = require('streamhub-sdk/jquery');
+var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
-var View = require('streamhub-sdk/view');
 var template = require('hgn!streamhub-sdk/content/templates/content-body');
+var View = require('streamhub-sdk/view');
 
 'use strict';
 
@@ -31,6 +32,10 @@ ContentBodyView.prototype.getTemplateContext = function () {
     var isHtml = /^\s*<(p|div)/;
     if ( ! isHtml.test(context.body)) {
         context.body = '<p>'+context.body+'</p>';
+    }
+    // Add the translated featured string if the content is featured
+    if (context.featured) {
+        context.featuredText = i18n.get('featuredText', 'Featured');
     }
     return context;
 };
