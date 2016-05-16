@@ -7,11 +7,12 @@ var i18n = require('streamhub-sdk/i18n');
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 // TODO: move share to a separate mixin
 var ShareButton = require('streamhub-sdk/ui/share-button');
+var ExpandButton = require('streamhub-sdk/ui/expand-button');
 
 'use strict';
 
 /**
- * A mixin that decorates an instance of ContentView 
+ * A mixin that decorates an instance of ContentView
  * to be a LivefyreContentView
  * LivefyreContentViews have streamhub-powered like, reply, and share buttons
  */
@@ -39,6 +40,13 @@ function asLivefyreContentView(contentView, opts) {
     };
 
     contentView._addInitialButtons = function () {
+        // Expand
+        if (opts.showExpandButton) {
+            contentView._expandButton = contentView._createExpandButton();
+            if (contentView._expandButton) {
+                contentView.addButton(contentView._expandButton);
+            }
+        }
         // Like
         contentView._likeButton = contentView._createLikeButton();
         if (contentView._likeButton) {
@@ -54,6 +62,17 @@ function asLivefyreContentView(contentView, opts) {
         if (contentView._shareButton) {
             contentView.addButton(contentView._shareButton);
         }
+    };
+
+    /**
+     * Create a Button to be used for showing modal
+     * @protected
+     */
+    contentView._createExpandButton = function () {
+        return new ExpandButton(undefined, {
+            elClassPrefix: 'hub-btn hub-content-action-expand ',
+            contentView: contentView
+        });
     };
 
     /**

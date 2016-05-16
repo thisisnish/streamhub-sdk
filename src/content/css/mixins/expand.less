@@ -1,0 +1,26 @@
+@import "../../../css/fycons.less";
+@import (reference) "/lib/livefyre-bootstrap/src/styles/fycon-chars.less";
+@import (reference) "/lib/livefyre-bootstrap/src/styles/mixins.less";
+
+.content-action-expand() {
+    .fycon-font-styles();
+    .fycon-expand();
+    color: inherit;
+    vertical-align: top;
+    font-size: 16px;
+    line-height: 16px;
+    position: relative;
+    top: 2px;
+
+    &:active {
+        opacity: .5;
+    }
+    &:active:hover {
+        color: #F68DA6;
+    }
+    &:hover {
+        color: #EB144C;
+    }
+    width: 18px;
+    height: 16px;
+}

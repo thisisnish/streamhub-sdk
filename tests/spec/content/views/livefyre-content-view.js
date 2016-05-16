@@ -273,6 +273,34 @@ function (
             });
         });
 
+        describe('Expand button', function () {
+            it("renders only if showExpandButton is set to true", function () {
+                var contentViewFactory = new ContentViewFactory({showExpandButton: true});
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
+                var lfContentView = contentViewFactory.createContentView(lfContent);
+                lfContentView.render();
+                expect(lfContentView.$el.find('.hub-content-action-expand')).toHaveLength(1);
+            });
+            it("does not render if showExpandButton is not set", function () {
+                var contentViewFactory = new ContentViewFactory();
+                var contentViewFactory1 = new ContentViewFactory({showExpandButton: false});
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
+                var lfContentView = contentViewFactory.createContentView(lfContent);
+                lfContentView.render();
+                var lfContentView1 = contentViewFactory1.createContentView(lfContent);
+                lfContentView1.render();
+                expect(lfContentView.$el.find('.hub-content-action-expand')).toHaveLength(0);
+                expect(lfContentView1.$el.find('.hub-content-action-expand')).toHaveLength(0);
+            });
+            it("expects contenView._expandButton to be definded", function () {
+                var contentViewFactory = new ContentViewFactory({showExpandButton: true});
+                var lfContent = new LivefyreContent({ body: 'lf content', id: '1'  });
+                var lfContentView = contentViewFactory.createContentView(lfContent);
+                lfContentView.render();
+                expect(lfContentView._expandButton).toBeDefined();
+            });
+        });
+
         describe('opts.shareCommand', function () {
             var shareButtonSelector = '.hub-content-share';
             function getShareEl(contentView) {

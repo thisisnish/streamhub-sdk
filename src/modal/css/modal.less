@@ -11,8 +11,8 @@
     bottom: 0;
     left: 0;
     color: #FFF;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-size: 14px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
     overflow: hidden;
 
     .hub-modal-close {
@@ -100,15 +100,27 @@
         min-height: 402px;
         width: 100%;
         height: 100%;
-        margin: 72px;
+        margin: 72px 0;
+
+        .content-attachments-gallery-focused {
+            width: 75vm;   /* fallback for IE9 */
+            width: 75vmin;
+            margin: 0 auto;
+        }
 
         .content-attachment-photo {
-            height: 100%;
+            height: 75vm;   /* fallback for IE9 */
+            height: 75vmin;
             background-image: none !important;
             background-size: auto;
             background-repeat: no-repeat;
             background-position: center;
             position: relative;
+        }
+
+        .content-attachment-video.content-attachments-focused {
+            height: 75vm;   /* fallback for IE9 */
+            height: 75vmin;
         }
 
         .content-attachment-photo > *,
