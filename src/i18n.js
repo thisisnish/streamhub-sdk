@@ -26,6 +26,7 @@ var EVENTS = {
  * @const {Object}
  */
 var I18N_MAP = {
+    featuredText: ['featuredText'],
     PLACEHOLDERTEXT: ['PLACEHOLDERTEXT'],
     POST: ['POST', 'POST_PHOTO'],
     POST_MODAL_BUTTON: ['POST_MODAL_BUTTON'],
@@ -34,7 +35,9 @@ var I18N_MAP = {
     postButtonText: ['POST', 'POST_PHOTO'],
     postModalButton: ['POST_MODAL_BUTTON'],
     postModalPlaceholder: ['PLACEHOLDERTEXT'],
-    postModalTitle: ['POST_MODAL_TITLE']
+    postModalTitle: ['POST_MODAL_TITLE'],
+    shareButtonText: ['shareButtonText'],
+    showMoreButtonText: ['showMoreButtonText']
 };
 
 /**
