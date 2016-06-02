@@ -70,16 +70,21 @@ define([
     LivefyreTwitterContent.prototype.addAttachment = function (oembed) {
         if (oembed && oembed.type === 'link') {
             var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null;
-            // Links that are provided by twitter or twimg are generally bad
-            // because they were classified as links and are probably actually
-            // videos.
-            if (provider && ['twitter', 'twimg'].indexOf(provider) > -1) {
+            var providerIsTwitter = provider && ['twitter', 'twimg'].indexOf(provider) > -1;
+            var linkIsVideo = /twitter\.com.*\/video\/\d+/.test(oembed.link);
+            var titleIsVideo = oembed.title.toLowerCase() === 'twitter video';
+
+            // Twitter gives us inconsistent data and this is a hack to attempt
+            // to provide a decent visual experience for twitter content. Now
+            // if there is a link from twitter or twimg, we only remove it if
+            // we think it's pointing to a video.
+            if (providerIsTwitter && (linkIsVideo || titleIsVideo)) {
                 return;
             }
         }
 
         return LivefyreContent.prototype.addAttachment.apply(this, arguments);
-    }
+    };
 
     return LivefyreTwitterContent;
- });
+});
