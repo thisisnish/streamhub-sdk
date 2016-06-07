@@ -21,6 +21,20 @@ function asInstagramContentView(contentView, opts) {
         contentView.$el.addClass(elClass);
     };
 
+    var oldFooterGetTemplateContext = contentView._footerView.getTemplateContext;
+    contentView._footerView.getTemplateContext = function () {
+        var context = oldFooterGetTemplateContext.apply(contentView._footerView, arguments);
+        if (!context.attachments || !context.attachments.length) {
+            return context;
+        }
+        var attachment = context.attachments[0];
+        var provider = attachment.provider_name.toLowerCase();
+        if (provider === 'instagram' && /^https?:\/\/(www\.)?instagram\.com/.test(attachment.link)) {
+            context.createdAtUrl = attachment.link;
+        }
+        return context;
+    };
+
     contentView.events = contentView.events.extended({
         'imageError.hub': function (e, oembed) {
             this.remove();

@@ -18,6 +18,20 @@ function asFacebookContentView(contentView, opts) {
         oldRender.apply(contentView, arguments);
         contentView.$el.addClass(elClass);
     };
+
+    var oldFooterGetTemplateContext = contentView._footerView.getTemplateContext;
+    contentView._footerView.getTemplateContext = function () {
+        var context = oldFooterGetTemplateContext.apply(contentView._footerView, arguments);
+        if (!context.attachments || !context.attachments.length) {
+            return context;
+        }
+        var attachment = context.attachments[0];
+        var provider = attachment.provider_name.toLowerCase();
+        if (provider === 'facebook' && /^https?:\/\/(www\.)?facebook\.com/.test(attachment.link)) {
+            context.createdAtUrl = attachment.link;
+        }
+        return context;
+    };
 };
 
 module.exports = asFacebookContentView;
