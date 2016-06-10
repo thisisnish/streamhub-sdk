@@ -31,14 +31,17 @@
     .hub-modal-content,
     .hub-modal-content > * {
         width: 100%;
-        height: 100%;
         -webkit-overflow-scrolling: touch;
+    }
+
+    .hub-modal-content {
+        height: 100%;
+        overflow: auto;
     }
 
     .hub-modal-content > .hub-modal-content-view.content,
     .hub-modal-content > .hub-modal-content-view.streamhub-content-list-view {
         width: 40%;
-        height: auto;
         margin: 70px auto;
         min-width: 300px;
     }
