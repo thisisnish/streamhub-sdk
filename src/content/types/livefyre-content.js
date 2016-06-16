@@ -286,7 +286,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         "url",     // 22
         "facebook", // 23 - Facebook public feed
         "unknown",
-        "feed", // 25 streams using rss
+        "feed", // 25 youtube using rss
         "feed" // 26 tumblr using rss
     ];
 

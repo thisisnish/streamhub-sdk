@@ -11,6 +11,8 @@ var LivefyreFeedContent = require('streamhub-sdk/content/types/livefyre-feed-con
 var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
 var ContentView = require('streamhub-sdk/content/views/card-content-view');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
+var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
+var TumblrContentView = require('streamhub-sdk/content/views/tumblr-content-view');
 var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
 var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
@@ -144,6 +146,16 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
             if (!viewToRender && typeId.indexOf("instagram.com") >= 0) {
                 viewToRender = InstagramContentView;
             }
+        }
+
+        if (content.typeUrn === TYPE_URNS.LIVEFYRE_FEED) {
+          if (content.feedUrl.indexOf("youtube.com") >= 0) {
+              viewToRender = YoutubeContentView;
+          }
+
+          if (content.feedUrl.indexOf("tumblr.com") >= 0) {
+              viewToRender = TumblrContentView;
+          }
         }
 
         if (viewToRender) {
