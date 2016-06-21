@@ -149,7 +149,7 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
         }
 
         if (content.typeUrn === TYPE_URNS.LIVEFYRE_FEED) {
-            var feedUrl = (content.feedUrl || '').toLowerCase()
+            var feedUrl = (content.feedUrl || '').toLowerCase();
             if (feedUrl.indexOf("youtube.com") >= 0) {
                 viewToRender = YoutubeContentView;
             }
