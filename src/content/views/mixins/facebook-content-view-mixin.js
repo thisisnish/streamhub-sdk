@@ -26,7 +26,7 @@ function asFacebookContentView(contentView, opts) {
             return context;
         }
         var attachment = context.attachments[0];
-        var provider = attachment.provider_name.toLowerCase();
+        var provider = (attachment.provider_name || '').toLowerCase();
         if (provider === 'facebook' && /^https?:\/\/(www\.)?facebook\.com/.test(attachment.link)) {
             context.createdAtUrl = attachment.link;
         }

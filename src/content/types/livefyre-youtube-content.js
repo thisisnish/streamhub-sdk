@@ -16,5 +16,7 @@ define([
     }
     inherits(LivefyreYoutubeContent, LivefyreUrlContent);
 
+    LivefyreYoutubeContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-youtube';
+
     return LivefyreYoutubeContent;
 });

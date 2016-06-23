@@ -2,22 +2,23 @@
 
 var auth = require('auth');
 var Content = require('streamhub-sdk/content');
-var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
-var LivefyreTwitterContent = require('streamhub-sdk/content/types/livefyre-twitter-content');
-var LivefyreFacebookContent = require('streamhub-sdk/content/types/livefyre-facebook-content');
-var LivefyreInstagramContent = require('streamhub-sdk/content/types/livefyre-instagram-content');
-var LivefyreUrlContent = require('streamhub-sdk/content/types/livefyre-url-content');
-var LivefyreFeedContent = require('streamhub-sdk/content/types/livefyre-feed-content');
-var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
 var ContentView = require('streamhub-sdk/content/views/card-content-view');
-var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
-var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
-var TumblrContentView = require('streamhub-sdk/content/views/tumblr-content-view');
-var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
-var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
-var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
 var FeedContentView = require('streamhub-sdk/content/views/feed-content-view');
+var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
+var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
+var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
+var LivefyreFacebookContent = require('streamhub-sdk/content/types/livefyre-facebook-content');
+var LivefyreFeedContent = require('streamhub-sdk/content/types/livefyre-feed-content');
+var LivefyreInstagramContent = require('streamhub-sdk/content/types/livefyre-instagram-content');
+var LivefyreTwitterContent = require('streamhub-sdk/content/types/livefyre-twitter-content');
+var LivefyreUrlContent = require('streamhub-sdk/content/types/livefyre-url-content');
+var LivefyreYoutubeContent = require('streamhub-sdk/content/types/livefyre-youtube-content');
+var TumblrContentView = require('streamhub-sdk/content/views/tumblr-content-view');
+var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
+var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
+var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
+var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
 
 var Command = require('streamhub-sdk/ui/command');
 var Liker = require('streamhub-sdk/collection/liker');
@@ -63,7 +64,9 @@ ContentViewFactory.prototype.contentRegistry = [
     { type: LivefyreContent, view: LivefyreContentView,
         typeUrn: TYPE_URNS.LIVEFYRE },
     { type: Content, view: ContentView,
-        typeUrn: TYPE_URNS.CONTENT }
+        typeUrn: TYPE_URNS.CONTENT },
+    { type: LivefyreYoutubeContent, view: YoutubeContentView,
+        typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE }
 ];
 
 ContentViewFactory.prototype._createAttachmentsView = function (content) {
