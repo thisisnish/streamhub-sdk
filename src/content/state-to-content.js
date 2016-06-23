@@ -261,14 +261,25 @@ LivefyreYoutubeContent, LivefyreFeedContent, Storage, debug, Transform, inherits
     }
 
     function isProviderState (state, pattern) {
+        var feedEntry;
+        var generator;
+
         try {
             if ('feedEntry' in state.content) {
-                return pattern.test(state.content.feedEntry.channelId);
+                feedEntry = state.content.feedEntry;
+                if (feedEntry.channelId) {
+                    return pattern.test(feedEntry.channelId);
+                }
+                return pattern.test(feedEntry.link);
             }
-            if (state.content.generator.url) {
-                return pattern.test(state.content.generator.url);
+            if ('generator' in state.content) {
+                generator = state.content.generator;
+                if (generator.url) {
+                    return pattern.test(generator.url);
+                }
+                return pattern.test(generator.id);
             }
-            return pattern.test(state.content.generator.id);
+            return false;
         } catch (err) {
             return false;
         }

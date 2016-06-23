@@ -72,7 +72,7 @@ define([
             var provider = oembed.provider_name ? oembed.provider_name.toLowerCase() : null;
             var providerIsTwitter = provider && ['twitter', 'twimg'].indexOf(provider) > -1;
             var linkIsVideo = /twitter\.com.*\/video\/\d+/.test(oembed.link);
-            var titleIsVideo = oembed.title.toLowerCase() === 'twitter video';
+            var titleIsVideo = oembed.title && oembed.title.toLowerCase() === 'twitter video';
 
             // Twitter gives us inconsistent data and this is a hack to attempt
             // to provide a decent visual experience for twitter content. Now

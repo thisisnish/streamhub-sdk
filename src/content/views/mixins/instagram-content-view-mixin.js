@@ -28,7 +28,7 @@ function asInstagramContentView(contentView, opts) {
             return context;
         }
         var attachment = context.attachments[0];
-        var provider = attachment.provider_name.toLowerCase();
+        var provider = (attachment.provider_name || '').toLowerCase();
         if (provider === 'instagram' && /^https?:\/\/(www\.)?instagram\.com/.test(attachment.link)) {
             context.createdAtUrl = attachment.link;
         }
