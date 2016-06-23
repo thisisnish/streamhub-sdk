@@ -13,18 +13,20 @@ var LivefyreFeedContent = require('streamhub-sdk/content/types/livefyre-feed-con
 var LivefyreInstagramContent = require('streamhub-sdk/content/types/livefyre-instagram-content');
 var LivefyreTwitterContent = require('streamhub-sdk/content/types/livefyre-twitter-content');
 var LivefyreUrlContent = require('streamhub-sdk/content/types/livefyre-url-content');
+var LivefyreWeiboContent = require('streamhub-sdk/content/types/livefyre-weibo-content');
 var LivefyreYoutubeContent = require('streamhub-sdk/content/types/livefyre-youtube-content');
 var TumblrContentView = require('streamhub-sdk/content/views/tumblr-content-view');
 var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
 var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
 var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
+var WeiboContentView = require('streamhub-sdk/content/views/weibo-content-view');
 var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
 
-var Command = require('streamhub-sdk/ui/command');
-var Liker = require('streamhub-sdk/collection/liker');
-var CompositeView = require('view/composite-view');
-var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var Command = require('streamhub-sdk/ui/command');
+var CompositeView = require('view/composite-view');
+var Liker = require('streamhub-sdk/collection/liker');
+var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 /**
@@ -65,6 +67,8 @@ ContentViewFactory.prototype.contentRegistry = [
         typeUrn: TYPE_URNS.LIVEFYRE },
     { type: Content, view: ContentView,
         typeUrn: TYPE_URNS.CONTENT },
+    { type: LivefyreWeiboContent, view: WeiboContentView,
+        typeUrn: TYPE_URNS.LIVEFYRE_WEIBO },
     { type: LivefyreYoutubeContent, view: YoutubeContentView,
         typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE }
 ];

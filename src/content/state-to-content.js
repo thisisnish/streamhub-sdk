@@ -9,13 +9,15 @@ define([
     'streamhub-sdk/content/types/livefyre-url-content',
     'streamhub-sdk/content/types/livefyre-youtube-content',
     'streamhub-sdk/content/types/livefyre-feed-content',
+    'streamhub-sdk/content/types/livefyre-weibo-content',
     'streamhub-sdk/storage',
     'streamhub-sdk/debug',
     'stream/transform',
     'inherits'
 ], function (LivefyreContent, LivefyreTwitterContent, LivefyreFacebookContent,
-Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
-LivefyreYoutubeContent, LivefyreFeedContent, Storage, debug, Transform, inherits) {
+    Oembed, LivefyreOembed, LivefyreOpine, LivefyreInstagramContent, LivefyreUrlContent,
+    LivefyreYoutubeContent, LivefyreFeedContent, LivefyreWeiboContent, Storage,
+    debug, Transform, inherits) {
     'use strict';
 
     var log = debug('streamhub-sdk/content/state-to-content');
@@ -233,6 +235,8 @@ LivefyreYoutubeContent, LivefyreFeedContent, Storage, debug, Transform, inherits
             return new LivefyreFacebookContent(state);
         } else if (sourceName === 'instagram') {
             return new LivefyreInstagramContent(state);
+        } else if (sourceName === 'weibo') {
+            return new LivefyreWeiboContent(state);
         } else if (sourceName === 'feed') {
             ContentType = LivefyreFeedContent;
             // Use specific Content type for states from instagram RSS feeds

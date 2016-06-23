@@ -6,6 +6,7 @@ var TYPE_URNS = {
     LIVEFYRE_INSTAGRAM: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-instagram',
     LIVEFYRE_TWITTER:   'urn:livefyre:js:streamhub-sdk:content:types:livefyre-twitter',
     LIVEFYRE_URL:       'urn:livefyre:js:streamhub-sdk:content:types:livefyre-url',
+    LIVEFYRE_WEIBO:     'urn:livefyre:js:streamhub-sdk:content:types:livefyre-weibo',
     LIVEFYRE_YOUTUBE:   'urn:livefyre:js:streamhub-sdk:content:types:livefyre-youtube',
     TWITTER:            'urn:livefyre:js:streamhub-sdk:content:types:twitter'
 };
