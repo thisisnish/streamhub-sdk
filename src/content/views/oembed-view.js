@@ -47,6 +47,17 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTe
     };
 
     /**
+     * Get the aspect ratio for the embed based on provider name.
+     * @return {Object} - Height and width percentages.
+     */
+    OembedView.prototype.getAspectRatio = function() {
+        if (this.oembed.provider_name.toLowerCase() === 'youtube') {
+            return {height: ((9/16) * 100).toFixed(2), width: 100};
+        }
+        return {height: 100, width: 100};
+    };
+
+    /**
      * Renders the template and appends itself to this.el
      * For oembed types with thumbnails attach image load/error handlers
      */

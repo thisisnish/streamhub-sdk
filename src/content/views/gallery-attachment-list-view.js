@@ -9,7 +9,7 @@ define([
 function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentHeaderViewFactory, inherits) {
     'use strict';
 
-    var AUTOPLAY_PROVIDER_REGEX = /YouTube|Livefyre/;
+    var AUTOPLAY_PROVIDER_REGEX = /youtube|livefyre/;
 
     /**
      * A view that displays a content's attachments as a gallery
@@ -349,7 +349,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         var attachment = this._focusedAttachment;
 
         // If the provider is not available for autoplay, nothing more to do.
-        if (!AUTOPLAY_PROVIDER_REGEX.test(attachment.provider_name)) {
+        if (!AUTOPLAY_PROVIDER_REGEX.test(attachment.provider_name.toLowerCase())) {
             return attachment.html;
         }
 
@@ -377,13 +377,14 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     };
 
     /**
-     * Resizes the focused attachment to fit within the content view
+     * Resizes the focused attachment to fit within the content view. Sets the
+     * direct child of focused attachment to expand to itself.
      */
     GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {
-        // Set direct child of focused attachment to expand to itself
         var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName);
-        focusedAttachmentEl.children().eq(0).width('100%').height('100%');
-
+        var focusedChild = focusedAttachmentEl.children().eq(0);
+        var size = this.oembedViews[this.focusedIndex].getAspectRatio();
+        focusedChild.width(size.width + '%').height(size.height + '%');
         this.$el.trigger('galleryResize.hub');
     };
 
