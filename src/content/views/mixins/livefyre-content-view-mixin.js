@@ -69,8 +69,11 @@ function asLivefyreContentView(contentView, opts) {
      * @protected
      */
     contentView._createExpandButton = function () {
-        return new ExpandButton(undefined, {
-            elClassPrefix: 'hub-btn hub-content-action-expand ',
+        var expandCommand = contentView._commands.expand;
+        if ( ! (expandCommand && expandCommand.canExecute())) {
+            return;
+        }
+        return new ExpandButton(expandCommand, {
             contentView: contentView
         });
     };
@@ -108,11 +111,10 @@ function asLivefyreContentView(contentView, opts) {
         if ( ! (replyCommand && replyCommand.canExecute())) {
             return;
         }
-        var replyButton = new HubButton(replyCommand, {
+        return new HubButton(replyCommand, {
             className: 'btn-link content-reply',
             label: 'Reply'
         });
-        return replyButton;
     };
 
     /**
@@ -133,11 +135,10 @@ function asLivefyreContentView(contentView, opts) {
         if (! shareCommand.canExecute()) {
             return;
         }
-        var shareButton = new HubButton(shareCommand, {
+        return new HubButton(shareCommand, {
             className: 'btn-link content-share',
             label: label
         });
-        return shareButton;
     };
 
     /**
@@ -157,6 +158,7 @@ function asLivefyreContentView(contentView, opts) {
     // init
     contentView._commands = {};
     contentView._setCommand({
+        expand: opts.expandCommand,
         like: opts.likeCommand,
         reply: opts.replyCommand,
         share: opts.shareCommand

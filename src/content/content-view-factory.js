@@ -90,12 +90,13 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
 
     var contentView = new ContentViewType({
-        content: content,
         attachmentsView: opts.attachmentsView,
+        content: content,
+        expandCommand: opts.expandCommand,
         likeCommand: likeCommand,
         shareCommand: shareCommand,
-        useSingleMediaView: this._useSingleMediaView,
-        showExpandButton: this.showExpandButton
+        showExpandButton: this.showExpandButton,
+        useSingleMediaView: this._useSingleMediaView
     });
 
     return contentView;

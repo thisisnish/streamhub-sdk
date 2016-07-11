@@ -34,8 +34,7 @@ function asTwitterContentView(contentView, opts) {
     };
 
     contentView._addInitialButtons = function () {
-        var expandButton = new ExpandButton(undefined, {
-            elClassPrefix: 'hub-btn hub-content-action-expand ',
+        var expandButton = new ExpandButton(opts.expandCommand, {
             contentView: contentView
         });
         var replyButton = new HubButton(undefined, {

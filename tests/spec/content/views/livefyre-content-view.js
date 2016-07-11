@@ -277,7 +277,9 @@ function (
             it("renders only if showExpandButton is set to true", function () {
                 var contentViewFactory = new ContentViewFactory({showExpandButton: true});
                 var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
-                var lfContentView = contentViewFactory.createContentView(lfContent);
+                var lfContentView = contentViewFactory.createContentView(lfContent, {
+                    expandCommand: new Command(function() {}),
+                });
                 lfContentView.render();
                 expect(lfContentView.$el.find('.hub-content-action-expand')).toHaveLength(1);
             });
@@ -287,7 +289,9 @@ function (
                 var lfContent = new LivefyreContent({ body: 'lf content', id: '1' });
                 var lfContentView = contentViewFactory.createContentView(lfContent);
                 lfContentView.render();
-                var lfContentView1 = contentViewFactory1.createContentView(lfContent);
+                var lfContentView1 = contentViewFactory1.createContentView(lfContent, {
+                    expandCommand: new Command(function() {}),
+                });
                 lfContentView1.render();
                 expect(lfContentView.$el.find('.hub-content-action-expand')).toHaveLength(0);
                 expect(lfContentView1.$el.find('.hub-content-action-expand')).toHaveLength(0);
@@ -295,7 +299,9 @@ function (
             it("expects contenView._expandButton to be definded", function () {
                 var contentViewFactory = new ContentViewFactory({showExpandButton: true});
                 var lfContent = new LivefyreContent({ body: 'lf content', id: '1'  });
-                var lfContentView = contentViewFactory.createContentView(lfContent);
+                var lfContentView = contentViewFactory.createContentView(lfContent, {
+                    expandCommand: new Command(function() {}),
+                });
                 lfContentView.render();
                 expect(lfContentView._expandButton).toBeDefined();
             });

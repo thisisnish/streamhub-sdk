@@ -6,14 +6,15 @@ var ModalView = require('streamhub-sdk/modal');
 
 'use strict';
 
-function ExpandButton (fnOrCommand, opts) {
+function ExpandButton(fnOrCommand, opts) {
     opts = opts || {};
-    opts.elClassPrefix = opts.elClassPrefix || '';
+    opts.className = opts.className || 'content-action content-action-expand';
     fnOrCommand = fnOrCommand || new Command(this._showExpandModal.bind(this), opts);
     HubButton.call(this, fnOrCommand, opts);
 }
-
 inherits(ExpandButton, HubButton);
+
+ExpandButton.prototype.elClassPrefix = 'hub';
 
 ExpandButton.prototype._showExpandModal = function () {
     var modal = new ModalView();

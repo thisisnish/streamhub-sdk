@@ -40,4 +40,13 @@ ContentBodyView.prototype.getTemplateContext = function () {
     return context;
 };
 
+/** @override */
+ContentBodyView.prototype.render = function () {
+    View.prototype.render.call(this);
+
+    if (this._content.title) {
+        this.$el.addClass('content-has-title');
+    }
+};
+
 module.exports = ContentBodyView;

@@ -59,14 +59,24 @@ define([
         contentAttachmentEl.css({ 'height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px', 'line-height': attachmentContainerHeight+'px'});
 
         var focusedAttachmentEl = this.$el.find('.'+GalleryAttachmentListView.prototype.focusedAttachmentClassName + '> *');
+        var focusedAttachmentHeight = focusedAttachmentEl.attr('height');
+        var focusedAttachmentWidth = focusedAttachmentEl.attr('width');
+
+        // If we're looking at an iframe that doesn't not have a height and
+        // width set, it wasn't provided, so don't set the height and width to
+        // 'auto' because that will result in an insanely small iframe.
+        if (focusedAttachmentEl[0].nodeName === 'IFRAME' && !focusedAttachmentHeight && !focusedAttachmentWidth) {
+            return;
+        }
+
         // Reset attachment dimensions
-        if (focusedAttachmentEl.attr('width')) {
-            focusedAttachmentEl.css({ 'width': parseInt(focusedAttachmentEl.attr('width'), 10)+'px' });
+        if (focusedAttachmentWidth) {
+            focusedAttachmentEl.css({ 'width': parseInt(focusedAttachmentWidth, 10)+'px' });
         } else {
             focusedAttachmentEl.css({ 'width': 'auto'});
         }
-        if (focusedAttachmentEl.attr('height')) {
-            focusedAttachmentEl.css({ 'height': parseInt(focusedAttachmentEl.attr('height'), 10)+'px' });
+        if (focusedAttachmentHeight) {
+            focusedAttachmentEl.css({ 'height': parseInt(focusedAttachmentHeight, 10)+'px' });
         } else {
             focusedAttachmentEl.css({ 'height': 'auto', 'line-height': 'inherits'});
         }
@@ -74,8 +84,8 @@ define([
         // Scale to fit testing against modal dimensions
         if (focusedAttachmentEl.height() + modalVerticalWhitespace >= height || focusedAttachmentEl.height() === 0) {
             focusedAttachmentEl.css({ 'height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px', 'line-height': Math.min(attachmentContainerHeight, attachmentContainerWidth)+'px'});
-            if (focusedAttachmentEl.attr('width')) {
-                var newWidth = Math.min(parseInt(focusedAttachmentEl.attr('width'), 10), focusedAttachmentEl.width());
+            if (focusedAttachmentWidth) {
+                var newWidth = Math.min(parseInt(focusedAttachmentWidth, 10), focusedAttachmentEl.width());
                 focusedAttachmentEl.css({ 'width': newWidth+'px' });
             } else {
                 focusedAttachmentEl.css({ 'width': 'auto' });
@@ -84,8 +94,8 @@ define([
 
         if (focusedAttachmentEl.width() + modalHorizontalWhitespace >= width || focusedAttachmentEl.width() === 0) {
             focusedAttachmentEl.css({ 'width': attachmentContainerWidth+'px'});
-            if (focusedAttachmentEl.attr('height')) {
-                var newHeight = Math.min(parseInt(focusedAttachmentEl.attr('height'), 10), focusedAttachmentEl.height());
+            if (focusedAttachmentHeight) {
+                var newHeight = Math.min(parseInt(focusedAttachmentHeight, 10), focusedAttachmentEl.height());
                 focusedAttachmentEl.css({ 'height': newHeight+'px' });
             } else {
                 focusedAttachmentEl.css({ 'height': 'auto', 'line-height': 'inherits'});
