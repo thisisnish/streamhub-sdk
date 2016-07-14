@@ -105,6 +105,7 @@
 
         .content-attachments-gallery-focused {
             margin: 0 auto;
+            width: 75vw;
         }
 
         .content-attachment-photo {
@@ -118,8 +119,7 @@
         }
 
         .content-attachment-video.content-attachments-focused {
-            height: 75vm;   /* fallback for IE9 */
-            height: 75vmin;
+            height: 75vw;
         }
 
         .content-attachment-photo > *,
@@ -129,6 +129,8 @@
         }
         .content-attachment-photo img {
             height: auto;
+            max-height: 100%;
+            max-width: 100%;
             width: auto;
         }
     };
