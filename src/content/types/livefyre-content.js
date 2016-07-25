@@ -287,7 +287,8 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
         "facebook", // 23 - Facebook public feed
         "unknown",
         "feed", // 25 youtube using rss
-        "feed" // 26 tumblr using rss
+        "feed", // 26 tumblr using rss
+        "weibo"
     ];
 
     return LivefyreContent;
