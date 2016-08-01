@@ -383,8 +383,13 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
     GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {
         var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName);
         var focusedChild = focusedAttachmentEl.children().eq(0);
-        var size = this.oembedViews[this.focusedIndex].getAspectRatio();
-        focusedChild.width(size.width + '%').height(size.height + '%');
+        var size;
+        // Handles an edge case where there are no views but it gets into this
+        // function. Probably coming from a callback.
+        if (this.oembedViews.length) {
+            size = this.oembedViews[this.focusedIndex].getAspectRatio();
+            focusedChild.css({width: size.width + '%', height: size.height + '%'});
+        }
         this.$el.trigger('galleryResize.hub');
     };
 

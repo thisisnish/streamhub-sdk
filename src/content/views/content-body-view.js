@@ -33,6 +33,14 @@ ContentBodyView.prototype.getTemplateContext = function () {
     if ( ! isHtml.test(context.body)) {
         context.body = '<p>'+context.body+'</p>';
     }
+
+    // Ensure that the title is only text.
+    if (context.title) {
+        var div = document.createElement('div');
+        div.innerHTML = context.title;
+        context.title = div.innerText;
+    }
+
     // Add the translated featured string if the content is featured
     if (context.featured) {
         context.featuredText = i18n.get('featuredText', 'Featured');
