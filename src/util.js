@@ -89,6 +89,37 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
         return dateString;
     };
 
+    /**
+     * Binary search function.
+     * Adapted from:
+     * http://oli.me.uk/2013/06/08/searching-javascript-arrays-with-a-binary-search/
+     * @param {Array.<*>} arr - Array of character limits.
+     * @param {function()} comparator - Comparison function.
+     * @return {*?} Matched item.
+     */
+    exports.binarySearch = function (arr, comparator) {
+        var minIndex = 0;
+        var maxIndex = arr.length - 1;
+        var currentIndex;
+        var currentElement;
+        var result;
+
+        while (minIndex <= maxIndex) {
+            currentIndex = (minIndex + maxIndex) / 2 | 0;
+            currentElement = arr[currentIndex];
+            result = comparator(currentElement);
+
+            if (result < 0) {
+                minIndex = currentIndex + 1;
+            } else if (result > 0) {
+                maxIndex = currentIndex - 1;
+            } else {
+                return currentElement;
+            }
+        }
+        return null;
+    };
+
     exports.objectKeys = Object.keys || (function () {
         var hasOwnProperty = Object.prototype.hasOwnProperty,
             hasDontEnumBug = !{toString:null}.propertyIsEnumerable("toString"),
