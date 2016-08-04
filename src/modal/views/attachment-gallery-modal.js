@@ -38,8 +38,8 @@ define([
         ModalView.prototype.setElement.call(this, element);
 
         var self = this;
-        this.$el.on('galleryResize.hub', function (e) {
-            self.resizeFocusedAttachment();
+        this.$el.on('galleryResize.hub', function (e, opt_attachment) {
+            self.resizeFocusedAttachment(opt_attachment);
         });
 
         return this;
@@ -47,9 +47,10 @@ define([
 
 
     /**
-     * Resizes the focused attachment according to the viewport size
+     * Resizes the focused attachment according to the viewport size.
+     * @param {OembedView} opt_attachment
      */
-    AttachmentGalleryModal.prototype.resizeFocusedAttachment = function () {
+    AttachmentGalleryModal.prototype.resizeFocusedAttachment = function (opt_attachment) {
         var ATTACHMENT_MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
         var height = this.$el.height();
         var width = this.$el.width();
@@ -122,23 +123,54 @@ define([
         heightPercentage = (focusedAttachmentHeight + modalVerticalWhitespace) / height;
         widthPercentage = (focusedAttachmentWidth + modalHorizontalWhitespace) / width;
 
-        // Increase the size of the attachment while keeping it's size ratio
-        // the same. The threshold is 60% of the height or width depending on
-        // the percentage that the image currently takes up.
-        // 
-        // markd: The problem with this could be that the size of the attachment
-        // is only supposed to be a certain size and we're enlarging it when
-        // we shouldn't.
-        // 
-        if (heightPercentage < ATTACHMENT_MAX_SIZE && widthPercentage < ATTACHMENT_MAX_SIZE) {
-            if (widthPercentage < heightPercentage) {
-                newHeight = height * ATTACHMENT_MAX_SIZE;
-                newWidth = (focusedAttachmentWidth / focusedAttachmentHeight) * newHeight;
-            } else {
-                newWidth = width * ATTACHMENT_MAX_SIZE;
-                newHeight = (focusedAttachmentHeight / focusedAttachmentWidth) * newWidth;
+        // Determines if the media is too small for the screen. This means that
+        // it is less than the 75% threshold.
+        var isTooSmall = heightPercentage < ATTACHMENT_MAX_SIZE && widthPercentage < ATTACHMENT_MAX_SIZE;
+        // Determines if the media is too large for the screen. This means that
+        // it is greater than the 75% threshold.
+        var isTooLarge = heightPercentage > ATTACHMENT_MAX_SIZE || widthPercentage > ATTACHMENT_MAX_SIZE;
+        // Determines if the attachment is a video or not.
+        var isVideo = opt_attachment && opt_attachment.oembed.type === 'video';
+
+        /**
+         * Height-first attachment size updates. If the new width is too big for
+         * the screen, use the width-first option.
+         * @param {boolean} force - Force the height-first updates instead of
+         *    falling back to the width-first option if bad sizing.
+         */
+        function updateAttachmentHeight(force) {
+            newHeight = height * ATTACHMENT_MAX_SIZE;
+            newWidth = (focusedAttachmentWidth / focusedAttachmentHeight) * newHeight;
+            if (!force && (newWidth + modalHorizontalWhitespace) / width > 1) {
+                return updateAttachmentWidth(true);
             }
             focusedAttachmentEl.css({ height: newHeight + 'px', width: newWidth + 'px' });
+        }
+
+        /**
+         * Width-first attachment size updates. If the new height is too big for
+         * the screen, use the height-first option.
+         * @param {boolean} force - Force the width-first updates instead of
+         *    falling back to the height-first option if bad sizing.
+         */
+        function updateAttachmentWidth(force) {
+            newWidth = width * ATTACHMENT_MAX_SIZE;
+            newHeight = (focusedAttachmentHeight / focusedAttachmentWidth) * newWidth;
+            if (!force && (newHeight + modalVerticalWhitespace) / height > 1) {
+                return updateAttachmentHeight(true);
+            }
+            focusedAttachmentEl.css({ height: newHeight + 'px', width: newWidth + 'px' });
+        }
+
+        // Resizes media depending on it's current size. If it's too large, it
+        // will shrink it to be 75% of the height or width depending on the
+        // percentage that the image currently takes up. If it's a video, it
+        // will increase it's size to 75% of the screen.
+        if (isVideo || isTooLarge) {
+            if (widthPercentage < heightPercentage) {
+                return updateAttachmentHeight();
+            }
+            updateAttachmentWidth();
         }
     };
 
