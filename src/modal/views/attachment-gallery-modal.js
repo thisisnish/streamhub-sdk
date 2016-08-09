@@ -123,55 +123,97 @@ define([
         heightPercentage = (focusedAttachmentHeight + modalVerticalWhitespace) / height;
         widthPercentage = (focusedAttachmentWidth + modalHorizontalWhitespace) / width;
 
-        // Determines if the media is too small for the screen. This means that
-        // it is less than the 75% threshold.
-        var isTooSmall = heightPercentage < ATTACHMENT_MAX_SIZE && widthPercentage < ATTACHMENT_MAX_SIZE;
         // Determines if the media is too large for the screen. This means that
         // it is greater than the 75% threshold.
         var isTooLarge = heightPercentage > ATTACHMENT_MAX_SIZE || widthPercentage > ATTACHMENT_MAX_SIZE;
         // Determines if the attachment is a video or not.
         var isVideo = opt_attachment && opt_attachment.oembed.type === 'video';
 
-        /**
-         * Height-first attachment size updates. If the new width is too big for
-         * the screen, use the width-first option.
-         * @param {boolean} force - Force the height-first updates instead of
-         *    falling back to the width-first option if bad sizing.
-         */
-        function updateAttachmentHeight(force) {
-            newHeight = height * ATTACHMENT_MAX_SIZE;
-            newWidth = (focusedAttachmentWidth / focusedAttachmentHeight) * newHeight;
-            if (!force && (newWidth + modalHorizontalWhitespace) / width > 1) {
-                return updateAttachmentWidth(true);
-            }
-            focusedAttachmentEl.css({ height: newHeight + 'px', width: newWidth + 'px' });
-        }
-
-        /**
-         * Width-first attachment size updates. If the new height is too big for
-         * the screen, use the height-first option.
-         * @param {boolean} force - Force the width-first updates instead of
-         *    falling back to the height-first option if bad sizing.
-         */
-        function updateAttachmentWidth(force) {
-            newWidth = width * ATTACHMENT_MAX_SIZE;
-            newHeight = (focusedAttachmentHeight / focusedAttachmentWidth) * newWidth;
-            if (!force && (newHeight + modalVerticalWhitespace) / height > 1) {
-                return updateAttachmentHeight(true);
-            }
-            focusedAttachmentEl.css({ height: newHeight + 'px', width: newWidth + 'px' });
-        }
-
         // Resizes media depending on it's current size. If it's too large, it
         // will shrink it to be 75% of the height or width depending on the
         // percentage that the image currently takes up. If it's a video, it
         // will increase it's size to 75% of the screen.
         if (isVideo || isTooLarge) {
-            if (widthPercentage < heightPercentage) {
-                return updateAttachmentHeight();
-            }
-            updateAttachmentWidth();
+            var updateFn = widthPercentage < heightPercentage ?
+                this.updateAttachmentHeight :
+                this.updateAttachmentWidth;
+            focusedAttachmentEl.css(updateFn.call(this, {
+                focusedAttachmentHeight: focusedAttachmentHeight,
+                focusedAttachmentWidth: focusedAttachmentWidth,
+                height: height,
+                modalHorizontalWhitespace: modalHorizontalWhitespace,
+                modalVerticalWhitespace: modalVerticalWhitespace,
+                width: width
+            }));
         }
+    };
+
+    /**
+     * Height-first attachment size updates. If the new width is too big for
+     * the screen, use the width-first option.
+     * @param {Object} opts - Options.
+     * @param {number} focusedAttachmentHeight - Height of the attachment.
+     * @param {number} focusedAttachmentWidth - Width of the attachment.
+     * @param {boolean} force - Force the updates without checking the size
+     *   again. Only used after checking the size while updating the other
+     *   dimension (height vs width).
+     * @param {number} height - Height of the modal.
+     * @param {number} modalHorizontalWhitespace - Left and right margin
+     *   surrounding the gallery.
+     * @param {number} modalVerticalWhitespace - Top and bottom margin
+     *   surrounding the gallery.
+     * @param {number} width - Width of the modal.
+     * @return {Object} The new height and width.
+     */
+    AttachmentGalleryModal.prototype.updateAttachmentHeight = function (opts) {
+        var newHeight = Math.round(opts.height * AttachmentGalleryModal.ATTACHMENT_MAX_SIZE);
+        var newWidth = Math.round((opts.focusedAttachmentWidth / opts.focusedAttachmentHeight) * newHeight);
+
+        // If the new width is greater than the width of the modal, we need
+        // to update the width of the modal first and then deal with the height.
+        if (!opts.force && (newWidth + opts.modalHorizontalWhitespace) / opts.width >= 1) {
+            opts.force = true;
+            return this.updateAttachmentWidth(opts);
+        }
+
+        return {
+            height: newHeight + 'px',
+            width: newWidth + 'px'
+        };
+    };
+
+    /**
+     * Width-first attachment size updates. If the new height is too big for
+     * the screen, use the height-first option.
+     * @param {Object} opts - Options.
+     * @param {number} focusedAttachmentHeight - Height of the attachment.
+     * @param {number} focusedAttachmentWidth - Width of the attachment.
+     * @param {boolean} force - Force the updates without checking the size
+     *   again. Only used after checking the size while updating the other
+     *   dimension (height vs width).
+     * @param {number} height - Height of the modal.
+     * @param {number} modalHorizontalWhitespace - Left and right margin
+     *   surrounding the gallery.
+     * @param {number} modalVerticalWhitespace - Top and bottom margin
+     *   surrounding the gallery.
+     * @param {number} width - Width of the modal.
+     * @return {Object} The new height and width.
+     */
+    AttachmentGalleryModal.prototype.updateAttachmentWidth = function (opts) {
+        var newWidth = Math.round(opts.width * AttachmentGalleryModal.ATTACHMENT_MAX_SIZE);
+        var newHeight = Math.round((opts.focusedAttachmentHeight / opts.focusedAttachmentWidth) * newWidth);
+
+        // If the new height is greater than the height of the modal, we need
+        // to update the height of the modal first and then deal with the width.
+        if (!opts.force && (newHeight + opts.modalVerticalWhitespace) / opts.height >= 1) {
+            opts.force = true;
+            return this.updateAttachmentHeight(opts);
+        }
+
+        return {
+            height: newHeight + 'px',
+            width: newWidth + 'px'
+        };
     };
 
     return AttachmentGalleryModal;
