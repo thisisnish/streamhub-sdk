@@ -110,5 +110,25 @@ function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate,
                 });
             });
         });
+
+        describe('#getAspectRatio', function () {
+            it('returns default 100/100 for height/width by default', function () {
+                oembedAttachment.provider_name = 'vimeo';
+                var oembedView = new OembedView({ oembed: oembedAttachment });
+                expect(oembedView.getAspectRatio()).toEqual({height: 100, width: 100});
+            });
+
+            it('returns 100/100 if no provider_name', function () {
+                delete oembedAttachment.provider_name;
+                var oembedView = new OembedView({ oembed: oembedAttachment });
+                expect(oembedView.getAspectRatio()).toEqual({height: 100, width: 100});
+            });
+
+            it('returns a 9/16 aspect ratio for youtube', function () {
+                oembedAttachment.provider_name = 'youtube';
+                var oembedView = new OembedView({ oembed: oembedAttachment });
+                expect(oembedView.getAspectRatio()).toEqual({height: '56.25', width: 100});
+            });
+        });
     });
 });
