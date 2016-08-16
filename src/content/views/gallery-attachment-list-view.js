@@ -349,7 +349,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
         var attachment = this._focusedAttachment;
 
         // If the provider is not available for autoplay, nothing more to do.
-        if (!AUTOPLAY_PROVIDER_REGEX.test(attachment.provider_name.toLowerCase())) {
+        if (!attachment.provider_name || !AUTOPLAY_PROVIDER_REGEX.test(attachment.provider_name.toLowerCase())) {
             return attachment.html;
         }
 
