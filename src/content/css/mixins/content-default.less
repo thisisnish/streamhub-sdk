@@ -70,6 +70,9 @@
         .content-author-verified {
             .fycon-verified();
             background: none;
+            float: left;
+            line-height: 18px;
+            margin-right: 4px;
 
             &:before {
                 .fycon-font-styles();
@@ -77,8 +80,14 @@
             }
         }
 
-        > .content-author-verified {
-            display: none;
+        .content-author-username,
+        .content-author-username a {
+            line-height: 20px;
+            position: relative;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: block;
         }
     }
 
