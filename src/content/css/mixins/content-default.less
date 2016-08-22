@@ -68,7 +68,17 @@
         }
 
         .content-author-verified {
-            background-image: data-uri('../../images/certified.png');
+            .fycon-verified();
+            background: none;
+
+            &:before {
+                .fycon-font-styles();
+                vertical-align: text-bottom;
+            }
+        }
+
+        > .content-author-verified {
+            display: none;
         }
     }
 
@@ -291,6 +301,7 @@
     }
 
     &.content-with-image {
+        .content-author-verified,
         .content-source-logo {
             color: #FFF;
         }

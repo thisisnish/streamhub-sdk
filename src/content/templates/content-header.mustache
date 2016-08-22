@@ -13,19 +13,17 @@
             <span class="content-source-logo"></span>
         {{/contentSourceUrl}}
 
-        {{#authorUrl}}
-            <div class="content-author-name">
+        <div class="content-author-name">
+            {{#authorUrl}}
                 <a href="{{ authorUrl }}" target="_blank">{{ author.displayName }}</a>
-            </div>
-        {{/authorUrl}}
-        {{^authorUrl}}
-            <div class="content-author-name">
+            {{/authorUrl}}
+            {{^authorUrl}}
                 <span>{{ author.displayName }}</span>
-            </div>
-        {{/authorUrl}}
-        {{#authorVerified}}
-            <span class="content-author-verified"></span>
-        {{/authorVerified}}
+            {{/authorUrl}}
+            {{#authorVerified}}
+                <span class="content-author-verified"></span>
+            {{/authorVerified}}
+        </div>
         {{#authorUserName}}
             {{#authorUrl}}
                 <div class="content-author-username">
