@@ -130,58 +130,7 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
             });
         });
 
-        describe('#updateAttachmentHeight', function () {
-            var attachmentOpts = {
-                focusedAttachmentHeight: 700,
-                focusedAttachmentWidth: 600,
-                height: 600,
-                modalHorizontalWhitespace: 0,
-                modalVerticalWhitespace: 0,
-                width: 600
-            };
-            var clonedOpts;
-            var modalView;
-            var sizes;
-
-            beforeEach(function () {
-                clonedOpts = $.extend({}, attachmentOpts);
-                modalView = new AttachmentGalleryModal();
-            });
-
-            it('keeps the aspect ratio', function () {
-                expect(modalView.updateAttachmentHeight(attachmentOpts)).toEqual({
-                    height: '450px',
-                    width: '386px'
-                });
-            });
-
-            it('keeps both height and width at or below the threshold', function () {
-                sizes = modalView.updateAttachmentHeight(clonedOpts);
-                expect(parseInt(sizes.height.split('px')[0]) / clonedOpts.height <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-                expect(parseInt(sizes.width.split('px')[0]) / clonedOpts.width <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-            });
-
-            it('calls the width function if the newly generated width is larger than the width of the screen', function () {
-                spyOn(modalView, 'updateAttachmentWidth').andCallThrough();
-                clonedOpts.focusedAttachmentWidth = 1000;
-                sizes = modalView.updateAttachmentHeight(clonedOpts);
-                expect(modalView.updateAttachmentWidth).toHaveBeenCalled();
-                expect(parseInt(sizes.height.split('px')[0]) / clonedOpts.height <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-                expect(parseInt(sizes.width.split('px')[0]) / clonedOpts.width <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-            });
-
-            it('skips the width function if force is passed', function () {
-                spyOn(modalView, 'updateAttachmentWidth');
-                clonedOpts.focusedAttachmentWidth = 1000;
-                clonedOpts.force = true;
-                sizes = modalView.updateAttachmentHeight(clonedOpts);
-                expect(modalView.updateAttachmentWidth).not.toHaveBeenCalled();
-                expect(parseInt(sizes.height.split('px')[0]) / clonedOpts.height <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-                expect(parseInt(sizes.width.split('px')[0]) / clonedOpts.width >= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-            });
-        });
-
-        describe('#updateAttachmentWidth', function () {
+        describe('#updateAttachmentToFitModal', function () {
             var attachmentOpts = {
                 focusedAttachmentHeight: 600,
                 focusedAttachmentWidth: 700,
@@ -191,6 +140,7 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
                 width: 600
             };
             var clonedOpts;
+            var MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
             var modalView;
             var sizes;
 
@@ -200,35 +150,107 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
             });
 
             it('keeps the aspect ratio', function () {
-                expect(modalView.updateAttachmentWidth(attachmentOpts)).toEqual({
-                    height: '386px',
-                    width: '450px'
+                var sizes = modalView.updateAttachmentToFitModal(attachmentOpts);
+                expect(sizes).toEqual({height: '386px', width: '450px'});
+                expect(parseInt(sizes.height.split('px')[0], 10) / attachmentOpts.height < MAX_SIZE).toBe(true);
+                expect(parseInt(sizes.width.split('px')[0], 10) / attachmentOpts.width <= MAX_SIZE).toBe(true);
+            });
+
+            it('uses aspectRatio to calculate new size', function () {
+                clonedOpts.aspectRatio = {height: ((9/16) * 100).toFixed(2), width: 100};
+                var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                expect(sizes).toEqual({height: '253px', width: '450px'});
+                expect(parseInt(sizes.height.split('px')[0], 10) / attachmentOpts.height < MAX_SIZE).toBe(true);
+                expect(parseInt(sizes.width.split('px')[0], 10) / attachmentOpts.width <= MAX_SIZE).toBe(true);
+            });
+
+            it('increases the size of small youtube videos', function () {
+                clonedOpts.focusedAttachmentHeight = 225;
+                clonedOpts.focusedAttachmentWidth = 400;
+                var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                expect(sizes).toEqual({height: '253px', width: '450px'});
+                expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+            });
+
+            describe('works without an aspect ratio', function () {
+                it('height >> width', function () {
+                    clonedOpts.height = 1000;
+                    clonedOpts.width = 400;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '257px', width: '300px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
+
+                it('height > width', function () {
+                    clonedOpts.height = 750;
+                    clonedOpts.width = 400;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '257px', width: '300px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
+
+                it('height < width', function () {
+                    clonedOpts.height = 400;
+                    clonedOpts.width = 750;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '294px', width: '343px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
+
+                it('height << width', function () {
+                    clonedOpts.height = 400;
+                    clonedOpts.width = 1000;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '300px', width: '350px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
                 });
             });
 
-            it('keeps both height and width at or below the threshold', function () {
-                sizes = modalView.updateAttachmentWidth(clonedOpts);
-                expect(parseInt(sizes.height.split('px')[0]) / clonedOpts.height <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-                expect(parseInt(sizes.width.split('px')[0]) / clonedOpts.width <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-            });
+            describe('works with all screen sizes', function () {
+                beforeEach(function () {
+                    clonedOpts.aspectRatio = {height: ((9/16) * 100).toFixed(2), width: 100};
+                });
 
-            it('calls the height function if the newly generated height is larger than the height of the screen', function () {
-                spyOn(modalView, 'updateAttachmentHeight').andCallThrough();
-                clonedOpts.focusedAttachmentHeight = 1000;
-                sizes = modalView.updateAttachmentWidth(clonedOpts);
-                expect(modalView.updateAttachmentHeight).toHaveBeenCalled();
-                expect(parseInt(sizes.height.split('px')[0]) / clonedOpts.height <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-                expect(parseInt(sizes.width.split('px')[0]) / clonedOpts.width <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-            });
+                it('height >> width', function () {
+                    clonedOpts.height = 1000;
+                    clonedOpts.width = 400;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '169px', width: '300px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
 
-            it('skips the height function if force is passed', function () {
-                spyOn(modalView, 'updateAttachmentHeight');
-                clonedOpts.focusedAttachmentHeight = 1000;
-                clonedOpts.force = true;
-                sizes = modalView.updateAttachmentWidth(clonedOpts);
-                expect(modalView.updateAttachmentHeight).not.toHaveBeenCalled();
-                expect(parseInt(sizes.height.split('px')[0]) / clonedOpts.height >= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
-                expect(parseInt(sizes.width.split('px')[0]) / clonedOpts.width <= AttachmentGalleryModal.ATTACHMENT_MAX_SIZE).toBe(true);
+                it('height > width', function () {
+                    clonedOpts.height = 750;
+                    clonedOpts.width = 400;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '169px', width: '300px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
+
+                it('height < width', function () {
+                    clonedOpts.height = 400;
+                    clonedOpts.width = 750;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '300px', width: '533px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
+
+                it('height << width', function () {
+                    clonedOpts.height = 400;
+                    clonedOpts.width = 1000;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '298px', width: '530px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MAX_SIZE).toBe(true);
+                });
             });
         });
     });

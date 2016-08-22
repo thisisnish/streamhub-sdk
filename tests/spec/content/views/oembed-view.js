@@ -127,7 +127,7 @@ function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate,
             it('returns a 9/16 aspect ratio for youtube', function () {
                 oembedAttachment.provider_name = 'youtube';
                 var oembedView = new OembedView({ oembed: oembedAttachment });
-                expect(oembedView.getAspectRatio()).toEqual({height: '56.25', width: 100});
+                expect(oembedView.getAspectRatio()).toEqual({height: 56.25, width: 100});
             });
         });
     });
