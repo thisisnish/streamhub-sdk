@@ -60,15 +60,19 @@ function(LivefyreHttpClient, inherits) {
         var requestOpts = {
             data: {
                 'section': 'translations',
+                'translations.app': ['date'],
                 'translations.lang_code': opts.language || window.navigator.language
             },
             url: url
         };
 
         if (opts.appType) {
-            requestOpts.data['translations.app'] = opts.appType;
+            requestOpts.data['translations.app'].push(opts.appType);
         }
 
+        // Parameterize the request opts early with the shallow flag since the
+        // API doesn't support translations.app[] query params.
+        requestOpts.data = $.param(requestOpts.data, true);
         this._request(requestOpts, callback);
     };
 

@@ -1,4 +1,8 @@
-define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
+define([
+    'streamhub-sdk/debug',
+    'streamhub-sdk/jquery',
+    'streamhub-sdk/util/date'
+], function (debug, $, dateUtil) {
     'use strict';
 
     var log = debug('util');
@@ -45,49 +49,7 @@ define(['streamhub-sdk/debug', 'streamhub-sdk/jquery'], function (debug, $) {
         return $(el).innerHeight();
     };
 
-    /**
-     * Format a date object to be displayed to humans
-     * @param date {Date} A JavaScript Date object
-     * @return {string} A formatted timestamp like "5/27//06 • 3:26 AM"
-     */
-    var MONTH_STRINGS = [
-        'Jan', 'Feb', 'Mar', 'Apr',
-        'May', 'Jun','Jul', 'Aug',
-        'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-
-    exports.formatDate = function (date, relativeTo) {
-        relativeTo = relativeTo || new Date();
-        var diffMs = date.getTime() - relativeTo.getTime(),
-            dateString;
-        // Future
-        if (diffMs > 0) {
-            return '';
-        }
-        // Just now (0s)
-        if (diffMs > -1000) {
-            return '1s';
-        }
-        // Less than 60s ago -> 5s
-        if (diffMs > -60 * 1000) {
-            return Math.round( -1 * diffMs / 1000) + 's';
-        }
-        // Less than 1h ago -> 5m
-        if (diffMs > -60 * 60 * 1000) {
-            return Math.round( -1 * diffMs / (1000 * 60)) + 'm';
-        }
-        // Less than 24h ago -> 5h
-        if (diffMs > -60 * 60 * 24 * 1000) {
-            return Math.round( -1 * diffMs / (1000 * 60 * 60)) + 'h';
-        }
-        // >= 24h ago -> 6 Jul
-        dateString = date.getDate() + ' ' + MONTH_STRINGS[date.getMonth()];
-        // or like 6 Jul 2012 if the year if its different than the relativeTo year
-        if (date.getFullYear() !== relativeTo.getFullYear()) {
-            dateString += ' ' + date.getFullYear();
-        }
-        return dateString;
-    };
+    exports.formatDate = dateUtil.formatDate;
 
     /**
      * Binary search function.

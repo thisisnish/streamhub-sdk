@@ -3,7 +3,7 @@ var auth = require('auth');
 var inherits = require('inherits');
 var View = require('streamhub-sdk/view');
 var template = require('hgn!streamhub-sdk/content/templates/content-footer');
-var util = require('streamhub-sdk/util');
+var util = require('streamhub-sdk/util/date');
 
 'use strict';
 

@@ -12,7 +12,21 @@ describe('src/i18n.js', function () {
         data: {
             translations: {
                 'streamhub-wall': {
-                    abc: 'def'
+                    featuredText: 'def'
+                }
+            }
+        }
+    };
+
+    var mockTranslationResponseWithDate = {
+        code: 200,
+        data: {
+            translations: {
+                'streamhub-wall': {
+                    featuredText: 'def'
+                },
+                date: {
+                    hoursAgo: '{number} hours ago'
                 }
             }
         }
@@ -70,16 +84,33 @@ describe('src/i18n.js', function () {
         });
 
         it('merges the app-level translations over the received translations', function () {
-            setAppLevel({abc: 'ghi'});
+            setAppLevel({featuredText: 'ghi'});
             i18n._appType = 'streamhub-wall';
             i18n._handleTranslationsReceived(null, mockTranslationResponse);
-            expect(i18n.getAll()).toEqual({abc: 'ghi'});
+            expect(i18n.getAll()).toEqual({featuredText: 'ghi'});
         });
 
         it('does not translate if error', function () {
             spyOn(i18n, 'translate').andCallThrough();
             i18n._handleTranslationsReceived({}, {});
             expect(i18n.translate.callCount).toEqual(0);
+        });
+
+        it('does not fail if no `translations` object', function () {
+            spyOn(i18n, 'translate').andCallThrough();
+            i18n._handleTranslationsReceived(null, {code: 200, data: {}});
+            expect(i18n.translate.callCount).toEqual(1);
+        });
+
+        it('overrides app specific translation data with date translations', function () {
+            spyOn(i18n, 'translate').andCallThrough();
+            i18n._appType = 'streamhub-wall';
+            i18n._handleTranslationsReceived(null, mockTranslationResponseWithDate);
+            expect(i18n.translate.callCount).toEqual(1);
+            expect(i18n.getAll()).toEqual({
+                featuredText: 'def',
+                hoursAgo: '{number} hours ago'
+            });
         });
 
         it('emits a received event', function () {

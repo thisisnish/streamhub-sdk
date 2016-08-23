@@ -37,7 +37,20 @@ var I18N_MAP = {
     postModalPlaceholder: ['PLACEHOLDERTEXT'],
     postModalTitle: ['POST_MODAL_TITLE'],
     shareButtonText: ['shareButtonText'],
-    showMoreButtonText: ['showMoreButtonText']
+    showMoreButtonText: ['showMoreButtonText'],
+
+    // Date string translations
+    hoursAgo: ['hoursAgo'],
+    hoursAgoSingular: ['hoursAgoSingular'],
+    justNow: ['justNow'],
+    minutesAgo: ['minutesAgo'],
+    minutesAgoSingular: ['minutesAgoSingular'],
+    monthDayFormat: ['monthDayFormat'],
+    monthDayYearFormat: ['monthDayYearFormat'],
+    monthNames: ['monthNames'],
+    monthNamesAbbrev: ['monthNamesAbbrev'],
+    secondsAgo: ['secondsAgo'],
+    secondsAgoSingular: ['secondsAgoSingular']
 };
 
 /**
@@ -145,7 +158,8 @@ Translations.prototype.getAll = function () {
 Translations.prototype._handleTranslationsReceived = function (err, res) {
     var translated = false;
     if (!err && res.code === 200) {
-        var data = res.data.translations[this._appType] || {};
+        var translations = res.data.translations || {};
+        var data = $.extend({}, translations[this._appType] || {}, translations['date'] || {});
         this._translationSet = this.translate({data: data, skipSet: true});
         this._translations = merge(this._translationSet, this._appLevelTranslations);
         translated = true;
