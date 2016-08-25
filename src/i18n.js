@@ -7,6 +7,7 @@ var inherits = require('inherits');
 var LivefyreTranslationClient = require('streamhub-sdk/collection/clients/translation-client');
 var merge = require('mout/object/merge');
 var mixIn = require('mout/object/mixIn');
+var set = require('mout/object/set');
 var size = require('mout/object/size');
 
 'use strict';
@@ -38,6 +39,18 @@ var I18N_MAP = {
     postModalTitle: ['POST_MODAL_TITLE'],
     shareButtonText: ['shareButtonText'],
     showMoreButtonText: ['showMoreButtonText'],
+
+    // Editor error translations
+    'ERRORS.ATTACHMENTS_REQUIRED': ['ERRORS.ATTACHMENTS_REQUIRED'],
+    editorErrorAttachmentsRequired: ['ERRORS.ATTACHMENTS_REQUIRED'],
+    'ERRORS.BODY': ['ERRORS.BODY'],
+    editorErrorBody: ['ERRORS.BODY'],
+    'ERRORS.DUPLICATE': ['ERRORS.DUPLICATE'],
+    editorErrorDuplicate: ['ERRORS.DUPLICATE'],
+    'ERRORS.GENERIC': ['ERRORS.GENERIC'],
+    editorErrorGeneric: ['ERRORS.GENERIC'],
+    'ERRORS.TITLE_REQUIRED': ['ERRORS.TITLE_REQUIRED'],
+    editorErrorTitleRequired: ['ERRORS.TITLE_REQUIRED'],
 
     // Date string translations
     hoursAgo: ['hoursAgo'],
@@ -310,7 +323,7 @@ Translations.prototype.translate = function (opts) {
         }
         value = map[key];
         for (var i = 0; i < value.length; i++) {
-            _i18n[value[i]] = data[key];
+            set(_i18n, value[i], data[key]);
         }
         delete data[key];
     }

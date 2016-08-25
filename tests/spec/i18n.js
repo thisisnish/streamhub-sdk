@@ -276,6 +276,12 @@ describe('src/i18n.js', function () {
             expect(i18n.getAll()).toEqual({derp: 'blah'});
         });
 
+        it('converts strings with `.` to objects', function () {
+            i18n.initialize({translationMap: {editorErrorBody: ['ERRORS.BODY']}});
+            i18n.translate({data: {editorErrorBody: 'blah'}});
+            expect(i18n.getAll()).toEqual({ERRORS: {BODY: 'blah'}});
+        });
+
         it('it skips setting the values and returns them if `skipSet` is passed', function () {
             spyOn(i18n, '_set').andCallThrough();
             i18n.initialize({translationMap: {abc: ['abc'], def: ['def']}});
