@@ -62,6 +62,10 @@ define([
         done();
     };
 
+    function getCollectionIdFromContent(content) {
+        var collection = content.collection || {};
+        return collection.id || (content.meta || {}).collectionId;
+    }
 
     /**
      * Creates the correct content type given the supplied "state".
@@ -85,6 +89,7 @@ define([
             isContent = ('CONTENT' === type),
             isOpine = ('OPINE' === type),
             childStates = state.childContent || [],
+            collectionId,
             content,
             childContent = [],
             descendantContent = [];
@@ -94,6 +99,7 @@ define([
         }
 
         content = this._createContent(state, authors);
+        collectionId = getCollectionIdFromContent(content);
 
         if (content && opts.collection) {
             content.collection = opts.collection;
@@ -138,6 +144,7 @@ define([
         // Transform child states (replies and attachments)
         // This will put them in Storage
         for (var i=0, numChildren=childStates.length; i < numChildren; i++) {
+            childStates[i].collectionId = childStates[i].collectionId || collectionId;
             var thisReplyAndDescendants = this.transform(childStates[i], authors, opts);
             descendantContent.push.apply(descendantContent, thisReplyAndDescendants || []);
         }
@@ -342,7 +349,7 @@ define([
     StateToContent.prototype._attachOrStore = function (attachment, targetId) {
         var target = this._storage.get(getContentStorageKey({
             id: targetId,
-            collection: attachment.collection
+            collection: {id: attachment.meta.collectionId}
         }));
         if (target) {
             log('attaching attachment', arguments);
