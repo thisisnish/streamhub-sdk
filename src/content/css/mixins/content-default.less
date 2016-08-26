@@ -68,7 +68,26 @@
         }
 
         .content-author-verified {
-            background-image: data-uri('../../images/certified.png');
+            .fycon-verified();
+            background: none;
+            float: left;
+            line-height: 18px;
+            margin-right: 4px;
+
+            &:before {
+                .fycon-font-styles();
+                vertical-align: text-bottom;
+            }
+        }
+
+        .content-author-username,
+        .content-author-username a {
+            line-height: 20px;
+            position: relative;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: block;
         }
     }
 
@@ -291,6 +310,7 @@
     }
 
     &.content-with-image {
+        .content-author-verified,
         .content-source-logo {
             color: #FFF;
         }

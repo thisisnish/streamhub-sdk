@@ -38,8 +38,8 @@ define([
         ModalView.prototype.setElement.call(this, element);
 
         var self = this;
-        this.$el.on('galleryResize.hub', function (e, opt_attachment) {
-            self.resizeFocusedAttachment(opt_attachment);
+        this.$el.on('galleryResize.hub', function (e, opt_attachment, opt_aspectRatio) {
+            self.resizeFocusedAttachment(opt_attachment, opt_aspectRatio);
         });
 
         return this;
@@ -49,8 +49,9 @@ define([
     /**
      * Resizes the focused attachment according to the viewport size.
      * @param {OembedView} opt_attachment
+     * @param {boolean=} opt_aspectRatio
      */
-    AttachmentGalleryModal.prototype.resizeFocusedAttachment = function (opt_attachment) {
+    AttachmentGalleryModal.prototype.resizeFocusedAttachment = function (opt_attachment, opt_aspectRatio) {
         var ATTACHMENT_MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
         var height = this.$el.height();
         var width = this.$el.width();
@@ -126,18 +127,19 @@ define([
         // Determines if the media is too large for the screen. This means that
         // it is greater than the 75% threshold.
         var isTooLarge = heightPercentage > ATTACHMENT_MAX_SIZE || widthPercentage > ATTACHMENT_MAX_SIZE;
-        // Determines if the attachment is a video or not.
-        var isVideo = opt_attachment && opt_attachment.oembed.type === 'video';
+        // Determines if the attachment is a youtube video or not.
+        var isYoutube = opt_attachment && (opt_attachment.oembed.provider_name || '').toLowerCase() === 'youtube';
 
         // Resizes media depending on it's current size. If it's too large, it
         // will shrink it to be 75% of the height or width depending on the
-        // percentage that the image currently takes up. If it's a video, it
-        // will increase it's size to 75% of the screen.
-        if (isVideo || isTooLarge) {
-            var updateFn = widthPercentage < heightPercentage ?
-                this.updateAttachmentHeight :
-                this.updateAttachmentWidth;
-            focusedAttachmentEl.css(updateFn.call(this, {
+        // percentage that the image currently takes up. If it's a youtube video,
+        // it will increase it's size to 75% of the screen.
+        // 
+        // NOTE: This is only done for youtube videos because their native size
+        // is large by default and can resize properly. Other video types do not.
+        if (isTooLarge || isYoutube) {
+            focusedAttachmentEl.css(this.updateAttachmentToFitModal.call(this, {
+                aspectRatio: opt_aspectRatio,
                 focusedAttachmentHeight: focusedAttachmentHeight,
                 focusedAttachmentWidth: focusedAttachmentWidth,
                 height: height,
@@ -149,14 +151,12 @@ define([
     };
 
     /**
-     * Height-first attachment size updates. If the new width is too big for
-     * the screen, use the width-first option.
+     * Updates the attachment's height and width to be as large as possible
+     * while fitting within the modal.
      * @param {Object} opts - Options.
+     * @param {Object=} aspectRatio - Optional aspect ratio of the attachment.
      * @param {number} focusedAttachmentHeight - Height of the attachment.
      * @param {number} focusedAttachmentWidth - Width of the attachment.
-     * @param {boolean} force - Force the updates without checking the size
-     *   again. Only used after checking the size while updating the other
-     *   dimension (height vs width).
      * @param {number} height - Height of the modal.
      * @param {number} modalHorizontalWhitespace - Left and right margin
      *   surrounding the gallery.
@@ -165,54 +165,83 @@ define([
      * @param {number} width - Width of the modal.
      * @return {Object} The new height and width.
      */
-    AttachmentGalleryModal.prototype.updateAttachmentHeight = function (opts) {
-        var newHeight = Math.round(opts.height * AttachmentGalleryModal.ATTACHMENT_MAX_SIZE);
-        var newWidth = Math.round((opts.focusedAttachmentWidth / opts.focusedAttachmentHeight) * newHeight);
+    AttachmentGalleryModal.prototype.updateAttachmentToFitModal = function (opts) {
+        var MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
+        var aspectRatio = opts.aspectRatio;
+        var heightLarger = opts.focusedAttachmentHeight > opts.focusedAttachmentWidth;
+        var maxHeight = opts.height * MAX_SIZE - opts.modalVerticalWhitespace;
+        var maxWidth = opts.width * MAX_SIZE - opts.modalHorizontalWhitespace;
 
-        // If the new width is greater than the width of the modal, we need
-        // to update the width of the modal first and then deal with the height.
-        if (!opts.force && (newWidth + opts.modalHorizontalWhitespace) / opts.width >= 1) {
-            opts.force = true;
-            return this.updateAttachmentWidth(opts);
+        // If no aspect ratio was provided, generate one based on the size of
+        // the focused attachment.
+        if (!aspectRatio) {
+            aspectRatio = {
+                height: heightLarger ? 100 : (opts.focusedAttachmentHeight / opts.focusedAttachmentWidth) * 100,
+                width: !heightLarger ? 100 : (opts.focusedAttachmentWidth / opts.focusedAttachmentHeight) * 100
+            }
         }
 
-        return {
-            height: newHeight + 'px',
-            width: newWidth + 'px'
-        };
-    };
+        /**
+         * Calculate the height and width based on the aspect ratio.
+         * @param {number} height - Height of the attachment.
+         * @param {number} width - Width of the attachment.
+         * @return {Array.<number, number>} Aspect ratio size of the attachment.
+         */
+        function calculateSizeByAspectRatio(height, width) {
+            var newHeight;
+            var newWidth;
 
-    /**
-     * Width-first attachment size updates. If the new height is too big for
-     * the screen, use the height-first option.
-     * @param {Object} opts - Options.
-     * @param {number} focusedAttachmentHeight - Height of the attachment.
-     * @param {number} focusedAttachmentWidth - Width of the attachment.
-     * @param {boolean} force - Force the updates without checking the size
-     *   again. Only used after checking the size while updating the other
-     *   dimension (height vs width).
-     * @param {number} height - Height of the modal.
-     * @param {number} modalHorizontalWhitespace - Left and right margin
-     *   surrounding the gallery.
-     * @param {number} modalVerticalWhitespace - Top and bottom margin
-     *   surrounding the gallery.
-     * @param {number} width - Width of the modal.
-     * @return {Object} The new height and width.
-     */
-    AttachmentGalleryModal.prototype.updateAttachmentWidth = function (opts) {
-        var newWidth = Math.round(opts.width * AttachmentGalleryModal.ATTACHMENT_MAX_SIZE);
-        var newHeight = Math.round((opts.focusedAttachmentHeight / opts.focusedAttachmentWidth) * newWidth);
-
-        // If the new height is greater than the height of the modal, we need
-        // to update the height of the modal first and then deal with the width.
-        if (!opts.force && (newHeight + opts.modalVerticalWhitespace) / opts.height >= 1) {
-            opts.force = true;
-            return this.updateAttachmentHeight(opts);
+            if (aspectRatio.height > aspectRatio.width) {
+                newHeight = height;
+                newWidth = newHeight * (aspectRatio.width / 100);
+            } else {
+                newWidth = width;
+                newHeight = newWidth * (aspectRatio.height / 100);
+            }
+            return [newHeight, newWidth];
         }
 
+        /**
+         * Recursively updates the sizing of the attachment until it fits within
+         * the max height and max width of the modal.
+         * @param {number} height - Height of the attachment.
+         * @param {number} width - Width of the attachment.
+         * @return {Object} New height and width that fit within the modal.
+         */
+        function updateSizing(height, width) {
+            if (height > maxHeight || width > maxWidth) {
+                if (height > width) {
+                    height > maxHeight ? (height = maxHeight) : (height -= 10);
+                } else {
+                    width > maxWidth ? (width = maxWidth) : (width -= 10);
+                }
+                return updateSizing.apply(null, calculateSizeByAspectRatio(height, width));
+            }
+            return {height: height, width: width};
+        }
+
+        var size = calculateSizeByAspectRatio(opts.focusedAttachmentHeight, opts.focusedAttachmentWidth);
+        var height = size[0];
+        var width = size[1];
+
+        // We want to capture any sizes that are too small so that they can be
+        // increased to fill the size of the modal. If by doing this, the size
+        // is too large, the `updateSizing` function will make it fit within
+        // the maximum size (75% of the height and width).
+        if (height < maxHeight && width < maxWidth) {
+            if (aspectRatio.height > aspectRatio.width) {
+                height = maxHeight;
+                width = height * (aspectRatio.width / 100);
+            } else {
+                width = maxWidth;
+                height = width * (aspectRatio.height / 100);
+            }
+        }
+
+        size = updateSizing(height, width);
         return {
-            height: newHeight + 'px',
-            width: newWidth + 'px'
+            height: Math.round(size.height) + 'px',
+            width: Math.round(size.width) + 'px'
         };
     };
 

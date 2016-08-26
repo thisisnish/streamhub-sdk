@@ -52,7 +52,7 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTe
      */
     OembedView.prototype.getAspectRatio = function() {
         if (this.oembed.provider_name && this.oembed.provider_name.toLowerCase() === 'youtube') {
-            return {height: ((9/16) * 100).toFixed(2), width: 100};
+            return {height: parseFloat(((9/16) * 100).toFixed(2)), width: 100};
         }
         return {height: 100, width: 100};
     };

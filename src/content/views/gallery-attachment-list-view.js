@@ -392,7 +392,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             size = attachment.getAspectRatio();
             focusedChild.css({width: size.width + '%', height: size.height + '%'});
         }
-        this.$el.trigger('galleryResize.hub', attachment);
+        this.$el.trigger('galleryResize.hub', [attachment, size]);
     };
 
     /**
