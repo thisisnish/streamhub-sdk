@@ -7,6 +7,7 @@ var inherits = require('inherits');
 var LivefyreTranslationClient = require('streamhub-sdk/collection/clients/translation-client');
 var merge = require('mout/object/merge');
 var mixIn = require('mout/object/mixIn');
+var set = require('mout/object/set');
 var size = require('mout/object/size');
 
 'use strict';
@@ -37,7 +38,32 @@ var I18N_MAP = {
     postModalPlaceholder: ['PLACEHOLDERTEXT'],
     postModalTitle: ['POST_MODAL_TITLE'],
     shareButtonText: ['shareButtonText'],
-    showMoreButtonText: ['showMoreButtonText']
+    showMoreButtonText: ['showMoreButtonText'],
+
+    // Editor error translations
+    'ERRORS.ATTACHMENTS_REQUIRED': ['ERRORS.ATTACHMENTS_REQUIRED'],
+    editorErrorAttachmentsRequired: ['ERRORS.ATTACHMENTS_REQUIRED'],
+    'ERRORS.BODY': ['ERRORS.BODY'],
+    editorErrorBody: ['ERRORS.BODY'],
+    'ERRORS.DUPLICATE': ['ERRORS.DUPLICATE'],
+    editorErrorDuplicate: ['ERRORS.DUPLICATE'],
+    'ERRORS.GENERIC': ['ERRORS.GENERIC'],
+    editorErrorGeneric: ['ERRORS.GENERIC'],
+    'ERRORS.TITLE_REQUIRED': ['ERRORS.TITLE_REQUIRED'],
+    editorErrorTitleRequired: ['ERRORS.TITLE_REQUIRED'],
+
+    // Date string translations
+    hoursAgo: ['hoursAgo'],
+    hoursAgoSingular: ['hoursAgoSingular'],
+    justNow: ['justNow'],
+    minutesAgo: ['minutesAgo'],
+    minutesAgoSingular: ['minutesAgoSingular'],
+    monthDayFormat: ['monthDayFormat'],
+    monthDayYearFormat: ['monthDayYearFormat'],
+    monthNames: ['monthNames'],
+    monthNamesAbbrev: ['monthNamesAbbrev'],
+    secondsAgo: ['secondsAgo'],
+    secondsAgoSingular: ['secondsAgoSingular']
 };
 
 /**
@@ -145,7 +171,8 @@ Translations.prototype.getAll = function () {
 Translations.prototype._handleTranslationsReceived = function (err, res) {
     var translated = false;
     if (!err && res.code === 200) {
-        var data = res.data.translations[this._appType] || {};
+        var translations = res.data.translations || {};
+        var data = $.extend({}, translations[this._appType] || {}, translations['date'] || {});
         this._translationSet = this.translate({data: data, skipSet: true});
         this._translations = merge(this._translationSet, this._appLevelTranslations);
         translated = true;
@@ -296,7 +323,7 @@ Translations.prototype.translate = function (opts) {
         }
         value = map[key];
         for (var i = 0; i < value.length; i++) {
-            _i18n[value[i]] = data[key];
+            set(_i18n, value[i], data[key]);
         }
         delete data[key];
     }

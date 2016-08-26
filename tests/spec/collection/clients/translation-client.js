@@ -45,10 +45,7 @@ describe('src/collection/clients/translation-client.js', function () {
             });
             expect(client._request.calls.length).toEqual(1);
             expect(client._request.mostRecentCall.args[0]).toEqual({
-                data: {
-                    'section': 'translations',
-                    'translations.lang_code': 'abc'
-                },
+                data: 'section=translations&translations.app=date&translations.lang_code=abc',
                 url: 'http://bootstrap.livefyre.com/api/v4/configuration/livefyre.com/site/123/'
             });
         });
@@ -62,10 +59,7 @@ describe('src/collection/clients/translation-client.js', function () {
             });
             expect(client._request.calls.length).toEqual(1);
             expect(client._request.mostRecentCall.args[0]).toEqual({
-                data: {
-                    'section': 'translations',
-                    'translations.lang_code': 'abc'
-                },
+                data: 'section=translations&translations.app=date&translations.lang_code=abc',
                 url: 'http://bsserver.fyre/api/v4/configuration/livefyre.com/site/123/'
             });
         });
@@ -78,11 +72,7 @@ describe('src/collection/clients/translation-client.js', function () {
                 siteId: '123'
             });
             expect(client._request.calls.length).toEqual(1);
-            expect(client._request.mostRecentCall.args[0].data).toEqual({
-                'section': 'translations',
-                'translations.app': 'streamhub-wall',
-                'translations.lang_code': 'abc'
-            });
+            expect(client._request.mostRecentCall.args[0].data).toEqual('section=translations&translations.app=date&translations.app=streamhub-wall&translations.lang_code=abc');
         });
 
         it('uses the window.navigator language value if no `language` is provided', function () {
@@ -95,11 +85,7 @@ describe('src/collection/clients/translation-client.js', function () {
                 siteId: '123'
             });
             expect(client._request.calls.length).toEqual(1);
-            expect(client._request.mostRecentCall.args[0].data).toEqual({
-                'section': 'translations',
-                'translations.app': 'streamhub-wall',
-                'translations.lang_code': 'def'
-            });
+            expect(client._request.mostRecentCall.args[0].data).toEqual('section=translations&translations.app=date&translations.app=streamhub-wall&translations.lang_code=def');
         });
     });
 });

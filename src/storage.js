@@ -20,19 +20,17 @@ define(['streamhub-sdk/jquery', 'event-emitter'], function($, EventEmitter) {
      * Create a unique key for each piece of content/collection pair.
      * Not a content urn because that requires network and siteId, which
      * users of storage dont always have.
+     * @return {string}
      */
     function getContentStorageKey(content) {
         var collection = content.collection || {};
-        var template = "urn:liveyfre:collection={collection.id}:message={content.id}";
-        var rendered = template
-            .replace('{collection.id}', collection.id)
+        return 'urn:livefyre:collection={collection.id}:message={content.id}'
+            .replace('{collection.id}', collection.id || (content.meta || {}).collectionId)
             .replace('{content.id}', content.id);
-        return rendered;
     }
 
     function getContentChildrenStorageKey(content) {
-        var key = 'children_'+getContentStorageKey(content);
-        return key;
+        return 'children_' + getContentStorageKey(content);
     }
     
     /**
