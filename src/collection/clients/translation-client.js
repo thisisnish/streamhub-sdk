@@ -1,7 +1,8 @@
 define([
+    'streamhub-sdk/jquery',
     'streamhub-sdk/collection/clients/http-client',
     'inherits'],
-function(LivefyreHttpClient, inherits) {
+function($, LivefyreHttpClient, inherits) {
     'use strict';
 
     /**
