@@ -1,3 +1,4 @@
+var $ = require('streamhub-sdk/jquery');
 var bind = require('mout/function/bind');
 var equals = require('mout/object/equals');
 var EventEmitter = require('event-emitter');
