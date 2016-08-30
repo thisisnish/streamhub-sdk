@@ -1,8 +1,9 @@
 define([
     'streamhub-sdk/modal',
     'streamhub-sdk/content/views/gallery-attachment-list-view',
+    'streamhub-ui/util/user-agent',
     'inherits'
-], function(ModalView, GalleryAttachmentListView, inherits) {
+], function(ModalView, GalleryAttachmentListView, util, inherits) {
     'use strict';
 
     /**
@@ -15,6 +16,13 @@ define([
      */
     var AttachmentGalleryModal = function (opts) {
         ModalView.call(this, opts);
+
+        /**
+         * Whether the browser is mobile or not.
+         * @type {boolean}
+         * @private
+         */
+        this._isMobile = util.isMobile();
     };
     inherits(AttachmentGalleryModal, ModalView);
 
@@ -25,6 +33,16 @@ define([
      * @const {number}
      */
     AttachmentGalleryModal.ATTACHMENT_MAX_SIZE = 0.75;
+
+    /**
+     * Percentage of the modal that the attachment should take up. If it's
+     * smaller than this, it is enlarged to this -- keeping the aspect ratio
+     * the same. This is different than the other because this only pertains
+     * to when there is padding, the attachment should take up more of the space
+     * since it's being more limited overall.
+     * @const {number}
+     */
+    AttachmentGalleryModal.ATTACHMENT_MAX_SIZE_WITH_PADDING = 0.90;
 
     /**
      * Set the element for the view to render in.
@@ -166,7 +184,9 @@ define([
      * @return {Object} The new height and width.
      */
     AttachmentGalleryModal.prototype.updateAttachmentToFitModal = function (opts) {
-        var MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
+        var MAX_SIZE = this._isMobile ?
+            AttachmentGalleryModal.ATTACHMENT_MAX_SIZE_WITH_PADDING :
+            AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
         var aspectRatio = opts.aspectRatio;
         var heightLarger = opts.focusedAttachmentHeight > opts.focusedAttachmentWidth;
         var maxHeight = opts.height * MAX_SIZE - opts.modalVerticalWhitespace;

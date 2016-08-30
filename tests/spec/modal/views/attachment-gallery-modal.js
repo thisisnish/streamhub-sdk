@@ -141,6 +141,7 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
             };
             var clonedOpts;
             var MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
+            var MOBILE_MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE_WITH_PADDING;
             var modalView;
             var sizes;
 
@@ -162,6 +163,15 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
                 expect(sizes).toEqual({height: '253px', width: '450px'});
                 expect(parseInt(sizes.height.split('px')[0], 10) / attachmentOpts.height < MAX_SIZE).toBe(true);
                 expect(parseInt(sizes.width.split('px')[0], 10) / attachmentOpts.width <= MAX_SIZE).toBe(true);
+            });
+
+            it('uses aspectRatio to calculate new size on mobile', function () {
+                modalView._isMobile = true;
+                clonedOpts.aspectRatio = {height: ((9/16) * 100).toFixed(2), width: 100};
+                var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                expect(sizes).toEqual({height: '304px', width: '540px'});
+                expect(parseInt(sizes.height.split('px')[0], 10) / attachmentOpts.height <= MOBILE_MAX_SIZE).toBe(true);
+                expect(parseInt(sizes.width.split('px')[0], 10) / attachmentOpts.width <= MOBILE_MAX_SIZE).toBe(true);
             });
 
             it('increases the size of small youtube videos', function () {
