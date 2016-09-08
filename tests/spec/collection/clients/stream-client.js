@@ -32,7 +32,7 @@ function ($, LivefyreStreamClient) {
 
         it("should make requests to the right URL", function () {
             streamClient.getContent(opts, callback);
-            expect(streamClient._request.mostRecentCall.args[0].url).toBe("https://stream1.labs-t402.fyre.co/v3.1/collection/10669131/0/");
+            expect(streamClient._request.mostRecentCall.args[0].url).toBe("https://labs-t402.stream1.fyre.co/v3.1/collection/10669131/0/");
         });
 
         describe('when constructed with opts.protocol=https', function () {

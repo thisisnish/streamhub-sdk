@@ -65,7 +65,7 @@ function ($, LivefyreCreateClient) {
             it("requests the correct URL", function () {
                 createClient.createCollection(opts, callback);
                 var requestUrl = createClient._request.mostRecentCall.args[0].url;
-                expect(requestUrl).toBe('https://quill.labs-t402.fyre.co/api/v3.0/site/286470/collection/create');
+                expect(requestUrl).toBe('https://labs-t402.quill.fyre.co/api/v3.0/site/286470/collection/create');
             });
         });
 

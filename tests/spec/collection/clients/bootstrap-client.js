@@ -42,7 +42,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 }, '.getContent to respond');
                 runs(function () {
                     var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
-                    expect(mostRecentRequest.url).toBe('https://bootstrap.labs-t402.fyre.co/bs3/v3.1/t402.livefyre.com/labs-t402.fyre.co/303827/Z2VuZV9wdWJsaXNoXzA=/init');
+                    expect(mostRecentRequest.url).toBe('https://labs-t402.bootstrap.fyre.co/bs3/v3.1/t402.livefyre.com/labs-t402.fyre.co/303827/Z2VuZV9wdWJsaXNoXzA=/init');
                 });
             });
 
@@ -85,7 +85,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 }, '.getContent to respond');
                 runs(function () {
                     var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
-                    expect(mostRecentRequest.url).toBe('https://bootstrap.playstation.fyre.co/bs3/v3.1/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init');
+                    expect(mostRecentRequest.url).toBe('https://playstation.bootstrap.fyre.co/bs3/v3.1/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init');
                 });
             });
         });

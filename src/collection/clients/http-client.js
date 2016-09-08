@@ -102,8 +102,10 @@ define(['streamhub-sdk/jquery'], function($) {
         if ( ! isLivefyreNetwork && this._protocol === 'https:') {
             hostParts = opts.network.split('.');
             // Make like 'customer.bootstrap.fyre.co'
-            hostParts.splice(1, 0, this._serviceName);
-            host = hostParts.join('.');
+            if (hostParts.length > 2) {
+              hostParts.splice(1, 0, this._serviceName);
+              host = hostParts.join('.');
+            }
         }
         return host;
     };

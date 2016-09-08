@@ -108,8 +108,10 @@ describe('streamhub-sdk/content/clients/content-client', function () {
         it("makes requests to the right URL", function () {
             contentClient.getContent(callOpts, callback);
             expect(contentClient._request.mostRecentCall.args[0].url).toBe(
-                ["https://bootstrap.",
-                 network,
+                ["https://",
+                 "t402.",
+                 "bootstrap.",
+                 "livefyre.com",
                  "/api/v3.0/content/thread/"//,
 //                 "?collection_id=",
 //                 collectionId,
