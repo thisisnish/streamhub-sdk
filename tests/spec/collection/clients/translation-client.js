@@ -28,7 +28,7 @@ describe('src/collection/clients/translation-client.js', function () {
                 environment: 'fyre',
                 network: 'livefyre.com',
                 siteId: '123'
-            })).toEqual('bsserver.fyre'); 
+            })).toEqual('bsserver.fyre');
         });
     });
 
@@ -46,7 +46,7 @@ describe('src/collection/clients/translation-client.js', function () {
             expect(client._request.calls.length).toEqual(1);
             expect(client._request.mostRecentCall.args[0]).toEqual({
                 data: 'section=translations&translations.app=date&translations.lang_code=abc',
-                url: 'http://bootstrap.livefyre.com/api/v4/configuration/livefyre.com/site/123/'
+                url: 'https://bootstrap.livefyre.com/api/v4/configuration/livefyre.com/site/123/'
             });
         });
 
@@ -60,7 +60,7 @@ describe('src/collection/clients/translation-client.js', function () {
             expect(client._request.calls.length).toEqual(1);
             expect(client._request.mostRecentCall.args[0]).toEqual({
                 data: 'section=translations&translations.app=date&translations.lang_code=abc',
-                url: 'http://bsserver.fyre/api/v4/configuration/livefyre.com/site/123/'
+                url: 'https://bsserver.fyre/api/v4/configuration/livefyre.com/site/123/'
             });
         });
 

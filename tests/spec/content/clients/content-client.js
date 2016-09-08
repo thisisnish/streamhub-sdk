@@ -89,7 +89,7 @@ describe('streamhub-sdk/content/clients/content-client', function () {
                 errback("error msg");
             });
         });
-        
+
         callback = jasmine.createSpy('callback');
         callOpts = {
             network: network,
@@ -103,12 +103,12 @@ describe('streamhub-sdk/content/clients/content-client', function () {
         expect(LivefyreContentClient).toEqual(jasmine.any(Function));
         expect(new LivefyreContentClient() instanceof LivefyreContentClient).toBe(true);
     });
-    
+
     describe('when constructed', function () {
         it("makes requests to the right URL", function () {
             contentClient.getContent(callOpts, callback);
             expect(contentClient._request.mostRecentCall.args[0].url).toBe(
-                ["http://bootstrap.",
+                ["https://bootstrap.",
                  network,
                  "/api/v3.0/content/thread/"//,
 //                 "?collection_id=",
@@ -118,12 +118,12 @@ describe('streamhub-sdk/content/clients/content-client', function () {
 //                 "&depth_only=false"
                 ].join(''));
         });
-        
+
         xit('passes errors to the callback for getContent()', function () {
             callOpts.network = 'fake';
             callOpts.contentId = '2';
             contentClient.getContent(callOpts, callback).fail(null, null, 'error msg');
-            
+
             waitsFor(function() {
                 return callback.callCount > 0;
             }, 'the callback to get called', 1000);
@@ -134,10 +134,10 @@ describe('streamhub-sdk/content/clients/content-client', function () {
                 expect(callback.mostRecentCall.args[0]).toBe("error msg");
             });
         });
-        
+
         it('passes successful state data to the callback for getContent()', function () {
             contentClient.getContent(callOpts, callback).done(mockResponse);
-            
+
             waitsFor(function() {
                 return callback.callCount > 0;
             }, 'the callback to get called', 1000);
@@ -149,12 +149,12 @@ describe('streamhub-sdk/content/clients/content-client', function () {
                 expect(callback.mostRecentCall.args[1]).toBe(mockResponse);
             });
         });
-    
+
         it("returns an object representing the request", function () {
             var req = contentClient.getContent(callOpts, callback);
             expect(req.abort).toEqual(jasmine.any(Function));
         });
-        
+
         describe('with opts', function () {
             var contentClient, opts;
             beforeEach(function () {
@@ -164,13 +164,13 @@ describe('streamhub-sdk/content/clients/content-client', function () {
                 });
                 spyOn(contentClient, '_request');
             });
-            
+
             it('makes requests to the right opts.protocol and opts.serviceName URL', function () {
                 contentClient.getContent(callOpts, callback);
                 expect(contentClient._request.mostRecentCall.args[0].url.match('https://t402.test.')).toBeTruthy();
             });
         });
-        
+
         describe('and called with additional opts', function () {
             var fakeToken;
             beforeEach(function () {
@@ -178,7 +178,7 @@ describe('streamhub-sdk/content/clients/content-client', function () {
                 callOpts.depthOnly = true;
                 callOpts.lftoken = fakeToken;
             });
-            
+
             it('makes a request with depth_only=true', function() {
                 contentClient.getContent(callOpts, callback);
                 expect(contentClient._request.mostRecentCall.args[0].data.depth_only).toBe(true);

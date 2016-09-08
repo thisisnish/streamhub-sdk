@@ -19,16 +19,10 @@ define(['streamhub-sdk/jquery'], function($) {
     };
 
     /**
-     * Return the protocol string that should be used in this document
-     * if one is not provided. If document.location.protocol is not http or
-     * https, use http
+     * to avoid security vunerability only use https
      */
     function getDefaultProtocol() {
-        var docProtocol = document.location.protocol;
-        if (docProtocol.indexOf('http') === 0) {
-            return docProtocol;
-        }
-        return 'http:';
+        return 'https:';
     }
 
     /**

@@ -10,7 +10,7 @@ function ($, LivefyreCreateClient) {
         beforeEach(function () {
             createClient = new LivefyreCreateClient();
         });
-        
+
         describe("when constructed with normal opts", function () {
             beforeEach(function() {
                 mockSuccessResponse = {"msg": "This request is being processed.", "status": "ok", "code": 202};
@@ -20,7 +20,7 @@ function ($, LivefyreCreateClient) {
                         errback(null, mockSuccessResponse);
                     });
                 });
-                
+
                 callback = jasmine.createSpy();
                 opts = {"environment": "t402.livefyre.com",
                         "network": "labs-t402.fyre.co",
@@ -39,9 +39,9 @@ function ($, LivefyreCreateClient) {
                 expect(createClient instanceof LivefyreCreateClient).toBe(true);
             });
 
-            it("should return a confirmation when createCollection is called", function () {        
+            it("should return a confirmation when createCollection is called", function () {
                 createClient.createCollection(opts, callback);
-        
+
                 waitsFor(function() {
                     return callback.callCount > 0;
                 });
@@ -51,9 +51,9 @@ function ($, LivefyreCreateClient) {
                     expect(callback.mostRecentCall.args[0]).toBeNull();
                     expect(callback.mostRecentCall.args[1]).toBeDefined();
                     expect(callback.mostRecentCall.args[1]).toBe(mockSuccessResponse);
-                });                            
+                });
             });
-            
+
             it("has the correct post data", function () {
                 createClient.createCollection(opts, callback);
                 var requestType = createClient._request.mostRecentCall.args[0].method;
@@ -61,16 +61,16 @@ function ($, LivefyreCreateClient) {
                 expect(requestType).toBe('POST');
                 expect(requestData).toBe('{"collectionMeta":{"title":"Media Wall Example","url":"http://www.fake.com","tags":"test,wall","articleId":"1111123"},"signed":false}');
             });
-            
+
             it("requests the correct URL", function () {
                 createClient.createCollection(opts, callback);
                 var requestUrl = createClient._request.mostRecentCall.args[0].url;
-                expect(requestUrl).toBe('http://quill.labs-t402.fyre.co/api/v3.0/site/286470/collection/create');
+                expect(requestUrl).toBe('https://quill.labs-t402.fyre.co/api/v3.0/site/286470/collection/create');
             });
         });
-        
+
         describe("when constructed with a token", function () {
-            beforeEach(function() {                
+            beforeEach(function() {
                 opts = {"environment": "t402.livefyre.com",
                         "network": "labs-t402.fyre.co",
                         "siteId": "286470",
@@ -89,9 +89,9 @@ function ($, LivefyreCreateClient) {
                 expect(requestType).toBe('POST');
                 expect(requestData).toBe('{"collectionMeta":"tokenstring","signed":true,"checksum":"check"}');
             });
-            
+
         });
-        
+
         describe("when configured with environment='fyre'", function () {
             var opts, callback;
             beforeEach(function () {
@@ -113,11 +113,11 @@ function ($, LivefyreCreateClient) {
                     });
                 });
             });
-            
+
             it("requests the correct create collection URL for localdev", function () {
                 createClient.createCollection(opts, callback);
                 var requestedUrl = createClient._request.mostRecentCall.args[0].url;
-                expect(requestedUrl).toBe('http://quill.fyre/api/v3.0/site/286470/collection/create');
+                expect(requestedUrl).toBe('https://quill.fyre/api/v3.0/site/286470/collection/create');
             });
         });
 
@@ -147,5 +147,5 @@ function ($, LivefyreCreateClient) {
                 expect(requestedUrl).toBe('https://blah.quill.fyre.co/api/v3.0/site/286470/collection/create');
             });
         });
-    }); 
+    });
 });
