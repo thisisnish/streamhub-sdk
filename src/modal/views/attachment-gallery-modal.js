@@ -70,7 +70,9 @@ define([
      * @param {boolean=} opt_aspectRatio
      */
     AttachmentGalleryModal.prototype.resizeFocusedAttachment = function (opt_attachment, opt_aspectRatio) {
-        var ATTACHMENT_MAX_SIZE = AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
+        var ATTACHMENT_MAX_SIZE = this._isMobile ?
+            AttachmentGalleryModal.ATTACHMENT_MAX_SIZE_WITH_PADDING :
+            AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
         var height = this.$el.height();
         var width = this.$el.width();
 
@@ -139,6 +141,17 @@ define([
         // this function.
         focusedAttachmentHeight = focusedAttachmentEl.height();
         focusedAttachmentWidth = focusedAttachmentEl.width();
+
+        // To determine if we need to call the modal resize function, it would
+        // be nice to have the actual size of the attachment if we can get it.
+        // This will make it much easier to calculate correctly.
+        if (opt_attachment && opt_attachment.oembed) {
+            focusedAttachmentHeight = opt_attachment.oembed.height || focusedAttachmentHeight;
+            focusedAttachmentWidth =  opt_attachment.oembed.width || focusedAttachmentWidth;
+        }
+
+        // Calculate the height and width percentages of the modal to determine
+        // what needs to happen (if anything) to the attachment size.
         heightPercentage = (focusedAttachmentHeight + modalVerticalWhitespace) / height;
         widthPercentage = (focusedAttachmentWidth + modalHorizontalWhitespace) / width;
 
@@ -191,6 +204,14 @@ define([
         var heightLarger = opts.focusedAttachmentHeight > opts.focusedAttachmentWidth;
         var maxHeight = opts.height * MAX_SIZE - opts.modalVerticalWhitespace;
         var maxWidth = opts.width * MAX_SIZE - opts.modalHorizontalWhitespace;
+
+        // Unset the apsect ratio if it's set to 100 for both the height and
+        // width. That value is only for setting the CSS height and width
+        // percentages of the attachment. It will cause problems with this
+        // function if used like that.
+        if (aspectRatio && aspectRatio.height === 100 && aspectRatio.width === 100) {
+            aspectRatio = null;
+        }
 
         // If no aspect ratio was provided, generate one based on the size of
         // the focused attachment.
