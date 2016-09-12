@@ -96,7 +96,7 @@ function ($, LivefyreCreateClient) {
             var opts, callback;
             beforeEach(function () {
                 opts = {"environment": "fyre",
-                        "network": "fyre",
+                        "network": "livefyre.com",
                         "siteId": "286470",
                         "articleId": "1111123",
                         "collectionMeta": {

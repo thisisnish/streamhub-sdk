@@ -98,14 +98,11 @@ define(['streamhub-sdk/jquery'], function($) {
         var isLivefyreNetwork = (opts.network === 'livefyre.com');
         var environment = opts.environment || 'livefyre.com';
         var host = this._serviceName + '.' + (isLivefyreNetwork ? environment : opts.network);
-        var hostParts;
-        if ( ! isLivefyreNetwork && this._protocol === 'https:') {
-            hostParts = opts.network.split('.');
-            // Make like 'customer.bootstrap.fyre.co'
-            if (hostParts.length > 2) {
-              hostParts.splice(1, 0, this._serviceName);
-              host = hostParts.join('.');
-            }
+        var hostParts = opts.network.split('.');
+        // Make like 'customer.bootstrap.fyre.co'
+        if ( ! isLivefyreNetwork ) {
+            hostParts.splice(1, 0, this._serviceName);
+            host = hostParts.join('.');
         }
         return host;
     };
