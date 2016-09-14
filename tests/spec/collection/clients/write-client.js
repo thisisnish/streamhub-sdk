@@ -70,7 +70,7 @@ function ($, LivefyreWriteClient) {
             });
             runs(function() {
                 var ajaxArgs = writeClient._request.mostRecentCall.args[0];
-                expect(ajaxArgs.url).toBe("http://quill.labs-t402.fyre.co/api/v3.0/collection/33129653/post/");
+                expect(ajaxArgs.url).toBe("https://labs-t402.quill.fyre.co/api/v3.0/collection/33129653/post/");
                 expect(ajaxArgs.data.body).toBe("oh <strong>hi</strong> there");
                 expect(ajaxArgs.data.lftoken).toBe("my token");
                 expect(callback).toHaveBeenCalled();
@@ -97,7 +97,7 @@ function ($, LivefyreWriteClient) {
             });
             runs(function() {
                 var ajaxArgs = writeClient._request.mostRecentCall.args[0];
-                expect(ajaxArgs.url).toBe("http://quill.labs-t402.fyre.co/api/v3.0/collection/33129653/post/");
+                expect(ajaxArgs.url).toBe("https://labs-t402.quill.fyre.co/api/v3.0/collection/33129653/post/");
                 expect(ajaxArgs.data.title).toBe("hai");
             });
         });
@@ -125,7 +125,7 @@ function ($, LivefyreWriteClient) {
             });
             runs(function() {
                 var ajaxArgs = writeClient._request.mostRecentCall.args[0];
-                expect(ajaxArgs.url).toBe("http://quill.labs-t402.fyre.co/api/v3.0/collection/33129653/post/");
+                expect(ajaxArgs.url).toBe("https://labs-t402.quill.fyre.co/api/v3.0/collection/33129653/post/");
                 expect(ajaxArgs.data.body).toBe("oh <strong>hi</strong> there");
                 expect(ajaxArgs.data.lftoken).toBe("my token");
                 expect(ajaxArgs.data.media).toBe(JSON.stringify(opts.media));

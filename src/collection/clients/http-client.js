@@ -19,16 +19,10 @@ define(['streamhub-sdk/jquery'], function($) {
     };
 
     /**
-     * Return the protocol string that should be used in this document
-     * if one is not provided. If document.location.protocol is not http or
-     * https, use http
+     * to avoid security vunerability only use https
      */
     function getDefaultProtocol() {
-        var docProtocol = document.location.protocol;
-        if (docProtocol.indexOf('http') === 0) {
-            return docProtocol;
-        }
-        return 'http:';
+        return 'https:';
     }
 
     /**
@@ -104,10 +98,9 @@ define(['streamhub-sdk/jquery'], function($) {
         var isLivefyreNetwork = (opts.network === 'livefyre.com');
         var environment = opts.environment || 'livefyre.com';
         var host = this._serviceName + '.' + (isLivefyreNetwork ? environment : opts.network);
-        var hostParts;
-        if ( ! isLivefyreNetwork && this._protocol === 'https:') {
-            hostParts = opts.network.split('.');
-            // Make like 'customer.bootstrap.fyre.co'
+        var hostParts = opts.network.split('.');
+        // Make like 'customer.bootstrap.fyre.co'
+        if ( ! isLivefyreNetwork ) {
             hostParts.splice(1, 0, this._serviceName);
             host = hostParts.join('.');
         }
