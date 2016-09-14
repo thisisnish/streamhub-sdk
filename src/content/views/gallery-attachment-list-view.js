@@ -86,6 +86,14 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
     GalleryAttachmentListView.prototype.events = TiledAttachmentListView.prototype.events.extended({
         click: function (e) {
+            // If the click was on the focused attachment, don't hide the modal.
+            // In Chrome, the videos in iframes will never trigger this handler,
+            // but Firefox will. Also, non-iframe videos will always be handled
+            // by this.
+            if ($(e.target).parent().closest('.' + this.focusedAttachmentClassName).length) {
+                return;
+            }
+
             /**
              * Hide modal
              * @event GalleryAttachmentListView#hideModal.hub
@@ -408,6 +416,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
                 this.focusedIndex = tileableIndex;
                 this._focusedAttachment = this.oembedViews[i].oembed;
                 this.render();
+                this.resizeFocusedAttachment();
                 break;
             }
             tileableIndex++;
@@ -427,6 +436,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
                 this.focusedIndex = tileableIndex;
                 this._focusedAttachment = this.oembedViews[i].oembed;
                 this.render();
+                this.resizeFocusedAttachment();
                 break;
             }
             tileableIndex++;

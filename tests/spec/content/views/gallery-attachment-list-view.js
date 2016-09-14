@@ -127,6 +127,85 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
             });
         });
 
+        describe('when clicking on the modal', function () {
+            var content;
+            var evented;
+            var galleryAttachmentListView;
+            var tiledAttachmentEl;
+
+            beforeEach(function () {
+                evented = false;
+                content = new Content();
+                galleryAttachmentListView = new GalleryAttachmentListView({content: content});
+                galleryAttachmentListView.setElement($('<div></div>'));
+                galleryAttachmentListView.render();
+                galleryAttachmentListView.$el.on('hideModal.hub', function () {
+                    evented = true;
+                });
+                spyOn(galleryAttachmentListView.events, 'click').andCallThrough();
+                galleryAttachmentListView.delegateEvents();
+            });
+
+            it('emits a hideModal.hub event if not clicking on the attachment', function () {
+                var attachment = $.extend({}, oembedAttachment);
+                attachment.id = 1;
+                content.addAttachment(attachment);
+                galleryAttachmentListView.$el.find('.content-attachments-focused').trigger('click');
+                expect(galleryAttachmentListView.events.click).toHaveBeenCalled();
+                expect(evented).toBe(true);
+            });
+
+            describe('does not emit event if clicking on...', function () {
+                it('native video attachment', function () {
+                    content.addAttachment({
+                        id: 1,
+                        provider_url: "http://instagram.com/",
+                        title: "#cat #animals #cuttiest #cats #mew #mewfamily #santaslittlehelpers #galgo #podenco #greyhound #catsanddogs",
+                        url: "https://scontent.cdninstagram.com/t50.2886-16/14132404_324817204526260_1456165414_n.mp4",
+                        type: "video",
+                        html: '<video width="640" height="360" controls><source src="https://scontent.cdninstagram.com/t50.2886-16/14132404_324817204526260_1456165414_n.mp4" type="video/mp4" /></video>',
+                        author_name: "meow__woof__family",
+                        height: 360,
+                        width: 640,
+                        version: "1.0",
+                        link: "https://www.instagram.com/p/BJjCxEhDNAw/",
+                        thumbnail_width: 320,
+                        provider_name: "Instagram",
+                        thumbnail_url: "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e15/14134868_1314062681967979_1270452668_n.jpg?ig_cache_key=MTMyNDkxNDg4MzU3Mzg5NTIxNg%3D%3D.2",
+                        thumbnail_height: 180,
+                        author_url: "http://instagram.com/meow__woof__family"
+                    });
+                    galleryAttachmentListView.$el.find('.content-attachments-focused video').trigger('click');
+                    expect(galleryAttachmentListView.events.click).toHaveBeenCalled();
+                    expect(evented).toBe(false);
+                });
+
+                it('nested video attachment', function () {
+                    content.addAttachment({
+                        id: 1,
+                        provider_url: "http://instagram.com/",
+                        title: "#cat #animals #cuttiest #cats #mew #mewfamily #santaslittlehelpers #galgo #podenco #greyhound #catsanddogs",
+                        url: "https://scontent.cdninstagram.com/t50.2886-16/14132404_324817204526260_1456165414_n.mp4",
+                        type: "video",
+                        html: '<div><h2>something</h2><video width="640" height="360" controls><source src="https://scontent.cdninstagram.com/t50.2886-16/14132404_324817204526260_1456165414_n.mp4" type="video/mp4" /></video></div>',
+                        author_name: "meow__woof__family",
+                        height: 360,
+                        width: 640,
+                        version: "1.0",
+                        link: "https://www.instagram.com/p/BJjCxEhDNAw/",
+                        thumbnail_width: 320,
+                        provider_name: "Instagram",
+                        thumbnail_url: "https://scontent.cdninstagram.com/t51.2885-15/s320x320/e15/14134868_1314062681967979_1270452668_n.jpg?ig_cache_key=MTMyNDkxNDg4MzU3Mzg5NTIxNg%3D%3D.2",
+                        thumbnail_height: 180,
+                        author_url: "http://instagram.com/meow__woof__family"
+                    });
+                    galleryAttachmentListView.$el.find('.content-attachments-focused video').trigger('click');
+                    expect(galleryAttachmentListView.events.click).toHaveBeenCalled();
+                    expect(evented).toBe(false);
+                });
+            });
+        });
+
         describe ('when focusing a tiled video attachment', function() {
             var oembedVideoAttachment = {
                 provider_name: "YouTube",
