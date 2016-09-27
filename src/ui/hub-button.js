@@ -20,7 +20,7 @@ function HubButton (fnOrCommand, opts) {
     }
 
     if (opts.ariaLabel) {
-      this.ariaLabel = opts.ariaLabel;
+        this.ariaLabel = opts.ariaLabel;
     }
 
     Button.call(this, command, opts);
