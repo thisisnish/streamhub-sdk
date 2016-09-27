@@ -165,7 +165,7 @@ define([
         // will shrink it to be 75% of the height or width depending on the
         // percentage that the image currently takes up. If it's a youtube video,
         // it will increase it's size to 75% of the screen.
-        // 
+        //
         // NOTE: This is only done for youtube videos because their native size
         // is large by default and can resize properly. Other video types do not.
         if (isTooLarge || isYoutube) {
@@ -201,7 +201,17 @@ define([
             AttachmentGalleryModal.ATTACHMENT_MAX_SIZE_WITH_PADDING :
             AttachmentGalleryModal.ATTACHMENT_MAX_SIZE;
         var aspectRatio = opts.aspectRatio;
+
+        var isPortrait = window.innerHeight < window.innerWidth && this._isMobile;
         var heightLarger = opts.focusedAttachmentHeight > opts.focusedAttachmentWidth;
+        var tempVertSpace;
+
+        if (isPortrait && !heightLarger) {
+            tempVertSpace = opts.modalVerticalWhitespace;
+            opts.modalVerticalWhitespace = opts.modalHorizontalWhitespace;
+            opts.modalHorizontalWhitespace = tempVertSpace;
+        }
+
         var maxHeight = opts.height * MAX_SIZE - opts.modalVerticalWhitespace;
         var maxWidth = opts.width * MAX_SIZE - opts.modalHorizontalWhitespace;
 
@@ -217,8 +227,8 @@ define([
         // the focused attachment.
         if (!aspectRatio) {
             aspectRatio = {
-                height: heightLarger ? 100 : (opts.focusedAttachmentHeight / opts.focusedAttachmentWidth) * 100,
-                width: !heightLarger ? 100 : (opts.focusedAttachmentWidth / opts.focusedAttachmentHeight) * 100
+                height: (opts.focusedAttachmentHeight / opts.focusedAttachmentWidth) * 100,
+                width: (opts.focusedAttachmentWidth / opts.focusedAttachmentHeight) * 100
             }
         }
 

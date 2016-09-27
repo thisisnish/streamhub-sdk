@@ -264,7 +264,7 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
             });
 
             describe('works with specific use cases', function () {
-                it('case 1', function () {
+                it('mobile, square aspect ration, landscape orientation, wide video', function () {
                     modalView._isMobile = true;
                     clonedOpts.aspectRatio = {height: 100, width: 100};
                     clonedOpts.focusedAttachmentHeight = 315;
@@ -274,7 +274,22 @@ function($, Content, Oembed, OembedView, GalleryAttachmentListView, AttachmentGa
                     clonedOpts.modalVerticalWhitespace = 144;
                     clonedOpts.width = 667;
                     var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
-                    expect(sizes).toEqual({height: '191px', width: '340px'});
+                    expect(sizes).toEqual({height: '257px', width: '456px'});
+                    expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MOBILE_MAX_SIZE).toBe(true);
+                    expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MOBILE_MAX_SIZE).toBe(true);
+                });
+
+                it('mobile, square aspect ratio, landscape orientation, tall video', function () {
+                    modalView._isMobile = true;
+                    clonedOpts.aspectRatio = {height: 100, width: 100};
+                    clonedOpts.focusedAttachmentHeight = 360;
+                    clonedOpts.focusedAttachmentWidth = 202;
+                    clonedOpts.height = 375;
+                    clonedOpts.modalHorizontalWhitespace = 0;
+                    clonedOpts.modalVerticalWhitespace = 144;
+                    clonedOpts.width = 667;
+                    var sizes = modalView.updateAttachmentToFitModal(clonedOpts);
+                    expect(sizes).toEqual({height: '194px', width: '109px'});
                     expect(parseInt(sizes.height.split('px')[0], 10) / clonedOpts.height <= MOBILE_MAX_SIZE).toBe(true);
                     expect(parseInt(sizes.width.split('px')[0], 10) / clonedOpts.width <= MOBILE_MAX_SIZE).toBe(true);
                 });
