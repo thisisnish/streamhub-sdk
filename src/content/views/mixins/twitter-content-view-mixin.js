@@ -40,17 +40,20 @@ function asTwitterContentView(contentView, opts) {
         var replyButton = new HubButton(undefined, {
             className: 'content-action content-action-reply',
             buttonUrl: 'https://twitter.com/intent/tweet?in_reply_to=' + contentView.content.tweetId,
-            insightsVerb: 'TwitterReplyClick'
+            insightsVerb: 'TwitterReplyClick',
+            ariaLabel: 'reply'
         });
         var retweetButton = new HubButton(undefined, {
             className: 'content-action content-action-retweet',
             buttonUrl: 'https://twitter.com/intent/retweet?tweet_id=' + contentView.content.tweetId,
-            insightsVerb: 'TwitterRetweetClick'
+            insightsVerb: 'TwitterRetweetClick',
+            ariaLabel: 'retweet'
         });
         var favoriteButton = new HubButton(undefined, {
             className: 'content-action content-action-favorite',
             buttonUrl: 'https://twitter.com/intent/favorite?tweet_id=' + contentView.content.tweetId,
-            insightsVerb: 'TwitterLikeClick'
+            insightsVerb: 'TwitterLikeClick',
+            ariaLabel: 'like'
         });
 
         if (opts.showExpandButton) {

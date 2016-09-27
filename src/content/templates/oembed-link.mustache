@@ -1,13 +1,13 @@
 <div class="content-attachment content-attachment-link">
     <div class="content-attachment-frame"></div>
     {{#thumbnail_url}}
-        <img class="content-attachment-link-thumbnail" src ="{{{ thumbnail_url }}}" />
+        <img class="content-attachment-link-thumbnail" src ="{{{ thumbnail_url }}}" alt="{{ title }}"/>
         <div class="content-attachment-link-body">
     {{/thumbnail_url}}
     {{^thumbnail_url}}
         <div class="content-attachment-link-body" style="padding-left:0px;">
     {{/thumbnail_url}}
-            <a href="{{{ url }}}" target="_blank">{{{ title }}}</a>
+            <a href="{{{ url }}}" target="_blank" aria-label="go to this content">{{{ title }}}</a>
             <p class="content-attachment-provider">via {{{ provider_name }}}</p>
         </div>
 </div>

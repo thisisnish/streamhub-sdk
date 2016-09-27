@@ -28,6 +28,7 @@ var ContentHeaderView = function (opts) {
     this.authorVerified = opts.authorVerified;
     this.contentSourceName = opts.contentSourceName;
     this.contentSourceUrl = opts.contentSourceUrl;
+    this.contentSourceTooltipText = opts.contentSourceTooltipText;
 };
 inherits(ContentHeaderView, View);
 
@@ -37,6 +38,9 @@ ContentHeaderView.prototype.elClass = 'content-header';
 
 ContentHeaderView.prototype.headerElSelector = '.content-header';
 ContentHeaderView.prototype.avatarClass = 'content-author-avatar';
+ContentHeaderView.prototype.sourceIconElSelector = '.content-source-logo';
+ContentHeaderView.prototype.authorNameElSelector = '.content-author-name';
+ContentHeaderView.prototype.authorUserNameElSelector = '.content-author-username';
 ContentHeaderView.prototype.avatarSelector = '.'+ContentHeaderView.prototype.avatarClass;
 ContentHeaderView.prototype.contentWithImageClass = 'content-with-image';
 ContentHeaderView.prototype.parentClassSelector = '.content';
@@ -62,6 +66,7 @@ ContentHeaderView.prototype.events = View.prototype.events.extended({}, function
 });
 
 ContentHeaderView.prototype.render = function () {
+    var self = this;
     View.prototype.render.call(this);
 
     // If avatar fails to load, hide it
@@ -69,6 +74,13 @@ ContentHeaderView.prototype.render = function () {
     // http://bit.ly/JWp86R
     this.$(this.avatarSelector+' img')
         .on('error', $.proxy(this._handleAvatarError, this));
+
+    // inline the source icon position so we don't have to set tab-index for all content
+    setTimeout(function(){
+        var nameHeight = self.$(self.authorNameElSelector).height() || 0;
+        var userNameHeight = self.$(self.authorUserNameElSelector).height() || 0;
+        self.$(self.sourceIconElSelector).css('top', '-' + (nameHeight + userNameHeight) + 'px');
+    }, 0);
 };
 
 /**

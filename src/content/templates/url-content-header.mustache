@@ -1,27 +1,8 @@
 <div class="content-header-inner">
     <div class="content-byline">
-        {{#contentSourceUrl}}
-            <a class="content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank"{{/contentSourceUrl}}> 
-                {{#favicon}}
-                    <img class="content-source-logo" src="{{ favicon }}"/>
-                {{/favicon}}
-                {{^favicon}}
-                    <span class="content-source-logo"></span>
-                {{/favicon}}
-            </a>
-        {{/contentSourceUrl}}
-        {{^contentSourceUrl}}
-            {{#favicon}}
-                <img class="content-source-logo" src="{{ favicon }}"/>
-            {{/favicon}}
-            {{^favicon}}
-                <span class="content-source-logo"></span>
-            {{/favicon}}
-        {{/contentSourceUrl}}
-
         {{#displayNameLink}}
             <div class="content-author-name">
-                <a href="{{ displayNameLink }}" target="_blank">{{ displayName }}</a>
+                <a href="{{ displayNameLink }}" target="_blank" aria-label="{{ author.displayName }} profile">{{ displayName }}</a>
             </div>
         {{/displayNameLink}}
         {{^displayNameLink}}
@@ -31,5 +12,24 @@
         {{#viaText}}
             <div class="content-author-username">via {{ viaText }}</div>
         {{/viaText}}
+
+        {{#contentSourceUrl}}
+            <a class="content-source-logo" {{#contentSourceUrl}}href="{{contentSourceUrl}}" target="_blank" {{#contentSourceTooltipText}}aria-label="{{contentSourceTooltipText}}"{{/contentSourceTooltipText}}{{/contentSourceUrl}}>
+                {{#favicon}}
+                    <img class="content-source-logo" src="{{ favicon }}" alt="{{ contentSourceName }} icon"/>
+                {{/favicon}}
+                {{^favicon}}
+                    <span class="content-source-logo" aria-label="{{ contentSourceName }} icon"></span>
+                {{/favicon}}
+            </a>
+        {{/contentSourceUrl}}
+        {{^contentSourceUrl}}
+            {{#favicon}}
+                <img class="content-source-logo" src="{{ favicon }}" alt="{{ contentSourceName }} icon"/>
+            {{/favicon}}
+            {{^favicon}}
+                <span class="content-source-logo" aria-label="{{ contentSourceName }} icon"></span>
+            {{/favicon}}
+        {{/contentSourceUrl}}
     </div>
 </div>

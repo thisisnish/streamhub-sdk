@@ -30,18 +30,28 @@ TiledAttachmentListView.prototype.squareTileClassName = 'content-attachment-squa
 TiledAttachmentListView.prototype.horizontalTileClassName = 'content-attachment-horizontal-tile';
 TiledAttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
 
+TiledAttachmentListView.prototype.clickOrKey = function (e) {
+    var targetOembed;
+    for (var i=0; i < this.oembedViews.length; i++) {
+        var oembedView = this.oembedViews[i];
+        if ($.contains(oembedView.el, e.target)) {
+            targetOembed = oembedView.oembed;
+            break;
+        }
+    }
+
+    this.$el.trigger('focusContent.hub', { content: this.content, attachmentToFocus: targetOembed });
+};
+
 TiledAttachmentListView.prototype.events = AttachmentListView.prototype.events.extended({
     'click': function (e) {
-        var targetOembed;
-        for (var i=0; i < this.oembedViews.length; i++) {
-            var oembedView = this.oembedViews[i];
-            if ($.contains(oembedView.el, e.target)) {
-                targetOembed = oembedView.oembed;
-                break;
-            }
+        this.clickOrKey(e);
+    },
+    'keyup': function (e) {
+        // only when return or space
+        if (e.which === 13 || e.which === 32) {
+            this.clickOrKey(e);
         }
-
-        this.$el.trigger('focusContent.hub', { content: this.content, attachmentToFocus: targetOembed });
     }
 });
 
@@ -78,7 +88,7 @@ TiledAttachmentListView.prototype.tileableCount = function () {
 };
 
 /**
- * Add a Oembed attachment to the Attachments view. 
+ * Add a Oembed attachment to the Attachments view.
  * @param oembed {Oembed} A Oembed instance to render in the View
  * @returns {AttachmentListView} By convention, return this instance for chaining
  */
@@ -96,7 +106,7 @@ TiledAttachmentListView.prototype._insert = function (oembedView) {
 };
 
 /**
- * Removes a Oembed attachment from the Attachments view. 
+ * Removes a Oembed attachment from the Attachments view.
  * @param oembed {Oembed} A Oembed instance to remove
  */
 TiledAttachmentListView.prototype.remove = function (oembed) {
@@ -105,7 +115,7 @@ TiledAttachmentListView.prototype.remove = function (oembed) {
 };
 
 /**
- * Retiles all attachments of the content 
+ * Retiles all attachments of the content
  */
 TiledAttachmentListView.prototype.retile = function () {
     if ( ! this.el) {

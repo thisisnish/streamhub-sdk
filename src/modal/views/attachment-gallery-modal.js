@@ -95,6 +95,16 @@ define([
         var focusedAttachmentHeight = focusedAttachmentEl.attr('height');
         var focusedAttachmentWidth = focusedAttachmentEl.attr('width');
 
+        // remove aria and button stuff
+        var focusedAttachmentDivEl = focusedAttachmentEl.parent();
+        focusedAttachmentDivEl[0].removeAttribute('tabindex');
+        focusedAttachmentDivEl[0].removeAttribute('role');
+        focusedAttachmentDivEl[0].removeAttribute('aria-label');
+
+        // move focus to the modal
+        var modalCloseButtonEl = this.$el.find(ModalView.prototype.closeButtonSelector);
+        modalCloseButtonEl.focus();
+
         // Reset attachment dimensions
         if (focusedAttachmentWidth) {
             focusedAttachmentEl.css({ 'width': parseInt(focusedAttachmentWidth, 10) + 'px' });
