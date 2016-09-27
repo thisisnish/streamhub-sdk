@@ -54,7 +54,7 @@ function ($, LivefyreStreamClient) {
             });
         });
 
-        it ("should return data when getContent is called", function () {
+        it("should return data when getContent is called", function () {
             streamClient.getContent(opts, callback);
 
             waitsFor(function() {
@@ -66,6 +66,36 @@ function ($, LivefyreStreamClient) {
                 expect(callback.mostRecentCall.args[0]).toBeNull();
                 expect(callback.mostRecentCall.args[1]).toBeDefined();
                 expect(callback.mostRecentCall.args[1]).toBe(mockData);
+            });
+        });
+
+        it('should request information with the multi=true flag for multiple results', function () {
+            streamClient = new LivefyreStreamClient();
+
+            spy = spyOn(streamClient, "_request").andCallFake(function(opts, errback) {
+                return $.ajax().success(function () {
+                    errback(null, [{"data": mockData}, {"data": mockData}]);
+                });
+            });
+
+            streamClient.getContent(opts, callback);
+            expect(streamClient._request.mostRecentCall.args[0].url).toBe("https://labs-t402.stream1.fyre.co/v3.1/collection/10669131/0/");
+            expect(streamClient._request.mostRecentCall.args[0].data).toEqual({multi: true});
+
+            waitsFor(function() {
+                return callback.callCount > 0;
+            });
+
+            runs(function() {
+                expect(callback).toHaveBeenCalled();
+                expect(callback.callCount).toBe(2);
+                expect(callback.calls[0].args[0]).toBeNull();
+                expect(callback.calls[0].args[1]).toBeDefined();
+                expect(callback.calls[0].args[1]).toBe(mockData);
+                expect(callback.calls[1].args[0]).toBeNull();
+                expect(callback.calls[1].args[1]).toBeDefined();
+                expect(callback.calls[1].args[1]).toBe(mockData);
+
             });
         });
 

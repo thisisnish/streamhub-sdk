@@ -44,18 +44,26 @@ function(LivefyreHttpClient, inherits) {
         ].join("");
 
         var request = this._request({
-            url: url
+            url: url,
+            data: {multi: true}
         }, function (err, data) {
             if (err) {
                 return callback.apply(this, arguments);
             }
-            if (data.timeout) {
-                return callback(null, { timeout: data.timeout });
+
+            if (!Array.isArray(data)) {
+                data = [data];
             }
-            if (data.status === 'error') {
-                return callback(data.msg);
-            }
-            callback(null, data.data);
+
+            data.forEach(function (datum) {
+                if (datum.timeout) {
+                    return callback(null, { timeout: datum.timeout });
+                }
+                if (datum.status === 'error') {
+                    return callback(datum.msg);
+                }
+                callback(null, datum.data);
+            });
         });
 
         return request;
