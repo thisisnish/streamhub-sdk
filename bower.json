@@ -37,7 +37,7 @@
     "event-emitter": "0.1",
     "view": "1.4.1",
     "base64": "~0.4.0",
-    "cajon": "0.1.12",
+    "cajon": "~0.1.12",
     "streamhub-share": "0.4.0",
     "streamhub-ui": "0.4.0",
     "mout": "0.11.1",
