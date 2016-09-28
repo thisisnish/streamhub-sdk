@@ -12,6 +12,6 @@ ShareButton.prototype.template = function () {
 }
 
 ShareButton.prototype.elClassPrefix = 'hub';
+ShareButton.prototype.ariaLabel = 'Share';
 
 module.exports = ShareButton
-

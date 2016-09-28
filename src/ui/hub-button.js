@@ -18,6 +18,11 @@ function HubButton (fnOrCommand, opts) {
     } else if (fnOrCommand) {
         command = fnOrCommand;
     }
+
+    if (opts.ariaLabel) {
+        this.ariaLabel = opts.ariaLabel;
+    }
+
     Button.call(this, command, opts);
 }
 inherits(HubButton, Button);
@@ -27,6 +32,7 @@ HubButton.prototype.elClassPrefix = 'hub';
 HubButton.prototype.getTemplateContext = function () {
     var context = Button.prototype.getTemplateContext.call(this);
     context.buttonUrl = this._buttonUrl;
+    context.ariaLabel = this.ariaLabel;
 
     return context;
 };

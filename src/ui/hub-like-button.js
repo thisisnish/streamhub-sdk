@@ -47,6 +47,8 @@ function HubLikeButton (fnOrCommand, opts) {
 }
 inherits(HubLikeButton, HubToggleButton);
 
+HubLikeButton.prototype.ariaLabel = 'Like';
+
 HubLikeButton.prototype.setElement = function (el ) {
     HubToggleButton.prototype.setElement.call(this, el);
 };

@@ -1,6 +1,6 @@
 {
   "name": "streamhub-sdk",
-  "version": "2.24.6",
+  "version": "2.25.0",
   "main": [
     "./src/main.js"
   ],
@@ -21,7 +21,7 @@
     "debug": "visionmedia/debug#~0.7.4",
     "livefyre-bootstrap": "git://github.com/Livefyre/livefyre-bootstrap.git#v1.4.19",
     "streamhub-share": "git://github.com/Livefyre/streamhub-share.git#0.4.0",
-    "streamhub-ui": "git://github.com/Livefyre/streamhub-ui.git#0.3.0",
+    "streamhub-ui": "git://github.com/Livefyre/streamhub-ui.git#0.4.0",
     "urnlib.js": "git://github.com/Livefyre/urnlib.js.git#0.0.4",
     "mout": "0.11.1"
   },
@@ -32,11 +32,15 @@
     "livefyre-auth": "git://github.com/livefyre/livefyre-auth.git"
   },
   "resolutions": {
-    "base64": "~0.4.0",
     "auth": "~0.2.0",
     "livefyre-bootstrap": "~1.4.19",
     "event-emitter": "0.1",
     "view": "1.4.1",
-    "mout": "0.11.1"
+    "base64": "~0.4.0",
+    "cajon": "0.1.12",
+    "streamhub-share": "0.4.0",
+    "streamhub-ui": "0.4.0",
+    "mout": "0.11.1",
+    "streamhub-sdk": "2.25.0"
   }
 }

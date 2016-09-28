@@ -106,6 +106,8 @@ define([
 
         this.visible = true;
         this.$el.trigger('shown');
+
+        document.addEventListener('focus', this.adjustFocus.bind(this), true);
     };
 
 
@@ -119,6 +121,7 @@ define([
         this.visible = false;
         $('body').css('overflow', 'auto');
         this.$el.trigger('hidden');
+        document.removeEventListener('focus', this.adjustFocus);
     };
 
 
@@ -220,6 +223,15 @@ define([
         if (stackLength > 0) {
         //If there is a next modal, show it
             ModalView._stackedInstances[stackLength - 1].show(undefined, false);
+        }
+    };
+
+    ModalView.prototype.adjustFocus = function (event) {
+        if ( this.visible && !this.el.contains( event.target ) ) {
+            event.stopPropagation();
+            // move focus to the modal
+            var modalCloseButtonEl = this.$el.find(ModalView.prototype.closeButtonSelector);
+            modalCloseButtonEl.focus();
         }
     };
 

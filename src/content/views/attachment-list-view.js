@@ -6,7 +6,7 @@ define([
     'inherits'],
 function($, View, OembedView, AttachmentListTemplate, inherits) {
     'use strict';
-   
+
     /**
      * A simple View that displays Content in a list (`<ul>` by default).
      * @param opts {Object} A set of options to config the view with
@@ -22,7 +22,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         this._rendered = false;
 
         View.call(this, opts);
-        
+
         if (opts.content) {
             this.setContent(opts.content);
         }
@@ -54,7 +54,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         }
 
         this.content = content;
-        
+
         // Add attachments that already exist
         for (var i=0; i < this.content.attachments.length; i++) {
             this.add(this.content.attachments[i]);
@@ -111,7 +111,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
     };
 
     /**
-     * Add a Oembed attachment to the Attachments view. 
+     * Add a Oembed attachment to the Attachments view.
      * @param oembed {Oembed} A Oembed instance to render in the View
      * @returns {AttachmentListView} By convention, return this instance for chaining
      */
@@ -153,7 +153,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
     /**
      * Creates the view to render the oembed content object
      * @param oembed {Oembed} A Oembed instance to render in the View
-     * @returns {OembedView} 
+     * @returns {OembedView}
      */
     AttachmentListView.prototype._createOembedView = function(oembed) {
         var oembedView = new OembedView({

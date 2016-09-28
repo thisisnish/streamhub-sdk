@@ -31,12 +31,30 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         opts.authorVerified = content.twitterVerified;
         opts.contentSourceName = 'twitter';
         opts.contentSourceUrl = 'https://twitter.com';
+        opts.contentSourceTooltipText = 'View on Twitter';
     } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FACEBOOK) {
         if (content.author) {
             opts.authorUrl = content.author.profileUrl;
         }
         opts.contentSourceName = 'facebook'
+        opts.contentSourceUrl = 'https://facebook.com';
         opts.contentSourceTooltipText = 'View on Facebook';
+    } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_INSTAGRAM) {
+        opts.contentSourceName = 'instagram';
+        opts.contentSourceUrl = 'https://instagram.com';
+        opts.contentSourceTooltipText = 'View on Instagram';
+    } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_WEIBO) {
+        opts.contentSourceName = 'weibo';
+        opts.contentSourceUrl = 'http://weibo.com/';
+        opts.contentSourceTooltipText = 'View on Weibo';
+    } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_YOUTUBE) {
+        opts.contentSourceName = 'youtube';
+        opts.contentSourceUrl = 'https://youtube.com';
+        opts.contentSourceTooltipText = 'View on YouTube';
+    } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FEED) {
+        opts.contentSourceName = 'rss';
+    } else if (content.typeUrn === TYPE_URNS.LIVEFYRE) {
+        opts.contentSourceName = 'livefyre';
     }
 
     return opts;
