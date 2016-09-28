@@ -284,6 +284,13 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
                 videoIframe.attr('width', oembed.width);
                 videoIframe.attr('height', oembed.height);
             }
+
+            // Add poster if missing
+            var videoEl = videoContentEl.find('video');
+            if (videoEl.length > 0) {
+                videoEl.attr('poster', oembed.thumbnail_url);
+            }
+
             videoContentEl.show();
         }
 

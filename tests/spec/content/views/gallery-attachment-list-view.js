@@ -233,6 +233,11 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 thumbnail_url: "http://i.vimeocdn.com/video/447095475_1280.jpg",
                 html: "<iframe src='http://video.source.html?src=https://player.vimeo.com/video/73096254&anotherParam=1'>here's your video player</iframe>"
             },
+            rawVideoAttachment = {
+                type: "video",
+                thumbnail_url: "https://pbs.twimg.com/ext_tw_video_thumb/776222315440959488/pu/img/HD8gLsr6YCDHyilI.jpg:small",
+                html: "<video controls><source src='https://video.twimg.com/ext_tw_video/776222315440959488/pu/vid/180x320/jHDIO9O5RH5p-xN-.mp4' type='video/mp4'></video>"
+            },
             galleryAttachmentListView,
             tiledAttachmentEl,
             content;
@@ -286,6 +291,26 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
                 expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('autoplay=1');
                 expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('%26rel%3D0');
+            });
+
+            it('adds a poster to video tags', function () {
+                content = new Content();
+                galleryAttachmentListView = new GalleryAttachmentListView({
+                    content: content,
+                    attachmentToFocus: rawVideoAttachment
+                });
+
+                galleryAttachmentListView.setElement($('<div></div>'));
+                galleryAttachmentListView.render();
+                var attachment = $.extend({}, noAutoplayVideoAttachment);
+                attachment.id = 1;
+                content.addAttachment(attachment);
+                tiledAttachmentEl = galleryAttachmentListView.$el.find('.content-attachment:first');
+                tiledAttachmentEl.trigger('click');
+
+                var focusedAttachmentsEl = galleryAttachmentListView.$el.find('.content-attachments-gallery');
+                var focusedVideoAttachmentEl = focusedAttachmentsEl.find('.content-attachment:first .content-attachment-video');
+                expect($(focusedVideoAttachmentEl).find('video').attr('poster')).toBe(rawVideoAttachment.thumbnail_url);
             });
 
             it('does not auto play non Youtube and Livefyre videos', function() {
