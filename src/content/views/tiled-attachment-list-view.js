@@ -30,7 +30,7 @@ TiledAttachmentListView.prototype.squareTileClassName = 'content-attachment-squa
 TiledAttachmentListView.prototype.horizontalTileClassName = 'content-attachment-horizontal-tile';
 TiledAttachmentListView.prototype.contentAttachmentSelector = '.content-attachment';
 
-TiledAttachmentListView.prototype.clickOrKey = function (e) {
+TiledAttachmentListView.prototype._clickOrKey = function (e) {
     var targetOembed;
     for (var i=0; i < this.oembedViews.length; i++) {
         var oembedView = this.oembedViews[i];
@@ -45,12 +45,12 @@ TiledAttachmentListView.prototype.clickOrKey = function (e) {
 
 TiledAttachmentListView.prototype.events = AttachmentListView.prototype.events.extended({
     'click': function (e) {
-        this.clickOrKey(e);
+        this._clickOrKey(e);
     },
     'keyup': function (e) {
         // only when return or space
         if (e.which === 13 || e.which === 32) {
-            this.clickOrKey(e);
+            this._clickOrKey(e);
         }
     }
 });

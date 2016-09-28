@@ -66,7 +66,6 @@ ContentHeaderView.prototype.events = View.prototype.events.extended({}, function
 });
 
 ContentHeaderView.prototype.render = function () {
-    var self = this;
     View.prototype.render.call(this);
 
     // If avatar fails to load, hide it
@@ -76,11 +75,11 @@ ContentHeaderView.prototype.render = function () {
         .on('error', $.proxy(this._handleAvatarError, this));
 
     // inline the source icon position so we don't have to set tab-index for all content
-    setTimeout(function(){
-        var nameHeight = self.$(self.authorNameElSelector).height() || 0;
-        var userNameHeight = self.$(self.authorUserNameElSelector).height() || 0;
-        self.$(self.sourceIconElSelector).css('top', '-' + (nameHeight + userNameHeight) + 'px');
-    }, 0);
+    setTimeout($.proxy(function() {
+        var nameHeight = this.$(this.authorNameElSelector).height() || 0;
+        var userNameHeight = this.$(this.authorUserNameElSelector).height() || 0;
+        this.$(this.sourceIconElSelector).css('top', '-' + (nameHeight + userNameHeight) + 'px');
+    }, this), 0);
 };
 
 /**
