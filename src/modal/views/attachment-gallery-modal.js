@@ -97,9 +97,11 @@ define([
 
         // remove aria and button stuff
         var focusedAttachmentDivEl = focusedAttachmentEl.parent();
-        focusedAttachmentDivEl[0].removeAttribute('tabindex');
-        focusedAttachmentDivEl[0].removeAttribute('role');
-        focusedAttachmentDivEl[0].removeAttribute('aria-label');
+        if (focusedAttachmentDivEl.length) {
+            focusedAttachmentDivEl[0].removeAttribute('tabindex');
+            focusedAttachmentDivEl[0].removeAttribute('role');
+            focusedAttachmentDivEl[0].removeAttribute('aria-label');
+        }
 
         // move focus to the modal
         var modalCloseButtonEl = this.$el.find(ModalView.prototype.closeButtonSelector);
