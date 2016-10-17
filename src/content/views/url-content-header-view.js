@@ -19,6 +19,7 @@ var UrlContentHeaderView = function (opts) {
     this.viaText = content.viaText;
     this.favicon = content.favicon;
     this.contentSourceUrl = content.attachments && content.attachments.length ? content.attachments[0].url : undefined;
+    this.contentSourceName = this.contentSourceName ? this.contentSourceName : content.viaText;
 };
 inherits(UrlContentHeaderView, ContentHeaderView);
 

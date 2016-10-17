@@ -97,7 +97,7 @@ ContentFooterView.prototype.addButton = function (button, opts) {
     }
 
     footerControls.push(button);
-    var buttonContainerEl = button.opts.buttonUrl ? $('<div></div>') : $('<button></button>');
+    var buttonContainerEl = button.opts.buttonUrl ? $('<div></div>') : $('<button type="button"></button>');
     button.setElement(buttonContainerEl);
     button.render();
 
