@@ -13,7 +13,11 @@ function HubToggleButton (fnOrCommand, opts) {
 }
 inherits(HubToggleButton, HubButton);
 
-HubToggleButton.prototype._execute = function () {
+HubToggleButton.prototype._execute = function (evt) {
+    if (evt.type === "keyup" && 13 !== evt.which && 32 !== evt.which) {
+        return;
+    }
+
     HubButton.prototype._execute.call(this);
     this._enabled = !this._enabled;
     this.$el.removeClass('hub-btn-toggle-on').removeClass('hub-btn-toggle-off');

@@ -53,7 +53,11 @@ HubLikeButton.prototype.setElement = function (el ) {
     HubToggleButton.prototype.setElement.call(this, el);
 };
 
-HubLikeButton.prototype._execute = function () {
+HubLikeButton.prototype._execute = function (evt) {
+    if (evt.type === "keyup" && 13 !== evt.which && 32 !== evt.which) {
+        return;
+    }
+
     this._command.execute(this._errback);
     if (! auth.isAuthenticated()) {
         return;
