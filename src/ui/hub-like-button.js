@@ -54,7 +54,7 @@ HubLikeButton.prototype.setElement = function (el ) {
 };
 
 HubLikeButton.prototype._execute = function (evt) {
-    if (evt.type === "keyup" && 13 !== evt.which && 32 !== evt.which) {
+    if (this.isAriaKeyEvent(evt)) {
         return;
     }
 
