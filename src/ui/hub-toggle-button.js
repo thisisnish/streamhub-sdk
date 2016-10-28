@@ -15,7 +15,7 @@ function HubToggleButton (fnOrCommand, opts) {
 inherits(HubToggleButton, HubButton);
 
 HubToggleButton.prototype._execute = function (evt) {
-    if (AriaUtil.isNotAriaKeyEvent(evt)) {
+    if (AriaUtil.isNonAriaKeyEvent(evt)) {
         return;
     }
 

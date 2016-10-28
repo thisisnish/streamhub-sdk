@@ -55,7 +55,7 @@ HubLikeButton.prototype.setElement = function (el ) {
 };
 
 HubLikeButton.prototype._execute = function (evt) {
-    if (AriaUtil.isNotAriaKeyEvent(evt)) {
+    if (AriaUtil.isNonAriaKeyEvent(evt)) {
         return;
     }
 
