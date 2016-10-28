@@ -1,5 +1,6 @@
 'use strict';
 
+var AriaUtil = require('streamhub-ui/util/aria');
 var HubButton = require('streamhub-sdk/ui/hub-button');
 var inherits = require('inherits');
 
@@ -14,7 +15,7 @@ function HubToggleButton (fnOrCommand, opts) {
 inherits(HubToggleButton, HubButton);
 
 HubToggleButton.prototype._execute = function (evt) {
-    if (this.isAriaKeyEvent(evt)) {
+    if (AriaUtil.isNotAriaKeyEvent(evt)) {
         return;
     }
 

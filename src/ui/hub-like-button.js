@@ -1,5 +1,6 @@
 'use strict';
 
+var AriaUtil = require('streamhub-ui/util/aria');
 var auth = require('auth');
 var HubToggleButton = require('streamhub-sdk/ui/hub-toggle-button');
 var AuthRequiredCommand = require('streamhub-sdk/ui/auth-required-command');
@@ -54,7 +55,7 @@ HubLikeButton.prototype.setElement = function (el ) {
 };
 
 HubLikeButton.prototype._execute = function (evt) {
-    if (this.isAriaKeyEvent(evt)) {
+    if (AriaUtil.isNotAriaKeyEvent(evt)) {
         return;
     }
 
