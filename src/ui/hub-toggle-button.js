@@ -1,5 +1,6 @@
 'use strict';
 
+var AriaUtil = require('streamhub-ui/util/aria');
 var HubButton = require('streamhub-sdk/ui/hub-button');
 var inherits = require('inherits');
 
@@ -13,7 +14,11 @@ function HubToggleButton (fnOrCommand, opts) {
 }
 inherits(HubToggleButton, HubButton);
 
-HubToggleButton.prototype._execute = function () {
+HubToggleButton.prototype._execute = function (evt) {
+    if (AriaUtil.isNonAriaKeyEvent(evt)) {
+        return;
+    }
+
     HubButton.prototype._execute.call(this);
     this._enabled = !this._enabled;
     this.$el.removeClass('hub-btn-toggle-on').removeClass('hub-btn-toggle-off');
