@@ -75,17 +75,13 @@ ContentHeaderView.prototype.render = function () {
         .on('error', $.proxy(this._handleAvatarError, this));
 
     // inline the source icon position so we don't have to set tab-index for all content
-    this.positionSourceIcon();
+    setTimeout($.proxy(this.positionSourceIcon, this), 0);
 };
 
 ContentHeaderView.prototype.positionSourceIcon = function () {
-    if (this.$(this.authorNameElSelector).closest('.container').length <= 0) {
-        setTimeout($.proxy(this.positionSourceIcon, this), Math.floor(Math.random() * 1000));
-    } else {
-        var nameHeight = this.$(this.authorNameElSelector).height() || 0;
-        var userNameHeight = this.$(this.authorUserNameElSelector).height() || 0;
-        this.$(this.sourceIconElSelector).css('top', '-' + (nameHeight + userNameHeight) + 'px');
-    }
+    var nameHeight = this.$(this.authorNameElSelector).height() || 0;
+    var userNameHeight = this.$(this.authorUserNameElSelector).height() || 0;
+    this.$(this.sourceIconElSelector).css('top', '-' + (nameHeight + userNameHeight) + 'px');
 };
 
 /**
