@@ -75,11 +75,11 @@ ContentHeaderView.prototype.render = function () {
         .on('error', $.proxy(this._handleAvatarError, this));
 
     // inline the source icon position so we don't have to set tab-index for all content
-    setTimeout($.proxy(this.positionSourceIcon, this), 0);
+    this.positionSourceIcon();
 };
 
 ContentHeaderView.prototype.positionSourceIcon = function () {
-    if (this.$(this.authorNameElSelector).closest('html').length <= 0) {
+    if (this.$(this.authorNameElSelector).closest('.container').length <= 0) {
         setTimeout($.proxy(this.positionSourceIcon, this), Math.floor(Math.random() * 1000));
     } else {
         var nameHeight = this.$(this.authorNameElSelector).height() || 0;
