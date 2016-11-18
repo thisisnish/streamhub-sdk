@@ -22,6 +22,14 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
     var opts = {};
     opts.author =  content.author;
 
+    if (content.author && !content.author.displayName) {
+        if (content.author.handle) {
+            opts.author.displayName = content.author.handle;
+        } else if (typeof content.author.profileUrl === 'string') {
+            opts.author.displayName = content.author.profileUrl.split('/').pop();
+        }
+    }
+
     if (content.typeUrn === TYPE_URNS.LIVEFYRE_TWITTER || content.typeUrn === TYPE_URNS.TWITTER) {
         if (content.author && typeof content.author.profileUrl === 'string') {
             opts.authorUserNamePrefix = '@';
