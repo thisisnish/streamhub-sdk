@@ -22,6 +22,9 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
     var opts = {};
     opts.author =  content.author;
 
+    // It's possible that the displayName is empty or it's just not set.
+    // If that is the case, try to fill it with either the handle or the
+    // last part of the profileUrl.
     if (content.author && !content.author.displayName) {
         if (content.author.handle) {
             opts.author.displayName = content.author.handle;
