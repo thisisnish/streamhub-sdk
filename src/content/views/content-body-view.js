@@ -28,10 +28,19 @@ ContentBodyView.prototype.elClass = 'content-body';
 
 ContentBodyView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this._content);
+    var attachments = context.attachments;
     // Ensure that content.body has a p tag
     var isHtml = /^\s*<(p|div)/;
     if ( ! isHtml.test(context.body)) {
         context.body = '<p>'+context.body+'</p>';
+    }
+
+    // If there an duplicate link title + content title, then
+    // remove the content title for display purposes.
+    if (attachments.length && attachments[0].type === 'link') {
+        if (context.title === attachments[0].title) {
+            context.title = '';
+        }
     }
 
     // Ensure that the title is only text.

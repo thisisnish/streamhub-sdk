@@ -43,6 +43,7 @@ define(function () {
         'tests/spec/content/views/tiled-attachment-list-view',
         'tests/spec/content/views/block-attachment-list-view',
         'tests/spec/content/views/gallery-attachment-list-view',
+        'tests/spec/content/views/content-body-view',
         'tests/spec/content/views/content-list-view',
         'tests/spec/content/views/mixins/attachment-modal-mixin',
         'tests/spec/modal/main',

@@ -46,6 +46,9 @@
         <h2>Livefyre Pending Video Content</h2>
         <div id="c9"></div>
 
+        <h2>Link with Title Content</h2>
+        <div id="c10"></div>
+
         <script src="../../lib/cajon/cajon.js" type="text/javascript"></script>
         <script src="/requirejs.conf.js" type="text/javascript"></script>
 
@@ -196,6 +199,37 @@
             var c9v = contentViewFactory.createContentView(c9);
             c9v.setElement(document.getElementById('c9'));
             c9v.render();
+
+            var c10 = new LivefyreContent({
+                content: {
+                    bodyHtml: "Speaking in Ohio, the Democratic presidential nominee says Trump was ‘taking from America with both hands and leaving the rest of us with the bill’",
+                    title: "Clinton hammers Trump on taxes: he 'represents the rigged system'",
+                    createdAt: 1359696267
+                },
+                author: {
+                    displayName: "the Guardian",
+                    profileUrl: "http://www.google.com",
+                    avatar: "http://a0.twimg.com/profile_images/2190838404/me_normal.jpg",
+                    id: "16275037@twitter.com"
+                }
+            });
+            c10.attachments = [{
+                "provider_url": "http://theguardian.com",
+                "description": "Speaking in Ohio, the Democratic presidential nominee says Trump was ‘taking from America with both hands and leaving the rest of us with the bill’",
+                "title": "Clinton hammers Trump on taxes: he 'represents the rigged system'",
+                "url": "http://www.theguardian.com/us-news/2016/oct/03/clinton-trump-taxes-rigged-system",
+                "thumbnail_width": 1200,
+                "version": "1.0",
+                "author_name": "the Guardian",
+                "provider_name": "the Guardian",
+                "thumbnail_url": "https://i.guim.co.uk/img/media/47c7174999c49bf8dca9d18a29c63df36d300ad5/0_152_4500_2699/master/4500.jpg?w=1200&h=630&q=55&auto=format&usm=12&fit=crop&bm=normal&ba=bottom%2Cleft&blend64=aHR0cHM6Ly91cGxvYWRzLmd1aW0uY28udWsvMjAxNi8wNS8yNS9vdmVybGF5LWxvZ28tMTIwMC05MF9vcHQucG5n&s=255f1bd92f034ed14b510970ba70ef77",
+                "type": "link",
+                "thumbnail_height": 630,
+                "author_url": "http://theguardian.com"
+            }];
+            var c10v = contentViewFactory.createContentView(c10);
+            c10v.setElement(document.getElementById('c10'));
+            c10v.render();
         });
         </script>
     </body>
