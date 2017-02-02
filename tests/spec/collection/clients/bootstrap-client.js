@@ -42,7 +42,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 }, '.getContent to respond');
                 runs(function () {
                     var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
-                    expect(mostRecentRequest.url).toBe('https://labs-t402.bootstrap.fyre.co/bs3/v3.1/t402.livefyre.com/labs-t402.fyre.co/303827/Z2VuZV9wdWJsaXNoXzA=/init');
+                    expect(mostRecentRequest.url).toBe('https://labs-t402.bootstrap.fyre.co/bs3/v3.1/t402.livefyre.com/labs-t402.fyre.co/303827/Z2VuZV9wdWJsaXNoXzA=/init?transform=true');
                 });
             });
 
@@ -69,7 +69,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 }, '.getContent to respond');
                 runs(function () {
                     var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
-                    expect(mostRecentRequest.url).toMatch(/0\.json$/);
+                    expect(mostRecentRequest.url).toMatch(/0\.json/);
                 });
             });
 
@@ -85,7 +85,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 }, '.getContent to respond');
                 runs(function () {
                     var mostRecentRequest = bootstrapClient._request.mostRecentCall.args[0];
-                    expect(mostRecentRequest.url).toBe('https://playstation.bootstrap.fyre.co/bs3/v3.1/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init');
+                    expect(mostRecentRequest.url).toBe('https://playstation.bootstrap.fyre.co/bs3/v3.1/playstation.fyre.co/342776/Y3VzdG9tLTEzNzg5NTE0MTE4NDA=/init?transform=true');
                 });
             });
         });
@@ -113,7 +113,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
             it("requests the bootstrap service with that version in the path", function () {
                 bootstrapClient.getContent(opts, callback);
                 var requestedUrl = bootstrapClient._request.mostRecentCall.args[0].url;
-                expect(requestedUrl).toBe('https://data.fyre/bs3/v3.1/livefyre.com/286472/NTA5Mzg4YzAtYTI3Mi00MTcwLTk4YjktNzE0OTczYjM3NTM4/init');
+                expect(requestedUrl).toBe('https://data.fyre/bs3/v3.1/livefyre.com/286472/NTA5Mzg4YzAtYTI3Mi00MTcwLTk4YjktNzE0OTczYjM3NTM4/init?transform=true');
             });
         });
 
@@ -137,7 +137,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
             it("requests the correct bootstrap URL for localdev", function () {
                 bootstrapClient.getContent(opts, callback);
                 var requestedUrl = bootstrapClient._request.mostRecentCall.args[0].url;
-                expect(requestedUrl).toBe('https://data.fyre/bs3/v3.1/livefyre.com/286472/NTA5Mzg4YzAtYTI3Mi00MTcwLTk4YjktNzE0OTczYjM3NTM4/init');
+                expect(requestedUrl).toBe('https://data.fyre/bs3/v3.1/livefyre.com/286472/NTA5Mzg4YzAtYTI3Mi00MTcwLTk4YjktNzE0OTczYjM3NTM4/init?transform=true');
             });
         });
 
@@ -161,7 +161,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
             it("requests the correct bootstrap URL for localdev", function () {
                 bootstrapClient.getContent(opts, callback);
                 var requestedUrl = bootstrapClient._request.mostRecentCall.args[0].url;
-                expect(requestedUrl).toBe('https://data.fy.re/bs3/v3.1/livefyre.com/286472/NTA5Mzg4YzAtYTI3Mi00MTcwLTk4YjktNzE0OTczYjM3NTM4/init');
+                expect(requestedUrl).toBe('https://data.fy.re/bs3/v3.1/livefyre.com/286472/NTA5Mzg4YzAtYTI3Mi00MTcwLTk4YjktNzE0OTczYjM3NTM4/init?transform=true');
             });
         });
 
@@ -184,7 +184,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
             it("requests the correct bootstrap URL for prod livefyre.com network", function () {
                 bootstrapClient.getContent(opts, callback);
                 var requestedUrl = bootstrapClient._request.mostRecentCall.args[0].url;
-                expect(requestedUrl).toBe('https://data.livefyre.com/bs3/v3.1/livefyre.com/313878/MQ==/init');
+                expect(requestedUrl).toBe('https://data.livefyre.com/bs3/v3.1/livefyre.com/313878/MQ==/init?transform=true');
             });
         });
 
@@ -204,7 +204,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                     environment: 'qa-ext.livefyre.com'
                 });
                 var ajaxArgs = bootstrapClient._request.mostRecentCall.args[0];
-                expect(ajaxArgs.url).toBe('https://data.qa-ext.livefyre.com/bs3/v3.1/qa-ext.livefyre.com/backplane-qa.fyre.co/290598/MQ==/init');
+                expect(ajaxArgs.url).toBe('https://data.qa-ext.livefyre.com/bs3/v3.1/qa-ext.livefyre.com/backplane-qa.fyre.co/290598/MQ==/init?transform=true');
             });
             it('makes correct request when opts.environment=fyre', function () {
                 spyOn(bootstrapClient, '_request');
@@ -216,7 +216,7 @@ function ($, LivefyreBootstrapClient, MockBootstrapClient) {
                 });
                 var ajaxArgs = bootstrapClient._request.mostRecentCall.args[0];
                 expect(ajaxArgs.url.indexOf('https')).toBe(0);
-                expect(ajaxArgs.url).toBe('https://data.fyre/bs3/v3.1/backplane-qa.fyre.co/290598/MQ==/init');
+                expect(ajaxArgs.url).toBe('https://data.fyre/bs3/v3.1/backplane-qa.fyre.co/290598/MQ==/init?transform=true');
             });
 
         });
