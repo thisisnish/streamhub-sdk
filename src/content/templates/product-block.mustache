@@ -1,0 +1,10 @@
+<div class="product-block">
+  <img class="product-media" src="{{ productMedia }}" alt="{{ productAltText }}"></img>
+  {{#isMobile}}
+    <a class="buy-button" href="{{ buyUrl }}">{{ buyButtonText }}</a>
+  {{/isMobile}}
+  {{^isMobile}}
+    <span class="product-name">{{ productName }}</span>
+    <span class="product-cost">{{ productCost }}</span>
+  {{/isMobile}}
+</div>
