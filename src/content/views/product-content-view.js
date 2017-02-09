@@ -68,8 +68,8 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
     this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, { render: shouldRender });
 
-    this._productView = opts.productView || new ProductCarouselView(opts);
-    this.add(this._productView, { render: shouldRender });
+    //this._productView = opts.productView || new ProductCarouselView(opts);
+    //this.add(this._productView, { render: shouldRender });
 };
 
 ProductContentView.prototype._removeInitialChildViews = function () {

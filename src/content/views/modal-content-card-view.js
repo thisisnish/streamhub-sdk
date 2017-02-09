@@ -176,7 +176,7 @@ ModalContentCardView.prototype.render = function () {
      * this.innerHTML is set, they are not cleared.
      * bit.ly/1no8mNk 
      */
-    if (hasInnerHtmlBug = testHasInnerHtmlBug()) {
+    if (hasInnerHtmlBug = this._testHasInnerHtmlBug()) {
         this._footerView._detachButtons();
     }
 
@@ -184,7 +184,7 @@ ModalContentCardView.prototype.render = function () {
     return this;
 };
 
-function testHasInnerHtmlBug() {
+ModalContentCardView.prototype._testHasInnerHtmlBug = function() {
     // only test once
     if (hasInnerHtmlBug !== null) {
         return hasInnerHtmlBug
@@ -196,6 +196,6 @@ function testHasInnerHtmlBug() {
     parent.appendChild(child);
     parent.innerHTML = '';
     return child.innerHTML === '';
-}
+};
 
 module.exports = ModalContentCardView;
