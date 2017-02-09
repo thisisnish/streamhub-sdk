@@ -2,7 +2,6 @@ var $ = require('streamhub-sdk/jquery');
 var CompositeView = require('view/composite-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
-var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
 var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
 var inherits = require('inherits');
@@ -21,9 +20,6 @@ var log = debug('streamhub-sdk/content/views/content-view');
  * @param opts {Object} The set of options to configure this view with.
  * @param opts.content {Content} The content object to use when rendering.
  * @param opts.el {?HTMLElement} The element to render this object in.
- * @param opts.headerView {View}
- * @param opts.bodyView {View}
- * @param opts.footerView {View}
  * @param opts.attachmentsView {View}
  * @fires ModalContentCardView#removeModalContentCardView.hub
  * @exports streamhub-sdk/content/views/content-view
@@ -34,7 +30,6 @@ var ModalContentCardView = function (opts) {
 
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
-    this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
     this._thumbnailViewFactory = new ContentThumbnailViewFactory(opts);
 
     CompositeView.call(this, opts);
@@ -101,11 +96,12 @@ ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRen
     this.add(this._attachmentsView, { render: shouldRender });
 
     this._productContentView = opts.productContentView || new ProductContentView(opts);
+    this.add(this._productContentView, { render: shouldRender });
 };
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {
     this.remove(this._attachmentsView);
-    this.remove(this._bodyView);
+    this.remove(this._productContentView);
 };
 
 /**
