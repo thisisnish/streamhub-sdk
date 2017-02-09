@@ -2,6 +2,7 @@ var $ = require('streamhub-sdk/jquery');
 var CompositeView = require('view/composite-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
 var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
 var inherits = require('inherits');
