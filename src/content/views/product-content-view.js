@@ -150,4 +150,4 @@ ProductContentView.prototype.render = function () {
     return this;
 };
 
-module.exports = MedialessProductContentView;
+module.exports = ProductContentView;
