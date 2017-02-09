@@ -142,12 +142,26 @@ ProductContentView.prototype.render = function () {
      * this.innerHTML is set, they are not cleared.
      * bit.ly/1no8mNk 
      */
-    if (hasInnerHtmlBug = testHasInnerHtmlBug()) {
+    if (hasInnerHtmlBug = this._testHasInnerHtmlBug()) {
         this._footerView._detachButtons();
     }
 
     CompositeView.prototype.render.call(this);
     return this;
+};
+
+ProductContentView.prototype._testHasInnerHtmlBug = function() {
+    // only test once
+    if (hasInnerHtmlBug !== null) {
+        return hasInnerHtmlBug
+    }
+    var txt = 'hi';
+    var parent = document.createElement('div');
+    var child = document.createElement('span');
+    child.appendChild(document.createTextNode(txt));
+    parent.appendChild(child);
+    parent.innerHTML = '';
+    return child.innerHTML === '';
 };
 
 module.exports = ProductContentView;
