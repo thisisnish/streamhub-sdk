@@ -235,8 +235,8 @@ ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
 ContentViewFactory.prototype.getMixinForTypeOfContent = function (content) {
     var viewToRender = null;
 
-    for (var i=0, len=this.prototype.contentRegistry.length; i < len; i++) {
-        var current = this.prototype.contentRegistry[i];
+    for (var i=0, len=this.contentRegistry.length; i < len; i++) {
+        var current = this.contentRegistry[i];
         var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
 
         if (!sameTypeUrn) {
