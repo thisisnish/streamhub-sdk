@@ -22,6 +22,17 @@ var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
 var WeiboContentView = require('streamhub-sdk/content/views/weibo-content-view');
 var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
 
+var TwitterContentViewMixin = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
+var WeiboContentViewMixin = require('streamhub-sdk/content/views/mixins/weibo-content-view-mixin');
+//var YoutubeContentViewMixin = require('streamhub-sdk/content/views/mixins/youtube-content-view-mixin');
+var FacebookContentViewMixin = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
+var InstagramContentViewMixin = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
+var UrlContentViewMixin = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
+var LivefyreContentViewMixin = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
+var CardContentViewMixin = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
+
+
+
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
 var Command = require('streamhub-sdk/ui/command');
 var CompositeView = require('view/composite-view');
@@ -52,25 +63,25 @@ var ContentViewFactory = function(opts) {
  */
 ContentViewFactory.prototype.contentRegistry = [
     { type: LivefyreTwitterContent, view: TwitterContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_TWITTER },
+        typeUrn: TYPE_URNS.LIVEFYRE_TWITTER, mixin: TwitterContentViewMixin },
     { type: LivefyreFacebookContent, view: FacebookContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_FACEBOOK},
+        typeUrn: TYPE_URNS.LIVEFYRE_FACEBOOK, mixin: FacebookContentViewMixin },
     { type: LivefyreInstagramContent, view: InstagramContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_INSTAGRAM },
+        typeUrn: TYPE_URNS.LIVEFYRE_INSTAGRAM, mixin: InstagramContentViewMixin  },
     { type: LivefyreFeedContent, view: FeedContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_FEED },
+        typeUrn: TYPE_URNS.LIVEFYRE_FEED, mixin: TwitterContentViewMixin  },
     { type: TwitterContent, view: TwitterContentView,
-        typeUrn: TYPE_URNS.TWITTER },
+        typeUrn: TYPE_URNS.TWITTER, mixin: TwitterContentViewMixin  },
     { type: LivefyreUrlContent, view: UrlContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_URL },
+        typeUrn: TYPE_URNS.LIVEFYRE_URL, mixin: UrlContentViewMixin  },
     { type: LivefyreContent, view: LivefyreContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE },
+        typeUrn: TYPE_URNS.LIVEFYRE, mixin: LivefyreContentViewMixin  },
     { type: Content, view: ContentView,
-        typeUrn: TYPE_URNS.CONTENT },
+        typeUrn: TYPE_URNS.CONTENT, mixin: CardContentViewMixin  },
     { type: LivefyreWeiboContent, view: WeiboContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_WEIBO },
+        typeUrn: TYPE_URNS.LIVEFYRE_WEIBO, mixin: WeiboContentViewMixin  },
     { type: LivefyreYoutubeContent, view: YoutubeContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE }
+        typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE }//, mixin: YoutubeContentViewMixin  }
 ];
 
 ContentViewFactory.prototype._createAttachmentsView = function (content) {
@@ -219,6 +230,45 @@ ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
     // TODO: When the sharer's delegate changes and it didn't have one before,
     // then the shareCommand should emit change:canExecute
     return shareCommand;
+};
+
+ContentViewFactory.prototype.getMixinForTypeOfContent = function (content) {
+    var viewToRender = null;
+
+    for (var i=0, len=this.prototype.contentRegistry.length; i < len; i++) {
+        var current = this.prototype.contentRegistry[i];
+        var sameTypeUrn = content.typeUrn && (current.typeUrn === content.typeUrn);
+
+        if (!sameTypeUrn) {
+            continue;
+        }
+
+        if (content.typeUrn === TYPE_URNS.LIVEFYRE_URL) {
+            var typeId = content.urlContentTypeId || "";
+            typeId = typeId.toLowerCase();
+
+            //Set urn so that other bits that rely on it
+            //treat content as it should be.
+            if (typeId.indexOf("twitter.com") >= 0) {
+                return TwitterContentViewMixin;
+            } else if (typeId.indexOf("facebook.com") >= 0) {
+                return FacebookContentViewMixin;
+            } else if (typeId.indexOf("instagram.com") >= 0) {
+                return InstagramContentViewMixin;
+            }
+        } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FEED) {
+            var feedUrl = (content.feedUrl || '').toLowerCase();
+            if (feedUrl.indexOf("youtube.com") >= 0) {
+                return YoutubeContentViewMixin;
+            } else if (feedUrl.indexOf("tumblr.com") >= 0) {
+                return TumblrContentViewMixin;
+            }
+        }
+
+        if (current.mixin) {
+            return current.mixin;
+        } 
+    }
 };
 
 module.exports = ContentViewFactory;

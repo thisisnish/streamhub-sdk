@@ -5,6 +5,7 @@ var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
+var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
 var inherits = require('inherits');
 var debug = require('debug');
 
@@ -34,10 +35,13 @@ var ProductContentView = function (opts) {
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
+    this._contentViewFactory = new ContentViewFactory();
+    this._mixin = this._contentViewFactory(this.content);
 
     CompositeView.call(this, opts);
 
     this._addInitialChildViews(opts);
+    this._mixin(this, opts);
 
     if (this.content) {
         this.content.on("change:body", function(newVal, oldVal){
@@ -67,6 +71,8 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
 
     this._footerView = opts.footerView || new ContentFooterView({content: opts.content});
     this.add(this._footerView, { render: shouldRender });
+
+    
 
     //this._productView = opts.productView || new ProductCarouselView(opts);
     //this.add(this._productView, { render: shouldRender });
