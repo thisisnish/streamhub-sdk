@@ -36,7 +36,7 @@ var ProductContentView = function (opts) {
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
     this._contentViewFactory = new ContentViewFactory();
-    this._mixin = this._contentViewFactory(this.content);
+    this._mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
 
     CompositeView.call(this, opts);
 
