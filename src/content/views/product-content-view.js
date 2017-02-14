@@ -72,10 +72,8 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
     this._footerView = opts.footerView || new ContentFooterView({content: opts.content});
     this.add(this._footerView, { render: shouldRender });
 
-    
-
-    //this._productView = opts.productView || new ProductCarouselView(opts);
-    //this.add(this._productView, { render: shouldRender });
+    this._productView = opts.productView || new ProductCarouselView(opts);
+    this.add(this._productView, { render: shouldRender });
 };
 
 ProductContentView.prototype._removeInitialChildViews = function () {
@@ -146,7 +144,7 @@ ProductContentView.prototype.render = function () {
      * cleared out. When ._renderButtons later re-appendChilds all the
      * button.els, they are empty. So if we detach them here before
      * this.innerHTML is set, they are not cleared.
-     * bit.ly/1no8mNk 
+     * bit.ly/1no8mNk
      */
     if (hasInnerHtmlBug = this._testHasInnerHtmlBug()) {
         this._footerView._detachButtons();

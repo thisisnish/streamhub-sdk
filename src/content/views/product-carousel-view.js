@@ -1,5 +1,6 @@
 var template = require('hgn!streamhub-sdk/content/templates/product-carousel');
-var View = require('streamhub-sdk/view');
+var CompositeView = require('view/composite-view');
+var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');
 var inherits = require('inherits');
 
 'use strict';
@@ -15,11 +16,34 @@ var inherits = require('inherits');
  */
 var ProductCarouselView = function (opts) {
     opts = opts || {};
-    View.call(this, opts);
+    CompositeView.call(this, opts);
+    this._addInitialChildViews(opts);
 };
-inherits(ProductCarouselView, View);
+inherits(ProductCarouselView, CompositeView);
 
 ProductCarouselView.prototype.template = template;
-ProductCarouselView.prototype.bodySelector = '.product-carousel-body';
+ProductCarouselView.prototype.elTag = 'section';
+ProductCarouselView.prototype.elClass = 'product-carousel';
+ProductCarouselView.prototype.listClass = 'product-carousel-list';
+
+/**
+ * @param {Object} opts
+ * @param {boolean=} shouldRender
+ */
+ProductCarouselView.prototype._addInitialChildViews = function (opts, shouldRender) {
+    shouldRender = shouldRender || false;
+    for (var i = 0; opts.content.products && i < opts.content.products.length; i++) {
+        this.add(new ProductBlockView({
+            product: opts.content.products[i],
+            buyButtonText: opts.buyButtonText
+        }), { render: shouldRender });
+    }
+};
+
+ProductCarouselView.prototype.getTemplateContext = function () {
+    var context = $.extend({}, this.opts);
+    context.productCarouselTitle = "Shop these products:"
+    return context;
+};
 
 module.exports = ProductCarouselView;

@@ -164,5 +164,13 @@ define([
         changeSet.generator = annotationValue;
     }
 
+    Annotator.prototype.added.products = function(changeSet, annotationValue) {
+        changeSet.products = annotationValue;
+    };
+
+    Annotator.prototype.removed.products = function(changeSet) {
+        changeSet.products = {};
+    };
+
     return Annotator;
 });

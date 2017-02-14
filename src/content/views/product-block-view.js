@@ -19,6 +19,14 @@ var ProductBlockView = function (opts) {
 };
 inherits(ProductBlockView, View);
 
+ProductBlockView.prototype.elTag = 'div';
+ProductBlockView.prototype.elClass = 'product-block';
 ProductBlockView.prototype.template = template;
+
+ProductBlockView.prototype.getTemplateContext = function () {
+    var context = $.extend({}, this.opts);
+    context.buyButtonText = "Buy Now"
+    return context;
+};
 
 module.exports = ProductBlockView;
