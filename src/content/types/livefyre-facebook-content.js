@@ -20,28 +20,21 @@ define([
         // There may be times when Facebook content is just a string with no HTML.
         // Sizzle may throw an error, so wrap any parsing to avoid these errors.
         try {
-            var bodyEl = $(this.body);
+            var div = document.createElement('div');
+            div.innerHTML = this.body;
+            bodyEl = $(div);
         } catch(e) {
             // This will happen a lot. Pass
         }
 
         if (bodyEl && bodyEl.length) {
             bodyEl.find('.fyre-image, .fyre-link').remove();
-            this.body = outerHtml(bodyEl);
+            this.body = bodyEl.html();
         }
     };
     inherits(LivefyreFacebookContent, LivefyreContent);
 
     LivefyreFacebookContent.prototype.typeUrn = 'urn:livefyre:js:streamhub-sdk:content:types:livefyre-facebook';
-
-    /**
-     * Get a jQuery Element as HTML
-     */
-    function outerHtml ($el) {
-        var $tmp = $('<div></div>');
-        $tmp.append($el);
-        return $tmp.html();
-    }
 
     return LivefyreFacebookContent;
 });
