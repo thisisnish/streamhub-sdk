@@ -9,7 +9,7 @@ define([
 function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemplate, ContentHeaderViewFactory, inherits) {
     'use strict';
 
-    var AUTOPLAY_PROVIDER_REGEX = /youtube|livefyre/;
+    var AUTOPLAY_PROVIDER_REGEX = /youtube|livefyre|facebook/;
 
     /**
      * A view that displays a content's attachments as a gallery
@@ -269,6 +269,7 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         var photoContentEl = focusedEl.find('.content-attachment-photo');
         photoContentEl.addClass(this.focusedAttachmentClassName);
+
         if (this._focusedAttachment.type === 'video') {
             var playButtonEl = focusedEl.find('.content-attachment-controls-play');
             playButtonEl.hide();
@@ -277,12 +278,9 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
             videoContentEl.addClass(this.focusedAttachmentClassName);
             videoContentEl.html(this.getAttachmentVideoHtml());
             var videoIframe = videoContentEl.find('iframe');
+
             if (this.tile) {
                 videoIframe.css({'width': '100%', 'height': '100%'});
-            }
-            if (oembed.width && oembed.height) {
-                videoIframe.attr('width', oembed.width);
-                videoIframe.attr('height', oembed.height);
             }
 
             // Add poster if missing
@@ -291,7 +289,20 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
                 videoEl.attr('poster', oembed.thumbnail_url);
             }
 
-            videoContentEl.show();
+            // Must attempt to set iframe width/height due to issues surrounding
+            // certain embeds not adjusting correctly to resizing.
+            if (oembed.width && oembed.height) {
+                videoIframe.attr('width', oembed.width);
+                videoIframe.attr('height', oembed.height);
+                videoContentEl.show();
+            } else {
+                oembedView.getAspectRatio(function (aspectRatio) {
+                    videoIframe.attr('width', 200 * aspectRatio);
+                    videoIframe.attr('height', 200 * (1 / aspectRatio));
+                    videoContentEl.show();
+                });
+            }
+
         }
 
         // Update page count and focused index
@@ -370,44 +381,46 @@ function($, View, TiledAttachmentListView, OembedView, GalleryAttachmentListTemp
 
         var $html = $(attachment.html);
         var iframe = $html[0].tagName === 'IFRAME' ? $html[0] : $html.find('iframe')[0];
+        var video = $html[0].tagName === 'VIDEO' ? $html[0] : $html.find('video')[0];
 
-        // If there isn't an iframe in the attachment html, nothing more to do.
-        if (!iframe) {
-          return attachment.html;
+        if (video) {
+            video.setAttribute('autoplay', true);
+            return video.outerHTML;
         }
 
-        var queryChar = iframe.src.indexOf('?') > -1 ? '&' : '?';
-        iframe.src += queryChar + 'autoplay=1';
+        if (iframe) {
+            var queryChar = iframe.src.indexOf('?') > -1 ? '&' : '?';
+            iframe.src += queryChar + 'autoplay=1';
 
-        // make youtube videos not show related videos
-        var srcIndex = iframe.src.indexOf('src=');
-        var youtubeIndex = iframe.src.indexOf('youtube', srcIndex);
-        var nextAmpersand = iframe.src.indexOf('&', srcIndex);
-        // youtube is in the source
-        if (youtubeIndex < nextAmpersand && srcIndex > -1 && nextAmpersand > -1) {
-            iframe.src = iframe.src.substring(0, nextAmpersand) + '%26rel%3D0' + iframe.src.substring(nextAmpersand);
+            // make youtube videos not show related videos
+            var srcIndex = iframe.src.indexOf('src=');
+            var youtubeIndex = iframe.src.indexOf('youtube', srcIndex);
+            var nextAmpersand = iframe.src.indexOf('&', srcIndex);
+            // youtube is in the source
+            if (youtubeIndex < nextAmpersand && srcIndex > -1 && nextAmpersand > -1) {
+                iframe.src = iframe.src.substring(0, nextAmpersand) + '%26rel%3D0' + iframe.src.substring(nextAmpersand);
+            }
+
+            return $('<div>').append($html).html();
         }
 
-        return $('<div>').append($html).html();
+        return attachment.html;
     };
 
     /**
      * Resizes the focused attachment to fit within the content view. Sets the
      * direct child of focused attachment to expand to itself.
      */
-    GalleryAttachmentListView.prototype.resizeFocusedAttachment = function() {
-        var attachment;
-        var focusedAttachmentEl = this.$el.find('.'+this.focusedAttachmentClassName);
-        var focusedChild = focusedAttachmentEl.children().eq(0);
-        var size;
+    GalleryAttachmentListView.prototype.resizeFocusedAttachment = function () {
         // Handles an edge case where there are no views but it gets into this
         // function. Probably coming from a callback.
-        if (this.oembedViews.length) {
-            attachment = this.oembedViews[this.focusedIndex];
-            size = attachment.getAspectRatio();
-            focusedChild.css({width: size.width + '%', height: size.height + '%'});
+        if (!this.oembedViews.length) {
+            return this.$el.trigger('galleryResize.hub', [1]);
         }
-        this.$el.trigger('galleryResize.hub', [attachment, size]);
+
+        this.oembedViews[this.focusedIndex].getAspectRatio(function (aspectRatio) {
+            this.$el.trigger('galleryResize.hub', [aspectRatio]);
+        }.bind(this));
     };
 
     /**
