@@ -275,9 +275,16 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toBe('div');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachments-focused');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
-                expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+
+                waitsFor(function () {
+                    return focusedVideoAttachmentEl.css('display') === 'block';
+                });
+
+                runs(function () {
+                    expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+                });
             });
 
             it('shows the video player as the focused attachment and auto plays youtube and no related content at the end', function() {
@@ -288,9 +295,16 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toBe('div');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachments-focused');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
-                expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('autoplay=1');
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('%26rel%3D0');
+
+                waitsFor(function () {
+                    return focusedVideoAttachmentEl.css('display') === 'block';
+                });
+
+                runs(function () {
+                    expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('autoplay=1');
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).toContain('%26rel%3D0');
+                });
             });
 
             it('adds a poster to video tags', function () {
@@ -332,9 +346,16 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toBe('div');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachments-focused');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
-                expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+
+                waitsFor(function () {
+                    return focusedVideoAttachmentEl.css('display') === 'block';
+                });
+
+                runs(function () {
+                    expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+                });
             });
 
             it('does show related videos at end of non Youtube and Livefyre videos', function() {
@@ -356,9 +377,16 @@ function($, jasmineJquery, Content, GalleryAttachmentListView) {
                 expect(focusedVideoAttachmentEl).toBe('div');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachments-focused');
                 expect(focusedVideoAttachmentEl).toHaveClass('content-attachment-video');
-                expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
-                expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+
+                waitsFor(function () {
+                    return focusedVideoAttachmentEl.css('display') === 'block';
+                });
+
+                runs(function () {
+                    expect(focusedVideoAttachmentEl).toHaveCss({ display: 'block' });
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('autoplay=1');
+                    expect($(focusedVideoAttachmentEl).find('iframe').attr('src')).not.toContain('%26rel%3D0');
+                });
             });
         });
 

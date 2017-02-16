@@ -112,22 +112,76 @@ function($, jasmineJquery, OembedView, OembedPhotoTemplate, OembedVideoTemplate,
         });
 
         describe('#getAspectRatio', function () {
-            it('returns default 100/100 for height/width by default', function () {
-                oembedAttachment.provider_name = 'vimeo';
-                var oembedView = new OembedView({ oembed: oembedAttachment });
-                expect(oembedView.getAspectRatio()).toEqual({height: 100, width: 100});
+            var oembed;
+            var aspectRatio;
+            var complete = false;
+            var assertAspectRatio = function (oembed, expectedRatio, isMobile) {
+                var ov = new OembedView({oembed: oembed});
+                ov._isMobile = !!isMobile;
+
+                runs(function () {
+                    ov.getAspectRatio(function (ar) {
+                        complete = true;
+                        aspectRatio = ar;
+                    });
+                });
+
+                waitsFor(function () {
+                    return complete;
+                });
+
+                runs(function () {
+                    expect(aspectRatio).toEqual(expectedRatio);
+                });
+            };
+
+            beforeEach(function () {
+                oembed = $.merge({}, oembedAttachment);
+                complete = false;
             });
 
-            it('returns 100/100 if no provider_name', function () {
-                delete oembedAttachment.provider_name;
-                var oembedView = new OembedView({ oembed: oembedAttachment });
-                expect(oembedView.getAspectRatio()).toEqual({height: 100, width: 100});
+            it('returns a ratio of width over height', function () {
+                oembed.width = 640;
+                oembed.height = 360;
+                assertAspectRatio(oembed, 16/9);
             });
 
-            it('returns a 9/16 aspect ratio for youtube', function () {
-                oembedAttachment.provider_name = 'youtube';
-                var oembedView = new OembedView({ oembed: oembedAttachment });
-                expect(oembedView.getAspectRatio()).toEqual({height: 56.25, width: 100});
+            it('falls back to thumbnail dimensions if width and height are not provided', function () {
+                oembed.thumbnail_width = 100;
+                oembed.thumbnail_height = 120;
+                assertAspectRatio(oembed, 5/6);
+            });
+
+            it('calculates image dimensions if width/height and thumbnail width/height are missing, and is a photo', function () {
+                oembed.type = 'photo';
+                oembed.url = 'http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg';
+                assertAspectRatio(oembed, 2);
+            });
+
+            it('calculates image dimensions if width/height and thumbnail width/height are missing, and has a thumbnail', function () {
+                oembed.type = 'video';
+                oembed.url = 'https://www.google.com';
+                oembed.thumbnail_url = 'http://pbs.twimg.com/media/BQGNgs9CEAEhmEF.jpg';
+                assertAspectRatio(oembed, 2);
+            });
+
+            it('default 1 for no width / height', function () {
+                oembed.type = 'video';
+                assertAspectRatio(oembed, 1);
+            });
+
+            it('returns a 16/9 aspect ratio for youtube as an override', function () {
+                oembed.provider_name = 'youtube';
+                oembed.width = 100;
+                oembed.height = 100;
+                assertAspectRatio(oembed, 16/9);
+            });
+
+            it('returns a 16/9 aspect ratio for facebook on mobile as an override', function () {
+                oembed.provider_name = 'facebook';
+                oembed.width = 100;
+                oembed.height = 100;
+                assertAspectRatio(oembed, 16/9, true);
             });
         });
     });
