@@ -24,13 +24,13 @@ var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-vi
 
 var TwitterContentViewMixin = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
 var WeiboContentViewMixin = require('streamhub-sdk/content/views/mixins/weibo-content-view-mixin');
-//var YoutubeContentViewMixin = require('streamhub-sdk/content/views/mixins/youtube-content-view-mixin');
 var FacebookContentViewMixin = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
 var InstagramContentViewMixin = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
 var UrlContentViewMixin = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
 var LivefyreContentViewMixin = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
 var CardContentViewMixin = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
 
+var ThemeMixin = require('streamhub-sdk/content/views/mixins/theme-mixin');
 
 
 var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
@@ -81,7 +81,7 @@ ContentViewFactory.prototype.contentRegistry = [
     { type: LivefyreWeiboContent, view: WeiboContentView,
         typeUrn: TYPE_URNS.LIVEFYRE_WEIBO, mixin: WeiboContentViewMixin  },
     { type: LivefyreYoutubeContent, view: YoutubeContentView,
-        typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE }//, mixin: YoutubeContentViewMixin  }
+        typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE, mixin: function(view) { return ThemeMixin(view, 'content-youtube') }  }
 ];
 
 ContentViewFactory.prototype._createAttachmentsView = function (content) {
