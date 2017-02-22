@@ -1,3 +1,4 @@
+var $ = require('streamhub-sdk/jquery');
 var template = require('hgn!streamhub-sdk/content/templates/product-carousel');
 var CompositeView = require('view/composite-view');
 var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');

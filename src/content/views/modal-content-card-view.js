@@ -92,9 +92,10 @@ ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRen
     shouldRender = shouldRender || false;
     this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
+    
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
     this.add(this._attachmentsView, { render: shouldRender });
-
+    
     this._productContentView = opts.productContentView || new ProductContentView(opts);
     this.add(this._productContentView, { render: shouldRender });
 };
