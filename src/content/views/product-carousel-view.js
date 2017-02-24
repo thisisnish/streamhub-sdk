@@ -2,7 +2,6 @@ var $ = require('streamhub-sdk/jquery');
 var template = require('hgn!streamhub-sdk/content/templates/product-carousel');
 var CompositeView = require('view/composite-view');
 var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');
-var View = require('view/view');
 var inherits = require('inherits');
 
 'use strict';
@@ -47,7 +46,7 @@ ProductCarouselView.prototype.add = function (view) {
 };
 
 ProductCarouselView.prototype.render = function (view, opts) {
-    View.prototype.render.call(this);
+    this.$el.html(this.template(this.getTemplateContext()));
     for (var i=0; i < this._childViews.length; i++) {
         var childView = this._childViews[i];
         this.$el.find('.' + this.listClass).append(childView.el);
