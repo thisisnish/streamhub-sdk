@@ -3,7 +3,7 @@ define(function () {
         'tests/spec/main',
         'tests/spec/debug',
         'tests/spec/storage',
-        'tests/spec/util',
+        'tests/spec/util/date',
         'tests/spec/view',
         'tests/spec/views/list-view',
         'tests/spec/views/show-more-button',

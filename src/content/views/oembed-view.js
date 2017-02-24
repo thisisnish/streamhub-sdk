@@ -1,6 +1,7 @@
 define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/view',
+    'streamhub-ui/util/user-agent',
     'hgn!streamhub-sdk/content/templates/oembed-photo',
     'hgn!streamhub-sdk/content/templates/oembed-video',
     'hgn!streamhub-sdk/content/templates/oembed-video-promise',
@@ -8,7 +9,7 @@ define([
     'hgn!streamhub-sdk/content/templates/oembed-rich',
     'inherits'
 ],
-function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTemplate, OembedLinkTemplate, OembedRichTemplate, inherits) {
+function($, View, util, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTemplate, OembedLinkTemplate, OembedRichTemplate, inherits) {
     'use strict';
 
     /**
@@ -29,6 +30,8 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTe
         if (!this.oembed) {
             return;
         }
+
+        this._isMobile = util.isMobile();
         this.template = this.OEMBED_TEMPLATES[this.oembed.type];
     };
     inherits(OembedView, View);
@@ -47,14 +50,47 @@ function($, View, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPromiseTe
     };
 
     /**
-     * Get the aspect ratio for the embed based on provider name.
-     * @return {Object} - Height and width percentages.
+     * Get the aspect ratio for the embed.
+     * @param {function} done Callback invoked with one parameter (width/height)
      */
-    OembedView.prototype.getAspectRatio = function() {
-        if (this.oembed.provider_name && this.oembed.provider_name.toLowerCase() === 'youtube') {
-            return {height: parseFloat(((9/16) * 100).toFixed(2)), width: 100};
+    OembedView.prototype.getAspectRatio = function (done) {
+        function loadImg(url, cb) {
+            var img = new Image();
+            img.onload = function () {
+                cb(img.naturalWidth/img.naturalHeight);
+            };
+
+            img.onerror = function () {
+                cb(1);
+            };
+            img.src = url;
         }
-        return {height: 100, width: 100};
+
+        var provider = (this.oembed.provider_name || '').toLowerCase();
+        var width = this.oembed.width || this.oembed.thumbnail_width || 0;
+        var height = this.oembed.height || this.oembed.thumbnail_height || 0;
+
+        if (provider === 'youtube') {
+            return done(16/9);
+        }
+
+        if (provider === 'facebook' && this._isMobile) {
+            return done(16/9);
+        }
+
+        if (width > 0 && height > 0) {
+            return done(width/height);
+        }
+
+        if (this.oembed.type === 'photo') {
+            return loadImg(this.oembed.url, done)
+        }
+
+        if (this.oembed.thumbnail_url) {
+            return loadImg(this.oembed.thumbnail_url, done);
+        }
+
+        done(1);
     };
 
     /**

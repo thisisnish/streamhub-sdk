@@ -41,12 +41,12 @@ function(LivefyreHttpClient, inherits, base64) {
      * @param opts.siteId {string} The livefyre siteId for the conversation
      * @param opts.articleId {string|number} The livefyre articleId for the conversation
      * @param [opts.page] {string} Livefyre page name or number to fetch from bootstrap
-     *     (default "init")
+     *     (default 'init')
      * @param [opts.environment] {string} Optional livefyre environment to use dev/prod environment
      * @param [opts.version] {string} Version string to include in Bootstrap API
      *     resource paths. By default, one will not be added, which usually means '3.0'
      * @param callback {function} A callback that is called upon success/failure of the
-     *     bootstrap request. Callback signature is "function(error, data)".
+     *     bootstrap request. Callback signature is 'function(error, data)'.
      */
     LivefyreBootstrapClient.prototype.getContent = function(opts, callback) {
         opts = opts || {};
@@ -56,17 +56,18 @@ function(LivefyreHttpClient, inherits, base64) {
             environment !== 'fyre' && environment !== 'fy.re';
         var url = [
             this._getUrlBase(opts),
-            "/bs3/",
+            '/bs3/',
             this._version ? this._version + '/' : '',
-            includeEnvironment ? opts.environment + "/" : "",
+            includeEnvironment ? opts.environment + '/' : '',
             opts.network,
-            "/",
+            '/',
             opts.siteId,
-            "/",
+            '/',
             base64.url.btoa(opts.articleId.toString()),
-            "/",
-            typeof opts.page !== 'undefined' ? opts.page+'.json' : "init"
-        ].join("");
+            '/',
+            typeof opts.page !== 'undefined' ? opts.page+'.json' : 'init',
+            '?transform=true'
+        ].join('');
 
         this._request({
             url: url
