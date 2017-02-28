@@ -113,7 +113,7 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, { render: shouldRender });
 
-    if (opts.content.products && opts.content.products.length > 0) {
+    if (opts.content.links && opts.content.links.product && opts.content.links.product.length > 0) {
       this._productHeaderView = this._headerViewFactory.createHeaderView(opts.content, true);
       this.add(this._productHeaderView, { render: shouldRender });
     }

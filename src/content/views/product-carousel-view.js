@@ -32,9 +32,9 @@ ProductCarouselView.prototype.listClass = 'product-carousel-list';
  * @param {boolean=} shouldRender
  */
 ProductCarouselView.prototype._addInitialChildViews = function (opts) {
-    for (var i = 0; opts.content.products && i < opts.content.products.length; i++) {
+    for (var i = 0; opts.content.links && opts.content.links.product && i < opts.content.links.product.length; i++) {
         this.add(new ProductBlockView({
-            product: opts.content.products[i],
+            product: opts.content.links.product[i],
             buyButtonText: opts.buyButtonText
         }));
     }

@@ -164,12 +164,12 @@ define([
         changeSet.generator = annotationValue;
     }
 
-    Annotator.prototype.added.products = function(changeSet, annotationValue) {
-        changeSet.products = annotationValue;
+    Annotator.prototype.added.links = function(changeSet, annotationValue) {
+        changeSet.links = annotationValue;
     };
 
-    Annotator.prototype.removed.products = function(changeSet) {
-        changeSet.products = {};
+    Annotator.prototype.removed.links = function(changeSet) {
+        changeSet.links = {};
     };
 
     return Annotator;
