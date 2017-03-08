@@ -35,7 +35,10 @@ ProductCarouselView.prototype._addInitialChildViews = function (opts) {
     for (var i = 0; opts.content.links && opts.content.links.product && i < opts.content.links.product.length; i++) {
         this.add(new ProductBlockView({
             product: opts.content.links.product[i],
-            buyButtonText: opts.buyButtonText
+            productButtonText: opts.productButtonText,
+            productDetailPhotoShow: opts.productDetailPhotoShow,
+            productDetailTitleShow: opts.productDetailTitleShow,
+            productDetailPriceShow: opts.productDetailPriceShow
         }));
     }
 };
@@ -56,8 +59,10 @@ ProductCarouselView.prototype.render = function (view, opts) {
 };
 
 ProductCarouselView.prototype.getTemplateContext = function () {
+    var productCarouselTitleText = this.opts.productCarouselTitleText && this.opts.productCarouselTitleText && this.opts.productCarouselTitleText.trim();
     var context = $.extend({}, this.opts);
-    context.productCarouselTitle = "Shop these products:"
+    context.productCarouselTitleText = productCarouselTitleText
+    context.productCarouselTitleShow = (productCarouselTitleText && productCarouselTitleText.length > 0) || false;
     return context;
 };
 

@@ -26,7 +26,10 @@ ProductBlockView.prototype.template = template;
 
 ProductBlockView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this.opts);
-    context.buyButtonText = "Buy Now"
+    context.productButtonText = this.opts.productButtonText;
+    context.productDetailPhotoShow = this.opts.productDetailPhotoShow;
+    context.productDetailTitleShow = this.opts.productDetailTitleShow;
+    context.productDetailPriceShow = this.opts.productDetailPriceShow;
     return context;
 };
 

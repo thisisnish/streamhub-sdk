@@ -14,10 +14,10 @@ var ContentHeaderViewFactory = function (opts) {
     opts = opts || {};
 };
 
-ContentHeaderViewFactory.prototype.createHeaderView = function (content, isProductHeader) {
+ContentHeaderViewFactory.prototype.createHeaderView = function (content, productOpts) {
     var opts = this._getHeaderViewOptsForContent(content);
-    if (isProductHeader) {
-      return new ProductHeaderView(opts);
+    if (productOpts) {
+      return new ProductHeaderView(opts, productOpts);
     }
     return new ContentHeaderView(opts);
 };

@@ -5,5 +5,9 @@
     {{^contentSourceUrl}}
         <span class="content-source-logo" {{#contentSourceName}}aria-label="{{contentSourceName}} icon"{{/contentSourceName}}></span>
     {{/contentSourceUrl}}-->
-    <span class="product-shop-button">{{shopIndicationText}}</span>
+    {{#showProduct}}
+        {{#productIndicationShow}}
+            <span class="product-shop-button">{{productIndicationText}}</span>
+        {{/productIndicationShow}}
+    {{/showProduct}}
 </div>

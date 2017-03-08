@@ -17,8 +17,10 @@ var log = debug('streamhub-sdk/content/views/product-header-view');
  * @exports streamhub-sdk/views/content-header-view
  * @constructor
  */
-var ProductHeaderView = function (opts) {
+var ProductHeaderView = function (opts, productOpts) {
     opts = opts || {};
+    this._productOpts = productOpts;
+
     ContentHeaderView.call(this, opts);
 };
 inherits(ProductHeaderView, ContentHeaderView);
@@ -28,8 +30,11 @@ ProductHeaderView.prototype.elTag = 'section';
 ProductHeaderView.prototype.elClass = 'product-header';
 
 ProductHeaderView.prototype.getTemplateContext = function () {
+    var productIndicationText = this._productOpts.productIndicationText && this._productOpts.productIndicationText.trim && this._productOpts.productIndicationText.trim();
     var context = $.extend({}, this.opts);
-    context.shopIndicationText = "Shop"
+    context.productIndicationText = productIndicationText;
+    context.productIndicationShow = (productIndicationText && productIndicationText.length > 0) || false;
+    context.showProduct = this._productOpts.showProduct;
     return context;
 };
 
