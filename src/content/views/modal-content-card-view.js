@@ -92,10 +92,10 @@ ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRen
     shouldRender = shouldRender || false;
     this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
-    
+
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
     this.add(this._attachmentsView, { render: shouldRender });
-    
+
     this._productContentView = opts.productContentView || new ProductContentView(opts);
     this.add(this._productContentView, { render: shouldRender });
 };
@@ -166,7 +166,17 @@ ModalContentCardView.prototype.destroy = function () {
  * @returns {ModalContentCardView}
  */
 ModalContentCardView.prototype.render = function () {
+    var self = this;
     CompositeView.prototype.render.call(this);
+
+    setTimeout(function (){
+        // position the attachements vertically centered
+        var attachmentsHeight = self._thumbnailAttachmentsView.$el.height();
+        var modalHeight = self._thumbnailAttachmentsView.$el.parent().parent().height();
+        self._thumbnailAttachmentsView.$el.css('margin-top', (modalHeight - attachmentsHeight) / 2);
+    }, 0);
+
+
     return this;
 };
 
