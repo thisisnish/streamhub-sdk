@@ -36,6 +36,8 @@ function($, View, util, OembedPhotoTemplate, OembedVideoTemplate, OembedVideoPro
     };
     inherits(OembedView, View);
 
+    OembedView.prototype.elClass = 'oembed';
+
     /**
      * A mapping of oembed type to its mustache template for rendering
      * @readonly

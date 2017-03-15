@@ -178,6 +178,10 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
         return null;
     };
 
+    AttachmentListView.prototype.getCurrentNumberOfAttachments = function() {
+        return this.content.attachments.length;
+    }
+
     AttachmentListView.prototype.destroy = function () {
         View.prototype.destroy.call(this);
         this.oembedViews = null;
