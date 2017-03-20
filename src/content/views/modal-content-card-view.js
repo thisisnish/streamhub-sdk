@@ -1,8 +1,6 @@
 var $ = require('streamhub-sdk/jquery');
 var CompositeView = require('view/composite-view');
-var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
-var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
-var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
+var AttachmentCarouselView = require('streamhub-sdk/content/views/attachment-carousel-view');
 var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
 var inherits = require('inherits');
 var debug = require('debug');
@@ -30,7 +28,6 @@ var ModalContentCardView = function (opts) {
 
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
-    this._thumbnailViewFactory = new ContentThumbnailViewFactory(opts);
 
     CompositeView.call(this, opts);
 
@@ -90,10 +87,8 @@ ModalContentCardView.prototype.events = CompositeView.prototype.events.extended(
  */
 ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRender) {
     shouldRender = shouldRender || false;
-    this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
-    this._blockAttachmentsView = new BlockAttachmentListView(opts);
 
-    this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
+    this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
     this.add(this._attachmentsView, { render: shouldRender });
 
     this._productContentView = opts.productContentView || new ProductContentView(opts);
@@ -102,7 +97,9 @@ ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRen
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {
     this.remove(this._attachmentsView);
-    this.remove(this._productContentView);
+    if (this._productContentView) {
+        this.remove(this._productContentView);
+    }
 };
 
 /**
@@ -169,12 +166,12 @@ ModalContentCardView.prototype.render = function () {
     var self = this;
     CompositeView.prototype.render.call(this);
 
-    setTimeout(function (){
+    /*setTimeout(function (){
         // position the attachements vertically centered
         var attachmentsHeight = self._thumbnailAttachmentsView.$el.height();
         var modalHeight = self._thumbnailAttachmentsView.$el.parent().parent().height();
         self._thumbnailAttachmentsView.$el.css('margin-top', (modalHeight - attachmentsHeight) / 2);
-    }, 0);
+    }, 0);*/
 
 
     return this;
