@@ -164,5 +164,13 @@ define([
         changeSet.generator = annotationValue;
     }
 
+    Annotator.prototype.added.links = function(changeSet, annotationValue) {
+        changeSet.links = annotationValue;
+    };
+
+    Annotator.prototype.removed.links = function(changeSet) {
+        changeSet.links = {};
+    };
+
     return Annotator;
 });

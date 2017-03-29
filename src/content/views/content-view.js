@@ -1,6 +1,7 @@
 var $ = require('streamhub-sdk/jquery');
 var CompositeView = require('view/composite-view');
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
+var ProductHeaderView = require('streamhub-sdk/content/views/product-header-view');
 var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
@@ -112,6 +113,14 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, { render: shouldRender });
 
+    if (opts.content.links && opts.content.links.product && opts.content.links.product.length > 0) {
+      this._productHeaderView = this._headerViewFactory.createHeaderView(opts.content, {
+        productIndicationText: opts.productIndicationText,
+        showProduct: opts.showProduct
+      });
+      this.add(this._productHeaderView, { render: shouldRender });
+    }
+
     this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
@@ -129,6 +138,9 @@ ContentView.prototype._removeInitialChildViews = function () {
     this.remove(this._attachmentsView);
     this.remove(this._bodyView);
     this.remove(this._footerView);
+    if (this._productHeaderView) {
+      this.remove(this._productHeaderView);
+    }
 };
 
 /**
@@ -217,7 +229,7 @@ ContentView.prototype.render = function () {
      * cleared out. When ._renderButtons later re-appendChilds all the
      * button.els, they are empty. So if we detach them here before
      * this.innerHTML is set, they are not cleared.
-     * bit.ly/1no8mNk 
+     * bit.ly/1no8mNk
      */
     if (hasInnerHtmlBug = testHasInnerHtmlBug()) {
         this._footerView._detachButtons();

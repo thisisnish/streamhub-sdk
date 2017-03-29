@@ -6,6 +6,16 @@ var content = {
     typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre'
 };
 
+var productOpts1 = {
+    productIndicationText: 'Buy',
+    showProduct: true
+};
+
+var productOpts2 = {
+    productIndicationText: 'Shop',
+    showProduct: false
+};
+
 describe('ContentHeaderViewFactory', function () {
     var contentHeaderViewFactory;
 
@@ -70,6 +80,28 @@ describe('ContentHeaderViewFactory', function () {
                 author: {displayName: null},
                 contentSourceName: 'livefyre'
             });
+        });
+
+        it('creates a content header', function () {
+            var header = contentHeaderViewFactory.createHeaderView(content);
+            expect(header.elClass).toEqual('content-header');
+        });
+
+        it('creates a product header', function () {
+            var header = contentHeaderViewFactory.createHeaderView(content, productOpts1);
+            expect(header.elClass).toEqual('product-header');
+        });
+
+        it('creates a customized product header', function () {
+            var productHeader = contentHeaderViewFactory.createHeaderView(content, productOpts1);
+            productHeader.render();
+            expect(productHeader.$el.html()).toContain('<span class="product-shop-button">Buy</span>');
+        });
+
+        it('turns off the product indicator in a product header', function () {
+            var productHeader = contentHeaderViewFactory.createHeaderView(content, productOpts2);
+            productHeader.render();
+            expect(productHeader.$el.html().indexOf('<span class="product-shop-button">') === -1).toBe(true);
         });
     });
 });

@@ -1,0 +1,182 @@
+@import (reference) "../../css/fycons.less";
+@import (reference) "lib/livefyre-bootstrap/src/styles/fycon-chars.less";
+@import "lib/streamhub-input/src/styles/streamhub-input.less";
+
+.product-carousel, .hub-modal .product-carousel {
+  margin: 20px;
+  margin-top: 40px;
+  color: rgba(0, 0, 0, 0.7);
+
+  .product-carousel-header {
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .product-carousel-body, {
+    overflow: hidden;
+    float: left;
+    width: calc(~"100% - 40px");
+  }
+
+  .product-carousel-left-arrow, .product-carousel-right-arrow {
+    width: 20px;
+    float: left;
+    cursor: pointer;
+    font-family: "fycons-@{fycon-font-version}";
+  }
+
+  .product-carousel-left-arrow:before {
+    content: "\e017";
+  }
+
+  .product-carousel-right-arrow:before {
+    content: "\e018";
+  }
+
+  .product-carousel-left-arrow.hide:before, .product-carousel-right-arrow.hide:before {
+    display: none;
+  }
+
+  .product-carousel-list {
+    margin-right: -999em;
+  }
+
+  .product-block {
+    float: left;
+    position: relative;
+    text-align: center;
+    width: 115px;
+    padding-right: 20px;
+
+    &:last-child {
+      padding-right: 0;
+    }
+
+    .product-name {
+      font-weight: bold;
+    }
+
+    img {
+      width: 90px;
+      height: 80px;
+    }
+
+    .buy-button {
+      width: 75px;
+      height: 30px;
+      padding: 3px 0;
+      text-align: center;
+      color: #fff;
+
+      &:link, &:visited, &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.product-header {
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background: -moz-linear-gradient(top,  rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 50%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.45)), color-stop(50%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%);
+
+  .product-shop-button {
+    float: right;
+    background-color: rgba(44, 44, 44, 0.45);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    height: 23px;
+    width: 42px;
+    border-radius: 3px;
+    border: 2px solid white;
+    margin: 14px 14px 0 0;
+    padding: 3px;
+    text-align: center;
+  }
+
+  .content-source-logo {
+    .fycon-font-styles();
+    .fycon-source-livefyre();
+    font-size: 16px;
+    text-align: right;
+    height: 22px;
+    width: 22px;
+    margin-top: 5px;
+  }
+
+  img.content-source-logo{
+    background-image: none;
+  }
+
+  .content-facebook {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-facebook();
+      }
+    }
+  }
+
+  .content-tweet {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-twitter();
+      }
+    }
+  }
+
+  .content-instagram {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-instagram();
+      }
+    }
+  }
+
+  .content-feed {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-rss();
+      }
+    }
+  }
+
+  .content-url {
+    .product-header {
+      .content-source-logo:before {
+          content: none;
+      }
+    }
+  }
+
+  .content-youtube {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-youtube();
+      }
+    }
+  }
+
+  .content-tumblr {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-tumblr();
+      }
+    }
+  }
+
+  .content-weibo {
+    .product-header {
+      .content-source-logo {
+        .fycon-source-weibo();
+      }
+    }
+  }
+}

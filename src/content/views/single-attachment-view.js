@@ -21,20 +21,30 @@ inherits(SingleAttachmentListView, TiledAttachmentListView);
 SingleAttachmentListView.prototype.additionalImagesSelector = '.content-attachment-additional-images';
 SingleAttachmentListView.prototype.photoContentSelector = '.content-attachment-photo';
 
-SingleAttachmentListView.prototype.retile = function () {
+SingleAttachmentListView.prototype.numberOfAttachments = function () {
+
+}
+SingleAttachmentListView.prototype.retile = function (index) {
+    if (index === undefined || this.getCurrentNumberOfAttachments() <= index) {
+        index = 0;
+    }
     if ( ! this.el ) {
         return;
     }
     var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
-    var firstItemEl = tiledAttachmentsEl.find(this.contentAttachmentSelector + ':first');
-
     // Add classes so only the first media shows and the other remain hidden
     tiledAttachmentsEl.addClass('content-attachments-1');
-    firstItemEl.addClass(this.squareTileClassName);
 
-    if (firstItemEl.length === 1 && this.tileableCount() > 1 && firstItemEl.find(this.additionalImagesSelector).length === 0) {
-        var imageCountDom = '<span class="content-attachment-additional-images">+' + (this.tileableCount() - 1) + '</span>';
-        firstItemEl.find(this.photoContentSelector).append(imageCountDom);
+    var visibleItemEl = tiledAttachmentsEl.find(this.contentAttachmentSelector);
+    visibleItemEl = visibleItemEl[index];
+    if (visibleItemEl) {
+        visibleItemEl = $(visibleItemEl);
+        $('.'+this.squareTileClassName).removeClass(this.squareTileClassName);
+        visibleItemEl.addClass(this.squareTileClassName);
+        if (this.tileableCount() > 1 && visibleItemEl.find(this.additionalImagesSelector).length === 0) {
+            var imageCountDom = '<span class="content-attachment-additional-images">+' + (this.tileableCount() - 1) + '</span>';
+            visibleItemEl.find(this.photoContentSelector).append(imageCountDom);
+        }
     }
 };
 

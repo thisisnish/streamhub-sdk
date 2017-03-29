@@ -332,5 +332,23 @@ function (
                 expect(spyFn.mostRecentCall.args[1].content).toBeUndefined();
             });
         });
+
+        describe('when product in mosaic', function () {
+            var opts = {content: new Content('blah')};
+            opts.content.links = {product: [{urn: '567asdf'}, {urn: '213asd'}]};
+            var contentView = new ContentView(opts);
+
+            it('has a product header view', function () {
+                expect(contentView._productHeaderView).toBeDefined();
+            });
+
+            it('product header view in composite view\'s children views', function () {
+                var foundView = false;
+                for (var i = 0; i < contentView._childViews.length && foundView !== true; i++) {
+                    foundView = (contentView._childViews[i]._productOpts !== undefined);
+                }
+                expect(foundView).toBe(true);
+            });
+        });
     });
 });
