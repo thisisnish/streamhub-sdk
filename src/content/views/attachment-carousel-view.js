@@ -12,7 +12,7 @@ var inherits = require('inherits');
  * @param opts.el {HTMLElement} The element in which to render the streamed content
  * @param opts.content {Content} The content instance with which to display its attachments
  * @param opts.carouselElementWidth {Number} Should be the total width of styled AttachmentListView elements.
- * Used to calculate amount to shift per navigation. 
+ * Used to calculate amount to shift per navigation.
  * @fires TiledAttachmentListView#focusContent.hub
  * @exports streamhub-sdk/views/AttachmentCarouselView
  * @constructor
@@ -50,7 +50,64 @@ AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extende
 AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
     var index = $('.' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.contentAttachmentSelector).index(e.currentTarget);
     this._singleAttachmentView.retile(index);
+    this._insertVideo(this._singleAttachmentView.oembedViews[index]);
 }
+
+AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
+    var focusedEl = oembedView.$el
+    if (oembedView.oembed.type === 'video') {
+        var photoContentEl = focusedEl.find('.content-attachment-photo');
+        photoContentEl.hide()
+        var videoContentEl = focusedEl.find('.content-attachment-video');
+        videoContentEl.html(this._getAttachmentVideoHtml(oembedView.oembed));
+        var videoIframe = videoContentEl.find('iframe');
+        videoIframe.css({'width': '100%', 'height': '100%'});
+
+        // Add poster if missing
+        var videoEl = videoContentEl.find('video');
+        if (videoEl.length > 0) {
+            videoEl.attr('poster', oembedView.oembed.thumbnail_url);
+            videoEl.css({'width': '100%'});
+        }
+
+        videoContentEl.show();
+    }
+}
+
+AttachmentCarouselView.prototype._getAttachmentVideoHtml = function (attachment) {
+    var AUTOPLAY_PROVIDER_REGEX = /youtube|livefyre|facebook/;
+    // If the provider is not available for autoplay, nothing more to do.
+    if (!attachment.provider_name || !AUTOPLAY_PROVIDER_REGEX.test(attachment.provider_name.toLowerCase())) {
+        return attachment.html;
+    }
+
+    var $html = $(attachment.html);
+    var iframe = $html[0].tagName === 'IFRAME' ? $html[0] : $html.find('iframe')[0];
+    var video = $html[0].tagName === 'VIDEO' ? $html[0] : $html.find('video')[0];
+
+    if (video) {
+        video.setAttribute('autoplay', true);
+        return video.outerHTML;
+    }
+
+    if (iframe) {
+        var queryChar = iframe.src.indexOf('?') > -1 ? '&' : '?';
+        iframe.src += queryChar + 'autoplay=1';
+
+        // make youtube videos not show related videos
+        var srcIndex = iframe.src.indexOf('src=');
+        var youtubeIndex = iframe.src.indexOf('youtube', srcIndex);
+        var nextAmpersand = iframe.src.indexOf('&', srcIndex);
+        // youtube is in the source
+        if (youtubeIndex < nextAmpersand && srcIndex > -1 && nextAmpersand > -1) {
+            iframe.src = iframe.src.substring(0, nextAmpersand) + '%26rel%3D0' + iframe.src.substring(nextAmpersand);
+        }
+
+        return $('<div>').append($html).html();
+    }
+
+    return attachment.html;
+};
 
 AttachmentCarouselView.prototype._onCarouselNavigate = function (e, left) {
     var listEl = this.$el.find('.' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.stackedAttachmentsSelector);
@@ -81,7 +138,7 @@ AttachmentCarouselView.prototype._addInitialChildViews = function (opts, shouldR
     shouldRender = shouldRender || false;
 
     this._singleAttachmentView = opts.singleAttachmentView || new SingleAttachmentView(opts);
-    this.add(this._singleAttachmentView, { render: shouldRender });   
+    this.add(this._singleAttachmentView, { render: shouldRender });
 
     if (this._singleAttachmentView.tileableCount() > 1) {
         this._attachmentsListView = opts.attachmentsListView || new CarouselAttachmentListView(opts);
@@ -98,6 +155,7 @@ AttachmentCarouselView.prototype.render = function (view, opts) {
     var self = this;
     CompositeView.prototype.render.call(this);
 
+    this._insertVideo(this._singleAttachmentView.oembedViews[0]);
     this._jsPositioning();
     return this;
 };
@@ -107,7 +165,7 @@ AttachmentCarouselView.prototype._jsPositioning = function () {
         this._attachmentsListView.$el.find(this._attachmentsListView.stackedAttachmentsSelector)
             .width(this.opts.carouselElementWidth * this._attachmentsListView.count());
     }
-    
+
 }
 
 AttachmentCarouselView.prototype.getTemplateContext = function () {

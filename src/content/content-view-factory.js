@@ -259,15 +259,15 @@ ContentViewFactory.prototype.getMixinForTypeOfContent = function (content) {
         } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_FEED) {
             var feedUrl = (content.feedUrl || '').toLowerCase();
             if (feedUrl.indexOf("youtube.com") >= 0) {
-                return YoutubeContentViewMixin;
+                return function(view) { return ThemeMixin(view, 'content-youtube') } ;
             } else if (feedUrl.indexOf("tumblr.com") >= 0) {
-                return TumblrContentViewMixin;
+                return function(view) { return ThemeMixin(view, 'content-tumblr') } ;
             }
         }
 
         if (current.mixin) {
             return current.mixin;
-        } 
+        }
     }
 };
 

@@ -3,6 +3,7 @@ var inherits = require('inherits');
 var View = require('streamhub-sdk/view');
 var template = require('hgn!streamhub-sdk/content/templates/content-header');
 var debug = require('debug');
+var util = require('streamhub-sdk/util');
 
 var log = debug('streamhub-sdk/content/views/content-header-view');
 
@@ -75,7 +76,7 @@ ContentHeaderView.prototype.render = function () {
         .on('error', $.proxy(this._handleAvatarError, this));
 
     // inline the source icon position so we don't have to set tab-index for all content
-    setTimeout($.proxy(this.positionSourceIcon, this), 0);
+    util.raf($.proxy(this.positionSourceIcon, this));
 };
 
 ContentHeaderView.prototype.positionSourceIcon = function () {
