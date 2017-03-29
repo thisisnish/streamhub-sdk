@@ -22,6 +22,12 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
         var lfContent;
         var vote = {"vote": [{"collectionId": "2486003", "value": 1, "author": "default@livefyre.com"}]};
         var downVote = {"vote": [{"collectionId": "2486003", "value": 2, "author": "default@livefyre.com"}]};
+        var links = {"links": {"product":[{
+          "oembed": {"url":"http://www.hallmark.com/dw/image/v2/AALB_PRD/on/demandware.static/-/Sites-hallmark-master/default/dwdc14a30c/images/finished-goods/itty-bittys-My-Little-Pony-Rainbow-Dash-Stuffed-Animal-root-1KDD1252_KDD1252_1470_1.jpg_Source_Image.jpg?sw=625&sh=625&sm=fit"},
+          "price": "$6.95",
+          "title": "itty bittys® My Little Pony™ Rainbow Dash Stuffed Animal",
+          "url": "http://www.hallmark.com/gifts/stuffed-animals/itty-bittys/itty-bittys-my-little-pony-rainbow-dash-stuffed-animal-1KDD1252.html",
+          "urn": "urn:livefyre:qa-blank.fyre.co:product=a012b658-4ced-452a-8a6a-108bb1c99879"}]}};
 
         beforeEach(function () {
             lfContent = new LivefyreContent({});
@@ -94,6 +100,22 @@ function (Annotator, AnnotatorExtensions, Writable, LivefyreContent, mockBootstr
                 });
 
                 expect(lfContent.moderator).toEqual(false);
+            });
+
+            it('can add links (product) annotations', function () {
+                annotator.annotate(lfContent, {
+                    'added': links
+                });
+
+                expect(lfContent.links).toEqual(links.links);
+            });
+
+            it('can remove links (product) annotations', function () {
+                annotator.annotate(lfContent, {
+                    'removed': links
+                });
+
+                expect(lfContent.links).toEqual({});
             });
         });
 

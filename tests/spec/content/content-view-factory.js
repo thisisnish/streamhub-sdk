@@ -5,9 +5,10 @@ define([
     'streamhub-sdk/content/content-view-factory',
     'streamhub-sdk/content',
     'streamhub-sdk/content/types/oembed',
-    'streamhub-sdk/sharer'],
+    'streamhub-sdk/sharer',
+    'streamhub-sdk/content/types/type-urns'],
 function($, LivefyreContent, ContentView, ContentViewFactory, Content,
-Oembed, sharer) {
+Oembed, sharer, TYPE_URNS) {
     'use strict';
 
     describe('ContentViewFactory', function() {
@@ -65,6 +66,38 @@ Oembed, sharer) {
                 });
                 expect(contentViewFactory._createShareCommand).toHaveBeenCalledWith(content, sharer);
                 expect(contentView._commands.share).toBeTruthy();
+            });
+        });
+
+        describe('content types - getMixinForTypeOfContent', function () {
+            it('getMixinForTypeOfContent default', function () {
+                var content = new LivefyreContent();
+                var contentViewFactory = new ContentViewFactory();
+                var mixin = contentViewFactory.getMixinForTypeOfContent(content);
+                expect(mixin.name).toEqual('asLivefyreContentView');
+            });
+
+            it('getMixinForTypeOfContent twitter', function () {
+                var content = new LivefyreContent();
+                content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+                content.urlContentTypeId = 'http://twitter.com/'
+                var contentViewFactory = new ContentViewFactory();
+                var mixin = contentViewFactory.getMixinForTypeOfContent(content);
+                expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);
+                expect(mixin.name).toEqual('asTwitterContentView');
+            });
+
+            it('getMixinForTypeOfContent tumblr', function () {
+                var content = new LivefyreContent();
+                content.typeUrn = TYPE_URNS.LIVEFYRE_FEED;
+                content.feedUrl = 'http://youtube.com/'
+                var contentViewFactory = new ContentViewFactory();
+                var contentView = contentViewFactory.createContentView(content, {});
+                var mixin = contentViewFactory.getMixinForTypeOfContent(content);
+                mixin(contentView, {});
+                contentView.render();
+                expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_FEED);
+                expect(contentView.$el.hasClass('content-youtube')).toBe(true)
             });
         });
 
