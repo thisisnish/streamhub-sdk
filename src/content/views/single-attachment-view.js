@@ -1,3 +1,4 @@
+var $ = require('streamhub-sdk/jquery');
 var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var inherits = require('inherits');
 
