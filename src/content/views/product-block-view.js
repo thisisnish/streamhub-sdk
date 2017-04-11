@@ -1,7 +1,8 @@
 var $ = require('streamhub-sdk/jquery');
+var i18n = require('streamhub-sdk/i18n');
+var inherits = require('inherits');
 var template = require('hgn!streamhub-sdk/content/templates/product-block');
 var View = require('streamhub-sdk/view');
-var inherits = require('inherits');
 
 'use strict';
 
@@ -26,10 +27,10 @@ ProductBlockView.prototype.template = template;
 
 ProductBlockView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this.opts);
-    context.productButtonText = this.opts.productButtonText;
-    context.productDetailPhotoShow = this.opts.productDetailPhotoShow;
-    context.productDetailTitleShow = this.opts.productDetailTitleShow;
-    context.productDetailPriceShow = this.opts.productDetailPriceShow;
+    context.productButtonText = i18n.get('productButtonText', 'Buy Now');
+    context.productDetailPhotoShow = this.opts.productOptions.detail.photo;
+    context.productDetailPriceShow = this.opts.productOptions.detail.price;
+    context.productDetailTitleShow = this.opts.productOptions.detail.title;
     return context;
 };
 

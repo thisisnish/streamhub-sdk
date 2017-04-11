@@ -1,5 +1,6 @@
 @import (reference) "../../css/fycons.less";
 @import (reference) "lib/livefyre-bootstrap/src/styles/fycon-chars.less";
+@import (reference) "lib/livefyre-bootstrap/src/styles/mixins.less";
 @import "lib/streamhub-input/src/styles/streamhub-input.less";
 
 .product-carousel, .hub-modal .product-carousel {
@@ -75,108 +76,18 @@
   }
 }
 
-.product-header {
-  position: absolute;
-  z-index: 10;
-  width: 100%;
-  height: 100%;
-  background: -moz-linear-gradient(top,  rgba(0,0,0,0.45) 0%, rgba(0,0,0,0) 50%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.45)), color-stop(50%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%); /* IE10+ */
-  background: linear-gradient(to bottom,  rgba(0,0,0,0.45) 0%,rgba(0,0,0,0) 50%);
+.product-callout {
+  cursor: pointer;
+  .user-select(none);
 
-  .product-shop-button {
-    float: right;
-    background-color: rgba(44, 44, 44, 0.45);
-    color: white;
+  > span.product-shop-button {
+    .border-radius(3px);
+    border: 2px solid #999;
+    color: #999;
+    display: inline-block;
     font-size: 11px;
     font-weight: bold;
-    height: 23px;
-    width: 42px;
-    border-radius: 3px;
-    border: 2px solid white;
-    margin: 14px 14px 0 0;
-    padding: 3px;
-    text-align: center;
-  }
-
-  .content-source-logo {
-    .fycon-font-styles();
-    .fycon-source-livefyre();
-    font-size: 16px;
-    text-align: right;
-    height: 22px;
-    width: 22px;
-    margin-top: 5px;
-  }
-
-  img.content-source-logo{
-    background-image: none;
-  }
-
-  .content-facebook {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-facebook();
-      }
-    }
-  }
-
-  .content-tweet {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-twitter();
-      }
-    }
-  }
-
-  .content-instagram {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-instagram();
-      }
-    }
-  }
-
-  .content-feed {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-rss();
-      }
-    }
-  }
-
-  .content-url {
-    .product-header {
-      .content-source-logo:before {
-          content: none;
-      }
-    }
-  }
-
-  .content-youtube {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-youtube();
-      }
-    }
-  }
-
-  .content-tumblr {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-tumblr();
-      }
-    }
-  }
-
-  .content-weibo {
-    .product-header {
-      .content-source-logo {
-        .fycon-source-weibo();
-      }
-    }
+    line-height: 16px;
+    padding: 0 4px;
   }
 }

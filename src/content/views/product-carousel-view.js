@@ -1,8 +1,9 @@
 var $ = require('streamhub-sdk/jquery');
-var template = require('hgn!streamhub-sdk/content/templates/product-carousel');
 var CompositeView = require('view/composite-view');
-var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');
+var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
+var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');
+var template = require('hgn!streamhub-sdk/content/templates/product-carousel');
 
 'use strict';
 
@@ -65,10 +66,7 @@ ProductCarouselView.prototype._addInitialChildViews = function (opts) {
     for (var i = 0; this.products && i < this.products.length; i++) {
         this.add(new ProductBlockView({
             product: this.products[i],
-            productButtonText: opts.productButtonText,
-            productDetailPhotoShow: opts.productDetailPhotoShow,
-            productDetailTitleShow: opts.productDetailTitleShow,
-            productDetailPriceShow: opts.productDetailPriceShow
+            productOptions: opts.productOptions
         }));
     }
 };
@@ -104,10 +102,10 @@ ProductCarouselView.prototype.render = function (view, opts) {
 };
 
 ProductCarouselView.prototype.getTemplateContext = function () {
-    var productCarouselTitleText = this.opts.productCarouselTitleText && this.opts.productCarouselTitleText && this.opts.productCarouselTitleText.trim();
     var context = $.extend({}, this.opts);
-    context.productCarouselTitleText = productCarouselTitleText
-    context.productCarouselTitleShow = (productCarouselTitleText && productCarouselTitleText.length > 0) || false;
+    var productCarouselTitleText = i18n.get('productCarouselTitleText', 'Shop these products:');
+    context.productCarouselTitleText = productCarouselTitleText;
+    context.productCarouselTitleShow = productCarouselTitleText.length > 0;
     return context;
 };
 

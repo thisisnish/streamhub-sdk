@@ -1,13 +1,14 @@
 var $ = require('streamhub-sdk/jquery');
 var CompositeView = require('view/composite-view');
-var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
+var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
-var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
 var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
-var inherits = require('inherits');
 var debug = require('debug');
+var get = require('mout/object/get');
+var inherits = require('inherits');
+var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
 
 'use strict';
 
@@ -72,8 +73,7 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
     this._footerView = opts.footerView || new ContentFooterView({content: opts.content});
     this.add(this._footerView, { render: shouldRender });
 
-    var products = opts.content.links && opts.content.links.product;
-    if (opts.showProduct && products) {
+    if (opts.productOptions.show && (get(opts, 'content.links.product') || []).length > 0) {
         this._productView = opts.productView || new ProductCarouselView(opts);
         this.add(this._productView, { render: shouldRender });
     }
@@ -106,8 +106,7 @@ ProductContentView.prototype.setElement = function (el) {
  * @returns {Content} The content object this view was instantiated with.
  */
 ProductContentView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this.content);
-    return context;
+    return $.extend({}, this.content);
 };
 
 /**

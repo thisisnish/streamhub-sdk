@@ -97,9 +97,7 @@ ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRen
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {
     this.remove(this._attachmentsView);
-    if (this._productContentView) {
-        this.remove(this._productContentView);
-    }
+    this._productContentView && this.remove(this._productContentView);
 };
 
 /**
@@ -126,8 +124,7 @@ ModalContentCardView.prototype.setElement = function (el) {
  * @returns {Content} The content object this view was instantiated with.
  */
 ModalContentCardView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this.content);
-    return context;
+    return $.extend({}, this.content);
 };
 
 /**

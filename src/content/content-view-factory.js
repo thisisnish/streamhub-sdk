@@ -22,13 +22,14 @@ var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
 var WeiboContentView = require('streamhub-sdk/content/views/weibo-content-view');
 var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
 
-var TwitterContentViewMixin = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
-var WeiboContentViewMixin = require('streamhub-sdk/content/views/mixins/weibo-content-view-mixin');
+var CardContentViewMixin = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
 var FacebookContentViewMixin = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
 var InstagramContentViewMixin = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
-var UrlContentViewMixin = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
 var LivefyreContentViewMixin = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
-var CardContentViewMixin = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
+var SpectrumMixin = require('streamhub-sdk/content/views/mixins/spectrum-content-view-mixin');
+var TwitterContentViewMixin = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
+var UrlContentViewMixin = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
+var WeiboContentViewMixin = require('streamhub-sdk/content/views/mixins/weibo-content-view-mixin');
 
 var ThemeMixin = require('streamhub-sdk/content/views/mixins/theme-mixin');
 
@@ -100,6 +101,7 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     opts = opts || {};
     var ContentViewType = this._getViewTypeForContent(content);
     var attachmentsView = this._createAttachmentsView(content);
+    opts.spectrum && SpectrumMixin(ContentViewType);
 
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
@@ -109,6 +111,7 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         content: content,
         expandCommand: opts.expandCommand,
         likeCommand: likeCommand,
+        productOptions: opts.productOptions,
         shareCommand: shareCommand,
         showExpandButton: this.showExpandButton,
         useSingleMediaView: this._useSingleMediaView

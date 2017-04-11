@@ -1,16 +1,16 @@
 var $ = require('streamhub-sdk/jquery');
+var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
 var CompositeView = require('view/composite-view');
-var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
-var ProductHeaderView = require('streamhub-sdk/content/views/product-header-view');
 var ContentBodyView = require('streamhub-sdk/content/views/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view');
-var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
-var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
-var inherits = require('inherits');
 var debug = require('debug');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
+var inherits = require('inherits');
+var ProductCalloutView = require('streamhub-sdk/content/views/product-callout-view');
+var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 
 'use strict';
 
@@ -114,11 +114,10 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
     this.add(this._headerView, { render: shouldRender });
 
     if (opts.content.links && opts.content.links.product && opts.content.links.product.length > 0) {
-      this._productHeaderView = this._headerViewFactory.createHeaderView(opts.content, {
-        productIndicationText: opts.productIndicationText,
-        showProduct: opts.showProduct
-      });
-      this.add(this._productHeaderView, { render: shouldRender });
+        this._productCalloutView = new ProductCalloutView({
+            productOptions: opts.productOptions
+        });
+        this.add(this._productCalloutView, { render: shouldRender });
     }
 
     this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
@@ -134,13 +133,11 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
 };
 
 ContentView.prototype._removeInitialChildViews = function () {
-    this.remove(this._headerView);
-    this.remove(this._attachmentsView);
-    this.remove(this._bodyView);
-    this.remove(this._footerView);
-    if (this._productHeaderView) {
-      this.remove(this._productHeaderView);
-    }
+    this._headerView && this.remove(this._headerView);
+    this._attachmentsView && this.remove(this._attachmentsView);
+    this._bodyView && this.remove(this._bodyView);
+    this._footerView && this.remove(this._footerView);
+    this._productCalloutView && this.remove(this._productCalloutView);
 };
 
 /**
