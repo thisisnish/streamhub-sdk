@@ -1,13 +1,22 @@
 'use strict';
 
 var auth = require('auth');
+var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
+var CardContentViewMixin = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
+var Command = require('streamhub-sdk/ui/command');
+var CompositeView = require('view/composite-view');
 var Content = require('streamhub-sdk/content');
 var ContentView = require('streamhub-sdk/content/views/card-content-view');
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
+var FacebookContentViewMixin = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
 var FeedContentView = require('streamhub-sdk/content/views/feed-content-view');
+var hasSpectrum = require('streamhub-sdk/content/views/mixins/spectrum-content-view-mixin');
 var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
+var InstagramContentViewMixin = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
+var Liker = require('streamhub-sdk/collection/liker');
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
+var LivefyreContentViewMixin = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
 var LivefyreFacebookContent = require('streamhub-sdk/content/types/livefyre-facebook-content');
 var LivefyreFeedContent = require('streamhub-sdk/content/types/livefyre-feed-content');
 var LivefyreInstagramContent = require('streamhub-sdk/content/types/livefyre-instagram-content');
@@ -15,31 +24,18 @@ var LivefyreTwitterContent = require('streamhub-sdk/content/types/livefyre-twitt
 var LivefyreUrlContent = require('streamhub-sdk/content/types/livefyre-url-content');
 var LivefyreWeiboContent = require('streamhub-sdk/content/types/livefyre-weibo-content');
 var LivefyreYoutubeContent = require('streamhub-sdk/content/types/livefyre-youtube-content');
+var ThemeMixin = require('streamhub-sdk/content/views/mixins/theme-mixin');
+var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var TumblrContentView = require('streamhub-sdk/content/views/tumblr-content-view');
 var TwitterContent = require('streamhub-sdk/content/types/twitter-content');
 var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
-var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
-var WeiboContentView = require('streamhub-sdk/content/views/weibo-content-view');
-var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
-
-var CardContentViewMixin = require('streamhub-sdk/content/views/mixins/card-content-view-mixin');
-var FacebookContentViewMixin = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
-var InstagramContentViewMixin = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
-var LivefyreContentViewMixin = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
-var SpectrumMixin = require('streamhub-sdk/content/views/mixins/spectrum-content-view-mixin');
 var TwitterContentViewMixin = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
-var UrlContentViewMixin = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
-var WeiboContentViewMixin = require('streamhub-sdk/content/views/mixins/weibo-content-view-mixin');
-
-var ThemeMixin = require('streamhub-sdk/content/views/mixins/theme-mixin');
-
-
-var BlockAttachmentListView = require('streamhub-sdk/content/views/block-attachment-list-view');
-var Command = require('streamhub-sdk/ui/command');
-var CompositeView = require('view/composite-view');
-var Liker = require('streamhub-sdk/collection/liker');
-var TiledAttachmentListView = require('streamhub-sdk/content/views/tiled-attachment-list-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
+var UrlContentView = require('streamhub-sdk/content/views/url-content-view');
+var UrlContentViewMixin = require('streamhub-sdk/content/views/mixins/url-content-view-mixin');
+var WeiboContentView = require('streamhub-sdk/content/views/weibo-content-view');
+var WeiboContentViewMixin = require('streamhub-sdk/content/views/mixins/weibo-content-view-mixin');
+var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
 
 /**
  * A module to create instances of ContentView for a given Content instance.
@@ -99,10 +95,9 @@ ContentViewFactory.prototype._createAttachmentsView = function (content) {
  */
 ContentViewFactory.prototype.createContentView = function(content, opts) {
     opts = opts || {};
-    var ContentViewType = this._getViewTypeForContent(content);
-    var attachmentsView = this._createAttachmentsView(content);
-    opts.spectrum && SpectrumMixin(ContentViewType);
 
+    var attachmentsView = this._createAttachmentsView(content);
+    var ContentViewType = this._getViewTypeForContent(content);
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
 
@@ -111,12 +106,16 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         content: content,
         expandCommand: opts.expandCommand,
         likeCommand: likeCommand,
-        productOptions: opts.productOptions,
+        productOptions: opts.productOptions || {},
         shareCommand: shareCommand,
         showExpandButton: this.showExpandButton,
         useSingleMediaView: this._useSingleMediaView
     });
 
+    if (opts.spectrum) {
+        hasSpectrum(contentView);
+        contentView.refreshChildViews();
+    }
     return contentView;
 };
 

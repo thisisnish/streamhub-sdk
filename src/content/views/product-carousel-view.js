@@ -103,7 +103,7 @@ ProductCarouselView.prototype.render = function (view, opts) {
 
 ProductCarouselView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this.opts);
-    var productCarouselTitleText = i18n.get('productCarouselTitleText', 'Shop these products:');
+    var productCarouselTitleText = i18n.get('productCarouselTitleText', 'Shop these products:').trim();
     context.productCarouselTitleText = productCarouselTitleText;
     context.productCarouselTitleShow = productCarouselTitleText.length > 0;
     return context;

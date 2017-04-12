@@ -6,16 +6,6 @@ var content = {
     typeUrn: 'urn:livefyre:js:streamhub-sdk:content:types:livefyre'
 };
 
-var productOpts1 = {
-    productIndicationText: 'Buy',
-    showProduct: true
-};
-
-var productOpts2 = {
-    productIndicationText: 'Shop',
-    showProduct: false
-};
-
 describe('ContentHeaderViewFactory', function () {
     var contentHeaderViewFactory;
 
@@ -33,7 +23,66 @@ describe('ContentHeaderViewFactory', function () {
         });
     });
 
-    describe('_getHeaderViewOptsForContent', function () {
+    describe('_getContentPermalink', function () {
+        it('returns permalink for twitter', function () {
+            expect(contentHeaderViewFactory._getContentPermalink('twitter', {
+                tweetId: '123'
+            }))
+            .toBe('https://twitter.com/statuses/123');
+        });
+
+        it('returns permalink for instagram', function () {
+            expect(contentHeaderViewFactory._getContentPermalink('instagram', {
+                attachments: [{
+                    link: 'https://instagram.com/media.png',
+                    provider_name: 'instagram'
+                }]
+            }))
+            .toBe('https://instagram.com/media.png');
+        });
+
+        it('return permalink for facebook', function () {
+            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
+                attachments: [{
+                    link: 'https://facebook.com/media.png',
+                    provider_name: 'facebook'
+                }]
+            }))
+            .toBe('https://facebook.com/media.png');
+        });
+
+        it('returns undefined if no attachments', function () {
+            expect(contentHeaderViewFactory._getContentPermalink('facebook', {}))
+            .toBe(undefined);
+
+            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
+                attachments: []
+            }))
+            .toBe(undefined);
+        });
+
+        it('returns undefined if unsupported media provider', function () {
+            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
+                attachments: [{
+                    link: 'https://facebook.com/media.png',
+                    provider_name: 'youtube'
+                }]
+            }))
+            .toBe(undefined);
+        });
+
+        it('returns undefined if invalid url', function () {
+            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
+                attachments: [{
+                    link: 'https://xyz.facebook.com/media.png',
+                    provider_name: 'facebook'
+                }]
+            }))
+            .toBe(undefined);
+        });
+    });
+
+    describe('getHeaderViewOptsForContent', function () {
         var opts;
 
         beforeEach(function () {
@@ -43,7 +92,7 @@ describe('ContentHeaderViewFactory', function () {
 
         it('uses displayName if there', function () {
             opts.author.displayName = 'bob dole';
-            var result = contentHeaderViewFactory._getHeaderViewOptsForContent(opts);
+            var result = contentHeaderViewFactory.getHeaderViewOptsForContent(opts);
             expect(result).toEqual({
                 author: {displayName: 'bob dole'},
                 contentSourceName: 'livefyre'
@@ -52,7 +101,7 @@ describe('ContentHeaderViewFactory', function () {
 
         it('uses handle if no displayName', function () {
             opts.author.handle = 'bobdole';
-            var result = contentHeaderViewFactory._getHeaderViewOptsForContent(opts);
+            var result = contentHeaderViewFactory.getHeaderViewOptsForContent(opts);
             expect(result).toEqual({
                 author: {
                     displayName: 'bobdole',
@@ -64,7 +113,7 @@ describe('ContentHeaderViewFactory', function () {
 
         it('uses profileUrl if no displayName and no handle', function () {
             opts.author.profileUrl = 'http://test.com/profile/bobdole';
-            var result = contentHeaderViewFactory._getHeaderViewOptsForContent(opts);
+            var result = contentHeaderViewFactory.getHeaderViewOptsForContent(opts);
             expect(result).toEqual({
                 author: {
                     displayName: 'bobdole',
@@ -75,7 +124,7 @@ describe('ContentHeaderViewFactory', function () {
         });
 
         it('leaves the displayName empty if there is no handle or profileUrl', function () {
-            var result = contentHeaderViewFactory._getHeaderViewOptsForContent(opts);
+            var result = contentHeaderViewFactory.getHeaderViewOptsForContent(opts);
             expect(result).toEqual({
                 author: {displayName: null},
                 contentSourceName: 'livefyre'
@@ -85,23 +134,6 @@ describe('ContentHeaderViewFactory', function () {
         it('creates a content header', function () {
             var header = contentHeaderViewFactory.createHeaderView(content);
             expect(header.elClass).toEqual('content-header');
-        });
-
-        it('creates a product header', function () {
-            var header = contentHeaderViewFactory.createHeaderView(content, productOpts1);
-            expect(header.elClass).toEqual('product-header');
-        });
-
-        it('creates a customized product header', function () {
-            var productHeader = contentHeaderViewFactory.createHeaderView(content, productOpts1);
-            productHeader.render();
-            expect(productHeader.$el.html()).toContain('<span class="product-shop-button">Buy</span>');
-        });
-
-        it('turns off the product indicator in a product header', function () {
-            var productHeader = contentHeaderViewFactory.createHeaderView(content, productOpts2);
-            productHeader.render();
-            expect(productHeader.$el.html().indexOf('<span class="product-shop-button">') === -1).toBe(true);
         });
     });
 });

@@ -7,6 +7,7 @@ var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
 var debug = require('debug');
+var get = require('mout/object/get');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
 var inherits = require('inherits');
 var ProductCalloutView = require('streamhub-sdk/content/views/product-callout-view');
@@ -109,27 +110,28 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
  * @param {boolean=} shouldRender
  */
 ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    shouldRender = shouldRender || false;
-    this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
-    this.add(this._headerView, { render: shouldRender });
+    var renderOpts = {render: shouldRender || false};
 
-    if (opts.content.links && opts.content.links.product && opts.content.links.product.length > 0) {
+    this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
+    this.add(this._headerView, renderOpts);
+
+    if ((get(opts, 'content.links.product') || []).length > 0) {
         this._productCalloutView = new ProductCalloutView({
             productOptions: opts.productOptions
         });
-        this.add(this._productCalloutView, { render: shouldRender });
+        this.add(this._productCalloutView, renderOpts);
     }
 
     this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
     this._attachmentsView = opts.attachmentsView || new CompositeView(this._thumbnailAttachmentsView, this._blockAttachmentsView);
-    this.add(this._attachmentsView, { render: shouldRender });
+    this.add(this._attachmentsView, renderOpts);
 
     this._bodyView = opts.bodyView || new ContentBodyView(opts);
-    this.add(this._bodyView, { render: shouldRender });
+    this.add(this._bodyView, renderOpts);
 
     this._footerView = opts.footerView || new ContentFooterView(opts);
-    this.add(this._footerView, { render: shouldRender });
+    this.add(this._footerView, renderOpts);
 };
 
 ContentView.prototype._removeInitialChildViews = function () {
@@ -164,8 +166,7 @@ ContentView.prototype.setElement = function (el) {
  * @returns {Content} The content object this view was instantiated with.
  */
 ContentView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this.content);
-    return context;
+    return $.extend({}, this.content);
 };
 
 /**
@@ -210,6 +211,16 @@ ContentView.prototype._handleAttachmentsChange = function () {
 ContentView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
+};
+
+ContentView.prototype.refreshChildViews = function (render) {
+    var remove = CompositeView.prototype.remove;
+    this._headerView && remove.call(this, this._headerView);
+    this._attachmentsView && remove.call(this, this._attachmentsView);
+    this._bodyView && remove.call(this, this._bodyView);
+    this._footerView && remove.call(this, this._footerView);
+    this._productCalloutView && remove.call(this, this._productCalloutView);
+    this._addInitialChildViews(this.opts, render);
 };
 
 /**

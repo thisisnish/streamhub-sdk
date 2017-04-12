@@ -11,21 +11,29 @@ var ProductCalloutView = require('streamhub-sdk/content/views/product-callout-vi
 /**
  * Overrides the provided `ContentView` class's `elClass` class name and
  * `_addInitialChildViews` method in order to style this in a spectrum-like way.
- * @param {function()} ContentView The class to be modified.
+ * @param {ContentView} contentView The ContentView instance to be modified.
  */
-module.exports = function (ContentView) {
+module.exports = function (contentView) {
+    // Remove the existing class that was added by the `setElement` call in the
+    // constructor of `contentView`.
+    contentView.$el.removeClass(contentView.elClass);
+
     /**
      * Override the property to add `spectrum-content` class.
      * @type {string}
      */
-    ContentView.prototype.elClass = 'content spectrum-content';
+    contentView.elClass = 'content spectrum-content';
+
+    // Add the new spectrum class to the `contentView` without calling
+    // `setElement` again, as it does more things that we want.
+    contentView.$el.addClass(contentView.elClass);
 
     /**
      * Override default `_addInitialChildViews` to change the order of content
      * within the card.
      * @override
      */
-    ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
+    contentView._addInitialChildViews = function (opts, shouldRender) {
         var renderOpts = {render: shouldRender || false};
 
         this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);

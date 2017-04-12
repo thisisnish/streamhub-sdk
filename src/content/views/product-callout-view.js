@@ -14,7 +14,7 @@ ProductCalloutView.prototype.template = template;
 ProductCalloutView.prototype.elClass = 'product-callout';
 
 ProductCalloutView.prototype.getTemplateContext = function () {
-    var productIndicationText = i18n.get('productIndicationText', 'Shop');
+    var productIndicationText = i18n.get('productIndicationText', 'Shop').trim();
     return {
         productIndicationText: productIndicationText,
         productIndicationShow: productIndicationText.length > 0,

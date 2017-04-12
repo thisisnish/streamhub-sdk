@@ -11,6 +11,7 @@ var ModalView = require('streamhub-sdk/modal');
  * to add a event handler for focusContent.hub that displays a modal
  */
 function hasAttachmentModal(view, opts) {
+    opts = opts || {};
     var modal = opts.modal;
 
     if (modal === undefined || modal === true) {
@@ -26,7 +27,7 @@ function hasAttachmentModal(view, opts) {
             } else if (opts.useNewModal) {
                 modal.show(new ModalContentCardView({
                     content: context.content,
-                    productOptions: opts.productOptions
+                    productOptions: opts.productOptions || {}
                 }));
             } else {
                 modal.show(new GalleryAttachmentListView(context));

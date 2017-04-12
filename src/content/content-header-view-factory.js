@@ -19,7 +19,7 @@ ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
  * Providers that support created at urls, as long as they match the regex.
  * @const {Object}
  */
-var SUPPORTED_CREATED_AT = {
+var SUPPORTED_PERMALINK_PROVIDERS = {
     facebook: /^https?:\/\/(www\.)?facebook\.com/,
     instagram: /^https?:\/\/(www\.)?instagram\.com/
 };
@@ -31,7 +31,7 @@ var SUPPORTED_CREATED_AT = {
  * @return {string=}
  * @private
  */
-ContentHeaderViewFactory.prototype._getCreatedAtUrl = function (provider, content) {
+ContentHeaderViewFactory.prototype._getContentPermalink = function (provider, content) {
     if (provider === 'twitter') {
         return 'https://twitter.com/statuses/' + content.tweetId;
     }
@@ -43,7 +43,7 @@ ContentHeaderViewFactory.prototype._getCreatedAtUrl = function (provider, conten
 
     var attachment = attachments[0];
     var attachmentProvider = (attachment.provider_name || '').toLowerCase();
-    var regex = SUPPORTED_CREATED_AT[attachmentProvider];
+    var regex = SUPPORTED_PERMALINK_PROVIDERS[attachmentProvider];
     if (regex && regex.test(attachment.link)) {
         return attachment.link;
     }
@@ -52,7 +52,6 @@ ContentHeaderViewFactory.prototype._getCreatedAtUrl = function (provider, conten
 ContentHeaderViewFactory.prototype.getHeaderViewOptsForContent = function (content) {
     var opts = {};
     opts.author =  content.author;
-    opts.createdAt = content.createdAt;
 
     // It's possible that the displayName is empty or it's just not set.
     // If that is the case, try to fill it with either the handle or the
@@ -105,7 +104,8 @@ ContentHeaderViewFactory.prototype.getHeaderViewOptsForContent = function (conte
         opts.contentSourceName = 'livefyre';
     }
 
-    opts.createdAtUrl = this._getCreatedAtUrl(opts.contentSourceName, content);
+    opts.createdAt = content.createdAt;
+    opts.createdAtUrl = this._getContentPermalink(opts.contentSourceName, content);
     return opts;
 };
 
