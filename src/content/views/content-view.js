@@ -8,6 +8,7 @@ var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-vie
 var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
 var debug = require('debug');
 var get = require('mout/object/get');
+var hasSpectrum = require('streamhub-sdk/content/views/mixins/spectrum-content-view-mixin');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
 var inherits = require('inherits');
 var ProductCalloutView = require('streamhub-sdk/content/views/product-callout-view');
@@ -35,6 +36,7 @@ var log = debug('streamhub-sdk/content/views/content-view');
  */
 var ContentView = function (opts) {
     opts = opts || {};
+    opts.spectrum && hasSpectrum(this);
 
     this.content = opts.content;
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
@@ -211,16 +213,6 @@ ContentView.prototype._handleAttachmentsChange = function () {
 ContentView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
-};
-
-ContentView.prototype.refreshChildViews = function (render) {
-    var remove = CompositeView.prototype.remove;
-    this._headerView && remove.call(this, this._headerView);
-    this._attachmentsView && remove.call(this, this._attachmentsView);
-    this._bodyView && remove.call(this, this._bodyView);
-    this._footerView && remove.call(this, this._footerView);
-    this._productCalloutView && remove.call(this, this._productCalloutView);
-    this._addInitialChildViews(this.opts, render);
 };
 
 /**

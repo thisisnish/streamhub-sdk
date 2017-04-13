@@ -14,19 +14,11 @@ var ProductCalloutView = require('streamhub-sdk/content/views/product-callout-vi
  * @param {ContentView} contentView The ContentView instance to be modified.
  */
 module.exports = function (contentView) {
-    // Remove the existing class that was added by the `setElement` call in the
-    // constructor of `contentView`.
-    contentView.$el.removeClass(contentView.elClass);
-
     /**
      * Override the property to add `spectrum-content` class.
      * @type {string}
      */
     contentView.elClass = 'content spectrum-content';
-
-    // Add the new spectrum class to the `contentView` without calling
-    // `setElement` again, as it does more things that we want.
-    contentView.$el.addClass(contentView.elClass);
 
     /**
      * Override default `_addInitialChildViews` to change the order of content

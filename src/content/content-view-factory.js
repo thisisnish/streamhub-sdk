@@ -10,7 +10,6 @@ var ContentView = require('streamhub-sdk/content/views/card-content-view');
 var FacebookContentView = require('streamhub-sdk/content/views/facebook-content-view');
 var FacebookContentViewMixin = require('streamhub-sdk/content/views/mixins/facebook-content-view-mixin');
 var FeedContentView = require('streamhub-sdk/content/views/feed-content-view');
-var hasSpectrum = require('streamhub-sdk/content/views/mixins/spectrum-content-view-mixin');
 var InstagramContentView = require('streamhub-sdk/content/views/instagram-content-view');
 var InstagramContentViewMixin = require('streamhub-sdk/content/views/mixins/instagram-content-view-mixin');
 var Liker = require('streamhub-sdk/collection/liker');
@@ -101,7 +100,7 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
 
-    var contentView = new ContentViewType({
+    return new ContentViewType({
         attachmentsView: opts.attachmentsView,
         content: content,
         expandCommand: opts.expandCommand,
@@ -109,14 +108,9 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
         productOptions: opts.productOptions || {},
         shareCommand: shareCommand,
         showExpandButton: this.showExpandButton,
-        useSingleMediaView: this._useSingleMediaView
+        useSingleMediaView: this._useSingleMediaView,
+        spectrum: opts.spectrum
     });
-
-    if (opts.spectrum) {
-        hasSpectrum(contentView);
-        contentView.refreshChildViews();
-    }
-    return contentView;
 };
 
 ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
