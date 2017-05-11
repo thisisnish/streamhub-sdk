@@ -56,6 +56,8 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
         }
     }
 
+    context.showMoreText = 'View More';
+
     // Ensure that the title is only text.
     if (context.title) {
         var div = document.createElement('div');
