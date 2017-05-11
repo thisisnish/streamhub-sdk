@@ -23,7 +23,9 @@ var ContentBodyView = function (opts) {
 inherits(ContentBodyView, View);
 
 ContentBodyView.prototype.events = View.prototype.events.extended({
-    'click.content-body-show-more': this._showMore.bind(this)
+    'click.content-body-show-more': function(e) {
+        this._showMore();
+    }
 });
 
 ContentBodyView.prototype.template = template;
