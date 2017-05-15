@@ -24,6 +24,7 @@ inherits(ContentBodyView, View);
 
 ContentBodyView.prototype.events = View.prototype.events.extended({
     'click.content-body-show-more': function(e) {
+        e.stopPropagation();
         this._showMore();
     }
 });
@@ -42,7 +43,7 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
     div.innerHTML = context.body;
     var bodyText = div.innerText;
     context.truncated = false;
-    if (bodyText.length > 125 && (!opts || (opts && opts.viewMore !== true))){
+    if (bodyText.length > 125 && (!opts || (opts && opts.showMore !== true))){
         bodyText = bodyText.slice(0, 124) + '...';
         context.truncated = true;
     } 

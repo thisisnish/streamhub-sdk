@@ -49,7 +49,7 @@ var ModalContentCardView = function (opts) {
             }
         });
     }
-    window.addEventListener('resize', this._resizeModalImage);
+    window.addEventListener('resize', this._resizeModalImage.bind(this));
 };
 inherits(ModalContentCardView, CompositeView);
 
