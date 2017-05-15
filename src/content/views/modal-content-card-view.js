@@ -60,7 +60,7 @@ ModalContentCardView.prototype.imageLoadingClass = 'hub-content-image-loading';
 ModalContentCardView.prototype.invalidClass = 'content-invalid';
 ModalContentCardView.prototype.attachmentsElSelector = '.content-attachments';
 ModalContentCardView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
-ModalContentCardView.prototype.modalClass = '.hub-modal';
+ModalContentCardView.prototype.modalSelector = '.hub-modal';
 ModalContentCardView.prototype.modalAnnotationClass = 'modal-content-card';
 
 ModalContentCardView.prototype.events = CompositeView.prototype.events.extended({
@@ -154,7 +154,7 @@ ModalContentCardView.prototype._handleAttachmentsChange = function () {
 };
 
 ModalContentCardView.prototype._resizeModalImage = function () {
-    var modal = this.$el.closest(this.modalClass);
+    var modal = this.$el.closest(this.modalSelector);
     var attachment = modal.find('.hub-modal-content .attachment-carousel .content-attachment.content-attachment-square-tile');
     var winHeight = $(window).height();
     if (winHeight <= 600 && attachment.outerHeight() > winHeight) {
@@ -167,7 +167,7 @@ ModalContentCardView.prototype._resizeModalImage = function () {
 ModalContentCardView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
-    this.$el.closest(this.modalClass).removeClass(this.modalAnnotationClass);
+    this.$el.closest(this.modalSelector).removeClass(this.modalAnnotationClass);
     window.removeEventListener('resize', this._resizeModalImage);
 };
 
@@ -179,7 +179,7 @@ ModalContentCardView.prototype.render = function () {
     var self = this;
     CompositeView.prototype.render.call(this);
 
-    this.$el.closest(this.modalClass).addClass(this.modalAnnotationClass);
+    this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
     this._resizeModalImage();
     return this;
 };
