@@ -43,7 +43,7 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
     var bodyText = div.innerText;
     context.truncated = false;
     if (bodyText.length > 125 && (!opts || (opts && opts.viewMore !== true))){
-        bodyText = bodyText.slice() + '...';
+        bodyText = bodyText.slice(0, 124) + '...';
         context.truncated = true;
     } 
     context.body = '<p>'+bodyText+'</p>';
