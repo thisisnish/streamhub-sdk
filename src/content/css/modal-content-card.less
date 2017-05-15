@@ -1,5 +1,7 @@
+@import (reference) "./mixins/content-default.less";
+
 .hub-modal.modal-content-card {
-    @import "lib/streamhub-ui/src/css/ui.less";
+    .content-default();
 
     .hub-modal-close {
         right: 0px;
