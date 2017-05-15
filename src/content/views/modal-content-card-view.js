@@ -61,7 +61,7 @@ ModalContentCardView.prototype.invalidClass = 'content-invalid';
 ModalContentCardView.prototype.attachmentsElSelector = '.content-attachments';
 ModalContentCardView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 ModalContentCardView.prototype.modalClass = '.hub-modal';
-ModalContentCardView.prototype.modalAnnotationClass = '.modal-content-card';
+ModalContentCardView.prototype.modalAnnotationClass = 'modal-content-card';
 
 ModalContentCardView.prototype.events = CompositeView.prototype.events.extended({
     'imageLoaded.hub': function(e) {
