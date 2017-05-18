@@ -1,5 +1,4 @@
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
-var ProductHeaderView = require('streamhub-sdk/content/views/product-header-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
 
 'use strict';
@@ -10,19 +9,47 @@ var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
  * Specifically, Facebook, Twitter, and the rest have different display
  * requirements.
  */
-var ContentHeaderViewFactory = function (opts) {
-    opts = opts || {};
+function ContentHeaderViewFactory() {}
+
+ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
+    return new ContentHeaderView(this.getHeaderViewOptsForContent(content));
 };
 
-ContentHeaderViewFactory.prototype.createHeaderView = function (content, productOpts) {
-    var opts = this._getHeaderViewOptsForContent(content);
-    if (productOpts) {
-      return new ProductHeaderView(opts, productOpts);
+/**
+ * Providers that support created at urls, as long as they match the regex.
+ * @const {Object}
+ */
+var SUPPORTED_PERMALINK_PROVIDERS = {
+    facebook: /^https?:\/\/(www\.)?facebook\.com/,
+    instagram: /^https?:\/\/(www\.)?instagram\.com/
+};
+
+/**
+ * Generates the URL that is linked from the created at copy on the content.
+ * @param {string} provider The provider type for this content.
+ * @param {Object} content The content to generate the URL from.
+ * @return {string=}
+ * @private
+ */
+ContentHeaderViewFactory.prototype._getContentPermalink = function (provider, content) {
+    if (provider === 'twitter') {
+        return 'https://twitter.com/statuses/' + content.tweetId;
     }
-    return new ContentHeaderView(opts);
+
+    var attachments = content && content.attachments || [];
+    if (!attachments.length) {
+        return;
+    }
+
+    var attachment = attachments[0];
+    var attachmentProvider = (attachment.provider_name || '').toLowerCase();
+    var regex = SUPPORTED_PERMALINK_PROVIDERS[attachmentProvider];
+    if (regex && regex.test(attachment.link)) {
+        return attachment.link;
+    }
 };
 
-ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (content) {
+ContentHeaderViewFactory.prototype.getHeaderViewOptsForContent = function (content) {
     var opts = {};
     opts.author =  content.author;
 
@@ -55,6 +82,11 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         opts.contentSourceUrl = 'https://facebook.com';
         opts.contentSourceTooltipText = 'View on Facebook';
     } else if (content.typeUrn === TYPE_URNS.LIVEFYRE_INSTAGRAM) {
+        if (content.author && typeof content.author.profileUrl === 'string') {
+            opts.authorUserNamePrefix = '@';
+            opts.authorUserName = content.author.handle;
+            opts.authorUrl = content.author.profileUrl;
+        }
         opts.contentSourceName = 'instagram';
         opts.contentSourceUrl = 'https://instagram.com';
         opts.contentSourceTooltipText = 'View on Instagram';
@@ -72,6 +104,8 @@ ContentHeaderViewFactory.prototype._getHeaderViewOptsForContent = function (cont
         opts.contentSourceName = 'livefyre';
     }
 
+    opts.createdAt = content.createdAt;
+    opts.createdAtUrl = this._getContentPermalink(opts.contentSourceName, content);
     return opts;
 };
 

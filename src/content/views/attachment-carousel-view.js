@@ -54,10 +54,13 @@ AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
 }
 
 AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
-    var focusedEl = oembedView.$el
+    if (!oembedView) {
+        return;
+    }
+    var focusedEl = oembedView.$el;
     if (oembedView.oembed.type === 'video') {
         var photoContentEl = focusedEl.find('.content-attachment-photo');
-        photoContentEl.hide()
+        photoContentEl.hide();
         var videoContentEl = focusedEl.find('.content-attachment-video');
         videoContentEl.html(this._getAttachmentVideoHtml(oembedView.oembed));
         var videoIframe = videoContentEl.find('iframe');
@@ -152,7 +155,6 @@ AttachmentCarouselView.prototype.add = function (view) {
 };
 
 AttachmentCarouselView.prototype.render = function (view, opts) {
-    var self = this;
     CompositeView.prototype.render.call(this);
 
     this._insertVideo(this._singleAttachmentView.oembedViews[0]);
@@ -165,12 +167,10 @@ AttachmentCarouselView.prototype._jsPositioning = function () {
         this._attachmentsListView.$el.find(this._attachmentsListView.stackedAttachmentsSelector)
             .width(this.opts.carouselElementWidth * this._attachmentsListView.count());
     }
-
-}
+};
 
 AttachmentCarouselView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this.opts);
-    return context;
+    return $.extend({}, this.opts);
 };
 
 module.exports = AttachmentCarouselView;

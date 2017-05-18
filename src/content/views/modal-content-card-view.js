@@ -1,10 +1,10 @@
 var $ = require('streamhub-sdk/jquery');
-var CompositeView = require('view/composite-view');
 var AttachmentCarouselView = require('streamhub-sdk/content/views/attachment-carousel-view');
-var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
-var inherits = require('inherits');
+var CompositeView = require('view/composite-view');
 var debug = require('debug');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
+var inherits = require('inherits');
+var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
 
 'use strict';
 
@@ -57,6 +57,7 @@ ModalContentCardView.prototype.elClass = 'content';
 ModalContentCardView.prototype.contentWithImageClass = 'content-with-image';
 ModalContentCardView.prototype.imageLoadingClass = 'hub-content-image-loading';
 ModalContentCardView.prototype.invalidClass = 'content-invalid';
+ModalContentCardView.prototype.rightsGrantedClass = 'content-rights-granted';
 ModalContentCardView.prototype.attachmentsElSelector = '.content-attachments';
 ModalContentCardView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 
@@ -97,9 +98,7 @@ ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRen
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {
     this.remove(this._attachmentsView);
-    if (this._productContentView) {
-        this.remove(this._productContentView);
-    }
+    this._productContentView && this.remove(this._productContentView);
 };
 
 /**
@@ -118,6 +117,8 @@ ModalContentCardView.prototype.setElement = function (el) {
         this.$el.attr('data-content-id', this.content.id);
     }
 
+    var rightsGranted = this.content.hasRightsGranted && this.content.hasRightsGranted();
+    this.$el.toggleClass(this.rightsGrantedClass, rightsGranted);
     return this;
 };
 
@@ -126,8 +127,7 @@ ModalContentCardView.prototype.setElement = function (el) {
  * @returns {Content} The content object this view was instantiated with.
  */
 ModalContentCardView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this.content);
-    return context;
+    return $.extend({}, this.content);
 };
 
 /**
@@ -156,25 +156,6 @@ ModalContentCardView.prototype._handleAttachmentsChange = function () {
 ModalContentCardView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
-};
-
-/**
- * Render the content inside of the ModalContentCardView's element.
- * @returns {ModalContentCardView}
- */
-ModalContentCardView.prototype.render = function () {
-    var self = this;
-    CompositeView.prototype.render.call(this);
-
-    /*setTimeout(function (){
-        // position the attachements vertically centered
-        var attachmentsHeight = self._thumbnailAttachmentsView.$el.height();
-        var modalHeight = self._thumbnailAttachmentsView.$el.parent().parent().height();
-        self._thumbnailAttachmentsView.$el.css('margin-top', (modalHeight - attachmentsHeight) / 2);
-    }, 0);*/
-
-
-    return this;
 };
 
 module.exports = ModalContentCardView;

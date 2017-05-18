@@ -6,6 +6,7 @@
 @import "./mixins/like-bounce-animation.less";
 @import "./product.less";
 @import "./attachment-carousel.less";
+@import "./mixins/spectrum-content.less";
 
 /**
  * All Content
@@ -17,6 +18,12 @@
 
 .content-default {
     .content-default();
+}
+
+.content-rights-granted {
+    .content-source-logo {
+        .opacity(0);
+    }
 }
 
 a.content-body-title {

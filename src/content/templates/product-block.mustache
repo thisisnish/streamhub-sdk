@@ -1,5 +1,5 @@
 {{#productDetailPhotoShow}}
-  <a href="{{ product.url }}" target="_blank">
+  <a href="{{ productUrl }}" target="_blank">
     <img class="product-media" src="{{ product.oembed.url }}" alt="{{ product.oembed.title }}"></img>
   </a>
 {{/productDetailPhotoShow}}
@@ -9,4 +9,4 @@
 {{#productDetailPriceShow}}
   <div class="product-price">{{ product.price }}</div>
 {{/productDetailPriceShow}}
-<a class="buy-button lf-input-btn" href="{{ product.url }}" target="_blank">{{ productButtonText }}</a>
+<a class="buy-button" href="{{ productUrl }}" target="_blank">{{ productButtonText }}</a>
