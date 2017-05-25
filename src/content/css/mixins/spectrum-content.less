@@ -15,14 +15,16 @@
     .box-shadow(none);
     padding: 0;
 
-    .content-attachment {
-        .content-attachment-frame {
-            .box-shadow(none);
-        }
-        .content-attachment-photo,
-        .content-attachment-video {
-            .border-radius(0);
-            .box-shadow(none);
+    .content-attachments-tiled {
+        border-bottom: @card-border;
+
+        .content-attachment {
+            .content-attachment-frame,
+            .content-attachment-photo,
+            .content-attachment-video {
+                .border-radius(0);
+                .box-shadow(none);
+            }
         }
     }
 
