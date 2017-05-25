@@ -1,5 +1,6 @@
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
+var util = require('streamhub-sdk/content/util/main');
 
 'use strict';
 
@@ -13,40 +14,6 @@ function ContentHeaderViewFactory() {}
 
 ContentHeaderViewFactory.prototype.createHeaderView = function (content) {
     return new ContentHeaderView(this.getHeaderViewOptsForContent(content));
-};
-
-/**
- * Providers that support created at urls, as long as they match the regex.
- * @const {Object}
- */
-var SUPPORTED_PERMALINK_PROVIDERS = {
-    facebook: /^https?:\/\/(www\.)?facebook\.com/,
-    instagram: /^https?:\/\/(www\.)?instagram\.com/
-};
-
-/**
- * Generates the URL that is linked from the created at copy on the content.
- * @param {string} provider The provider type for this content.
- * @param {Object} content The content to generate the URL from.
- * @return {string=}
- * @private
- */
-ContentHeaderViewFactory.prototype._getContentPermalink = function (provider, content) {
-    if (provider === 'twitter') {
-        return 'https://twitter.com/statuses/' + content.tweetId;
-    }
-
-    var attachments = content && content.attachments || [];
-    if (!attachments.length) {
-        return;
-    }
-
-    var attachment = attachments[0];
-    var attachmentProvider = (attachment.provider_name || '').toLowerCase();
-    var regex = SUPPORTED_PERMALINK_PROVIDERS[attachmentProvider];
-    if (regex && regex.test(attachment.link)) {
-        return attachment.link;
-    }
 };
 
 ContentHeaderViewFactory.prototype.getHeaderViewOptsForContent = function (content) {
@@ -105,7 +72,7 @@ ContentHeaderViewFactory.prototype.getHeaderViewOptsForContent = function (conte
     }
 
     opts.createdAt = content.createdAt;
-    opts.createdAtUrl = this._getContentPermalink(opts.contentSourceName, content);
+    opts.createdAtUrl = util.getContentPermalink(opts.contentSourceName, content);
     return opts;
 };
 
