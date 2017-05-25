@@ -35,11 +35,11 @@ var ModalContentCardView = function (opts) {
     impressionUtil.recordImpression(opts.content);
 
     if (this.content) {
-        this.content.on("change:body", function(newVal, oldVal){
+        this.content.on('change:body', function(newVal, oldVal) {
             this._handleBodyChange();
         }.bind(this));
 
-        this.content.on("change:attachments", function(newVal, oldVal){
+        this.content.on('change:attachments', function(newVal, oldVal) {
             this._handleAttachmentsChange();
         }.bind(this));
 
@@ -49,6 +49,7 @@ var ModalContentCardView = function (opts) {
             }
         });
     }
+    window.addEventListener('resize', this._resizeModalImage.bind(this));
 };
 inherits(ModalContentCardView, CompositeView);
 
@@ -60,6 +61,8 @@ ModalContentCardView.prototype.invalidClass = 'content-invalid';
 ModalContentCardView.prototype.rightsGrantedClass = 'content-rights-granted';
 ModalContentCardView.prototype.attachmentsElSelector = '.content-attachments';
 ModalContentCardView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
+ModalContentCardView.prototype.modalSelector = '.hub-modal';
+ModalContentCardView.prototype.modalAnnotationClass = 'modal-content-card';
 
 ModalContentCardView.prototype.events = CompositeView.prototype.events.extended({
     'imageLoaded.hub': function(e) {
@@ -153,9 +156,35 @@ ModalContentCardView.prototype._handleAttachmentsChange = function () {
     this._addInitialChildViews(this.opts, true);
 };
 
+ModalContentCardView.prototype._resizeModalImage = function () {
+    var modal = this.$el.closest(this.modalSelector);
+    var attachment = modal.find('.hub-modal-content .attachment-carousel .content-attachment.content-attachment-square-tile');
+    var winHeight = $(window).height();
+    if (winHeight <= 600 && attachment.outerHeight() > winHeight) {
+        attachment.css('padding-bottom', '' + winHeight + 'px');
+    } else {
+        attachment.css('padding-bottom', '100%');
+    }
+};
+
 ModalContentCardView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
+    this.$el.closest(this.modalSelector).removeClass(this.modalAnnotationClass);
+    window.removeEventListener('resize', this._resizeModalImage);
+};
+
+/**
+ * Render the content inside of the ModalContentCardView's element.
+ * @returns {ModalContentCardView}
+ */
+ModalContentCardView.prototype.render = function () {
+    var self = this;
+    CompositeView.prototype.render.call(this);
+
+    this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
+    this._resizeModalImage();
+    return this;
 };
 
 module.exports = ModalContentCardView;
