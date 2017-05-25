@@ -1,11 +1,14 @@
 var $ = require('streamhub-sdk/jquery');
-var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
+var Content = require('streamhub-sdk/content');
 var ContentView = require('streamhub-sdk/content/views/content-view');
 var ContentViewFactory = require('streamhub-sdk/content/content-view-factory');
-var Content = require('streamhub-sdk/content');
+var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
+var LivefyreContentView = require('streamhub-sdk/content/views/livefyre-content-view');
 var Oembed = require('streamhub-sdk/content/types/oembed');
 var sharer = require('streamhub-sdk/sharer');
+var TwitterContentView = require('streamhub-sdk/content/views/twitter-content-view');
 var TYPE_URNS = require('streamhub-sdk/content/types/type-urns');
+var YoutubeContentView = require('streamhub-sdk/content/views/youtube-content-view');
 
 'use strict';
 
@@ -29,38 +32,38 @@ describe('ContentViewFactory', function() {
     describe('when creating ContentView instances via .contentRegistry', function() {
         var contentViewFactory = new ContentViewFactory();
         var state = {
-            "vis": 1,
-            "content": {
-                "replaces": "",
-                "feedEntry": {
-                    "transformer": "lfcore.v2.procurement.feed.transformer.instagram",
-                    "feedType": 2,
-                    "description": "#gayrights #lgbt #equality #marriageequality <img src=\"http://distilleryimage2.instagram.com/18ea2500970c11e294f522000a9f30b8_7.jpg\" />",
-                    "pubDate": 1364409052,
-                    "channelId": "http://instagram.com/tags/marriageequality/feed/recent.rss",
-                    "link": "http://distilleryimage2.instagram.com/18ea2500970c11e294f522000a9f30b8_7.jpg",
-                    "id": "bffcb85a-2976-4396-bb60-3cf5b1e2c3a8",
-                    "createdAt": 1364409052
+            vis: 1,
+            content: {
+                replaces: '',
+                feedEntry: {
+                    transformer: 'lfcore.v2.procurement.feed.transformer.instagram',
+                    feedType: 2,
+                    description: '#gayrights #lgbt #equality #marriageequality <img src=\'http://distilleryimage2.instagram.com/18ea2500970c11e294f522000a9f30b8_7.jpg\' />',
+                    pubDate: 1364409052,
+                    channelId: 'http://instagram.com/tags/marriageequality/feed/recent.rss',
+                    link: 'http://distilleryimage2.instagram.com/18ea2500970c11e294f522000a9f30b8_7.jpg',
+                    id: 'bffcb85a-2976-4396-bb60-3cf5b1e2c3a8',
+                    createdAt: 1364409052
                 },
-                "bodyHtml": "#gayrights #lgbt #equality #marriageequality ",
-                "annotations": {},
-                "authorId": "7759cd005d95d8cc5bd93718b2ac0064@instagram.com",
-                "parentId": "",
-                "updatedAt": 1364409052,
-                "id": "tweet-123@twitter.com",
-                "createdAt": 1364409052
+                bodyHtml: '#gayrights #lgbt #equality #marriageequality ',
+                annotations: {},
+                authorId: '7759cd005d95d8cc5bd93718b2ac0064@instagram.com',
+                parentId: '',
+                updatedAt: 1364409052,
+                id: 'tweet-123@twitter.com',
+                createdAt: 1364409052
             },
-            "source": 13,
-            "lastVis": 0,
-            "type": 0,
-            "event": 1364409052662964,
+            source: 13,
+            lastVis: 0,
+            type: 0,
+            event: 1364409052662964,
             author: {
-                displayName: "sara",
+                displayName: 'sara',
                 tags: [],
-                profileUrl: "https://twitter.com/#!/135sara",
-                avatar: "http://a0.twimg.com/profile_images/1349672055/Baqueira_29-01-2010_13-54-52_normal.jpg",
+                profileUrl: 'https://twitter.com/#!/135sara',
+                avatar: 'http://a0.twimg.com/profile_images/1349672055/Baqueira_29-01-2010_13-54-52_normal.jpg',
                 type: 3,
-                id: "tweet-123568642@twitter.com"
+                id: 'tweet-123568642@twitter.com'
             }
         };
         var contentView;
@@ -120,11 +123,53 @@ describe('ContentViewFactory', function() {
         });
     });
 
+    describe('content types - _getViewTypeForContent', function () {
+        it('_getViewTypeForContent rights granted', function () {
+            var content = new LivefyreContent();
+            content.rights = {status: 'granted'};
+            content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+            content.urlContentTypeId = 'http://twitter.com/'
+            var contentViewFactory = new ContentViewFactory();
+            var view = contentViewFactory._getViewTypeForContent(content);
+            expect(view).toEqual(LivefyreContentView);
+        });
+
+        it('_getViewTypeForContent twitter', function () {
+            var content = new LivefyreContent();
+            content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+            content.urlContentTypeId = 'http://twitter.com/'
+            var contentViewFactory = new ContentViewFactory();
+            var view = contentViewFactory._getViewTypeForContent(content);
+            expect(view).toEqual(TwitterContentView);
+        });
+
+        it('_getViewTypeForContent tumblr', function () {
+            var content = new LivefyreContent();
+            content.typeUrn = TYPE_URNS.LIVEFYRE_FEED;
+            content.feedUrl = 'http://youtube.com/';
+            var contentViewFactory = new ContentViewFactory();
+            var contentView = contentViewFactory.createContentView(content, {});
+            var view = contentViewFactory._getViewTypeForContent(content);
+            expect(view).toEqual(YoutubeContentView);
+        });
+    });
+
     describe('content types - getMixinForTypeOfContent', function () {
         it('getMixinForTypeOfContent default', function () {
             var content = new LivefyreContent();
             var contentViewFactory = new ContentViewFactory();
             var mixin = contentViewFactory.getMixinForTypeOfContent(content);
+            expect(mixin.name).toEqual('asLivefyreContentView');
+        });
+
+        it('getMixinForTypeOfContent rights granted', function () {
+            var content = new LivefyreContent();
+            content.rights = {status: 'granted'};
+            content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+            content.urlContentTypeId = 'http://twitter.com/'
+            var contentViewFactory = new ContentViewFactory();
+            var mixin = contentViewFactory.getMixinForTypeOfContent(content);
+            expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);
             expect(mixin.name).toEqual('asLivefyreContentView');
         });
 
@@ -141,14 +186,14 @@ describe('ContentViewFactory', function() {
         it('getMixinForTypeOfContent tumblr', function () {
             var content = new LivefyreContent();
             content.typeUrn = TYPE_URNS.LIVEFYRE_FEED;
-            content.feedUrl = 'http://youtube.com/'
+            content.feedUrl = 'http://youtube.com/';
             var contentViewFactory = new ContentViewFactory();
             var contentView = contentViewFactory.createContentView(content, {});
             var mixin = contentViewFactory.getMixinForTypeOfContent(content);
             mixin(contentView, {});
             contentView.render();
             expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_FEED);
-            expect(contentView.$el.hasClass('content-youtube')).toBe(true)
+            expect(contentView.$el.hasClass('content-youtube')).toBe(true);
         });
     });
 

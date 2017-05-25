@@ -33,10 +33,15 @@ describe('hasAttachmentModal mixin', function () {
         var spy = spyOn(modal, 'show');
         content = new Content({ body: 'hi' });
         contentView = new ContentView({ content: content });
-        hasAttachmentModal(contentView, {modal: modal, useNewModal: true});
+        hasAttachmentModal(contentView, {
+            modal: modal,
+            productOptions: {show: true},
+            useNewModal: true
+        });
         contentView.$el.trigger('focusContent.hub', {content: content});
         expect(spy.calls.length).toBe(1);
         expect(spy.calls[0].args[0] instanceof ModalContentCardView).toBe(true);
+        expect(spy.calls[0].args[0].opts.productOptions).toEqual({show: true});
     });
 
     it('does default action without `useNewModal` option', function () {

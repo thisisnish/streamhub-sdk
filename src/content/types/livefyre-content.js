@@ -263,7 +263,7 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
      * @return {boolean}
      */
     LivefyreContent.prototype.hasProducts = function () {
-        return (this.links.product || []).length > 0;
+        return ((this.links || {}).product || []).length > 0;
     };
 
     /**
