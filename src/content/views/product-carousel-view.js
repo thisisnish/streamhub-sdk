@@ -1,4 +1,5 @@
 var $ = require('streamhub-sdk/jquery');
+var get = require('mout/object/get');
 var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
 var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');
@@ -29,7 +30,7 @@ var ProductCarouselView = function (opts) {
      * List of products to show in the carousel.
      * @type {Array.<Object>}
      */
-    this.products = opts.content.links && opts.content.links.product || [];
+    this.products = get(opts, 'content.links.product') || [];
 
     /**
      * Left-most index within `this.products` of products that are currently
@@ -90,6 +91,15 @@ ProductCarouselView.prototype.createProductView = function (product) {
     });
 };
 
+/** @override */
+ProductCarouselView.prototype.getTemplateContext = function () {
+    var context = $.extend({}, this.opts);
+    var productCarouselTitleText = i18n.get('productCarouselTitleText', 'Shop these products:').trim();
+    context.productCarouselTitleText = productCarouselTitleText;
+    context.productCarouselTitleShow = productCarouselTitleText.length > 0;
+    return context;
+};
+
 /**
  * Determines if there are more products to show in the specified direction.
  * @param {string} dir
@@ -103,15 +113,6 @@ ProductCarouselView.prototype.hasMore = function (dir) {
     // how many cards can be shown at any given time. So if we're showing 2
     // cards, the visible cards are indexes 0 and 1.
     return this.products.length - 1 > this.visibleIndex + this.cardsInView - 1;
-};
-
-/** @override */
-ProductCarouselView.prototype.getTemplateContext = function () {
-    var context = $.extend({}, this.opts);
-    var productCarouselTitleText = i18n.get('productCarouselTitleText', 'Shop these products:').trim();
-    context.productCarouselTitleText = productCarouselTitleText;
-    context.productCarouselTitleShow = productCarouselTitleText.length > 0;
-    return context;
 };
 
 /**
