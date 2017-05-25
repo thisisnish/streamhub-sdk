@@ -25,8 +25,8 @@ var AttachmentCarouselView = function (opts) {
 };
 inherits(AttachmentCarouselView, CompositeView);
 
-AttachmentCarouselView.prototype.elTag = 'div'
-AttachmentCarouselView.prototype.elClass = 'attachment-carousel'
+AttachmentCarouselView.prototype.elTag = 'div';
+AttachmentCarouselView.prototype.elClass = 'attachment-carousel';
 AttachmentCarouselView.prototype.listClass = '.content-attachments-stacked';
 AttachmentCarouselView.prototype.leftSelector = '.attachment-carousel-left-arrow';
 AttachmentCarouselView.prototype.rightSelector = '.attachment-carousel-right-arrow';
