@@ -23,65 +23,6 @@ describe('ContentHeaderViewFactory', function () {
         });
     });
 
-    describe('_getContentPermalink', function () {
-        it('returns permalink for twitter', function () {
-            expect(contentHeaderViewFactory._getContentPermalink('twitter', {
-                tweetId: '123'
-            }))
-            .toBe('https://twitter.com/statuses/123');
-        });
-
-        it('returns permalink for instagram', function () {
-            expect(contentHeaderViewFactory._getContentPermalink('instagram', {
-                attachments: [{
-                    link: 'https://instagram.com/media.png',
-                    provider_name: 'instagram'
-                }]
-            }))
-            .toBe('https://instagram.com/media.png');
-        });
-
-        it('return permalink for facebook', function () {
-            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
-                attachments: [{
-                    link: 'https://facebook.com/media.png',
-                    provider_name: 'facebook'
-                }]
-            }))
-            .toBe('https://facebook.com/media.png');
-        });
-
-        it('returns undefined if no attachments', function () {
-            expect(contentHeaderViewFactory._getContentPermalink('facebook', {}))
-            .toBe(undefined);
-
-            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
-                attachments: []
-            }))
-            .toBe(undefined);
-        });
-
-        it('returns undefined if unsupported media provider', function () {
-            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
-                attachments: [{
-                    link: 'https://facebook.com/media.png',
-                    provider_name: 'youtube'
-                }]
-            }))
-            .toBe(undefined);
-        });
-
-        it('returns undefined if invalid url', function () {
-            expect(contentHeaderViewFactory._getContentPermalink('facebook', {
-                attachments: [{
-                    link: 'https://xyz.facebook.com/media.png',
-                    provider_name: 'facebook'
-                }]
-            }))
-            .toBe(undefined);
-        });
-    });
-
     describe('getHeaderViewOptsForContent', function () {
         var opts;
 
