@@ -44,10 +44,10 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
     var bodyText = div.innerText;
     context.truncated = false;
     if (bodyText.length > 125 && (!opts || (opts && opts.showMore !== true))){
-        bodyText = bodyText.slice(0, 124) + '...';
+        bodyText = bodyText.slice(0, 124) + '&hellip;';
         context.truncated = true;
     } 
-    context.body = '<p>'+bodyText+'</p>';
+    context.body = '<p>' + bodyText + '</p>';
 
     // If there an duplicate link title + content title, then
     // remove the content title for display purposes.
@@ -57,7 +57,7 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
         }
     }
 
-    context.showMoreText = 'View More';
+    context.showMoreText = i18n.get('viewMore', 'View More');
 
     // Ensure that the title is only text.
     if (context.title) {
@@ -88,19 +88,6 @@ ContentBodyView.prototype.render = function (opts) {
     if (this._content.title) {
         this.$el.addClass('content-has-title');
     }
-
-    /*if (this.showMoreEl && this.showMoreEl.length > 0) { 
-        this.showMoreEl.off('click', '*');
-    }
-
-    this.showMoreEl = this.$el.find(this.showMoreSelector);
-    if (this.showMoreEl.length > 0) {
-        this.showMoreEl.on('click', this._showMore.bind(this));
-    }*/
 };
-
-ContentBodyView.prototype.destroy = function () {
-    View.prototype.destroy();
-}
 
 module.exports = ContentBodyView;

@@ -161,7 +161,7 @@ ModalContentCardView.prototype._resizeModalImage = function () {
     var attachment = modal.find('.hub-modal-content .attachment-carousel .content-attachment.content-attachment-square-tile');
     var winHeight = $(window).height();
     if (winHeight <= 600 && attachment.outerHeight() > winHeight) {
-        attachment.css('padding-bottom', '' + winHeight + 'px');
+        attachment.css('padding-bottom', winHeight + 'px');
     } else {
         attachment.css('padding-bottom', '100%');
     }
@@ -179,7 +179,6 @@ ModalContentCardView.prototype.destroy = function () {
  * @returns {ModalContentCardView}
  */
 ModalContentCardView.prototype.render = function () {
-    var self = this;
     CompositeView.prototype.render.call(this);
 
     this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
