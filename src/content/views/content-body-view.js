@@ -25,7 +25,7 @@ inherits(ContentBodyView, View);
 ContentBodyView.prototype.events = View.prototype.events.extended({
     'click.content-body-show-more': function(e) {
         e.stopPropagation();
-        this._showMore();
+        this.render({showMore:true});
     }
 });
 
@@ -72,10 +72,6 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
     }
     return context;
 };
-
-ContentBodyView.prototype._showMore = function () {
-    this.render({showMore:true});
-}
 
 /** @override */
 ContentBodyView.prototype.render = function (opts) {
