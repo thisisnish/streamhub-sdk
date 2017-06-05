@@ -1,6 +1,7 @@
 var $ = require('streamhub-sdk/jquery');
 var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
+var isBoolean = require('mout/lang/isBoolean');
 var template = require('hgn!streamhub-sdk/content/templates/content-body');
 var View = require('streamhub-sdk/view');
 
@@ -19,6 +20,9 @@ var ContentBodyView = function (opts) {
     View.call(this, opts);
 
     this._content = opts.content;
+    this._showMoreEnabled = isBoolean(opts.showMoreEnabled) ?
+        opts.showMoreEnabled :
+        true;
 };
 inherits(ContentBodyView, View);
 
@@ -35,18 +39,20 @@ ContentBodyView.prototype.elClass = 'content-body';
 ContentBodyView.prototype.showMoreSelector = '.content-body-show-more';
 
 ContentBodyView.prototype.getTemplateContext = function (opts) {
-    var context = $.extend({}, this._content);
+    var context = $.extend({truncated: false}, this._content);
     var attachments = context.attachments;
 
-    // Ensure that content.body has a p tag
     var div = document.createElement('div');
     div.innerHTML = context.body;
     var bodyText = div.innerText;
-    context.truncated = false;
-    if (bodyText.length > 125 && (!opts || (opts && opts.showMore !== true))){
+    var shouldTruncate = !opts || (opts && !opts.showMore);
+
+    if (this._showMoreEnabled && bodyText.length > 125 && shouldTruncate) {
         bodyText = bodyText.slice(0, 124) + '&hellip;';
+        context.showMoreText = i18n.get('viewMore', 'View More');
         context.truncated = true;
-    } 
+    }
+
     context.body = '<p>' + bodyText + '</p>';
 
     // If there an duplicate link title + content title, then
@@ -56,8 +62,6 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
             context.title = '';
         }
     }
-
-    context.showMoreText = i18n.get('viewMore', 'View More');
 
     // Ensure that the title is only text.
     if (context.title) {
