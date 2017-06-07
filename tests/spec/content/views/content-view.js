@@ -116,6 +116,7 @@ describe('Default ContentView', function () {
             contentView.render();
             return contentView.$el;
         }
+
         it('wraps the body in some html element if needed', function () {
             var $body = renderedBodyEl('what');
             expect($body.find('.content-body-main *').length).toBe(1);
@@ -128,6 +129,7 @@ describe('Default ContentView', function () {
             expect($body.find('.content-body-main *').length).toBe(2);
             expect($body.find('.content-body-main > p').length).toBe(1);
         });
+
         it('doesnt wrap bodyHtml with paragraphs', function () {
             ['<p>what</p><p>1</p>', '  <p>what</p><p>1</p>'].forEach(function (body) {
                 var $body = renderedBodyEl(body);

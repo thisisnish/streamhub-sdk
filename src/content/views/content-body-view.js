@@ -45,17 +45,22 @@ ContentBodyView.prototype.showMoreSelector = '.content-body-show-more';
 ContentBodyView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this._content);
     var attachments = context.attachments;
+    var body = context.bodyOrig || context.body;
 
-    var div = document.createElement('div');
-    div.innerHTML = context.bodyOrig || context.body;
-    var bodyText = div.innerText;
-    this._isBodyTruncatable = bodyText.length > 125;
+    if (this._showMoreEnabled) {
+        var div = document.createElement('div');
+        div.innerHTML = body;
+        var bodyText = div.innerText;
+        this._isBodyTruncatable = bodyText.length > 125;
 
-    if (this._showMoreEnabled && this._isBodyTruncatable && this._truncated) {
-        bodyText = bodyText.slice(0, 124) + '&hellip;';
+        if (this._isBodyTruncatable && this._truncated) {
+            bodyText = bodyText.slice(0, 124) + '&hellip;';
+        }
+
+        context.body = '<p>' + bodyText + '</p>';
+    } else if (!/^<p/.test($.trim(body))) {
+        context.body = '<p>' + $.trim(body) + '</p>';
     }
-
-    context.body = '<p>' + bodyText + '</p>';
 
     // If there an duplicate link title + content title, then
     // remove the content title for display purposes.
