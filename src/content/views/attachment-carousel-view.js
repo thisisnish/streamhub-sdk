@@ -60,7 +60,7 @@ AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
     var focusedEl = oembedView.$el;
     if (oembedView.oembed.type === 'video') {
         var photoContentEl = focusedEl.find('.content-attachment-photo');
-        photoContentEl.hide();
+        setTimeout(function() { photoContentEl.hide(); }, 0);
         var videoContentEl = focusedEl.find('.content-attachment-video');
         videoContentEl.html(this._getAttachmentVideoHtml(oembedView.oembed));
         var videoIframe = videoContentEl.find('iframe');
@@ -70,7 +70,7 @@ AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
         var videoEl = videoContentEl.find('video');
         if (videoEl.length > 0) {
             videoEl.attr('poster', oembedView.oembed.thumbnail_url);
-            videoEl.css({'width': '100%'});
+            videoEl.css({'width': '100%', 'height': '100%'});
         }
 
         videoContentEl.show();

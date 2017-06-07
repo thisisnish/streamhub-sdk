@@ -47,7 +47,7 @@ ContentBodyView.prototype.getTemplateContext = function () {
     var attachments = context.attachments;
 
     var div = document.createElement('div');
-    div.innerHTML = context.bodyOrig;
+    div.innerHTML = context.bodyOrig || context.body;
     var bodyText = div.innerText;
     this._isBodyTruncatable = bodyText.length > 125;
 
