@@ -22,14 +22,18 @@ var ContentBodyView = function (opts) {
     this._content = opts.content;
     this._showMoreEnabled = isBoolean(opts.showMoreEnabled) ?
         opts.showMoreEnabled :
-        true;
+        false;
+
+    this._isBodyTruncatable = false;
+    this._truncated = this._showMoreEnabled;
 };
 inherits(ContentBodyView, View);
 
 ContentBodyView.prototype.events = View.prototype.events.extended({
-    'click.content-body-show-more': function(e) {
+    'click .content-body-show-more': function (e) {
         e.stopPropagation();
-        this.render({showMore:true});
+        this._truncated = !this._truncated;
+        this.render();
     }
 });
 
@@ -38,19 +42,17 @@ ContentBodyView.prototype.elTag = 'section';
 ContentBodyView.prototype.elClass = 'content-body';
 ContentBodyView.prototype.showMoreSelector = '.content-body-show-more';
 
-ContentBodyView.prototype.getTemplateContext = function (opts) {
-    var context = $.extend({truncated: false}, this._content);
+ContentBodyView.prototype.getTemplateContext = function () {
+    var context = $.extend({}, this._content);
     var attachments = context.attachments;
 
     var div = document.createElement('div');
-    div.innerHTML = context.body;
+    div.innerHTML = context.bodyOrig;
     var bodyText = div.innerText;
-    var shouldTruncate = !opts || (opts && !opts.showMore);
+    this._isBodyTruncatable = bodyText.length > 125;
 
-    if (this._showMoreEnabled && bodyText.length > 125 && shouldTruncate) {
+    if (this._showMoreEnabled && this._isBodyTruncatable && this._truncated) {
         bodyText = bodyText.slice(0, 124) + '&hellip;';
-        context.showMoreText = i18n.get('viewMore', 'View More');
-        context.truncated = true;
     }
 
     context.body = '<p>' + bodyText + '</p>';
@@ -78,16 +80,26 @@ ContentBodyView.prototype.getTemplateContext = function (opts) {
 };
 
 /** @override */
-ContentBodyView.prototype.render = function (opts) {
-    var context;
-    if (typeof this.template === 'function') {
-        context = this.getTemplateContext(opts);
-        this.$el.html(this.template(context));
-    }
+ContentBodyView.prototype.render = function () {
+    View.prototype.render.call(this);
 
     if (this._content.title) {
         this.$el.addClass('content-has-title');
     }
+
+    if (!this._showMoreEnabled || !this._isBodyTruncatable) {
+        return this;
+    }
+
+    var showMore = document.createElement('a');
+    $(showMore).addClass('content-body-show-more')
+        .toggleClass('view-more', this._truncated)
+        .toggleClass('view-less', !this._truncated)
+        .html(this._truncated ?
+            i18n.get('viewMore', 'View More') :
+            i18n.get('viewLess', 'View Less'));
+    this.$el.find('.content-body-main :last-child').append(showMore);
+    return this;
 };
 
 module.exports = ContentBodyView;

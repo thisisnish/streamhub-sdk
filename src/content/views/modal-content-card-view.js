@@ -157,6 +157,11 @@ ModalContentCardView.prototype._handleAttachmentsChange = function () {
 };
 
 ModalContentCardView.prototype._resizeModalImage = function () {
+    // Unsure if this is still needed. It causes a bug when there are multiple
+    // attachments because it sets the padding on the first image. When a
+    // thumbnail is clicked, the first image stays visible while the thumbnail
+    // is expanded, so both images are displayed.
+    return;
     var modal = this.$el.closest(this.modalSelector);
     var attachment = modal.find('.hub-modal-content .attachment-carousel .content-attachment.content-attachment-square-tile');
     var winHeight = $(window).height();

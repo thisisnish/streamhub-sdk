@@ -70,7 +70,10 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
         this._headerViewFactory.getHeaderViewOptsForContent(opts.content));
     this.add(this._headerView, renderOpts);
 
-    this._bodyView = opts.bodyView || new ContentBodyView({content: opts.content});
+    this._bodyView = opts.bodyView || new ContentBodyView({
+        content: opts.content,
+        showMoreEnabled: true
+    });
     this.add(this._bodyView, renderOpts);
 
     this._footerView = opts.footerView || new ContentFooterView({content: opts.content});
@@ -157,6 +160,17 @@ ProductContentView.prototype.render = function () {
     }
 
     CompositeView.prototype.render.call(this);
+
+    setTimeout($.proxy(function () {
+        if (!this._productView) {
+            return;
+        }
+        var productHeight = this._productView.$el.height() + 20;
+        if (productHeight) {
+            this.$el.css('paddingBottom', productHeight + 'px');
+        }
+    }, this), 0);
+
     return this;
 };
 

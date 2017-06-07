@@ -51,7 +51,7 @@ AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
     var index = $('.' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.contentAttachmentSelector).index(e.currentTarget);
     this._singleAttachmentView.retile(index);
     this._insertVideo(this._singleAttachmentView.oembedViews[index]);
-}
+};
 
 AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
     if (!oembedView) {
@@ -75,7 +75,7 @@ AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
 
         videoContentEl.show();
     }
-}
+};
 
 AttachmentCarouselView.prototype._getAttachmentVideoHtml = function (attachment) {
     var AUTOPLAY_PROVIDER_REGEX = /youtube|livefyre|facebook/;
@@ -131,7 +131,7 @@ AttachmentCarouselView.prototype._onCarouselNavigate = function (e, left) {
             this.$el.find(this.leftSelector).addClass(this.hideClass);
         }
     }
-}
+};
 
 /**
  * @param {Object} opts
