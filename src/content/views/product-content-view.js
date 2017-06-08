@@ -1,4 +1,5 @@
 var $ = require('streamhub-sdk/jquery');
+var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
 var CompositeView = require('view/composite-view');
 var ContentBodyView = require('streamhub-sdk/content/views/spectrum/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/spectrum/content-footer-view');
@@ -9,6 +10,7 @@ var debug = require('debug');
 var get = require('mout/object/get');
 var inherits = require('inherits');
 var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
+var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
 
 'use strict';
 
@@ -37,12 +39,11 @@ var ProductContentView = function (opts) {
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
     this._contentViewFactory = new ContentViewFactory();
-    this._mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
 
     CompositeView.call(this, opts);
 
     this._addInitialChildViews(opts);
-    this._mixin(this, opts);
+    this._applyMixin(opts);
 
     if (this.content) {
         this.content.on("change:body", function(newVal, oldVal){
@@ -76,13 +77,21 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
     });
     this.add(this._bodyView, renderOpts);
 
-    this._footerView = opts.footerView || new ContentFooterView({content: opts.content});
+    this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, renderOpts);
 
     if (opts.content.hasRightsGranted() && opts.productOptions.show && opts.content.hasProducts()) {
         this._productView = opts.productView || new ProductCarouselView(opts);
         this.add(this._productView, renderOpts);
     }
+};
+
+ProductContentView.prototype._applyMixin = function (opts) {
+    var mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
+    if (mixin === asTwitterContentView) {
+        return mixin(this, opts);
+    }
+    asLivefyreContentView(this, opts);
 };
 
 ProductContentView.prototype._removeInitialChildViews = function () {
