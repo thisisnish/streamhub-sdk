@@ -32,7 +32,7 @@
   }
 
   .product-carousel-header {
-    color: #364855;
+    color: #364855; 
     font-size: 12px;
     font-weight: bold;
     line-height: 14px;
@@ -43,7 +43,7 @@
     display: block;
     margin-left: 20px;
     overflow: hidden;
-    width: calc(~"100% - 40px");
+    width: calc(~"100% - 50px");
   }
 
   .product-carousel-left,
@@ -146,6 +146,190 @@
     }
   }
 }
+
+
+.lf-product-popover {
+    //.lf-popover();
+
+  background-color: #ffffff;
+  top: auto;
+  position: absolute;
+  z-index: 10000;
+ // width: 25%; //fix this
+
+  .lf-popover-content{
+    padding: 0;
+    background-color: white;
+}
+
+    .lf-popover-arrow {
+      &:extend(.lf-popover .lf-arrow);
+      border-width: 6px;
+      color: #000000;
+  }
+
+
+  .product-carousel,
+  .hub-modal .product-carousel {
+  color: rgba(0, 0, 0, 0);
+  padding-bottom: 10px;
+  position: relative;
+
+  &.product-carousel-size-2 {
+    .product-block {
+      width: 50%;
+    }
+  }
+
+  &:before {
+    border-top: 0px solid #ffffff;
+    content: "";
+    display: block;
+    margin: 0px;
+  }
+
+  .product-carousel-header {
+    display: none;
+    color: #ffffff;
+    font-size: 0px; //12
+    line-height: 0px; //14
+    margin: 0px; //20
+  }
+
+  .product-carousel-body, {
+    display: block;
+    margin-left: 20px;
+    overflow: hidden;
+    width: calc(~"100% - 50px");
+    padding-top: 10px;
+  }
+
+  .product-carousel-left,
+  .product-carousel-right {
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 20px;
+
+    &.product-carousel-nav-hide {
+      .opacity(.1);
+
+      .product-arrow {
+        cursor: default;
+      }
+    }
+
+    > div {
+      background-color: #efefef; //off white
+      color: white;
+      cursor: pointer;
+      font-family: "fycons-@{fycon-font-version}";
+      height: 50px;
+      margin-top: -25px;
+      position: absolute;
+      top: 50%;
+      width: 18px;
+
+      &:before {
+        display: block;
+        text-align: center;
+        .vertical-center();
+      }
+    }
+  }
+
+  .product-carousel-left {
+    left: 0;
+    //SET height
+
+    .product-arrow {
+      .fycon-arrow-left;
+      left: 0;
+      top: 0;
+      margin: 0;
+      height: 100%;
+    }
+  }
+
+  .product-carousel-right {
+    right: 0;
+    height: 100%;
+
+    .product-arrow {
+      right: 0;
+      top: 0;
+      margin: 0;
+      height: 100%;
+
+      .fycon-arrow-right;
+    }
+  }
+
+  .product-block {
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 0 12px;
+    position: relative;
+    text-align: center;
+
+    .product-media {
+      height: inherit;
+      margin-bottom: 8px;
+      width: 90%;
+    }
+
+    .product-name {
+      color: #364855; //ok
+      font: bold 12px/14px @default_font_family;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .product-price {
+      color: #364855;
+      //color: #364855; //999
+      font: normal 12px/14px @default_font_family;
+      margin-top: 5px;
+    }
+
+    .buy-button {
+      .border-radius(3px);
+      display: none;
+      margin-top: 0px;
+
+/*      &:link, &:visited, &:hover {
+        text-decoration: none;
+      }*/
+    }
+  }
+}
+
+}
+
+//if the popover is on the right
+.lf-product-popover.lf-pos-right .lf-popover-arrow {
+    &:extend(.lf-popover.left .lf-arrow);
+    position: absolute;
+    border-bottom-color: red; //the color of the arrow
+    margin-left: -6px;
+    top: -6px;
+    border-style: solid;
+
+    }
+
+
+//if the popover is on the top
+.lf-product-popover.lf-pos-smart_top .lf-popover-arrow {
+    &:extend(.lf-popover.left .lf-arrow);
+    position: absolute;
+    border-bottom-color: white; //the color of the arrow
+    margin-left: -6px;
+    top: -6px;
+  }
+
+
 
 .product-callout {
   cursor: pointer;
