@@ -111,7 +111,7 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
  * @param {boolean=} shouldRender
  */
 ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    var renderOpts = {render: shouldRender || false};
+    var renderOpts = {render: !!shouldRender};
 
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, renderOpts);

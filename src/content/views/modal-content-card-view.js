@@ -90,13 +90,13 @@ ModalContentCardView.prototype.events = CompositeView.prototype.events.extended(
  * @param {boolean=} shouldRender
  */
 ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    shouldRender = shouldRender || false;
+    var renderOpts = {render: !!shouldRender};
 
     this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
-    this.add(this._attachmentsView, { render: shouldRender });
+    this.add(this._attachmentsView, renderOpts);
 
     this._productContentView = opts.productContentView || new ProductContentView(opts);
-    this.add(this._productContentView, { render: shouldRender });
+    this.add(this._productContentView, renderOpts);
 };
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {

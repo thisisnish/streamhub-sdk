@@ -64,7 +64,7 @@ ProductContentView.prototype.attachmentFrameElSelector = '.content-attachment-fr
  * @param {boolean=} shouldRender
  */
 ProductContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    var renderOpts = {render: shouldRender || false};
+    var renderOpts = {render: !!shouldRender};
 
     this._headerView = opts.headerView || new ContentHeaderView(
         this._headerViewFactory.getHeaderViewOptsForContent(opts.content));

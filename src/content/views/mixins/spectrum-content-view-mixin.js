@@ -28,7 +28,7 @@ module.exports = function (contentView) {
      * @override
      */
     contentView._addInitialChildViews = function (opts, shouldRender) {
-        var renderOpts = {render: shouldRender || false};
+        var renderOpts = {render: !!shouldRender};
 
         this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
         this._blockAttachmentsView = new BlockAttachmentListView(opts);

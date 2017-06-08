@@ -138,14 +138,14 @@ AttachmentCarouselView.prototype._onCarouselNavigate = function (e, left) {
  * @param {boolean=} shouldRender
  */
 AttachmentCarouselView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    shouldRender = shouldRender || false;
+    var renderOpts = {render: !!shouldRender};
 
     this._singleAttachmentView = opts.singleAttachmentView || new SingleAttachmentView(opts);
-    this.add(this._singleAttachmentView, { render: shouldRender });
+    this.add(this._singleAttachmentView, renderOpts);
 
     if (this._singleAttachmentView.tileableCount() > 1) {
         this._attachmentsListView = opts.attachmentsListView || new CarouselAttachmentListView(opts);
-        this.add(this._attachmentsListView, { render: shouldRender });
+        this.add(this._attachmentsListView, renderOpts);
     }
 };
 
