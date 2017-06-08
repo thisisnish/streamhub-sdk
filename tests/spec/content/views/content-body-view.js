@@ -89,6 +89,15 @@ function($, Content, ContentBodyView) {
                 body.$el.find('.view-less').click();
                 expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna est, auctor ac laoreet ut, auctor vitae massa. Etiam sit…<a class="content-body-show-more view-more">View More</a></p>');
             });
+
+            it('leaves html in-tact when truncating', function () {
+                var body = new ContentBodyView({
+                    content: {attachments: [], body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna est, auctor ac laoreet ut, auctor vitae massa. <a href="http://google.com">Etiam sit amet consectetur arcu</a>. Nunc hendrerit et tortor et tempor. Quisque mattis tellus sed hendrerit aliquam. Fusce id dignissim felis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Fusce in finibus nisi. Maecenas a nisl a nibh euismod rutrum eu sit amet augue. Donec ac purus commodo, aliquet tellus molestie, efficitur odio. Etiam id vehicula lacus, varius consequat est. Mauris a tortor lacus. Maecenas eu ullamcorper tellus. Vestibulum finibus posuere velit, at pulvinar arcu faucibus ut. Proin placerat molestie elit ac ultrices.'},
+                    showMoreEnabled: true
+                });
+                body.render();
+                expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna est, auctor ac laoreet ut, auctor vitae massa. <a href="http://google.com">Etiam sit…</a><a class="content-body-show-more view-more">View More</a></p>');
+            });
         });
     });
 });

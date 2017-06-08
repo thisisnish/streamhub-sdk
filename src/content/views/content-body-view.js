@@ -2,6 +2,7 @@ var $ = require('streamhub-sdk/jquery');
 var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
 var isBoolean = require('mout/lang/isBoolean');
+var JsTruncateHtml = require('js-truncate-html');
 var template = require('hgn!streamhub-sdk/content/templates/content-body');
 var View = require('streamhub-sdk/view');
 
@@ -20,12 +21,41 @@ var ContentBodyView = function (opts) {
     View.call(this, opts);
 
     this._content = opts.content;
+
+    /**
+     * Whether the body truncation feature is enabled or not.
+     * @type {boolean}
+     * @private
+     */
     this._showMoreEnabled = isBoolean(opts.showMoreEnabled) ?
         opts.showMoreEnabled :
         false;
 
+    /**
+     * Whether the body is truncatable or not.
+     * @type {boolean}
+     * @private
+     */
     this._isBodyTruncatable = false;
+
+    /**
+     * Whether the body is currently truncated or not.
+     * @type {boolean}
+     * @private
+     */
     this._truncated = this._showMoreEnabled;
+
+    /**
+     * HTML truncater. This is used to truncate the body without losing html
+     * elements within it.
+     * @type {JsTruncateHtml}
+     * @private
+     */
+    this._truncator = new JsTruncateHtml({
+        includeElipsis: true,
+        elipsisLength: 1,
+        elipsisCharacter: '&hellip;'
+    });
 };
 inherits(ContentBodyView, View);
 
@@ -54,11 +84,11 @@ ContentBodyView.prototype.getTemplateContext = function () {
         this._isBodyTruncatable = bodyText.length > 125;
 
         if (this._isBodyTruncatable && this._truncated) {
-            bodyText = bodyText.slice(0, 124) + '&hellip;';
+            context.body = body = this._truncator.truncate(body, 124);
         }
+    }
 
-        context.body = '<p>' + bodyText + '</p>';
-    } else if (!/^<p/.test($.trim(body))) {
+    if (!/^<p/.test($.trim(body))) {
         context.body = '<p>' + $.trim(body) + '</p>';
     }
 
@@ -103,7 +133,7 @@ ContentBodyView.prototype.render = function () {
         .html(this._truncated ?
             i18n.get('viewMore', 'View More') :
             i18n.get('viewLess', 'View Less'));
-    this.$el.find('.content-body-main :last-child').append(showMore);
+    this.$el.find('.content-body-main p:last-child').append(showMore);
     return this;
 };
 
