@@ -48,20 +48,6 @@
                 float: left;
             }
 
-            > .content-body {
-                display: block;
-                float: left;
-                position: relative;
-
-                .content-body-main {
-                    font-size: 20px;
-                    line-height: 28px;
-                    position: absolute;
-                    top: 50%;
-                    transform: translateY(-50%);
-                }
-            }
-
             article.content.spectrum-content {
                 display: block;
                 float: right;
@@ -83,8 +69,15 @@
                 display: block;
             }
 
-            &.text-only article.content .content-body {
-                display: none;
+            &.text-only {
+                max-width: 600px !important;
+
+                .attachment-carousel {
+                    display: none;
+                }
+                article.content {
+                    width: 100%;
+                }
             }
         }
     }
@@ -125,8 +118,7 @@
         .hub-modal-content-view {
             padding: 0;
 
-            > .attachment-carousel,
-            > .content-body {
+            > .attachment-carousel {
                 width: 55%;
                 min-width: 400px;
                 min-height: 400px;
@@ -162,16 +154,6 @@
 
                 div[class*="content-attachment-"] {
                     box-shadow: none !important;
-                }
-            }
-
-            &.text-only {
-                > .content-body {
-                    display: none !important;
-                }
-
-                article.content > .content-body {
-                    display: block !important;
                 }
             }
         }

@@ -84,7 +84,12 @@ ContentBodyView.prototype.getTemplateContext = function () {
         this._isBodyTruncatable = bodyText.length > 125;
 
         if (this._isBodyTruncatable && this._truncated) {
-            context.body = body = this._truncator.truncate(body, 124);
+            // Ensure that the body is wrapped in paragraphs before truncating
+            // so that we can pull them off and truncate.
+            if (!/^<p/.test(body)) {
+                body = '<p>' + $.trim(body) + '</p>';
+            }
+            context.body = body = this._truncator.truncate($(body).html(), 124);
         }
     }
 

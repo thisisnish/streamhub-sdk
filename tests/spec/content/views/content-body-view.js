@@ -97,6 +97,13 @@ function($, Content, ContentBodyView) {
                 });
                 body.render();
                 expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla urna est, auctor ac laoreet ut, auctor vitae massa. <a href="http://google.com">Etiam sit…</a><a class="content-body-show-more view-more">View More</a></p>');
+
+                body = new ContentBodyView({
+                    content: {attachments: [], body: '<p>Nintendo set up a fantastic booth for Legend of Zelda: Breath of Wind here at E3 2016. Take a 360 tour of the booth in the video below.</p>'},
+                    showMoreEnabled: true
+                });
+                body.render();
+                expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Nintendo set up a fantastic booth for Legend of Zelda: Breath of Wind here at E3 2016. Take a 360 tour of the booth in the v…<a class="content-body-show-more view-more">View More</a></p>');
             });
         });
     });

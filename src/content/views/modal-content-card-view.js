@@ -94,15 +94,8 @@ ModalContentCardView.prototype.events = CompositeView.prototype.events.extended(
 ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRender) {
     var renderOpts = {render: !!shouldRender};
 
-    if (opts.content.attachments.length) {
-        this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
-        this.add(this._attachmentsView, renderOpts);
-    } else {
-        this._bodyView = opts.bodyView || new ContentBodyView({
-            content: opts.content
-        });
-        this.add(this._bodyView, renderOpts);
-    }
+    this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
+    this.add(this._attachmentsView, renderOpts);
 
     this._productContentView = opts.productContentView || new ProductContentView(opts);
     this.add(this._productContentView, renderOpts);
