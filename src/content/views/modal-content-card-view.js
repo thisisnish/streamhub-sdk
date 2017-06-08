@@ -1,6 +1,7 @@
 var $ = require('streamhub-sdk/jquery');
 var AttachmentCarouselView = require('streamhub-sdk/content/views/attachment-carousel-view');
 var CompositeView = require('view/composite-view');
+var ContentBodyView = require('streamhub-sdk/content/views/spectrum/content-body-view');
 var debug = require('debug');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
 var inherits = require('inherits');
@@ -59,6 +60,7 @@ ModalContentCardView.prototype.contentWithImageClass = 'content-with-image';
 ModalContentCardView.prototype.imageLoadingClass = 'hub-content-image-loading';
 ModalContentCardView.prototype.invalidClass = 'content-invalid';
 ModalContentCardView.prototype.rightsGrantedClass = 'content-rights-granted';
+ModalContentCardView.prototype.textOnlyClass = 'text-only';
 ModalContentCardView.prototype.attachmentsElSelector = '.content-attachments';
 ModalContentCardView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 ModalContentCardView.prototype.modalSelector = '.hub-modal';
@@ -92,15 +94,23 @@ ModalContentCardView.prototype.events = CompositeView.prototype.events.extended(
 ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRender) {
     var renderOpts = {render: !!shouldRender};
 
-    this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
-    this.add(this._attachmentsView, renderOpts);
+    if (opts.content.attachments.length) {
+        this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
+        this.add(this._attachmentsView, renderOpts);
+    } else {
+        this._bodyView = opts.bodyView || new ContentBodyView({
+            content: opts.content
+        });
+        this.add(this._bodyView, renderOpts);
+    }
 
     this._productContentView = opts.productContentView || new ProductContentView(opts);
     this.add(this._productContentView, renderOpts);
 };
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {
-    this.remove(this._attachmentsView);
+    this._attachmentsView && this.remove(this._attachmentsView);
+    this._bodyView && this.remove(this._bodyView);
     this._productContentView && this.remove(this._productContentView);
 };
 
@@ -186,6 +196,7 @@ ModalContentCardView.prototype.destroy = function () {
 ModalContentCardView.prototype.render = function () {
     CompositeView.prototype.render.call(this);
 
+    this.$el.toggleClass(this.textOnlyClass, !this.content.attachments.length);
     this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
     this._resizeModalImage();
     return this;

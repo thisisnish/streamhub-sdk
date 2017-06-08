@@ -86,10 +86,10 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
 };
 
 ProductContentView.prototype._removeInitialChildViews = function () {
-    this.remove(this._headerView);
-    this.remove(this._bodyView);
-    this.remove(this._footerView);
-    this.remove(this._productView);
+    this._headerView && this.remove(this._headerView);
+    this._bodyView && this.remove(this._bodyView);
+    this._footerView && this.remove(this._footerView);
+    this._productView && this.remove(this._productView);
 };
 
 /**

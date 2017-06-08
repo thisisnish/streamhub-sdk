@@ -7,65 +7,85 @@
         right: 0px;
     }
 
-    .content {
-        .attachment-carousel {
-            display: block;
-            float: left;
+    .content-body .content-body-main {
+        font-size: 15px;
+        line-height: 25px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+
+        p {
+            margin-bottom: 0px;
+            margin-top: 0px;
         }
 
-        article.content.spectrum-content {
-            display: block;
-            float: right;
+        .content-body-show-more {
+            color: #b3b3b3;
+            cursor: pointer;
+            display: inline-block;
+            font-family: inherit;
+            font-size: 10px;
+            margin-left: 6px;
+            text-decoration: none;
 
-            .content-footer {
-                padding-top: 12px;
+            &:after {
+                font-family: "fycons-@{fycon-font-version}";
+                font-size: 6px;
+                margin-left: 6px;
+            }
+            &.view-less:after {
+                content: "\e019";
+            }
+            &.view-more:after {
+                content: "\e015";
+            }
+        }
+    }
 
-                .content-footer-left {
-                    .hub-btn.hub-content-share {
-                        margin-left: 0;
+    .hub-modal-content {
+        > .content {
+            > .attachment-carousel {
+                display: block;
+                float: left;
+            }
+
+            > .content-body {
+                display: block;
+                float: left;
+                position: relative;
+
+                .content-body-main {
+                    font-size: 20px;
+                    line-height: 28px;
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            }
+
+            article.content.spectrum-content {
+                display: block;
+                float: right;
+
+                .content-footer {
+                    padding-top: 12px;
+
+                    .content-footer-left {
+                        .hub-btn.hub-content-share {
+                            margin-left: 0;
+                        }
                     }
                 }
             }
 
-            .content-body .content-body-main {
-                font-size: 15px;
-                line-height: 25px;
-                margin-bottom: 0px;
-                margin-top: 0px;
-
-                p {
-                    margin-bottom: 0px;
-                    margin-top: 0px;
-                }
-
-                .content-body-show-more {
-                    color: #b3b3b3;
-                    cursor: pointer;
-                    display: inline-block;
-                    font-family: inherit;
-                    font-size: 10px;
-                    margin-left: 6px;
-                    text-decoration: none;
-
-                    &:after {
-                        font-family: "fycons-@{fycon-font-version}";
-                        font-size: 6px;
-                        margin-left: 6px;
-                    }
-                    &.view-less:after {
-                        content: "\e019";
-                    }
-                    &.view-more:after {
-                        content: "\e015";
-                    }
-                }
+            &:after {
+                clear: both;
+                content: '';
+                display: block;
             }
-        }
 
-        &:after {
-            clear: both;
-            content: '';
-            display: block;
+            &.text-only article.content .content-body {
+                display: none;
+            }
         }
     }
 
@@ -105,15 +125,14 @@
         .hub-modal-content-view {
             padding: 0;
 
-            &> div {
-                // display: inline-block;
+            > .attachment-carousel,
+            > .content-body {
                 width: 55%;
                 min-width: 400px;
                 min-height: 400px;
             }
 
             .content {
-                // display: inline-block;
                 vertical-align: top;
                 width: 45%;
                 margin-bottom: 0;
@@ -132,19 +151,27 @@
             padding: 0px;
             width: 95% !important;
 
-            &> div {
-                // display: inline-block;
+            > .attachment-carousel {
                 vertical-align: middle;
                 width: 100%;
             }
 
             .content {
-                // display: inline-block;
                 vertical-align: top;
                 width: 100%;
 
                 div[class*="content-attachment-"] {
                     box-shadow: none !important;
+                }
+            }
+
+            &.text-only {
+                > .content-body {
+                    display: none !important;
+                }
+
+                article.content > .content-body {
+                    display: block !important;
                 }
             }
         }
