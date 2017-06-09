@@ -136,6 +136,8 @@ ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
 ContentViewFactory.prototype._getViewTypeForContent = function (content) {
     var viewToRender = null;
 
+    // If rights are granted, use the Livefyre view because it has no social
+    // branding or extra social features like footer buttons.
     if (content.hasRightsGranted()) {
         return LivefyreContentView;
     }
@@ -235,6 +237,8 @@ ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
 ContentViewFactory.prototype.getMixinForTypeOfContent = function (content) {
     var viewToRender = null;
 
+    // If rights are granted, use the Livefyre mixin because it has no social
+    // branding or extra social features like footer buttons.
     if (content.hasRightsGranted()) {
         return LivefyreContentViewMixin;
     }

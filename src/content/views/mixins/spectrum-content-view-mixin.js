@@ -49,7 +49,8 @@ module.exports = function (contentView) {
         this._footerView = opts.footerView || new ContentFooterView(opts);
         this.add(this._footerView, renderOpts);
 
-        if (opts.content.hasRightsGranted() && opts.productOptions.show && opts.content.hasProducts()) {
+        var rightsGranted = opts.productOptions.requireRights ? opts.content.hasRightsGranted() : true;
+        if (rightsGranted && opts.productOptions.show && opts.content.hasProducts()) {
             this._productCarouselView = new ProductCarouselView($.extend({cardsInView: 2}, opts));
             this.add(this._productCarouselView, renderOpts);
         }

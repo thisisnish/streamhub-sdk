@@ -128,7 +128,7 @@ describe('ContentViewFactory', function() {
             var content = new LivefyreContent();
             content.rights = {status: 'granted'};
             content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
-            content.urlContentTypeId = 'http://twitter.com/'
+            content.urlContentTypeId = 'http://twitter.com/';
             var contentViewFactory = new ContentViewFactory();
             var view = contentViewFactory._getViewTypeForContent(content);
             expect(view).toEqual(LivefyreContentView);
@@ -166,7 +166,7 @@ describe('ContentViewFactory', function() {
             var content = new LivefyreContent();
             content.rights = {status: 'granted'};
             content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
-            content.urlContentTypeId = 'http://twitter.com/'
+            content.urlContentTypeId = 'http://twitter.com/';
             var contentViewFactory = new ContentViewFactory();
             var mixin = contentViewFactory.getMixinForTypeOfContent(content);
             expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);
@@ -176,7 +176,7 @@ describe('ContentViewFactory', function() {
         it('getMixinForTypeOfContent twitter', function () {
             var content = new LivefyreContent();
             content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
-            content.urlContentTypeId = 'http://twitter.com/'
+            content.urlContentTypeId = 'http://twitter.com/';
             var contentViewFactory = new ContentViewFactory();
             var mixin = contentViewFactory.getMixinForTypeOfContent(content);
             expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);

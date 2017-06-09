@@ -80,7 +80,8 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
     this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, renderOpts);
 
-    if (opts.content.hasRightsGranted() && opts.productOptions.show && opts.content.hasProducts()) {
+    var rightsGranted = opts.productOptions.requireRights ? opts.content.hasRightsGranted() : true;
+    if (rightsGranted && opts.productOptions.show && opts.content.hasProducts()) {
         this._productView = opts.productView || new ProductCarouselView(opts);
         this.add(this._productView, renderOpts);
     }
@@ -88,9 +89,15 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
 
 ProductContentView.prototype._applyMixin = function (opts) {
     var mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
-    if (mixin === asTwitterContentView) {
-        return mixin(this, opts);
+    mixin(this, opts);
+    // If the assigned mixin was either Livefyre or Twitter, no need to continue
+    // since those are the two base mixins.
+    if ([asLivefyreContentView, asTwitterContentView].indexOf(mixin) > -1) {
+        return;
     }
+    // All other social provider mixins should also have the Livefyre mixin
+    // applied because that is what adds additional functionality such as the
+    // footer buttons.
     asLivefyreContentView(this, opts);
 };
 
