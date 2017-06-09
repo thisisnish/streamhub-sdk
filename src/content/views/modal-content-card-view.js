@@ -123,8 +123,7 @@ ModalContentCardView.prototype.setElement = function (el) {
         this.$el.attr('data-content-id', this.content.id);
     }
 
-    var rightsGranted = this.opts.productOptions.requireRights ? this.content.hasRightsGranted() : false;
-    this.$el.toggleClass(this.rightsGrantedClass, rightsGranted);
+    this.$el.toggleClass(this.rightsGrantedClass, this.content.hasRightsGranted());
     return this;
 };
 
