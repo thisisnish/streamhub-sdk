@@ -27,24 +27,21 @@ ProductCalloutView.prototype.getTemplateContext = function () {
 };
 
 ProductCalloutView.prototype.createPopover = function () {
+	
 	if (this.popover) {
-		//this.el.appendChild(this.popover.el);
-		//document.body.appendChild(this.popover.el);
+		document.getElementById('popover-div').appendChild(this.popover.el);
 		this.popover.resizeAndReposition(this.el.children[0]);
-		//option to reset max/min width here
-		console.log("appended");
+		this.popover.positionArrowSmart(this.el.children[0]);
 		return;
 	}
-	//debugger;
+
 	var product_popup = new ProductCarouselView($.extend({cardsInView: 2}, this.opts));
 	product_popup.render();
 
-	//var lfdiv = document.createElement('div');
-	//lfdiv.className = Popover.CLASSES.LF;
-	var width = this.$el.width(); //the width of the mosaic component "callout view"
-	//console.log("mosaic width is " + width);
+	var width = this.$el.width();
 
 	var $el = $(document.createElement('div'));
+	$el.attr("id", "popover-div");
 	$el.attr(this.opts.dataAttr);
 	var $childEl = $(document.createElement('div'));
 	$el.append($childEl);
@@ -55,29 +52,34 @@ ProductCalloutView.prototype.createPopover = function () {
         minWidth: width + 10,
         el: $childEl
     });
-
-	//this.popover.setContentNode(lfdiv);
-	//document.body.appendChild(lfdiv);
 	
     this.popover.$el.addClass('lf-product-popover');
     this.popover._position = Popover.POSITIONS.SMART_TOP;
     this.popover.setContentNode(product_popup.el);
 
-    //this.popover.initialize();
-    //debugger;
-    this.popover.resizeAndReposition(this.el.children[0]); //with respect to the button
-    //option to reset max and min width here
+    this.popover.resizeAndReposition(this.el.children[0]);
+    this.popover.positionArrowSmart(this.el.children[0]); 
 
+    this.popover.$el.on("mouseleave", function() {
+		$(this).detach();
+	});
 };
+
 
 ProductCalloutView.prototype.events = View.prototype.events.extended({
     'mouseover .product-shop-button': function(e) {
        this.createPopover();
     },
-    'mouseleave .product-callout-view': function(e){
-    	this.popover.detach();
-    	console.log("detach")
-    }
+
+    'mouseleave': function(e) {
+    	hidePopover = (function () {
+    		this.detach();
+		}).bind(this.popover.$el);
+
+		var tOut = setTimeout(function() {hidePopover()}.bind(this.popover.$el), 100);
+		
+		$(this.popover.$el).hover(function() { clearTimeout(tOut); });
+    } 
 });
 
 module.exports = ProductCalloutView;

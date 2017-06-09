@@ -149,13 +149,11 @@
 
 
 .lf-product-popover {
-    //.lf-popover();
 
   background-color: #ffffff;
   top: auto;
   position: absolute;
   z-index: 10000;
- // width: 25%; //fix this
 
   .lf-popover-content{
     padding: 0;
@@ -165,7 +163,6 @@
     .lf-popover-arrow {
       &:extend(.lf-popover .lf-arrow);
       border-width: 6px;
-      color: #000000;
   }
 
 
@@ -191,9 +188,9 @@
   .product-carousel-header {
     display: none;
     color: #ffffff;
-    font-size: 0px; //12
-    line-height: 0px; //14
-    margin: 0px; //20
+    font-size: 0px;
+    line-height: 0px;
+    margin: 0px;
   }
 
   .product-carousel-body, {
@@ -221,7 +218,7 @@
     }
 
     > div {
-      background-color: #efefef; //off white
+      background-color: #efefef;
       color: white;
       cursor: pointer;
       font-family: "fycons-@{fycon-font-version}";
@@ -241,7 +238,6 @@
 
   .product-carousel-left {
     left: 0;
-    //SET height
 
     .product-arrow {
       .fycon-arrow-left;
@@ -280,7 +276,7 @@
     }
 
     .product-name {
-      color: #364855; //ok
+      color: #364855;
       font: bold 12px/14px @default_font_family;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -289,7 +285,6 @@
 
     .product-price {
       color: #364855;
-      //color: #364855; //999
       font: normal 12px/14px @default_font_family;
       margin-top: 5px;
     }
@@ -299,37 +294,37 @@
       display: none;
       margin-top: 0px;
 
-/*      &:link, &:visited, &:hover {
-        text-decoration: none;
-      }*/
     }
   }
 }
 
 }
 
-//if the popover is on the right
 .lf-product-popover.lf-pos-right .lf-popover-arrow {
-    &:extend(.lf-popover.left .lf-arrow);
+    &:extend(.lf-popover.right .lf-arrow);
     position: absolute;
-    border-bottom-color: red; //the color of the arrow
-    margin-left: -6px;
+    border-right-color: white;
+    margin-top: 0px;
+    left: -5px;
     top: -6px;
     border-style: solid;
-
     }
 
-
-//if the popover is on the top
-.lf-product-popover.lf-pos-smart_top .lf-popover-arrow {
-    &:extend(.lf-popover.left .lf-arrow);
+.lf-product-popover.lf-pos-top .lf-popover-arrow {
+    &:extend(.lf-popover.top .lf-arrow);
     position: absolute;
-    border-bottom-color: white; //the color of the arrow
+    border-top-color: white;
+    margin-left: -6px;
+    bottom: -6px;
+  }
+
+.lf-product-popover.lf-pos-smart_top .lf-popover-arrow {
+    &:extend(.lf-popover.bottom .lf-arrow);
+    position: absolute;
+    border-bottom-color: white;
     margin-left: -6px;
     top: -6px;
   }
-
-
 
 .product-callout {
   cursor: pointer;
