@@ -43,11 +43,11 @@
   .product-carousel-container {
     position: relative;
 
-    .product-carousel-body, {
+    .product-carousel-body {
       display: block;
       margin: 0 auto;
       overflow: hidden;
-      width: calc(~"100% - 50px");
+      width: calc(~"100% - 40px");
     }
 
     .product-carousel-left,
@@ -157,11 +157,13 @@
 .lf-product-popover {
   .border-radius(3px);
   background-color: #ffffff;
+  padding: 0;
   position: absolute;
   top: auto;
   z-index: 49;
 
   .lf-popover-content {
+    .border-radius(3px);
     padding: 0;
     background-color: white;
   }
@@ -172,6 +174,7 @@
   }
 
   .product-carousel {
+    .border-radius(3px);
     color: rgba(0, 0, 0, 0);
     padding-bottom: 0;
     position: relative;
@@ -201,7 +204,7 @@
       display: block;
       margin-left: 20px;
       overflow: hidden;
-      width: calc(~"100% - 50px");
+      width: calc(~"100% - 40px");
       padding: 10px 0;
     }
 

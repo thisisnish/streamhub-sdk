@@ -66,10 +66,16 @@ ProductCalloutView.prototype.createPopover = function () {
 
 ProductCalloutView.prototype.events = View.prototype.events.extended({
     'mouseover .product-shop-button': function(e) {
-       this.createPopover();
+        if (!this.opts.popoverEnabled) {
+            return;
+        }
+        this.createPopover();
     },
 
     'mouseleave': function(e) {
+        if (!this.popover) {
+            return;
+        }
         hidePopover = (function () {
             this.detach();
         }).bind(this.popover.$el);
