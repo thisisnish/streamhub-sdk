@@ -1,5 +1,6 @@
 var $ = require('streamhub-sdk/jquery');
 var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
+var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
 var CompositeView = require('view/composite-view');
 var ContentBodyView = require('streamhub-sdk/content/views/spectrum/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/spectrum/content-footer-view');
@@ -10,7 +11,7 @@ var debug = require('debug');
 var get = require('mout/object/get');
 var inherits = require('inherits');
 var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
-var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
+var util = require('streamhub-sdk/util');
 
 'use strict';
 
@@ -177,7 +178,7 @@ ProductContentView.prototype.render = function () {
 
     CompositeView.prototype.render.call(this);
 
-    setTimeout($.proxy(function () {
+    util.raf($.proxy(function () {
         if (!this._productView) {
             return;
         }
@@ -185,7 +186,7 @@ ProductContentView.prototype.render = function () {
         if (productHeight) {
             this.$el.css('paddingBottom', productHeight + 'px');
         }
-    }, this), 0);
+    }, this));
 
     return this;
 };
