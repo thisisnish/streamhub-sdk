@@ -39,62 +39,67 @@
     margin: 20px;
   }
 
-  .product-carousel-body, {
-    display: block;
-    margin-left: 20px;
-    overflow: hidden;
-    width: calc(~"100% - 50px");
-  }
 
-  .product-carousel-left,
-  .product-carousel-right {
-    display: block;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    width: 20px;
+  .product-carousel-container {
+    position: relative;
 
-    &.product-carousel-nav-hide {
-      .opacity(.1);
+    .product-carousel-body, {
+      display: block;
+      margin: 0 auto;
+      overflow: hidden;
+      width: calc(~"100% - 50px");
+    }
+
+    .product-carousel-left,
+    .product-carousel-right {
+      display: block;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      width: 20px;
+
+      &.product-carousel-nav-hide {
+        .opacity(.1);
+
+        .product-arrow {
+          cursor: default;
+        }
+      }
+
+      > div {
+        background-color: #efefef;
+        color: white;
+        cursor: pointer;
+        font-family: "fycons-@{fycon-font-version}";
+        height: 50px;
+        margin-top: -25px;
+        position: absolute;
+        top: 50%;
+        width: 18px;
+
+        &:before {
+          display: block;
+          text-align: center;
+          .vertical-center();
+        }
+      }
+    }
+
+    .product-carousel-left {
+      left: 0;
 
       .product-arrow {
-        cursor: default;
+        .fycon-arrow-left;
       }
     }
 
-    > div {
-      background-color: #efefef;
-      color: white;
-      cursor: pointer;
-      font-family: "fycons-@{fycon-font-version}";
-      height: 50px;
-      margin-top: -25px;
-      position: absolute;
-      top: 50%;
-      width: 18px;
-
-      &:before {
-        display: block;
-        text-align: center;
-        .vertical-center();
-      }
-    }
-  }
-
-  .product-carousel-left {
-    left: 0;
-
-    .product-arrow {
-      .fycon-arrow-left;
-    }
-  }
-
-  .product-carousel-right {
-    right: 0;
-
-    .product-arrow {
+    .product-carousel-right {
       right: 0;
-      .fycon-arrow-right;
+
+      .product-arrow {
+        right: 0;
+        .fycon-arrow-right;
+      }
     }
   }
 
@@ -105,6 +110,10 @@
     position: relative;
     text-align: center;
 
+    a:link, a:visited, a:hover {
+      text-decoration: none;
+    }
+
     .product-media {
       height: 80px;
       margin-bottom: 8px;
@@ -113,6 +122,7 @@
 
     .product-name {
       color: #364855;
+      display: block;
       font: bold 12px/14px @default_font_family;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -121,6 +131,7 @@
 
     .product-price {
       color: #999;
+      display: block;
       font: normal 12px/14px @default_font_family;
       margin-top: 5px;
     }
@@ -139,10 +150,6 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       width: auto;
-
-      &:link, &:visited, &:hover {
-        text-decoration: none;
-      }
     }
   }
 }

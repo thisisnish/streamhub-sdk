@@ -28,7 +28,7 @@ module.exports = function (contentView) {
      * @override
      */
     contentView._addInitialChildViews = function (opts, shouldRender) {
-        var renderOpts = {render: shouldRender || false};
+        var renderOpts = {render: !!shouldRender};
 
         this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
         this._blockAttachmentsView = new BlockAttachmentListView(opts);
@@ -49,7 +49,8 @@ module.exports = function (contentView) {
         this._footerView = opts.footerView || new ContentFooterView(opts);
         this.add(this._footerView, renderOpts);
 
-        if (opts.content.hasRightsGranted() && opts.productOptions.show && opts.content.hasProducts()) {
+        var rightsGranted = opts.productOptions.requireRights ? opts.content.hasRightsGranted() : true;
+        if (rightsGranted && opts.productOptions.show && opts.content.hasProducts()) {
             this._productCarouselView = new ProductCarouselView($.extend({cardsInView: 2}, opts));
             this.add(this._productCarouselView, renderOpts);
         }

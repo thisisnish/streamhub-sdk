@@ -24,7 +24,8 @@
     "streamhub-share": "git://github.com/Livefyre/streamhub-share.git#0.4.2",
     "streamhub-ui": "git://github.com/Livefyre/streamhub-ui.git#0.4.4",
     "urnlib.js": "git://github.com/Livefyre/urnlib.js.git#0.0.4",
-    "mout": "0.11.1"
+    "mout": "0.11.1",
+    "js-truncate-html": "git://github.com/Livefyre/js-truncate-html.git#1.0.1"
   },
   "devDependencies": {
     "jasmine": "1.3.1",

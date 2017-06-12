@@ -51,7 +51,7 @@ AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
     var index = $('.' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.contentAttachmentSelector).index(e.currentTarget);
     this._singleAttachmentView.retile(index);
     this._insertVideo(this._singleAttachmentView.oembedViews[index]);
-}
+};
 
 AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
     if (!oembedView) {
@@ -60,7 +60,7 @@ AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
     var focusedEl = oembedView.$el;
     if (oembedView.oembed.type === 'video') {
         var photoContentEl = focusedEl.find('.content-attachment-photo');
-        photoContentEl.hide();
+        setTimeout(function() { photoContentEl.hide(); }, 0);
         var videoContentEl = focusedEl.find('.content-attachment-video');
         videoContentEl.html(this._getAttachmentVideoHtml(oembedView.oembed));
         var videoIframe = videoContentEl.find('iframe');
@@ -70,12 +70,12 @@ AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
         var videoEl = videoContentEl.find('video');
         if (videoEl.length > 0) {
             videoEl.attr('poster', oembedView.oembed.thumbnail_url);
-            videoEl.css({'width': '100%'});
+            videoEl.css({'width': '100%', 'height': '100%'});
         }
 
         videoContentEl.show();
     }
-}
+};
 
 AttachmentCarouselView.prototype._getAttachmentVideoHtml = function (attachment) {
     var AUTOPLAY_PROVIDER_REGEX = /youtube|livefyre|facebook/;
@@ -131,21 +131,21 @@ AttachmentCarouselView.prototype._onCarouselNavigate = function (e, left) {
             this.$el.find(this.leftSelector).addClass(this.hideClass);
         }
     }
-}
+};
 
 /**
  * @param {Object} opts
  * @param {boolean=} shouldRender
  */
 AttachmentCarouselView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    shouldRender = shouldRender || false;
+    var renderOpts = {render: !!shouldRender};
 
     this._singleAttachmentView = opts.singleAttachmentView || new SingleAttachmentView(opts);
-    this.add(this._singleAttachmentView, { render: shouldRender });
+    this.add(this._singleAttachmentView, renderOpts);
 
     if (this._singleAttachmentView.tileableCount() > 1) {
         this._attachmentsListView = opts.attachmentsListView || new CarouselAttachmentListView(opts);
-        this.add(this._attachmentsListView, { render: shouldRender });
+        this.add(this._attachmentsListView, renderOpts);
     }
 };
 

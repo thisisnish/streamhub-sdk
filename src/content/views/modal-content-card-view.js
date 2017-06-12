@@ -1,6 +1,7 @@
 var $ = require('streamhub-sdk/jquery');
 var AttachmentCarouselView = require('streamhub-sdk/content/views/attachment-carousel-view');
 var CompositeView = require('view/composite-view');
+var ContentBodyView = require('streamhub-sdk/content/views/spectrum/content-body-view');
 var debug = require('debug');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
 var inherits = require('inherits');
@@ -59,6 +60,7 @@ ModalContentCardView.prototype.contentWithImageClass = 'content-with-image';
 ModalContentCardView.prototype.imageLoadingClass = 'hub-content-image-loading';
 ModalContentCardView.prototype.invalidClass = 'content-invalid';
 ModalContentCardView.prototype.rightsGrantedClass = 'content-rights-granted';
+ModalContentCardView.prototype.textOnlyClass = 'text-only';
 ModalContentCardView.prototype.attachmentsElSelector = '.content-attachments';
 ModalContentCardView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 ModalContentCardView.prototype.modalSelector = '.hub-modal';
@@ -90,17 +92,18 @@ ModalContentCardView.prototype.events = CompositeView.prototype.events.extended(
  * @param {boolean=} shouldRender
  */
 ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    shouldRender = shouldRender || false;
+    var renderOpts = {render: !!shouldRender};
 
     this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
-    this.add(this._attachmentsView, { render: shouldRender });
+    this.add(this._attachmentsView, renderOpts);
 
     this._productContentView = opts.productContentView || new ProductContentView(opts);
-    this.add(this._productContentView, { render: shouldRender });
+    this.add(this._productContentView, renderOpts);
 };
 
 ModalContentCardView.prototype._removeInitialChildViews = function () {
-    this.remove(this._attachmentsView);
+    this._attachmentsView && this.remove(this._attachmentsView);
+    this._bodyView && this.remove(this._bodyView);
     this._productContentView && this.remove(this._productContentView);
 };
 
@@ -120,8 +123,7 @@ ModalContentCardView.prototype.setElement = function (el) {
         this.$el.attr('data-content-id', this.content.id);
     }
 
-    var rightsGranted = this.content.hasRightsGranted && this.content.hasRightsGranted();
-    this.$el.toggleClass(this.rightsGrantedClass, rightsGranted);
+    this.$el.toggleClass(this.rightsGrantedClass, this.content.hasRightsGranted());
     return this;
 };
 
@@ -157,6 +159,11 @@ ModalContentCardView.prototype._handleAttachmentsChange = function () {
 };
 
 ModalContentCardView.prototype._resizeModalImage = function () {
+    // Unsure if this is still needed. It causes a bug when there are multiple
+    // attachments because it sets the padding on the first image. When a
+    // thumbnail is clicked, the first image stays visible while the thumbnail
+    // is expanded, so both images are displayed.
+    return;
     var modal = this.$el.closest(this.modalSelector);
     var attachment = modal.find('.hub-modal-content .attachment-carousel .content-attachment.content-attachment-square-tile');
     var winHeight = $(window).height();
@@ -181,6 +188,7 @@ ModalContentCardView.prototype.destroy = function () {
 ModalContentCardView.prototype.render = function () {
     CompositeView.prototype.render.call(this);
 
+    this.$el.toggleClass(this.textOnlyClass, !this.content.attachments.length);
     this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
     this._resizeModalImage();
     return this;

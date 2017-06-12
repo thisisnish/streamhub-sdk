@@ -40,7 +40,6 @@ function($, Content, Annotator, LivefyreOpine, inherits) {
             this.updatedAt = new Date(1000 * json.content.updatedAt);
             this.lastVisibility = Content.enums.visibility[json.lastVis];
             this.visibility = Content.enums.visibility[json.vis];
-            this.links = json.content.links || {};
             this.set({ parentId: json.content.parentId });
             this.meta = json;
             this._annotator.annotate(this, {

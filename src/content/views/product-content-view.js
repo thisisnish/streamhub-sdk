@@ -1,4 +1,6 @@
 var $ = require('streamhub-sdk/jquery');
+var asLivefyreContentView = require('streamhub-sdk/content/views/mixins/livefyre-content-view-mixin');
+var asTwitterContentView = require('streamhub-sdk/content/views/mixins/twitter-content-view-mixin');
 var CompositeView = require('view/composite-view');
 var ContentBodyView = require('streamhub-sdk/content/views/spectrum/content-body-view');
 var ContentFooterView = require('streamhub-sdk/content/views/spectrum/content-footer-view');
@@ -9,6 +11,7 @@ var debug = require('debug');
 var get = require('mout/object/get');
 var inherits = require('inherits');
 var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
+var util = require('streamhub-sdk/util');
 
 'use strict';
 
@@ -37,12 +40,11 @@ var ProductContentView = function (opts) {
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
     this._headerViewFactory = opts.headerViewFactory || new ContentHeaderViewFactory();
     this._contentViewFactory = new ContentViewFactory();
-    this._mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
 
     CompositeView.call(this, opts);
 
     this._addInitialChildViews(opts);
-    this._mixin(this, opts);
+    this._applyMixin(opts);
 
     if (this.content) {
         this.content.on("change:body", function(newVal, oldVal){
@@ -64,29 +66,47 @@ ProductContentView.prototype.attachmentFrameElSelector = '.content-attachment-fr
  * @param {boolean=} shouldRender
  */
 ProductContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    var renderOpts = {render: shouldRender || false};
+    var renderOpts = {render: !!shouldRender};
 
     this._headerView = opts.headerView || new ContentHeaderView(
         this._headerViewFactory.getHeaderViewOptsForContent(opts.content));
     this.add(this._headerView, renderOpts);
 
-    this._bodyView = opts.bodyView || new ContentBodyView({content: opts.content});
+    this._bodyView = opts.bodyView || new ContentBodyView({
+        content: opts.content,
+        showMoreEnabled: true
+    });
     this.add(this._bodyView, renderOpts);
 
-    this._footerView = opts.footerView || new ContentFooterView({content: opts.content});
+    this._footerView = opts.footerView || new ContentFooterView(opts);
     this.add(this._footerView, renderOpts);
 
-    if (opts.content.hasRightsGranted() && opts.productOptions.show && opts.content.hasProducts()) {
+    var rightsGranted = opts.productOptions.requireRights ? opts.content.hasRightsGranted() : true;
+    if (rightsGranted && opts.productOptions.show && opts.content.hasProducts()) {
         this._productView = opts.productView || new ProductCarouselView(opts);
         this.add(this._productView, renderOpts);
     }
 };
 
+ProductContentView.prototype._applyMixin = function (opts) {
+    var mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
+    mixin(this, opts);
+    // If the assigned mixin was either Livefyre or Twitter, no need to continue
+    // since those are the two base mixins.
+    if ([asLivefyreContentView, asTwitterContentView].indexOf(mixin) > -1) {
+        return;
+    }
+    // All other social provider mixins should also have the Livefyre mixin
+    // applied because that is what adds additional functionality such as the
+    // footer buttons.
+    asLivefyreContentView(this, opts);
+};
+
 ProductContentView.prototype._removeInitialChildViews = function () {
-    this.remove(this._headerView);
-    this.remove(this._bodyView);
-    this.remove(this._footerView);
-    this.remove(this._productView);
+    this._headerView && this.remove(this._headerView);
+    this._bodyView && this.remove(this._bodyView);
+    this._footerView && this.remove(this._footerView);
+    this._productView && this.remove(this._productView);
 };
 
 /**
@@ -157,6 +177,17 @@ ProductContentView.prototype.render = function () {
     }
 
     CompositeView.prototype.render.call(this);
+
+    util.raf($.proxy(function () {
+        if (!this._productView) {
+            return;
+        }
+        var productHeight = this._productView.$el.height() + 20;
+        if (productHeight) {
+            this.$el.css('paddingBottom', productHeight + 'px');
+        }
+    }, this));
+
     return this;
 };
 
