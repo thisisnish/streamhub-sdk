@@ -94,10 +94,10 @@ module.exports = function (view, opts) {
             return this;
         }
 
-        this.$el.find('.content-body-main p:last-child').append(template({
+        this.$el.find('.content-body-main p:last-child').append($.trim(template({
             cls: truncated ? 'view-more' : 'view-less',
             text: truncated ? i18n.get('viewMore', 'View More') : i18n.get('viewLess', 'View Less')
-        }));
+        })));
         return this;
     };
 };
