@@ -66,10 +66,11 @@ ProductCalloutView.prototype.createPopover = function () {
 
 ProductCalloutView.prototype.events = View.prototype.events.extended({
     'mouseover .product-shop-button': function(e) {
-        if (!this.opts.popoverEnabled) {
+         if (!this.opts.popoverEnabled) {
             return;
         }
         this.createPopover();
+
     },
 
     'mouseleave': function(e) {
@@ -78,11 +79,12 @@ ProductCalloutView.prototype.events = View.prototype.events.extended({
         }
         hidePopover = (function () {
             this.detach();
+
         }).bind(this.popover.$el);
 
-        var tOut = setTimeout(function() {hidePopover()}.bind(this.popover.$el), 100);
+        var tOut = setTimeout(function() {hidePopover()}, 100);
         
-        $(this.popover.$el).hover(function() { clearTimeout(tOut); });
+        $(this.popover.$el).mouseover(function() { clearTimeout(tOut); });
     } 
 });
 
