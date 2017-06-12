@@ -3,6 +3,7 @@ define([
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
+    'streamhub-sdk/collection/fake',
     'streamhub-sdk/collection/featured-contents',
     'stream/duplex',
     'streamhub-sdk/collection/clients/bootstrap-client',
@@ -14,9 +15,10 @@ define([
     'inherits',
     'streamhub-sdk/debug',
     'mout/object/merge'],
-function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
-        Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyrePermalinkClient,
-        LivefyreWriteClient, fetchContent, Auth, inherits, debug, merge) {
+function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FakeCollection,
+        FeaturedContents, Duplex, LivefyreBootstrapClient, LivefyreCreateClient,
+        LivefyrePermalinkClient, LivefyreWriteClient, fetchContent, Auth, inherits,
+        debug, merge) {
     'use strict';
 
 
@@ -47,6 +49,8 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         this._bootstrapClient = opts.bootstrapClient || new LivefyreBootstrapClient();
         this._createClient = opts.createClient || new LivefyreCreateClient();
         this._permalinkClient = opts.permalinkClient || new LivefyrePermalinkClient();
+
+        this.internalCollection = new FakeCollection();
 
         // Internal streams
         this._writer = opts.writer || null;
@@ -170,6 +174,22 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
             archive.pipe(writable.more, archivePipeOpts);
             this._pipedArchives.push(archive);
         }
+
+        var self = this;
+
+        var old = writable.write;
+        writable.write = function (chunk) {
+            console.log('hijacked!', arguments);
+            self.internalCollection.add(chunk);
+            old.apply(writable, arguments);
+        };
+
+        var oldMore = writable.more.write;
+        writable.more.write = function (chunk) {
+            console.log('more hijacked!', arguments);
+            self.internalCollection.add(chunk);
+            oldMore.apply(writable.more, arguments);
+        };
 
         return Duplex.prototype.pipe.apply(this, arguments);
     };

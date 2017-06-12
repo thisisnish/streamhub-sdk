@@ -1,7 +1,9 @@
 @import (reference) "./mixins/content-default.less";
 
 .hub-modal.modal-content-card {
-    .content-default();
+    .content-container {
+        .content-default();
+    }
 
     .hub-modal-close {
         right: 0px;
@@ -42,7 +44,7 @@
     }
 
     .hub-modal-content {
-        > .content {
+        .content-container > .content {
             > .attachment-carousel {
                 display: block;
                 float: left;
@@ -115,22 +117,25 @@
     @media (min-width: 775px) {
         //For desktop
 
-        .hub-modal-content-view {
+        .hub-modal-content-view > .content-container {
             padding: 0;
 
-            > .attachment-carousel {
-                width: 55%;
-                min-width: 400px;
-                min-height: 400px;
-            }
-
             .content {
-                vertical-align: top;
-                width: 45%;
-                margin-bottom: 0;
-                padding-bottom: 20px;
-                div[class*="content-attachment-"] {
-                    box-shadow: none !important;
+                > .attachment-carousel {
+                    width: 55%;
+                    min-width: 400px;
+                    min-height: 400px;
+                }
+
+                .content {
+                    vertical-align: top;
+                    width: 45%;
+                    margin-bottom: 0;
+                    padding-bottom: 20px;
+
+                    div[class*="content-attachment-"] {
+                        box-shadow: none !important;
+                    }
                 }
             }
         }
@@ -138,7 +143,7 @@
 
     @media not screen and (min-width: 775px) {
         //For desktop
-        div.hub-modal-content-view {
+        .hub-modal-content-view > .content-container {
             max-width: 500px;
             padding: 0px;
             width: 95% !important;
@@ -163,7 +168,7 @@
     }
 
     @media (max-height: 600px) {
-        .hub-modal-content > .hub-modal-content-view.content {
+        .hub-modal-content > .hub-modal-content-view {
             margin-top: 0px;
             margin-bottom: 0px;
 
