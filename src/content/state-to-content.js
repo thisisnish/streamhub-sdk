@@ -98,9 +98,6 @@ define([
             return;
         }
 
-        // TODO: Remove
-        state.content.annotations.rights = {status: 'granted'};
-        // TODO: Remove
         content = this._createContent(state, authors);
         collectionId = getCollectionIdFromContent(content);
 
