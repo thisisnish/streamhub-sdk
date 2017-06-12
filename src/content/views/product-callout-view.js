@@ -15,6 +15,8 @@ inherits(ProductCalloutView, View);
 
 ProductCalloutView.prototype.template = template;
 ProductCalloutView.prototype.elClass = 'product-callout';
+ProductCalloutView.prototype.popoverDivClass = 'popover-div';
+ProductCalloutView.prototype.productPopoverClass = 'lf-product-popover';
 
 ProductCalloutView.prototype.getTemplateContext = function () {
     var productIndicationText = i18n.get('productIndicationText', 'Shop').trim();
@@ -25,9 +27,12 @@ ProductCalloutView.prototype.getTemplateContext = function () {
     };
 };
 
+/**
+ * On mouseover of product shop button, creates a product popover that displays a product carousel view.
+ */
 ProductCalloutView.prototype.createPopover = function () {
     if (this.popover) {
-        document.getElementById('popover-div').appendChild(this.popover.el);
+        document.getElementById(this.popoverDivClass).appendChild(this.popover.el);
         this.popover.resizeAndReposition(this.el.children[0]);
         this.popover.positionArrowSmart(this.el.children[0]);
         return;
@@ -39,7 +44,7 @@ ProductCalloutView.prototype.createPopover = function () {
     var width = this.$el.width();
 
     var $el = $(document.createElement('div'));
-    $el.attr("id", "popover-div");
+    $el.attr('id', this.popoverDivClass);
     $el.attr(this.opts.dataAttr);
     var $childEl = $(document.createElement('div'));
     $el.append($childEl);
@@ -51,14 +56,14 @@ ProductCalloutView.prototype.createPopover = function () {
         el: $childEl
     });
     
-    this.popover.$el.addClass('lf-product-popover');
+    this.popover.$el.addClass(this.productPopoverClass);
     this.popover._position = Popover.POSITIONS.SMART_TOP;
     this.popover.setContentNode(product_popup.el);
 
     this.popover.resizeAndReposition(this.el.children[0]);
     this.popover.positionArrowSmart(this.el.children[0]); 
 
-    this.popover.$el.on("mouseleave", function() {
+    this.popover.$el.on('mouseleave', function() {
         $(this).detach();
     });
 };
