@@ -175,20 +175,28 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FakeCollect
             this._pipedArchives.push(archive);
         }
 
-        var self = this;
+        var internalCollection = this.internalCollection;
 
+        // Hijacking the writable stream for the collection in order to hijack
+        // content that streams into the collection. Adds it to an internal
+        // collection of content so it can be accessed within the content
+        // carousel modal.
         var old = writable.write;
         writable.write = function (chunk) {
             console.log('hijacked!', arguments);
-            self.internalCollection.add(chunk);
+            internalCollection.add(chunk);
             old.apply(writable, arguments);
         };
 
+        // Hijacking the archive stream for the collection in order to hijack
+        // content that comes into the collection via "show more". Adds it to
+        // an internal collection of content so it can be accessed within the
+        // content carousel modal.
         var oldMore = writable.more.write;
         writable.more.write = function (chunk) {
             console.log('more hijacked!', arguments);
-            self.internalCollection.add(chunk);
-            oldMore.apply(writable.more, arguments);
+            internalCollection.add(chunk);
+            return oldMore.apply(writable.more, arguments);
         };
 
         return Duplex.prototype.pipe.apply(this, arguments);
