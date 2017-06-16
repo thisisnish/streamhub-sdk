@@ -1,7 +1,7 @@
 var CarouselContentView = require('streamhub-sdk/content/views/carousel-content-view');
-var FakeCollection = require('streamhub-sdk/collection/fake');
 var fixtures = require('json!streamhub-sdk-tests/fixtures/featured-all.json').content;
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
+var SortedCollection = require('streamhub-sdk/collection/sorted');
 
 describe('CarouselContentView', function () {
     it('initializes', function () {
@@ -20,15 +20,15 @@ describe('CarouselContentView', function () {
     });
 
     describe('is navigatable -- ', function () {
-        var fakeCollection;
+        var sortedCollection;
         var view;
 
         beforeEach(function () {
-            fakeCollection = new FakeCollection();
-            fakeCollection.add(new LivefyreContent(fixtures[0]));
+            sortedCollection = new SortedCollection();
+            sortedCollection.add(new LivefyreContent(fixtures[0]));
 
             view = new CarouselContentView({
-                collection: fakeCollection,
+                collection: sortedCollection,
                 content: new LivefyreContent(fixtures[0]),
                 productOptions: {}
             });
@@ -38,7 +38,7 @@ describe('CarouselContentView', function () {
         it('updates when new content is received', function () {
             spyOn(view, 'updateContentIndex').andCallThrough();
             spyOn(view, 'maybeToggleArrows').andCallThrough();
-            fakeCollection.add(new LivefyreContent(fixtures[1]));
+            sortedCollection.add(new LivefyreContent(fixtures[1]));
             expect(view.updateContentIndex.callCount).toBe(1);
             expect(view.maybeToggleArrows.callCount).toBe(1);
         });
@@ -46,7 +46,7 @@ describe('CarouselContentView', function () {
         it('has arrows that update the current visible content', function () {
             expect(view.content.id).toEqual(fixtures[0].content.id);
             expect(view.contentIdx).toBe(0);
-            fakeCollection.add(new LivefyreContent(fixtures[1]));
+            sortedCollection.add(new LivefyreContent(fixtures[1]));
             expect(view.contentIdx).toBe(1);
             view.$el.find(view.arrowLeftSelector).click();
             expect(view.content.id).toEqual(fixtures[1].content.id);
@@ -55,7 +55,7 @@ describe('CarouselContentView', function () {
 
         it('toggles the arrows to show that no content remains in that direction', function () {
             expect(view.$el.find(view.arrowLeftSelector).hasClass(view.arrowDisabledClass)).toBe(true);
-            fakeCollection.add(new LivefyreContent(fixtures[1]));
+            sortedCollection.add(new LivefyreContent(fixtures[1]));
             expect(view.$el.find(view.arrowLeftSelector).hasClass(view.arrowDisabledClass)).toBe(false);
         });
 
@@ -63,13 +63,13 @@ describe('CarouselContentView', function () {
             var listView = {'$el': {trigger: function () {}}};
             spyOn(listView.$el, 'trigger');
             view = new CarouselContentView({
-                collection: fakeCollection,
+                collection: sortedCollection,
                 content: new LivefyreContent(fixtures[0]),
                 listView: listView,
                 productOptions: {}
             });
             view.render();
-            fakeCollection.add(new LivefyreContent(fixtures[1]));
+            sortedCollection.add(new LivefyreContent(fixtures[1]));
             view.$el.find(view.arrowLeftSelector).click();
             expect(listView.$el.trigger.callCount).toBe(0);
             view.$el.find(view.arrowRightSelector).click();

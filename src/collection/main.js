@@ -3,7 +3,7 @@ define([
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
-    'streamhub-sdk/collection/fake',
+    'streamhub-sdk/collection/sorted',
     'streamhub-sdk/collection/featured-contents',
     'stream/duplex',
     'streamhub-sdk/collection/clients/bootstrap-client',
@@ -15,7 +15,7 @@ define([
     'inherits',
     'streamhub-sdk/debug',
     'mout/object/merge'],
-function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FakeCollection,
+function ($, CollectionArchive, CollectionUpdater, CollectionWriter, SortedCollection,
         FeaturedContents, Duplex, LivefyreBootstrapClient, LivefyreCreateClient,
         LivefyrePermalinkClient, LivefyreWriteClient, fetchContent, Auth, inherits,
         debug, merge) {
@@ -50,7 +50,7 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FakeCollect
         this._createClient = opts.createClient || new LivefyreCreateClient();
         this._permalinkClient = opts.permalinkClient || new LivefyrePermalinkClient();
 
-        this.internalCollection = new FakeCollection();
+        this.internalCollection = new SortedCollection();
 
         // Internal streams
         this._writer = opts.writer || null;

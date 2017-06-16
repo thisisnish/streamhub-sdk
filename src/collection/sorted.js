@@ -3,7 +3,7 @@ var EventEmitter = require('event-emitter');
 var inherits = require('inherits');
 var find = require('mout/array/find');
 
-function FakeCollection() {
+function SortedCollection() {
     EventEmitter.apply(this, arguments);
 
     /**
@@ -12,13 +12,13 @@ function FakeCollection() {
      */
     this.contents = [];    
 }
-inherits(FakeCollection, EventEmitter);
+inherits(SortedCollection, EventEmitter);
 
 /**
  * Add the content to the list by createdAt order.
  * @param {Content} content Content to add.
  */
-FakeCollection.prototype.add = function (content) {
+SortedCollection.prototype.add = function (content) {
     if (find(this.contents, {id: content.id})) {
         return;
     }
@@ -30,4 +30,4 @@ FakeCollection.prototype.add = function (content) {
     this.emit('added', content);
 };
 
-module.exports = FakeCollection;
+module.exports = SortedCollection;

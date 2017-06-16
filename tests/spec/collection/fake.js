@@ -1,12 +1,12 @@
-var FakeCollection = require('streamhub-sdk/collection/fake');
+var SortedCollection = require('streamhub-sdk/collection/sorted');
 var fixtures = require('json!streamhub-sdk-tests/fixtures/featured-all.json').content;
 var LivefyreContent = require('streamhub-sdk/content/types/livefyre-content');
 
-describe('FakeCollection', function () {
+describe('SortedCollection', function () {
     var collection;
 
     beforeEach(function () {
-        collection = new FakeCollection();
+        collection = new SortedCollection();
     });
 
     it('emits events when content is added', function (done) {

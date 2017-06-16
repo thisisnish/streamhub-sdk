@@ -17,7 +17,7 @@ function CarouselContentView(opts) {
 
     /**
      * Collection to use when navigating.
-     * @type {FakeCollection=}
+     * @type {SortedCollection=}
      */
     this.collection = this.opts.collection;
 
