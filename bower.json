@@ -22,7 +22,7 @@
     "livefyre-bootstrap": "git://github.com/Livefyre/livefyre-bootstrap.git#v1.4.19",
     "streamhub-input": "Livefyre/streamhub-input#0.10.2",
     "streamhub-share": "git://github.com/Livefyre/streamhub-share.git#0.4.2",
-    "streamhub-ui": "git://github.com/Livefyre/streamhub-ui.git#0.4.4",
+    "streamhub-ui": "git://github.com/Livefyre/streamhub-ui.git#0.4.5",
     "urnlib.js": "git://github.com/Livefyre/urnlib.js.git#0.0.4",
     "mout": "0.11.1",
     "js-truncate-html": "git://github.com/Livefyre/js-truncate-html.git#1.0.1"
@@ -43,6 +43,6 @@
     "cajon": "0.1.12",
     "streamhub-share": "0.4.2",
     "streamhub-sdk": "2.26.4",
-    "streamhub-ui": "0.4.4"
+    "streamhub-ui": "0.4.5"
   }
 }
