@@ -57,7 +57,10 @@ function CarouselContentView(opts) {
     }.bind(this));
 
     // Add a resize handler so the view can be adjusted when the window resizes.
-    window.addEventListener('resize', debounce(this.repositionView.bind(this), 50));
+    window.addEventListener('resize', debounce(this.repositionView.bind(this), 100));
+
+    // Add a keyup handler to listen for arrow keys for keyboard navigation.
+    window.addEventListener('keyup', this.handleKeyUp.bind(this));
 }
 inherits(CarouselContentView, View);
 
@@ -67,17 +70,10 @@ CarouselContentView.prototype.events = View.prototype.events.extended({
         this.navigate(0);
     },
     'click .hub-modal-arrow-right': function () {
-        if (!this.navigate(1)) {
-            return;
-        }
-        // Trigger show more
-        if (this.listView && this.contentIdx + 1 === this.collection.contents.length) {
-            this.listView.$el.trigger('showMore.hub');
-        }
+        this.navigate(1);
     }
 });
 
-CarouselContentView.prototype.minContentHeight = 600;
 CarouselContentView.prototype.template = template;
 CarouselContentView.prototype.elTag = 'div';
 CarouselContentView.prototype.elClass = 'content-carousel';
@@ -106,6 +102,15 @@ CarouselContentView.prototype.getTemplateContext = function () {
 };
 
 /**
+ * Handle the key up event. Only left or right arrow keys are allowed.
+ * @param {Event} evt Key up event.
+ */
+CarouselContentView.prototype.handleKeyUp = function (evt) {
+    evt.keyCode === 37 && this.navigate(0);
+    evt.keyCode === 39 && this.navigate(1);
+};
+
+/**
  * Maybe toggle the navigation arrows depending on whether there is sibling
  * content to the left or right of the currently visible content.
  */
@@ -126,13 +131,17 @@ CarouselContentView.prototype.maybeToggleArrows = function () {
 CarouselContentView.prototype.navigate = function (dir) {
     var idxChange = dir === 0 ? -1 : 1;
     if (!this.collection.contents[this.contentIdx + idxChange]) {
-        return false;
+        return;
     }
     this.contentIdx += idxChange;
     this.addContentToDOM(this.collection.contents[this.contentIdx]);
     this.content = this.collection.contents[this.contentIdx];
     this.maybeToggleArrows();
-    return true;
+
+    // Trigger show more
+    if (dir === 1 && this.listView && this.contentIdx + 1 === this.collection.contents.length) {
+        this.listView.$el.trigger('showMore.hub');
+    }
 };
 
 /** @override */
@@ -151,11 +160,12 @@ CarouselContentView.prototype.repositionView = function () {
     if (!this.view) {
         return;
     }
+    var minHeight = window.innerWidth < 810 ? window.innerHeight : 600;
     var cardHeight = this.view.$el.height();
-    if (cardHeight >= this.minContentHeight) {
-        return;
+    var newPadding = '';
+    if (cardHeight < minHeight) {
+        newPadding = ((minHeight - cardHeight) / 2) + 'px';
     }
-    var newPadding = ((this.minContentHeight - cardHeight) / 2) + 'px';
     this.$el.find(this.containerSelector).css('paddingTop', newPadding);
 };
 
