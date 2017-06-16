@@ -138,7 +138,7 @@ ContentViewFactory.prototype._getViewTypeForContent = function (content) {
 
     // If rights are granted, use the Livefyre view because it has no social
     // branding or extra social features like footer buttons.
-    if (content.hasRightsGranted()) {
+    if (content.hasRightsGranted && content.hasRightsGranted()) {
         return LivefyreContentView;
     }
 
@@ -239,7 +239,7 @@ ContentViewFactory.prototype.getMixinForTypeOfContent = function (content) {
 
     // If rights are granted, use the Livefyre mixin because it has no social
     // branding or extra social features like footer buttons.
-    if (content.hasRightsGranted()) {
+    if (content.hasRightsGranted && content.hasRightsGranted()) {
         return LivefyreContentViewMixin;
     }
 
