@@ -26,7 +26,7 @@ function hasAttachmentModal(view, opts) {
                 }
             } else if (opts.useNewModal) {
                 modal.show(new CarouselContentView({
-                    collection: this._collection.internalCollection,
+                    collection: (this._collection || {}).internalCollection,
                     content: context.content,
                     listView: this,
                     productOptions: opts.productOptions || {}

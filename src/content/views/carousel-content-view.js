@@ -1,3 +1,4 @@
+var debounce = require('mout/function/debounce');
 var findIndex = require('mout/array/findIndex');
 var inherits = require('inherits');
 var ModalContentCardView = require('streamhub-sdk/content/views/modal-content-card-view');
@@ -51,10 +52,12 @@ function CarouselContentView(opts) {
     // content that is currently visible in case content came in from of it,
     // and maybe update the navigation arrows.
     this.collection.on('added', function () {
-        console.log(this.collection.contents.length, this.contentIdx);
         this.updateContentIndex();
         this.maybeToggleArrows();
     }.bind(this));
+
+    // Add a resize handler so the view can be adjusted when the window resizes.
+    window.addEventListener('resize', debounce(this.repositionView.bind(this), 50));
 }
 inherits(CarouselContentView, View);
 
@@ -74,10 +77,11 @@ CarouselContentView.prototype.events = View.prototype.events.extended({
     }
 });
 
+CarouselContentView.prototype.minContentHeight = 600;
 CarouselContentView.prototype.template = template;
 CarouselContentView.prototype.elTag = 'div';
 CarouselContentView.prototype.elClass = 'content-carousel';
-CarouselContentView.prototype.arrowDisabled = 'hub-modal-arrow-disable';
+CarouselContentView.prototype.arrowDisabledClass = 'hub-modal-arrow-disable';
 CarouselContentView.prototype.arrowLeftSelector = '.hub-modal-arrow-left';
 CarouselContentView.prototype.arrowRightSelector = '.hub-modal-arrow-right';
 CarouselContentView.prototype.containerSelector = '.content-container';
@@ -87,12 +91,13 @@ CarouselContentView.prototype.containerSelector = '.content-container';
  * @param {Content} content The content to add to the DOM.
  */
 CarouselContentView.prototype.addContentToDOM = function (content) {
-    var view = new ModalContentCardView({
+    this.view = new ModalContentCardView({
         content: content,
         productOptions: this.opts.productOptions
     });
-    this.$el.find(this.containerSelector).html('').append(view.$el);
-    view.render();
+    this.$el.find(this.containerSelector).html('').append(this.view.$el);
+    this.view.render();
+    this.repositionView();
 };
 
 /** @override */
@@ -105,8 +110,8 @@ CarouselContentView.prototype.getTemplateContext = function () {
  * content to the left or right of the currently visible content.
  */
 CarouselContentView.prototype.maybeToggleArrows = function () {
-    this.$el.find(this.arrowLeftSelector).toggleClass(this.arrowDisabled, this.contentIdx === 0);
-    this.$el.find(this.arrowRightSelector).toggleClass(this.arrowDisabled,
+    this.$el.find(this.arrowLeftSelector).toggleClass(this.arrowDisabledClass, this.contentIdx === 0);
+    this.$el.find(this.arrowRightSelector).toggleClass(this.arrowDisabledClass,
         this.collection.contents.length - 1 === this.contentIdx);
 };
 
@@ -136,6 +141,22 @@ CarouselContentView.prototype.render = function () {
     this.addContentToDOM(this.opts.content);
     this.navigationEnabled && this.maybeToggleArrows();
     return this;
+};
+
+/**
+ * Reposition the view by modifying the padding to nudge it down in order to
+ * center the navigation arrows with the content.
+ */
+CarouselContentView.prototype.repositionView = function () {
+    if (!this.view) {
+        return;
+    }
+    var cardHeight = this.view.$el.height();
+    if (cardHeight >= this.minContentHeight) {
+        return;
+    }
+    var newPadding = ((this.minContentHeight - cardHeight) / 2) + 'px';
+    this.$el.find(this.containerSelector).css('paddingTop', newPadding);
 };
 
 /**

@@ -46,6 +46,7 @@
     .hub-modal-content {
         .hub-modal-content-view {
             margin: 70px auto 0;
+            min-height: 600px;
             position: relative;
 
             .hub-modal-arrow-left, .hub-modal-arrow-right {
@@ -58,6 +59,7 @@
                 position: absolute;
                 top: 0;
                 width: 5%;
+                .user-select(none);
 
                 &.hub-modal-arrow-disable {
                     color: rgba(255, 255, 255, 0.25);
@@ -180,6 +182,22 @@
                         box-shadow: none !important;
                     }
                 }
+            }
+        }
+    }
+
+    @media (max-width: 600px) {
+        .hub-modal-content-view {
+            width: calc(~"100% - 40px") !important;
+
+            .hub-modal-arrow-left, .hub-modal-arrow-right {
+                width: 16px !important;
+            }
+            .hub-modal-arrow-left {
+                left: -20px !important;
+            }
+            .hub-modal-arrow-right {
+                right: -20px !important;
             }
         }
     }
