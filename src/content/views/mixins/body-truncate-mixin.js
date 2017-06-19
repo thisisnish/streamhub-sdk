@@ -1,19 +1,8 @@
 var $ = require('streamhub-sdk/jquery');
 var i18n = require('streamhub-sdk/i18n');
 var isBoolean = require('mout/lang/isBoolean');
-var JsTruncateHtml = require('js-truncate-html');
 var template = require('hgn!streamhub-sdk/content/templates/content-body-show-more');
-
-/**
- * HTML truncater. This is used to truncate the body without losing html
- * elements within it.
- * @type {JsTruncateHtml}
- */
-var truncator = new JsTruncateHtml({
-    includeElipsis: true,
-    elipsisLength: 1,
-    elipsisCharacter: '&hellip;'
-});
+var util = require('streamhub-sdk/content/util/main');
 
 /**
  * Mixin for adding truncation logic to a body view if enabled. Overrides
@@ -74,7 +63,7 @@ module.exports = function (view, opts) {
             if (!/^<p/.test(body)) {
                 body = '<p>' + $.trim(body) + '</p>';
             }
-            body = truncator.truncate($(body).html(), 124);
+            body = util.truncateHtml($(body).html(), 124);
             context.body = '<p>' + $.trim(body) + '</p>';
         }
         return context;
