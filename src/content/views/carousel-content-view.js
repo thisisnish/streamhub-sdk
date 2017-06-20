@@ -65,13 +65,9 @@ function CarouselContentView(opts) {
 inherits(CarouselContentView, View);
 
 /** @override */
-CarouselContentView.prototype.events = View.prototype.events.extended({
-    'click .hub-modal-arrow-left': function () {
-        this.navigate(0);
-    },
-    'click .hub-modal-arrow-right': function () {
-        this.navigate(1);
-    }
+CarouselContentView.prototype.events = View.prototype.events.extended({}, function (events) {
+    events['click .hub-modal-arrow-left'] = this.navigate.bind(this, 0);
+    events['click .hub-modal-arrow-right'] = this.navigate.bind(this, 1);
 });
 
 CarouselContentView.prototype.template = template;
@@ -111,11 +107,23 @@ CarouselContentView.prototype.handleKeyUp = function (evt) {
 };
 
 /**
+ * Whether there is more content available through "show more".
+ * @return {boolean} If there is more data.
+ */
+CarouselContentView.prototype.hasMore = function () {
+    if (!this.listView || !this.listView.showMoreButton) {
+        return false;
+    }
+    return this.listView.showMoreButton.isHolding();
+};
+
+/**
  * Maybe toggle the navigation arrows depending on whether there is sibling
  * content to the left or right of the currently visible content.
  */
 CarouselContentView.prototype.maybeToggleArrows = function () {
-    this.$el.find(this.arrowLeftSelector).toggleClass(this.arrowDisabledClass, this.contentIdx === 0);
+    this.$el.find(this.arrowLeftSelector).toggleClass(this.arrowDisabledClass,
+        this.contentIdx === 0);
     this.$el.find(this.arrowRightSelector).toggleClass(this.arrowDisabledClass,
         this.collection.contents.length - 1 === this.contentIdx);
 };
@@ -130,6 +138,11 @@ CarouselContentView.prototype.maybeToggleArrows = function () {
  */
 CarouselContentView.prototype.navigate = function (dir) {
     var idxChange = dir === 0 ? -1 : 1;
+
+    // TODO: Maybe do something with `this.hasMore()` to determine if navigation
+    //       can loop around
+
+    // If there are no more items in the provided direction, don't do anything.
     if (!this.collection.contents[this.contentIdx + idxChange]) {
         return;
     }
@@ -138,7 +151,8 @@ CarouselContentView.prototype.navigate = function (dir) {
     this.content = this.collection.contents[this.contentIdx];
     this.maybeToggleArrows();
 
-    // Trigger show more
+    // While navigation to the right (older content) and the last item in the
+    // collection has been reached, trigger the show more action.
     if (dir === 1 && this.listView && this.contentIdx + 1 === this.collection.contents.length) {
         this.listView.$el.trigger('showMore.hub');
     }
@@ -160,13 +174,27 @@ CarouselContentView.prototype.repositionView = function () {
     if (!this.view) {
         return;
     }
-    var minHeight = window.innerWidth < 810 ? window.innerHeight : 600;
+    var carouselMinHeight = parseInt(this.$el.css('minHeight').split('px')[0], 10);
+    var minHeight = window.innerWidth < 810 ? window.innerHeight : carouselMinHeight;
     var cardHeight = this.view.$el.height();
     var newPadding = '';
+
+    // The content card height is less than the min-height specified by the
+    // modal, add some padding to make it centered vertically. This resolves
+    // issues where text-only content causes the navigation arrows to bounce
+    // around during navigation.
     if (cardHeight < minHeight) {
         newPadding = ((minHeight - cardHeight) / 2) + 'px';
     }
     this.$el.find(this.containerSelector).css('paddingTop', newPadding);
+
+    // Update the min-height of the modal if it's in horizontal mode and the
+    // card height is greater than 600. This solves for the case when the screen
+    // is large and the cards are bigger.
+    if (window.innerWidth < 810 || cardHeight <= 600) {
+        return;
+    }
+    this.$el.css('minHeight', cardHeight + 'px');
 };
 
 /**
