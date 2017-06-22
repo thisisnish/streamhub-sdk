@@ -1,8 +1,9 @@
 define([
     'streamhub-sdk/debug',
     'streamhub-sdk/jquery',
-    'streamhub-sdk/util/date'
-], function (debug, $, dateUtil) {
+    'streamhub-sdk/util/date',
+    'mout/object/get'
+], function (debug, $, dateUtil, get) {
     'use strict';
 
     var log = debug('util');
@@ -50,6 +51,52 @@ define([
     };
 
     exports.formatDate = dateUtil.formatDate;
+
+    /**
+     * Binary insert function.
+     * Adapted from:
+     * http://machinesaredigging.com/2014/04/27/binary-insert-how-to-keep-an-array-sorted-as-you-insert-data-in-it/
+     * @param {Object} opts Configuration options.
+     */
+    exports.binaryInsert = function (opts) {
+        function getValue(val) {
+            return opts.prop ? get(val, opts.prop) : val;
+        }
+
+        function _binaryInsert(array, value, startVal, endVal) {
+            var length = array.length;
+            var start = typeof(startVal) !== 'undefined' ? startVal : 0;
+            var end = typeof(endVal) !== 'undefined' ? endVal : length - 1;
+            var m = start + Math.floor((end - start) / 2);
+            var val = getValue(value);
+
+            if (length === 0) {
+                array.push(value);
+                return;
+            }
+            if (getValue(value) < getValue(array[end])) {
+                array.splice(end + 1, 0, value);
+                return;
+            }
+            if (getValue(value) > getValue(array[start])) {
+                array.splice(start, 0, value);
+                return;
+            }
+            if (start >= end) {
+                return;
+            }
+            if (getValue(value) > getValue(array[m])) {
+                _binaryInsert(array, value, start, m - 1);
+                return;
+            }
+            if (getValue(value) < getValue(array[m])) {
+                _binaryInsert(array, value, m + 1, end);
+                return;
+            }
+        }
+
+        _binaryInsert(opts.array, opts.value, opts.start, opts.end);
+    };
 
     /**
      * Binary search function.
