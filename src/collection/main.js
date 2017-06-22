@@ -3,6 +3,7 @@ define([
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
     'streamhub-sdk/collection/streams/writer',
+    'streamhub-sdk/collection/sorted',
     'streamhub-sdk/collection/featured-contents',
     'stream/duplex',
     'streamhub-sdk/collection/clients/bootstrap-client',
@@ -14,9 +15,10 @@ define([
     'inherits',
     'streamhub-sdk/debug',
     'mout/object/merge'],
-function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedContents,
-        Duplex, LivefyreBootstrapClient, LivefyreCreateClient, LivefyrePermalinkClient,
-        LivefyreWriteClient, fetchContent, Auth, inherits, debug, merge) {
+function ($, CollectionArchive, CollectionUpdater, CollectionWriter, SortedCollection,
+        FeaturedContents, Duplex, LivefyreBootstrapClient, LivefyreCreateClient,
+        LivefyrePermalinkClient, LivefyreWriteClient, fetchContent, Auth, inherits,
+        debug, merge) {
     'use strict';
 
 
@@ -47,6 +49,8 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
         this._bootstrapClient = opts.bootstrapClient || new LivefyreBootstrapClient();
         this._createClient = opts.createClient || new LivefyreCreateClient();
         this._permalinkClient = opts.permalinkClient || new LivefyrePermalinkClient();
+
+        this.internalCollection = new SortedCollection();
 
         // Internal streams
         this._writer = opts.writer || null;
@@ -169,6 +173,32 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, FeaturedCon
             archive = this.createArchive();
             archive.pipe(writable.more, archivePipeOpts);
             this._pipedArchives.push(archive);
+        }
+
+        var internalCollection = this.internalCollection;
+
+        // Hijacking the writable stream for the collection in order to hijack
+        // content that streams into the collection. Adds it to an internal
+        // collection of content so it can be accessed within the content
+        // carousel modal.
+        if (writable && writable.write) {
+            var old = writable.write;
+            writable.write = function (chunk) {
+                internalCollection.add(chunk);
+                old.apply(writable, arguments);
+            };
+        }
+
+        // Hijacking the archive stream for the collection in order to hijack
+        // content that comes into the collection via "show more". Adds it to
+        // an internal collection of content so it can be accessed within the
+        // content carousel modal.
+        if (writable && writable.more && writable.more.write) {
+            var oldMore = writable.more.write;
+            writable.more.write = function (chunk) {
+                internalCollection.add(chunk);
+                return oldMore.apply(writable.more, arguments);
+            };
         }
 
         return Duplex.prototype.pipe.apply(this, arguments);

@@ -1,10 +1,10 @@
 var AttachmentGalleryModal = require('streamhub-sdk/modal/views/attachment-gallery-modal');
+var CarouselContentView = require('streamhub-sdk/content/views/carousel-content-view');
 var Content = require('streamhub-sdk/content');
 var ContentView = require('streamhub-sdk/content/views/content-view');
 var GalleryAttachmentListView = require('streamhub-sdk/content/views/gallery-attachment-list-view');
 var hasAttachmentModal = require('streamhub-sdk/content/views/mixins/attachment-modal-mixin');
 var ListView = require('streamhub-sdk/views/list-view');
-var ModalContentCardView = require('streamhub-sdk/content/views/modal-content-card-view');
 var ModalView = require('streamhub-sdk/modal');
 
 'use strict';
@@ -40,7 +40,7 @@ describe('hasAttachmentModal mixin', function () {
         });
         contentView.$el.trigger('focusContent.hub', {content: content});
         expect(spy.calls.length).toBe(1);
-        expect(spy.calls[0].args[0] instanceof ModalContentCardView).toBe(true);
+        expect(spy.calls[0].args[0] instanceof CarouselContentView).toBe(true);
         expect(spy.calls[0].args[0].opts.productOptions).toEqual({show: true});
     });
 
