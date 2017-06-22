@@ -114,18 +114,21 @@ CarouselContentView.prototype.hasMore = function () {
     if (!this.listView || !this.listView.showMoreButton) {
         return false;
     }
-    return this.listView.showMoreButton.isHolding();
+    return this.listView.showMoreButton.isHolding() || false;
 };
 
 /**
  * Maybe toggle the navigation arrows depending on whether there is sibling
- * content to the left or right of the currently visible content.
+ * content to the left or right of the currently visible content. If there is
+ * no more content in the collection to be fetched, the arrows should be enabled
+ * since it will wrap around.
  */
 CarouselContentView.prototype.maybeToggleArrows = function () {
+    var hasMore = this.hasMore();
     this.$el.find(this.arrowLeftSelector).toggleClass(this.arrowDisabledClass,
-        this.contentIdx === 0);
+        this.contentIdx === 0 && hasMore);
     this.$el.find(this.arrowRightSelector).toggleClass(this.arrowDisabledClass,
-        this.collection.contents.length - 1 === this.contentIdx);
+        this.collection.contents.length - 1 === this.contentIdx && hasMore);
 };
 
 /**
@@ -138,22 +141,28 @@ CarouselContentView.prototype.maybeToggleArrows = function () {
  */
 CarouselContentView.prototype.navigate = function (dir) {
     var idxChange = dir === 0 ? -1 : 1;
+    var hasMore = this.hasMore();
 
-    // TODO: Maybe do something with `this.hasMore()` to determine if navigation
-    //       can loop around
-
-    // If there are no more items in the provided direction, don't do anything.
     if (!this.collection.contents[this.contentIdx + idxChange]) {
-        return;
+        // There are no items in the direction the user clicked. If there are
+        // more items expected for the collection, don't do anything. If there
+        // aren't, loop back around to the beginning or end depending on the
+        // direction.
+        if (hasMore) {
+            return;
+        }
+        this.contentIdx = dir === 1 ? 0 : this.collection.contents.length - 1;
+    } else {
+        this.contentIdx += idxChange;
     }
-    this.contentIdx += idxChange;
+
     this.addContentToDOM(this.collection.contents[this.contentIdx]);
     this.content = this.collection.contents[this.contentIdx];
     this.maybeToggleArrows();
 
     // While navigation to the right (older content) and the last item in the
     // collection has been reached, trigger the show more action.
-    if (dir === 1 && this.listView && this.contentIdx + 1 === this.collection.contents.length) {
+    if (dir === 1 && hasMore && this.listView && this.contentIdx + 1 === this.collection.contents.length) {
         this.listView.$el.trigger('showMore.hub');
     }
 };

@@ -30,6 +30,7 @@ describe('CarouselContentView', function () {
             view = new CarouselContentView({
                 collection: sortedCollection,
                 content: new LivefyreContent(fixtures[0]),
+                listView: {showMoreButton: {isHolding: function () { return true; }}},
                 productOptions: {}
             });
             view.render();
@@ -59,8 +60,41 @@ describe('CarouselContentView', function () {
             expect(view.$el.find(view.arrowLeftSelector).hasClass(view.arrowDisabledClass)).toBe(false);
         });
 
+        it('enables navigation to wrap around either end if all content has been fetched', function () {
+            spyOn(view.listView.showMoreButton, 'isHolding').andReturn(false);
+            view.maybeToggleArrows();
+            expect(view.$el.find(view.arrowLeftSelector).hasClass(view.arrowDisabledClass)).toBe(false);
+            sortedCollection.add(new LivefyreContent(fixtures[1]));
+            sortedCollection.add(new LivefyreContent(fixtures[2]));
+            expect(view.$el.find(view.arrowLeftSelector).hasClass(view.arrowDisabledClass)).toBe(false);
+            expect(view.contentIdx).toBe(1);
+
+            var leftArrow = view.$el.find(view.arrowLeftSelector);
+            var rightArrow = view.$el.find(view.arrowRightSelector);
+
+            leftArrow.click();
+            expect(view.contentIdx).toBe(0);
+            leftArrow.click();
+            expect(view.contentIdx).toBe(2);
+            leftArrow.click();
+            expect(view.contentIdx).toBe(1);
+            leftArrow.click();
+            expect(view.contentIdx).toBe(0);
+            rightArrow.click();
+            expect(view.contentIdx).toBe(1);
+            rightArrow.click();
+            expect(view.contentIdx).toBe(2);
+            rightArrow.click();
+            expect(view.contentIdx).toBe(0);
+            rightArrow.click();
+            expect(view.contentIdx).toBe(1);
+        });
+
         it('triggers "show more" functionality when oldest content has been reached', function () {
-            var listView = {'$el': {trigger: function () {}}};
+            var listView = {
+                '$el': {trigger: function () {}},
+                showMoreButton: {isHolding: function () { return true; }}
+            };
             spyOn(listView.$el, 'trigger');
             view = new CarouselContentView({
                 collection: sortedCollection,
