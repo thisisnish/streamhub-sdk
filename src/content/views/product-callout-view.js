@@ -1,3 +1,4 @@
+var $ = require('streamhub-sdk/jquery');
 var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
 var template = require('hgn!streamhub-sdk/content/templates/product-callout-view');
