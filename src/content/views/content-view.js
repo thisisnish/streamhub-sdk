@@ -143,8 +143,10 @@ ContentView.prototype._removeInitialChildViews = function () {
 ContentView.prototype.setElement = function (el) {
     CompositeView.prototype.setElement.apply(this, arguments);
 
-    var tileable = this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount();
-    this.$el.toggleClass(this.imageLoadingClass, tileable);
+    if (this.content.attachments.length) {
+        var tileable = this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount();
+        this.$el.toggleClass(this.imageLoadingClass, tileable);
+    }
 
     if (this.content && this.content.id) {
         this.$el.attr('data-content-id', this.content.id);

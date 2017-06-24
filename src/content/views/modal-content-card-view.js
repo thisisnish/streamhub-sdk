@@ -115,8 +115,9 @@ ModalContentCardView.prototype._removeInitialChildViews = function () {
 ModalContentCardView.prototype.setElement = function (el) {
     CompositeView.prototype.setElement.apply(this, arguments);
 
-    if (this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount()) {
-        this.$el.addClass(this.imageLoadingClass);
+    if (this.content.attachments.length) {
+        var tileable = this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount();
+        this.$el.toggleClass(this.imageLoadingClass, tileable);
     }
 
     if (this.content && this.content.id) {
