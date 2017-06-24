@@ -31,7 +31,7 @@ ContentBodyView.prototype.elClass = 'content-body';
 ContentBodyView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this._content);
     var attachments = context.attachments;
-    var body = context.bodyOrig || context.body;
+    var body = context.body;
 
     // Ensure that content.body has a p tag
     if (!/^<p/.test($.trim(body))) {
