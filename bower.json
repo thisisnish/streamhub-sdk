@@ -1,6 +1,6 @@
 {
   "name": "streamhub-sdk",
-  "version": "2.27.0",
+  "version": "2.27.6",
   "main": [
     "./src/main.js"
   ],
@@ -41,8 +41,6 @@
     "base64": "~0.4.0",
     "mout": "0.11.1",
     "cajon": "0.1.12",
-    "streamhub-share": "0.4.2",
-    "streamhub-sdk": "2.26.4",
-    "streamhub-ui": "0.4.4"
+    "streamhub-sdk": "2.26.4"
   }
 }
