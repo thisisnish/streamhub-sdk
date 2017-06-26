@@ -59,4 +59,34 @@ describe('content/util', function () {
             .toBe(undefined);
         });
     });
+
+    describe('truncateHtml', function () {
+        it('truncates regular text', function () {
+            expect(util.truncateHtml('this is a test', 6)).toEqual('this i…');
+        });
+
+        describe('truncates html', function () {
+            it('without sub-elements', function () {
+                expect(util.truncateHtml('<p>this is a test</p>', 6)).toEqual('<p>this i…</p>');
+            });
+
+            it('in the middle of an element', function () {
+                expect(util.truncateHtml('<p>this <a href="abc">is a</a> test</p>', 6)).toEqual('<p>this <a href="abc">i…</a></p>');
+            });
+
+            it('before an element', function () {
+                expect(util.truncateHtml('<p>this <a href="abc">is a</a> test</p>', 3)).toEqual('<p>thi…</p>');
+            });
+
+            it('after an element', function () {
+                expect(util.truncateHtml('<p>this <a href="abc">is a</a> test</p>', 12)).toEqual('<p>this <a href="abc">is a</a> te…</p>');
+            });
+
+            it('deep in nested elements', function () {
+                expect(util.truncateHtml('<p>this <span>is a <a href="abc">really</a> long</span> test</p>', 13)).toEqual('<p>this <span>is a <a href="abc">rea…</a></span></p>');
+                expect(util.truncateHtml('<p>this <span>is a <a href="abc">really</a> long</span> test</p>', 19)).toEqual('<p>this <span>is a <a href="abc">really</a> lo…</span></p>');
+                expect(util.truncateHtml('<p>this <span>is a <a href="abc">really</a> long</span> test</p>', 24)).toEqual('<p>this <span>is a <a href="abc">really</a> long</span> te…</p>');
+            });
+        });
+    });
 });

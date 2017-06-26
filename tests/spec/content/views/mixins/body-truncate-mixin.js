@@ -77,5 +77,15 @@ describe('canTruncateBody mixin', function () {
         });
         body.render();
         expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Nintendo set up a fantastic booth for Legend of Zelda: Breath of Wind here at E3 2016. Take a 360 tour of the booth in the v…<a class="content-body-show-more view-more">View More</a></p>');
+
+        body = new ContentBodyView({
+            content: {attachments: [], body: '<p>Aktywny Węgiel w kosmetykach od <a target="_blank" class="tweet-url username" href="https://instagram.com/evelinecosmetics" data-screen-name="evelinecosmetics" rel="nofollow">@evelinecosmetics</a> ??? Czarny diament, bo tak go teraz każdy nazywa jest w żelu do mycia twarzy oraz wspomaga skład maseczki</p>'},
+            showMoreEnabled: true
+        });
+        body.render();
+        expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Aktywny Węgiel w kosmetykach od <a target="_blank" class="tweet-url username" href="https://instagram.com/evelinecosmetics" data-screen-name="evelinecosmetics" rel="nofollow">@evelinecosmetics</a> ??? Czarny diament, bo tak go teraz każdy nazywa jest w żelu do mycia twar…<a class="content-body-show-more view-more">View More</a></p>');
+
+        body.$el.find('.view-more').click();
+        expect(body.$el.find('.content-body-main').html().trim()).toEqual('<p>Aktywny Węgiel w kosmetykach od <a target="_blank" class="tweet-url username" href="https://instagram.com/evelinecosmetics" data-screen-name="evelinecosmetics" rel="nofollow">@evelinecosmetics</a> ??? Czarny diament, bo tak go teraz każdy nazywa jest w żelu do mycia twarzy oraz wspomaga skład maseczki<a class="content-body-show-more view-less">View Less</a></p>');
     });
 });
