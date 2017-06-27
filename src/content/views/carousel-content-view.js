@@ -1,3 +1,4 @@
+var $ = require('streamhub-sdk/jquery');
 var debounce = require('mout/function/debounce');
 var findIndex = require('mout/array/findIndex');
 var inherits = require('inherits');
@@ -64,11 +65,16 @@ function CarouselContentView(opts) {
 }
 inherits(CarouselContentView, View);
 
-/** @override */
-CarouselContentView.prototype.events = View.prototype.events.extended({}, function (events) {
-    events['click .hub-modal-arrow-left'] = this.navigate.bind(this, 0);
-    events['click .hub-modal-arrow-right'] = this.navigate.bind(this, 1);
-});
+/**
+ * Classes that, when clicked, will cause the modal to close.
+ * @const {Array.<string>}
+ */
+CarouselContentView.CLOSE_CLASSES = [
+    'hub-modal-content',
+    'hub-modal-close',
+    'hub-modal-content-view',
+    'content-container'
+];
 
 CarouselContentView.prototype.template = template;
 CarouselContentView.prototype.elTag = 'div';
@@ -77,6 +83,13 @@ CarouselContentView.prototype.arrowDisabledClass = 'hub-modal-arrow-disable';
 CarouselContentView.prototype.arrowLeftSelector = '.hub-modal-arrow-left';
 CarouselContentView.prototype.arrowRightSelector = '.hub-modal-arrow-right';
 CarouselContentView.prototype.containerSelector = '.content-container';
+
+/** @override */
+CarouselContentView.prototype.events = View.prototype.events.extended({}, function (events) {
+    events['click .hub-modal-arrow-left'] = this.navigate.bind(this, 0);
+    events['click .hub-modal-arrow-right'] = this.navigate.bind(this, 1);
+    events['click'] = this.handleClick.bind(this);
+});
 
 /**
  * Creates a new view for the provided `content` and add it to the container.
@@ -102,8 +115,26 @@ CarouselContentView.prototype.getTemplateContext = function () {
  * @param {Event} evt Key up event.
  */
 CarouselContentView.prototype.handleKeyUp = function (evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
     evt.keyCode === 37 && this.navigate(0);
     evt.keyCode === 39 && this.navigate(1);
+};
+
+/**
+ * Handle a click on the modal.
+ * @param {Event} evt Click event.
+ */
+CarouselContentView.prototype.handleClick = function (evt) {
+    var CLOSE_CLASSES = CarouselContentView.CLOSE_CLASSES;
+    var $target = $(evt.target);
+
+    for (var i = 0; i < CLOSE_CLASSES.length; i++) {
+        if ($target.hasClass(CLOSE_CLASSES[i])) {
+            this.$el.trigger('hideModal.hub');
+            break;
+        }
+    }
 };
 
 /**
