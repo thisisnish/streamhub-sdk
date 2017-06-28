@@ -27,28 +27,25 @@ inherits(AttachmentCarouselView, CompositeView);
 
 AttachmentCarouselView.prototype.elTag = 'div';
 AttachmentCarouselView.prototype.elClass = 'attachment-carousel';
+AttachmentCarouselView.prototype.hideClass = 'hide';
 AttachmentCarouselView.prototype.listClass = '.content-attachments-stacked';
+AttachmentCarouselView.prototype.attachmentSelector = '.' +
+    CarouselAttachmentListView.prototype.elClass + ' ' +
+    CarouselAttachmentListView.prototype.contentAttachmentSelector;
 AttachmentCarouselView.prototype.leftSelector = '.attachment-carousel-left-arrow';
 AttachmentCarouselView.prototype.rightSelector = '.attachment-carousel-right-arrow';
-AttachmentCarouselView.prototype.hideClass = 'hide';
+AttachmentCarouselView.prototype.stackedAttachmentsSelector = '.' +
+    CarouselAttachmentListView.prototype.elClass + ' ' +
+    CarouselAttachmentListView.prototype.stackedAttachmentsSelector;
 
 AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extended({}, function (events) {
-    var self = this;
-    events['click ' + this.leftSelector] = function (e) {
-        this._onCarouselNavigate.apply(self, [e, true]);
-    };
-
-    events['click ' + this.rightSelector] = function (e) {
-        this._onCarouselNavigate.apply(self, [e, false]);
-    };
-
-    events['click .' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.contentAttachmentSelector] = function (e) {
-        this._onThumbnailClick.apply(self, [e]);
-    };
+    events['click ' + this.attachmentSelector] = this._onThumbnailClick.bind(this);
+    events['click ' + this.leftSelector] = this._onCarouselNavigate.bind(this, false);
+    events['click ' + this.rightSelector] = this._onCarouselNavigate.bind(this, true);
 });
 
 AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
-    var index = $('.' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.contentAttachmentSelector).index(e.currentTarget);
+    var index = $(this.attachmentSelector).index(e.currentTarget);
     this._singleAttachmentView.retile(index);
     this._insertVideo(this._singleAttachmentView.oembedViews[index]);
 };
@@ -112,24 +109,40 @@ AttachmentCarouselView.prototype._getAttachmentVideoHtml = function (attachment)
     return attachment.html;
 };
 
-AttachmentCarouselView.prototype._onCarouselNavigate = function (e, left) {
-    var listEl = this.$el.find('.' + CarouselAttachmentListView.prototype.elClass + ' ' + CarouselAttachmentListView.prototype.stackedAttachmentsSelector);
-    var position = listEl.position().left;
-    var attachmentCount = this._attachmentsListView.count();
-    var minVisible = (attachmentCount - 2) > 0 ? (attachmentCount - 2) : 0;
+AttachmentCarouselView.prototype._onCarouselNavigate = function (right, e) {
     e.stopPropagation();
-    if (!left && position < 0) {
-        listEl.offset({left: listEl.offset().left + this.opts.carouselElementWidth});
-        this.$el.find(this.leftSelector).removeClass(this.hideClass);
-        if (listEl.position().left > 0) {
-            this.$el.find(this.rightSelector).addClass(this.hideClass);
-        }
-    } else if (left && position > -(minVisible * this.opts.carouselElementWidth)) {
-        listEl.offset({left: listEl.offset().left - this.opts.carouselElementWidth});
-        this.$el.find(this.rightSelector).removeClass(this.hideClass);
-        if (listEl.position().left < -(attachmentCount * this.opts.carouselElementWidth)) {
-            this.$el.find(this.leftSelector).addClass(this.hideClass);
-        }
+
+    var leftSelector = this.$el.find(this.leftSelector);
+    var rightSelector = this.$el.find(this.rightSelector);
+
+    var direction = right ? -1 : 1;
+    var listEl = this.$el.find(this.stackedAttachmentsSelector);
+    // Update the left position of the thumbnail carousel in the direction of
+    // the arrow that was pressed.
+    listEl.offset({left: listEl.offset().left + (direction * this.opts.carouselElementWidth)});
+
+    // Remove the hide class from the arrow in the opposite direction since
+    // there is at least one thumbnail in that direction.
+    (right ? leftSelector : rightSelector).removeClass(this.hideClass);
+
+    // Get the current left position that has been shifted so far. This will be
+    // used to determine whether we can hide arrows or not.
+    var leftPos = parseInt(listEl.css('left').split('px'), 10) || 0;
+
+    // We are back to the original left position of 0, so we can hide the left
+    // arrow since there aren't any more thumbnails to see.
+    if (leftPos >= 0) {
+        leftSelector.addClass(this.hideClass);
+        return;
+    }
+
+    var listWidth = listEl.width();
+    var visibleWidth = listEl.parent().width();
+    // If the visible portion of the carousel + amount that has been shifted is
+    // greater than the width of the entire carousel, there are no more
+    // thumbnails to the right.
+    if (listWidth <= (visibleWidth + Math.abs(leftPos))) {
+        rightSelector.addClass(this.hideClass);
     }
 };
 
@@ -157,16 +170,19 @@ AttachmentCarouselView.prototype.add = function (view) {
 AttachmentCarouselView.prototype.render = function (view, opts) {
     CompositeView.prototype.render.call(this);
 
+    this.$el.find(this.leftSelector).addClass(this.hideClass);
     this._insertVideo(this._singleAttachmentView.oembedViews[0]);
     this._jsPositioning();
     return this;
 };
 
 AttachmentCarouselView.prototype._jsPositioning = function () {
-    if (this._attachmentsListView) {
-        this._attachmentsListView.$el.find(this._attachmentsListView.stackedAttachmentsSelector)
-            .width(this.opts.carouselElementWidth * this._attachmentsListView.count());
+    if (!this._attachmentsListView) {
+        return;
     }
+    this._attachmentsListView.$el
+        .find(this._attachmentsListView.stackedAttachmentsSelector)
+        .width(this.opts.carouselElementWidth * this._attachmentsListView.count());
 };
 
 AttachmentCarouselView.prototype.getTemplateContext = function () {
