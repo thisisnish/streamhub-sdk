@@ -64,8 +64,8 @@ module.exports = function (view, opts) {
                 body = '<p>' + $.trim(body) + '</p>';
             }
             body = util.truncateHtml($(body).html(), 124);
-            context.body = '<p>' + $.trim(body) + '</p>';
         }
+        context.body = !/^<p/.test(body) ? ('<p>' + $.trim(body) + '</p>') : body;
         return context;
     };
 
