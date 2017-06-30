@@ -178,15 +178,18 @@ ProductContentView.prototype.render = function () {
 
     CompositeView.prototype.render.call(this);
 
-    util.raf($.proxy(function () {
-        if (!this._productView) {
-            return;
-        }
-        var productHeight = this._productView.$el.height() + 20;
-        if (productHeight) {
-            this.$el.css('paddingBottom', productHeight + 'px');
-        }
-    }, this));
+    var self = this;
+    setTimeout(function () {
+        util.raf(function () {
+            if (!self._productView) {
+                return;
+            }
+            var productHeight = self._productView.$el.height() + 20;
+            if (productHeight) {
+                self.$el.css('paddingBottom', productHeight + 'px');
+            }
+        });
+    }, 0);
 
     return this;
 };
