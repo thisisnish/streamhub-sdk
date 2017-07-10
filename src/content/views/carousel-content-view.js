@@ -4,6 +4,7 @@ var findIndex = require('mout/array/findIndex');
 var inherits = require('inherits');
 var ModalContentCardView = require('streamhub-sdk/content/views/modal-content-card-view');
 var template = require('hgn!streamhub-sdk/content/templates/carousel-content-view');
+var util = require('streamhub-sdk/util');
 var View = require('view');
 
 /**
@@ -220,27 +221,33 @@ CarouselContentView.prototype.repositionView = function () {
     if (!this.view) {
         return;
     }
-    var carouselMinHeight = parseInt(this.$el.css('minHeight').split('px')[0], 10);
-    var minHeight = window.innerWidth < 810 ? window.innerHeight : carouselMinHeight;
-    var cardHeight = this.view.$el.height();
-    var newPadding = '';
 
-    // The content card height is less than the min-height specified by the
-    // modal, add some padding to make it centered vertically. This resolves
-    // issues where text-only content causes the navigation arrows to bounce
-    // around during navigation.
-    if (cardHeight < minHeight) {
-        newPadding = ((minHeight - cardHeight) / 2) + 'px';
-    }
-    this.$el.find(this.containerSelector).css('paddingTop', newPadding);
+    var self = this;
+    setTimeout(function () {
+        util.raf(function () {
+            var carouselMinHeight = parseInt(self.$el.css('minHeight').split('px')[0], 10);
+            var minHeight = window.innerWidth < 810 ? window.innerHeight : carouselMinHeight;
+            var cardHeight = self.view.$el.height();
+            var newPadding = '';
 
-    // Update the min-height of the modal if it's in horizontal mode and the
-    // card height is greater than 600. This solves for the case when the screen
-    // is large and the cards are bigger.
-    if (window.innerWidth < 810 || cardHeight <= 600) {
-        return;
-    }
-    this.$el.css('minHeight', cardHeight + 'px');
+            // The content card height is less than the min-height specified by the
+            // modal, add some padding to make it centered vertically. This resolves
+            // issues where text-only content causes the navigation arrows to bounce
+            // around during navigation.
+            if (cardHeight < minHeight) {
+                newPadding = ((minHeight - cardHeight) / 2) + 'px';
+            }
+            self.$el.find(self.containerSelector).css('paddingTop', newPadding);
+
+            // Update the min-height of the modal if it's in horizontal mode and the
+            // card height is greater than 600. This solves for the case when the screen
+            // is large and the cards are bigger.
+            if (window.innerWidth < 810 || cardHeight <= 600) {
+                return;
+            }
+            self.$el.css('minHeight', cardHeight + 'px');
+        });
+    }, 10);
 };
 
 /**
