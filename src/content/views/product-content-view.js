@@ -89,7 +89,9 @@ ProductContentView.prototype._addInitialChildViews = function (opts, shouldRende
 };
 
 ProductContentView.prototype._applyMixin = function (opts) {
-    var mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content);
+    var mixin = this._contentViewFactory.getMixinForTypeOfContent(this.content, {
+        hideSocialBrandingWithRights: opts.hideSocialBrandingWithRights
+    });
     mixin(this, opts);
     // If the assigned mixin was either Livefyre or Twitter, no need to continue
     // since those are the two base mixins.

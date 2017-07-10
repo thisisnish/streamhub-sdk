@@ -28,6 +28,7 @@ var ContentListView = function (opts) {
     opts = opts || {};
 
     this.modal = hasAttachmentModal(this, opts);
+    this.hideSocialBrandingWithRights = opts.hideSocialBrandingWithRights;
 
     var listOpts = $.extend({}, opts);
     listOpts.autoRender = false;
@@ -63,9 +64,10 @@ function maxVisibleItemsFromOpts(opts) {
     }
 };
 
-ContentListView.prototype.insertingClassName = 'hub-wall-is-inserting';
-ContentListView.prototype.hiddenClassName = 'hub-content-container-hidden';
 ContentListView.prototype.contentContainerClassName = 'hub-content-container';
+ContentListView.prototype.hiddenClassName = 'hub-content-container-hidden';
+ContentListView.prototype.hideSocialBrandingWithRightsClassName = 'fyr-hide-branding-when-granted';
+ContentListView.prototype.insertingClassName = 'hub-wall-is-inserting';
 
 /**
  * Class property to add to ListView instances' .el
@@ -220,6 +222,16 @@ ContentListView.prototype.saveForLater = function (content) {
 ContentListView.prototype.remove = function (content) {
     var contentView = content.el ? content : this.getContentView(content); //duck type for ContentView
     ListView.prototype.remove.call(this, contentView);
+};
+
+/** @override */
+ContentListView.prototype.render = function () {
+    ListView.prototype.render.apply(this, arguments);
+
+    // Adds a class which will be used by the CSS to hide branding on social
+    // content when rights are granted.
+    this.$el.toggleClass(this.hideSocialBrandingWithRightsClassName, this.hideSocialBrandingWithRights);
+    return this;
 };
 
 ContentListView.prototype.showMore = function (numToShow) {

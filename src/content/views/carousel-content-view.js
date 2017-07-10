@@ -80,6 +80,7 @@ CarouselContentView.prototype.template = template;
 CarouselContentView.prototype.elTag = 'div';
 CarouselContentView.prototype.elClass = 'content-carousel';
 CarouselContentView.prototype.arrowDisabledClass = 'hub-modal-arrow-disable';
+CarouselContentView.prototype.hideSocialBrandingWithRightsClassName = 'fyr-hide-branding-when-granted';
 CarouselContentView.prototype.arrowLeftSelector = '.hub-modal-arrow-left';
 CarouselContentView.prototype.arrowRightSelector = '.hub-modal-arrow-right';
 CarouselContentView.prototype.containerSelector = '.content-container';
@@ -98,6 +99,7 @@ CarouselContentView.prototype.events = View.prototype.events.extended({}, functi
 CarouselContentView.prototype.addContentToDOM = function (content) {
     this.view = new ModalContentCardView({
         content: content,
+        hideSocialBrandingWithRights: this.opts.hideSocialBrandingWithRights,
         productOptions: this.opts.productOptions
     });
     this.$el.find(this.containerSelector).html('').append(this.view.$el);
@@ -203,6 +205,10 @@ CarouselContentView.prototype.render = function () {
     View.prototype.render.apply(this, arguments);
     this.addContentToDOM(this.opts.content);
     this.navigationEnabled && this.maybeToggleArrows();
+
+    // Adds a class which will be used by the CSS to hide branding on social
+    // content when rights are granted.
+    this.$el.toggleClass(this.hideSocialBrandingWithRightsClassName, this.opts.hideSocialBrandingWithRights);
     return this;
 };
 
