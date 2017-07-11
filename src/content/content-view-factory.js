@@ -96,7 +96,7 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     opts = opts || {};
 
     var attachmentsView = this._createAttachmentsView(content);
-    var ContentViewType = this._getViewTypeForContent(content);
+    var ContentViewType = this._getViewTypeForContent(content, opts);
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
 
@@ -133,12 +133,13 @@ ContentViewFactory.prototype._createLikeCommand = function (content, liker) {
     return likeCommand;
 };
 
-ContentViewFactory.prototype._getViewTypeForContent = function (content) {
+ContentViewFactory.prototype._getViewTypeForContent = function (content, opts) {
+    opts = opts || {};
     var viewToRender = null;
 
     // If rights are granted, use the Livefyre view because it has no social
     // branding or extra social features like footer buttons.
-    if (content.hasRightsGranted && content.hasRightsGranted()) {
+    if (opts.hideSocialBrandingWithRights && content.hasRightsGranted()) {
         return LivefyreContentView;
     }
 
@@ -234,12 +235,13 @@ ContentViewFactory.prototype._createShareCommand = function (content, sharer) {
     return shareCommand;
 };
 
-ContentViewFactory.prototype.getMixinForTypeOfContent = function (content) {
+ContentViewFactory.prototype.getMixinForTypeOfContent = function (content, opts) {
+    opts = opts || {};
     var viewToRender = null;
 
     // If rights are granted, use the Livefyre mixin because it has no social
     // branding or extra social features like footer buttons.
-    if (content.hasRightsGranted && content.hasRightsGranted()) {
+    if (opts.hideSocialBrandingWithRights && content.hasRightsGranted()) {
         return LivefyreContentViewMixin;
     }
 

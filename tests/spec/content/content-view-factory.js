@@ -124,14 +124,30 @@ describe('ContentViewFactory', function() {
     });
 
     describe('content types - _getViewTypeForContent', function () {
-        it('_getViewTypeForContent rights granted', function () {
-            var content = new LivefyreContent();
-            content.rights = {status: 'granted'};
-            content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
-            content.urlContentTypeId = 'http://twitter.com/';
-            var contentViewFactory = new ContentViewFactory();
-            var view = contentViewFactory._getViewTypeForContent(content);
-            expect(view).toEqual(LivefyreContentView);
+        describe('_getViewTypeForContent rights granted', function () {
+            it('- is LivefyreContentView if `hideSocialBrandingWithRights` is enabled', function () {
+                var content = new LivefyreContent();
+                content.rights = {status: 'granted'};
+                content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+                content.urlContentTypeId = 'http://twitter.com/';
+                var contentViewFactory = new ContentViewFactory();
+                var view = contentViewFactory._getViewTypeForContent(content, {
+                    hideSocialBrandingWithRights: true
+                });
+                expect(view).toEqual(LivefyreContentView);
+            });
+            
+            it('- is TwitterContentView if `hideSocialBrandingWithRights` is disabled', function () {
+                var content = new LivefyreContent();
+                content.rights = {status: 'granted'};
+                content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+                content.urlContentTypeId = 'http://twitter.com/';
+                var contentViewFactory = new ContentViewFactory();
+                var view = contentViewFactory._getViewTypeForContent(content, {
+                    hideSocialBrandingWithRights: false
+                });
+                expect(view).toEqual(TwitterContentView);
+            });
         });
 
         it('_getViewTypeForContent twitter', function () {
@@ -162,15 +178,32 @@ describe('ContentViewFactory', function() {
             expect(mixin.name).toEqual('asLivefyreContentView');
         });
 
-        it('getMixinForTypeOfContent rights granted', function () {
-            var content = new LivefyreContent();
-            content.rights = {status: 'granted'};
-            content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
-            content.urlContentTypeId = 'http://twitter.com/';
-            var contentViewFactory = new ContentViewFactory();
-            var mixin = contentViewFactory.getMixinForTypeOfContent(content);
-            expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);
-            expect(mixin.name).toEqual('asLivefyreContentView');
+        describe('getMixinForTypeOfContent rights granted', function () {
+            it('- is asLivefyreContentView if `hideSocialBrandingWithRights` is enabled', function () {
+                var content = new LivefyreContent();
+                content.rights = {status: 'granted'};
+                content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+                content.urlContentTypeId = 'http://twitter.com/';
+                var contentViewFactory = new ContentViewFactory();
+                var mixin = contentViewFactory.getMixinForTypeOfContent(content, {
+                    hideSocialBrandingWithRights: true
+                });
+                expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);
+                expect(mixin.name).toEqual('asLivefyreContentView');
+            });
+
+            it('- is asTwitterContentView if `hideSocialBrandingWithRights` is disabled', function () {
+                var content = new LivefyreContent();
+                content.rights = {status: 'granted'};
+                content.typeUrn = TYPE_URNS.LIVEFYRE_URL;
+                content.urlContentTypeId = 'http://twitter.com/';
+                var contentViewFactory = new ContentViewFactory();
+                var mixin = contentViewFactory.getMixinForTypeOfContent(content, {
+                    hideSocialBrandingWithRights: false
+                });
+                expect(content.typeUrn).toEqual(TYPE_URNS.LIVEFYRE_URL);
+                expect(mixin.name).toEqual('asTwitterContentView');
+            });
         });
 
         it('getMixinForTypeOfContent twitter', function () {

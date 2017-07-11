@@ -28,6 +28,7 @@ function hasAttachmentModal(view, opts) {
                 modal.show(new CarouselContentView({
                     collection: (this._collection || {}).internalCollection,
                     content: context.content,
+                    hideSocialBrandingWithRights: opts.hideSocialBrandingWithRights,
                     listView: this,
                     productOptions: opts.productOptions || {}
                 }));

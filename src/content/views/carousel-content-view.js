@@ -4,6 +4,7 @@ var findIndex = require('mout/array/findIndex');
 var inherits = require('inherits');
 var ModalContentCardView = require('streamhub-sdk/content/views/modal-content-card-view');
 var template = require('hgn!streamhub-sdk/content/templates/carousel-content-view');
+var util = require('streamhub-sdk/util');
 var View = require('view');
 
 /**
@@ -80,6 +81,7 @@ CarouselContentView.prototype.template = template;
 CarouselContentView.prototype.elTag = 'div';
 CarouselContentView.prototype.elClass = 'content-carousel';
 CarouselContentView.prototype.arrowDisabledClass = 'hub-modal-arrow-disable';
+CarouselContentView.prototype.hideSocialBrandingWithRightsClassName = 'fyr-hide-branding-when-granted';
 CarouselContentView.prototype.arrowLeftSelector = '.hub-modal-arrow-left';
 CarouselContentView.prototype.arrowRightSelector = '.hub-modal-arrow-right';
 CarouselContentView.prototype.containerSelector = '.content-container';
@@ -98,6 +100,7 @@ CarouselContentView.prototype.events = View.prototype.events.extended({}, functi
 CarouselContentView.prototype.addContentToDOM = function (content) {
     this.view = new ModalContentCardView({
         content: content,
+        hideSocialBrandingWithRights: this.opts.hideSocialBrandingWithRights,
         productOptions: this.opts.productOptions
     });
     this.$el.find(this.containerSelector).html('').append(this.view.$el);
@@ -203,6 +206,10 @@ CarouselContentView.prototype.render = function () {
     View.prototype.render.apply(this, arguments);
     this.addContentToDOM(this.opts.content);
     this.navigationEnabled && this.maybeToggleArrows();
+
+    // Adds a class which will be used by the CSS to hide branding on social
+    // content when rights are granted.
+    this.$el.toggleClass(this.hideSocialBrandingWithRightsClassName, this.opts.hideSocialBrandingWithRights);
     return this;
 };
 
@@ -214,27 +221,33 @@ CarouselContentView.prototype.repositionView = function () {
     if (!this.view) {
         return;
     }
-    var carouselMinHeight = parseInt(this.$el.css('minHeight').split('px')[0], 10);
-    var minHeight = window.innerWidth < 810 ? window.innerHeight : carouselMinHeight;
-    var cardHeight = this.view.$el.height();
-    var newPadding = '';
 
-    // The content card height is less than the min-height specified by the
-    // modal, add some padding to make it centered vertically. This resolves
-    // issues where text-only content causes the navigation arrows to bounce
-    // around during navigation.
-    if (cardHeight < minHeight) {
-        newPadding = ((minHeight - cardHeight) / 2) + 'px';
-    }
-    this.$el.find(this.containerSelector).css('paddingTop', newPadding);
+    var self = this;
+    setTimeout(function () {
+        util.raf(function () {
+            var carouselMinHeight = parseInt(self.$el.css('minHeight').split('px')[0], 10);
+            var minHeight = window.innerWidth < 810 ? window.innerHeight : carouselMinHeight;
+            var cardHeight = self.view.$el.height();
+            var newPadding = '';
 
-    // Update the min-height of the modal if it's in horizontal mode and the
-    // card height is greater than 600. This solves for the case when the screen
-    // is large and the cards are bigger.
-    if (window.innerWidth < 810 || cardHeight <= 600) {
-        return;
-    }
-    this.$el.css('minHeight', cardHeight + 'px');
+            // The content card height is less than the min-height specified by the
+            // modal, add some padding to make it centered vertically. This resolves
+            // issues where text-only content causes the navigation arrows to bounce
+            // around during navigation.
+            if (cardHeight < minHeight) {
+                newPadding = ((minHeight - cardHeight) / 2) + 'px';
+            }
+            self.$el.find(self.containerSelector).css('paddingTop', newPadding);
+
+            // Update the min-height of the modal if it's in horizontal mode and the
+            // card height is greater than 600. This solves for the case when the screen
+            // is large and the cards are bigger.
+            if (window.innerWidth < 810 || cardHeight <= 600) {
+                return;
+            }
+            self.$el.css('minHeight', cardHeight + 'px');
+        });
+    }, 10);
 };
 
 /**
