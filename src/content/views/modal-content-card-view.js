@@ -3,6 +3,7 @@ var AttachmentCarouselView = require('streamhub-sdk/content/views/attachment-car
 var CompositeView = require('view/composite-view');
 var ContentBodyView = require('streamhub-sdk/content/views/spectrum/content-body-view');
 var debug = require('debug');
+var find = require('mout/array/find');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
 var inherits = require('inherits');
 var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
@@ -116,7 +117,7 @@ ModalContentCardView.prototype.setElement = function (el) {
     CompositeView.prototype.setElement.apply(this, arguments);
 
     if (this.content.attachments.length) {
-        var tileable = this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount();
+        var tileable = !!(this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount());
         this.$el.toggleClass(this.imageLoadingClass, tileable);
     }
 
@@ -159,6 +160,15 @@ ModalContentCardView.prototype._handleAttachmentsChange = function () {
     this._addInitialChildViews(this.opts, true);
 };
 
+ModalContentCardView.prototype._isTextOnly = function () {
+    if (!this.content.attachments.length) {
+        return true;
+    }
+    return !!find(this.content.attachments, function (attachment) {
+        return attachment.type === 'link';
+    });
+};
+
 ModalContentCardView.prototype._resizeModalImage = function () {
     // Unsure if this is still needed. It causes a bug when there are multiple
     // attachments because it sets the padding on the first image. When a
@@ -189,7 +199,7 @@ ModalContentCardView.prototype.destroy = function () {
 ModalContentCardView.prototype.render = function () {
     CompositeView.prototype.render.call(this);
 
-    this.$el.toggleClass(this.textOnlyClass, !this.content.attachments.length);
+    this.$el.toggleClass(this.textOnlyClass, this._isTextOnly());
     this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
     this._resizeModalImage();
     return this;
