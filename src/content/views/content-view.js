@@ -144,7 +144,7 @@ ContentView.prototype.setElement = function (el) {
     CompositeView.prototype.setElement.apply(this, arguments);
 
     if (this.content.attachments.length) {
-        var tileable = this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount();
+        var tileable = !!(this._thumbnailAttachmentsView && this._thumbnailAttachmentsView.tileableCount());
         this.$el.toggleClass(this.imageLoadingClass, tileable);
     }
 
