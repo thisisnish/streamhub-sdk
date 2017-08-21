@@ -118,13 +118,16 @@ describe('QueryCollectionArchive', function () {
             archive._bootstrapClient = getBootstrapClient(true);
             archive._readNextPage();
             expect(archive.emit).toHaveBeenCalled();
+            expect(archive.emit.calls[0].args[1].message).toEqual('Error requesting queryId: abc, cursor undefined');
         });
 
         it('emits an error if there is no data', function () {
             spyOn(archive, 'emit');
+            archive._cursor = {next: '12345'};
             archive._bootstrapClient = getBootstrapClient(false, null);
             archive._readNextPage();
             expect(archive.emit).toHaveBeenCalled();
+            expect(archive.emit.calls[0].args[1].message).toEqual('Error requesting queryId: abc, cursor max: 12345');
         });
 
         it('pushes fetched content', function () {

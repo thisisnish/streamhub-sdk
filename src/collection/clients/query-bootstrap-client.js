@@ -13,18 +13,18 @@ function QueryBootstrapClient(opts) {
 }
 inherits(QueryBootstrapClient, BootstrapClient);
 
-/** @override */
-QueryBootstrapClient.prototype._getHost = function (opts) {
-    var env = opts.environment;
-    if (env === 'fyre' || env === 'fy.re') {
-        return 'bsconsumer.fyre';
-    }
-    return 'data.' + (env || 'livefyre.com');
-};
+QueryBootstrapClient.prototype._serviceName = 'bsconsumer';
 
 /** @override */
 QueryBootstrapClient.prototype._getPath = function (opts) {
-    return [this._getUrlBase(opts), '/livefyre.com/query/', opts.queryId, '/'].join('');
+    return [
+        this._getUrlBase(opts),
+        '/bs4/',
+        opts.network,
+        '/query/',
+        opts.queryId,
+        '/'
+    ].join('');
 };
 
 /**

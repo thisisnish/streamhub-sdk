@@ -127,8 +127,14 @@ QueryCollectionArchive.prototype._readNextPage = function () {
 
     this._bootstrapClient.getContent(bootstrapClientOpts, function (err, data) {
         if (err || !data) {
-            self.emit('error', new Error('Error requesting Bootstrap page ' + bootstrapClientOpts.cursor));
-            return;
+            var cursorError;
+            if (bootstrapClientOpts.max) {
+                cursorError = 'max: ' + bootstrapClientOpts.max;
+            } else if (bootstrapClientOpts.min) {
+                cursorError = 'min: ' + bootstrapClientOpts.min;
+            }
+            return self.emit('error', new Error('Error requesting queryId: ' +
+                bootstrapClientOpts.queryId + ', cursor ' + cursorError));
         }
 
         var contents = self._contentsFromBootstrapDoc(data);
@@ -136,8 +142,8 @@ QueryCollectionArchive.prototype._readNextPage = function () {
         self._processPagination(data.paging);
 
         // There was no content, so try to read again. If there is another
-        // query, it will use that to fetch data. Otherwise, nothing will
-        // happen.
+        // query, it will use that to fetch data. Otherwise, nothing will happen.
+        // NOTE: This will only happen on the first read attempt.
         !contents.length && self._initial && self._read();
         self._initial = false;
     });
