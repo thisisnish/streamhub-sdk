@@ -14,10 +14,38 @@ function(LivefyreHttpClient, inherits) {
         this._version = opts.version || 'v3.1';
         LivefyreHttpClient.call(this, opts);
     };
-
     inherits(LivefyreStreamClient, LivefyreHttpClient);
 
     LivefyreStreamClient.prototype._serviceName = 'stream1';
+
+    /**
+     * Get data for the stream request params.
+     * @param {Object} opts Content request config.
+     * @returns {Object}
+     * @private
+     */
+    LivefyreStreamClient.prototype._getData = function (opts) {
+        return {multi: true};
+    };
+
+    /**
+     * Get the generated stream path.
+     * @param {Object} opts Content request config.
+     * @returns {string}
+     * @private
+     */
+    LivefyreStreamClient.prototype._getPath = function (opts) {
+        return [
+            this._getUrlBase(opts),
+            '/',
+            this._version,
+            '/collection/',
+            opts.collectionId,
+            '/',
+            opts.commentId || '0',
+            '/'
+        ].join('');
+    };
 
     /**
      * Fetches content from the livefyre conversation stream with the supplied arguments.
@@ -32,20 +60,9 @@ function(LivefyreHttpClient, inherits) {
         opts = opts || {};
         callback = callback || function() {};
 
-        var url = [
-            this._getUrlBase(opts),
-            "/",
-            this._version,
-            "/collection/",
-            opts.collectionId,
-            "/",
-            opts.commentId || "0",
-            "/"
-        ].join("");
-
-        var request = this._request({
-            url: url,
-            data: {multi: true}
+        return this._request({
+            data: this._getData(opts),
+            url: this._getPath(opts)
         }, function (err, data) {
             if (err) {
                 return callback.apply(this, arguments);
@@ -65,8 +82,6 @@ function(LivefyreHttpClient, inherits) {
                 callback(null, datum.data);
             });
         });
-
-        return request;
     };
 
     return LivefyreStreamClient;
