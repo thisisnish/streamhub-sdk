@@ -65,7 +65,6 @@ describe('Default modal content card view', function () {
             modalView.render();
             expect(modalView.$el.html()).toContain('product-carousel');
             expect(modalView.$el.html()).toContain('buy-button');
-            expect(modalView.$el.html()).toContain('product-media');
             expect(modalView.$el.html()).toContain('product-name');
             expect(modalView.$el.html()).toContain('product-price');
         });
@@ -115,7 +114,6 @@ describe('Default modal content card view', function () {
                 productOptions: {detail: {photo: true, price: false, title: true}, show: true}
             });
             modalView.render();
-            expect(modalView.$el.html()).toContain('product-media');
             expect(modalView.$el.html()).toContain('product-name');
             expect(modalView.$el.html().indexOf('product-price') === -1).toBe(true);
         });
@@ -128,7 +126,6 @@ describe('Default modal content card view', function () {
                 productOptions: {detail: {photo: true, price: true, title: false}, show: true}
             });
             modalView.render();
-            expect(modalView.$el.html()).toContain('product-media');
             expect(modalView.$el.html().indexOf('product-name') === -1).toBe(true);
             expect(modalView.$el.html()).toContain('product-price');
         });

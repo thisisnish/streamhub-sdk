@@ -62,11 +62,32 @@ ProductBlockView.prototype.buildProductUrl = function () {
 ProductBlockView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this.opts);
     context.productButtonText = i18n.get('productButtonText', 'Buy Now');
-    context.productDetailPhotoShow = this.opts.productOptions.detail.photo;
     context.productDetailPriceShow = this.opts.productOptions.detail.price;
     context.productDetailTitleShow = this.opts.productOptions.detail.title;
     context.productUrl = this.buildProductUrl();
     return context;
+};
+
+/** @override */
+ProductBlockView.prototype.render = function () {
+    View.prototype.render.call(this);
+
+    var productOembed = this.opts.product.oembed || {};
+    if (!this.opts.productOptions.detail.photo || !productOembed.url) {
+        return this;
+    }
+
+    // Render the image directly here so that we can handle the case where it's
+    // a bad image. Don't want to show a dead section.
+    var destination = this.$el.find('a');
+    var img = new Image();
+    img.className = 'product-media';
+    img.alt = productOembed.title;
+    img.onload = function () {
+        destination.prepend(img);
+    }.bind(this);
+    img.src = productOembed.url;
+    return this;
 };
 
 module.exports = ProductBlockView;
