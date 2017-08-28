@@ -34,6 +34,27 @@ function(LivefyreHttpClient, inherits, base64) {
         return this._serviceName + '.' + environment;
     };
 
+    LivefyreBootstrapClient.prototype._getPath = function (opts) {
+        opts = opts || {};
+        var environment = opts.environment = opts.environment || 'livefyre.com';
+        var includeEnvironment = !this._isProdEnvironment(environment) &&
+            environment !== 'fyre' && environment !== 'fy.re';
+        return [
+            this._getUrlBase(opts),
+            '/bs3/',
+            this._version ? this._version + '/' : '',
+            includeEnvironment ? opts.environment + '/' : '',
+            opts.network,
+            '/',
+            opts.siteId,
+            '/',
+            base64.url.btoa(opts.articleId.toString()),
+            '/',
+            typeof opts.page !== 'undefined' ? opts.page + '.json' : 'init',
+            '?transform=true'
+        ].join('');
+    };
+
     /**
      * Fetches data from the livefyre bootstrap service with the arguments given.
      * @param opts {Object} The livefyre collection options.
@@ -49,29 +70,7 @@ function(LivefyreHttpClient, inherits, base64) {
      *     bootstrap request. Callback signature is 'function(error, data)'.
      */
     LivefyreBootstrapClient.prototype.getContent = function(opts, callback) {
-        opts = opts || {};
-        callback = callback || function() {};
-        var environment = opts.environment = opts.environment || 'livefyre.com';
-        var includeEnvironment = !this._isProdEnvironment(environment) &&
-            environment !== 'fyre' && environment !== 'fy.re';
-        var url = [
-            this._getUrlBase(opts),
-            '/bs3/',
-            this._version ? this._version + '/' : '',
-            includeEnvironment ? opts.environment + '/' : '',
-            opts.network,
-            '/',
-            opts.siteId,
-            '/',
-            base64.url.btoa(opts.articleId.toString()),
-            '/',
-            typeof opts.page !== 'undefined' ? opts.page+'.json' : 'init',
-            '?transform=true'
-        ].join('');
-
-        this._request({
-            url: url
-        }, callback);
+        this._request({url: this._getPath(opts)}, callback || function() {});
     };
 
     return LivefyreBootstrapClient;

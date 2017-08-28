@@ -2,6 +2,8 @@ define([
     'streamhub-sdk/jquery',
     'streamhub-sdk/collection/streams/archive',
     'streamhub-sdk/collection/streams/updater',
+    'streamhub-sdk/collection/streams/archive-query',
+    'streamhub-sdk/collection/streams/updater-query',
     'streamhub-sdk/collection/streams/writer',
     'streamhub-sdk/collection/sorted',
     'streamhub-sdk/collection/featured-contents',
@@ -15,7 +17,8 @@ define([
     'inherits',
     'streamhub-sdk/debug',
     'mout/object/merge'],
-function ($, CollectionArchive, CollectionUpdater, CollectionWriter, SortedCollection,
+function ($, CollectionArchive, CollectionUpdater, QueryCollectionArchive,
+        QueryCollectionUpdater, CollectionWriter, SortedCollection,
         FeaturedContents, Duplex, LivefyreBootstrapClient, LivefyreCreateClient,
         LivefyrePermalinkClient, LivefyreWriteClient, fetchContent, Auth, inherits,
         debug, merge) {
@@ -39,6 +42,7 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, SortedColle
         this.siteId = opts.siteId;
         this.articleId = opts.articleId;
         this.environment = opts.environment;
+        this.queries = [];
 
         this._collectionMeta = opts.collectionMeta;
         this._signed = opts.signed;
@@ -78,8 +82,14 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, SortedColle
         opts = opts || {};
         opts.collection = this;
         opts.bootstrapClient = opts.bootstrapClient || this._bootstrapClient;
+        opts.queries = this.queries;
         opts.replies = opts.replies || this._replies;
-        return new CollectionArchive(opts);
+
+        var Archive = this.queries.length ?
+            QueryCollectionArchive :
+            CollectionArchive;
+
+        return new Archive(opts);
     };
 
 
@@ -89,12 +99,18 @@ function ($, CollectionArchive, CollectionUpdater, CollectionWriter, SortedColle
      */
     Collection.prototype.createUpdater = function (opts) {
         opts = opts || {};
-        return new CollectionUpdater({
+
+        var Updater = this.queries.length ?
+            QueryCollectionUpdater :
+            CollectionUpdater;
+
+        return new Updater({
             collection: this,
-            streamClient: opts.streamClient,
-            replies: this._replies,
+            createAnnotator: opts.createAnnotator,
             createStateToContent: opts.createStateToContent,
-            createAnnotator: opts.createAnnotator
+            queries: this.queries,
+            replies: this._replies,
+            streamClient: opts.streamClient
         });
     };
 

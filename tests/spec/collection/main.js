@@ -3,7 +3,9 @@ define([
     'streamhub-sdk-tests/mocks/collection/mock-collection',
     'streamhub-sdk-tests/mocks/collection/clients/mock-permalink-client',
     'streamhub-sdk/collection/streams/archive',
+    'streamhub-sdk/collection/streams/archive-query',
     'streamhub-sdk/collection/streams/updater',
+    'streamhub-sdk/collection/streams/updater-query',
     'streamhub-sdk/collection/streams/writer',
     'streamhub-sdk/collection/featured-contents',
     'streamhub-sdk/content/views/content-list-view',
@@ -12,8 +14,8 @@ define([
     'stream/writable',
     'stream/readable'
 ], function (Collection, MockCollection, MockLivefyrePermalinkClient, CollectionArchive,
-CollectionUpdater, CollectionWriter, FeaturedContents, ContentListView, Content,
-Auth, Writable, Readable) {
+QueryCollectionArchive, CollectionUpdater, QueryCollectionUpdater, CollectionWriter,
+FeaturedContents, ContentListView, Content, Auth, Writable, Readable) {
     'use strict';
 
     describe('streamhub-sdk/collection', function () {
@@ -127,9 +129,15 @@ Auth, Writable, Readable) {
             });
 
             describe('.createArchive', function () {
-                it('returns a readable CollectionArchive Stream', function () {
+                it('returns a readable CollectionArchive Stream by default', function () {
                     var archive = collection.createArchive();
                     expect(archive instanceof CollectionArchive).toBe(true);
+                });
+                it('returns a readable QueryCollectionArchive Stream if queries are present', function () {
+                    collection.queries = ['abc'];
+                    var archive = collection.createArchive();
+                    expect(archive instanceof QueryCollectionArchive).toBe(true);
+                    collection.queries = [];
                 });
                 it('archive._replies mirrors collection._replies', function () {
                     var collection = new Collection({ replies: true });
@@ -139,9 +147,15 @@ Auth, Writable, Readable) {
             });
 
             describe('.createUpdater', function () {
-                it('returns a readable CollectionUpdater Stream', function () {
+                it('returns a readable CollectionUpdater Stream by default', function () {
                     var updater = collection.createUpdater();
                     expect(updater instanceof CollectionUpdater).toBe(true);
+                });
+                it('returns a readable QueryCollectionUpdater Stream if queries are present', function () {
+                    collection.queries = ['abc'];
+                    var updater = collection.createUpdater();
+                    expect(updater instanceof QueryCollectionUpdater).toBe(true);
+                    collection.queries = [];
                 });
                 it('updater._replies mirrors collection._replies', function () {
                     var collection = new Collection({ replies: true });
