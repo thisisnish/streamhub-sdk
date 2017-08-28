@@ -124,14 +124,25 @@ ListView.prototype.showMoreElSelector = '> .hub-list-more';
 var comparators;
 ListView.prototype.comparators = comparators = {
     CREATEDAT_ASCENDING: function (a, b) {
-        var aDate = getContentViewDate(a);
-            bDate = getContentViewDate(b);
-        return aDate - bDate;
+        return getContentViewDate(a) - getContentViewDate(b);
     },
     CREATEDAT_DESCENDING: function (a, b) {
         return -1 * comparators.CREATEDAT_ASCENDING(a, b);
+    },
+    SORT_ORDER_ASCENDING: function (a, b) {
+        return getSortOrder(a) - getSortOrder(b);
+    },
+    SORT_ORDER_DESCENDING: function (a, b) {
+        return -1 * comparators.SORT_ORDER_ASCENDING(a, b);
     }
 };
+
+/**
+ * Given a ContentView, get the sortOrder.
+ */
+function getSortOrder(view) {
+    return view.content.meta.content.sortOrder;
+}
 
 /**
  * Given a ContentView, get a date object to use when sorting the most common

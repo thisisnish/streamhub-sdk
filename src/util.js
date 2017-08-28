@@ -74,24 +74,23 @@ define([
                 array.push(value);
                 return;
             }
-            if (getValue(value) < getValue(array[end])) {
+            if (val < getValue(array[end])) {
                 array.splice(end + 1, 0, value);
                 return;
             }
-            if (getValue(value) > getValue(array[start])) {
+            if (val > getValue(array[start])) {
                 array.splice(start, 0, value);
                 return;
             }
             if (start >= end) {
                 return;
             }
-            if (getValue(value) > getValue(array[m])) {
+            if (val > getValue(array[m])) {
                 _binaryInsert(array, value, start, m - 1);
                 return;
             }
-            if (getValue(value) < getValue(array[m])) {
+            if (val < getValue(array[m])) {
                 _binaryInsert(array, value, m + 1, end);
-                return;
             }
         }
 
