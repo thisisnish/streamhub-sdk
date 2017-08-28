@@ -1,3 +1,5 @@
+var clone = require('mout/lang/clone');
+var CollectionArchive = require('streamhub-sdk/collection/streams/archive');
 var MockCollection = require('streamhub-sdk-tests/mocks/collection/mock-collection');
 var queryBootstrapJson = require('json!streamhub-sdk-tests/fixtures/query-bootstrap.json');
 var QueryCollectionArchive = require('streamhub-sdk/collection/streams/archive-query');
@@ -18,6 +20,7 @@ describe('QueryCollectionArchive', function () {
     var collection;
 
     beforeEach(function () {
+        spyOn(CollectionArchive.prototype, '_contentsFromBootstrapDoc').andCallThrough();
         collection = new MockCollection();
         collection.articleId = 'article123';
         collection.environment = 'livefyre.com';
@@ -30,6 +33,23 @@ describe('QueryCollectionArchive', function () {
     it('creates an instance and has correct properties', function () {
         expect(archive instanceof QueryCollectionArchive).toBe(true);
         expect(archive._queries).toEqual(['abc', 'def']);
+    });
+
+    describe('_contentsFromBootstrapDoc', function () {
+        it('adds a sortOrder if there isn\'t one', function () {
+            var bsDoc = clone(queryBootstrapJson);
+            archive._queryModifier = 0;
+            archive._contentsFromBootstrapDoc(bsDoc, {});
+            var content = bsDoc.content[0].content;
+            expect(content.sortOrder).toEqual(content.createdAt);
+        });
+
+        it('modifies the sortOrder based on the _queryModifier', function () {
+            var bsDoc = clone(queryBootstrapJson);
+            archive._contentsFromBootstrapDoc(bsDoc, {});
+            var content = bsDoc.content[0].content;
+            expect(content.sortOrder).toEqual(20001503075880);
+        });
     });
 
     describe('_getBootstrapClientOptions', function () {
@@ -85,15 +105,19 @@ describe('QueryCollectionArchive', function () {
 
     describe('_processPagination', function () {
         it('removes a query if no more', function () {
-            archive._processPagination({hasMore: false, cursor: {previous: '012', next: '123'}});
+            expect(archive._queryModifier).toBe(2);
+            archive._processPagination({hasMore: false, cursors: {previous: '012', next: '123'}});
             expect(archive._cursor).toBe(null);
             expect(archive._queries).toEqual(['def']);
+            expect(archive._queryModifier).toBe(1);
         });
 
         it('updates the instance cursor if there are more', function () {
-            archive._processPagination({hasMore: true, cursor: {previous: '012', next: '123'}});
+            expect(archive._queryModifier).toBe(2);
+            archive._processPagination({hasMore: true, cursors: {previous: '012', next: '123'}});
             expect(archive._cursor).toEqual({previous: '012', next: '123'});
             expect(archive._queries).toEqual(['abc', 'def']);
+            expect(archive._queryModifier).toBe(2);
         });
     });
 

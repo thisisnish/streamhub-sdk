@@ -44,8 +44,30 @@ function QueryCollectionArchive(opts) {
      * @private
      */
     this._queries = clone(opts.queries);
+
+    /**
+     * Query modifier for updating the sortOrder on the content.
+     * @type {number}
+     * @private
+     */
+    this._queryModifier = opts.queries.length;
 }
 inherits(QueryCollectionArchive, CollectionArchive);
+
+/**
+ * Overriding because the content sortOrder need to be tweaked to ensure that
+ * the contents from the first query id show up on top.
+ * @override
+ */
+QueryCollectionArchive.prototype._contentsFromBootstrapDoc = function (bootstrapDoc, opts) {
+    (bootstrapDoc.content || []).forEach(function (content) {
+        if (!content.content.sortOrder) {
+            content.content.sortOrder = content.content.createdAt;
+        }
+        content.content.sortOrder += 10e12 * this._queryModifier;
+    }.bind(this));
+    return CollectionArchive.prototype._contentsFromBootstrapDoc.call(this, bootstrapDoc, opts);
+};
 
 /** @override */
 QueryCollectionArchive.prototype._getBootstrapClientOptions = function () {
@@ -96,10 +118,11 @@ QueryCollectionArchive.prototype._processPagination = function (paging) {
     // list and clear the cursor. If there are no more queries, we're done.
     if (!(paging || {}).hasMore) {
         this._queries.splice(0, 1);
+        this._queryModifier--;
         this._cursor = null;
         return;
     }
-    this._cursor = paging.cursor;
+    this._cursor = paging.cursors;
 };
 
 /** @override */

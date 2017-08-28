@@ -1,11 +1,23 @@
 var $ = require('streamhub-sdk/jquery');
 var debounce = require('mout/function/debounce');
+var enums = require('streamhub-sdk/enums');
 var findIndex = require('mout/array/findIndex');
 var inherits = require('inherits');
+var ListView = require('streamhub-sdk/views/list-view');
 var ModalContentCardView = require('streamhub-sdk/content/views/modal-content-card-view');
 var template = require('hgn!streamhub-sdk/content/templates/carousel-content-view');
 var util = require('streamhub-sdk/util');
 var View = require('view');
+
+// Set up a comparator map so that the ListView comparator can be mapped to a
+// more common string value that can be easily used instead of trying to figure
+// out what the function comparator is.
+var COMPARATORS = ListView.prototype.comparators;
+var COMPARATOR_MAP = {};
+COMPARATOR_MAP[COMPARATORS.CREATEDAT_ASCENDING] = enums.SORT_ORDER.CREATED_AT_ASC;
+COMPARATOR_MAP[COMPARATORS.CREATEDAT_DESCENDING] = enums.SORT_ORDER.CREATED_AT_DESC;
+COMPARATOR_MAP[COMPARATORS.SORT_ORDER_ASCENDING] = enums.SORT_ORDER.SORT_ORDER_ASC;
+COMPARATOR_MAP[COMPARATORS.SORT_ORDER_DESCENDING] = enums.SORT_ORDER.SORT_ORDER_DESC;
 
 /**
  * Navigatable content viev. If the collection is provided, navigation
@@ -45,6 +57,10 @@ function CarouselContentView(opts) {
     if (!this.collection) {
         return;
     }
+
+    // Change the sort order of the collection to the order of the parent list
+    // view so the content is consistent.
+    this.collection.setSortOrder(COMPARATOR_MAP[this.listView.comparator]);
 
     // Find the currently content's index within the collection so that the
     // navigation and arrows can be maintained.
