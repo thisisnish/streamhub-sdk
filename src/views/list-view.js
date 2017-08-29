@@ -2,6 +2,7 @@ var $ = require('streamhub-sdk/jquery');
 var inherits = require('inherits');
 var debug = require('streamhub-sdk/debug');
 var EventEmitter = require('event-emitter');
+var get = require('mout/object/get');
 var View = require('streamhub-sdk/view');
 var Writable = require('stream/writable');
 var ListViewTemplate = require('hgn!streamhub-sdk/views/templates/list-view');
@@ -138,10 +139,10 @@ ListView.prototype.comparators = comparators = {
 };
 
 /**
- * Given a ContentView, get the sortOrder.
+ * Given a ContentView, get the sortOrder. Falls back to the content view date.
  */
 function getSortOrder(view) {
-    return view.content.meta.content.sortOrder;
+    return get(view, 'content.meta.content.sortOrder') || 0;
 }
 
 /**
@@ -151,7 +152,7 @@ function getSortOrder(view) {
 function getContentViewDate(contentView) {
     var content = contentView.content;
     // if sortOrder on content, cast to date
-    var sortOrder = content.sortOrder;
+    var sortOrder = get(content, 'meta.content.sortOrder') || content.sortOrder;
     if (typeof sortOrder === 'number') {
         return new Date(sortOrder * 1000);
     }
