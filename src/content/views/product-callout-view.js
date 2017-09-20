@@ -23,8 +23,7 @@ ProductCalloutView.prototype.getTemplateContext = function () {
     var productIndicationText = i18n.get('productIndicationText', 'Shop').trim();
     return {
         productIndicationText: productIndicationText,
-        productIndicationShow: productIndicationText.length > 0,
-        showProduct: this.opts.productOptions.show
+        productIndicationShow: productIndicationText.length > 0
     };
 };
 
@@ -34,16 +33,12 @@ ProductCalloutView.prototype.getTemplateContext = function () {
 ProductCalloutView.prototype.createPopover = function () {
     if (this.popover) {
         document.getElementById(this.popoverDivClass).appendChild(this.popover.el);
-        this.popover.resizeAndReposition(this.el.children[0]);
-        this.popover.setProductPopoverWidth(this.el.children[0]);
-        this.popover.positionArrowSmart(this.el.children[0]);
+        this.sizeAndPosition();
         return;
     }
 
     var product_popup = new ProductCarouselView($.extend({cardsInView: 2}, this.opts));
     product_popup.render();
-
-    var width = this.$el.width();
 
     var $el = $(document.createElement('div'));
     $el.attr('id', this.popoverDivClass);
@@ -60,13 +55,32 @@ ProductCalloutView.prototype.createPopover = function () {
     this.popover._position = Popover.POSITIONS.SMART_TOP;
     this.popover.setContentNode(product_popup.el);
 
-    this.popover.resizeAndReposition(this.el.children[0]);
-    this.popover.setProductPopoverWidth(this.el.children[0]);
-    this.popover.positionArrowSmart(this.el.children[0]); 
+    this.sizeAndPosition();
 
     this.popover.$el.on('mouseleave', function() {
         $(this).detach();
     });
+};
+
+ProductCalloutView.prototype.render = function () {
+    View.prototype.render.call(this);
+    return this;
+};
+
+ProductCalloutView.prototype.sizeAndPosition = function () {
+    var parentEl = this.el.parentElement;
+    var shopBtn = this.el.children[0];
+
+    if (parentEl.offsetWidth === this.el.offsetWidth) {
+        this.popover.resizeAndReposition(shopBtn);
+        this.popover.setProductPopoverWidth(shopBtn);
+        this.popover.positionArrowSmart(shopBtn);
+        return;
+    }
+
+    this.popover.resizeAndReposition(this.el);
+    this.popover.setProductPopoverWidth(this.el);
+    this.popover.positionArrowSmart(this.el);
 };
 
 ProductCalloutView.prototype.events = View.prototype.events.extended({

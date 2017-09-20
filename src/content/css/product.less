@@ -1,6 +1,7 @@
 @import (reference) "../../css/fycons.less";
 @import (reference) "lib/livefyre-bootstrap/src/styles/fycon-chars.less";
 @import (reference) "lib/livefyre-bootstrap/src/styles/mixins.less";
+@import (reference) "lib/livefyre-bootstrap/src/styles/popovers.less";
 @import "lib/streamhub-input/src/styles/streamhub-input.less";
 
 @default_font_family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -155,6 +156,7 @@
 }
 
 .lf-product-popover {
+  &:extend(.lf-popover);
   .border-radius(3px);
   background-color: #ffffff;
   padding: 0;
