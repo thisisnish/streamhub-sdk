@@ -31,7 +31,7 @@ var ContentListView = function (opts) {
     this.hideSocialBrandingWithRights = opts.hideSocialBrandingWithRights;
 
     // Query collections should use the sortOrder descending sort order.
-    if (((this._collection || {}).queries || []).length) {
+    if (((opts.collection || {}).queries || []).length) {
         opts.comparator = this.comparators.SORT_ORDER_DESCENDING;
     }
 
