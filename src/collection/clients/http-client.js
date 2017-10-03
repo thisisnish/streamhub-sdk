@@ -12,18 +12,7 @@ define(['streamhub-sdk/jquery'], function($) {
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
         this._serviceName = opts.serviceName;
-        this._protocol = opts.protocol || getDefaultProtocol();
-        if (this._protocol.slice(-1) !== ':') {
-            this._protocol += ':';
-        }
     };
-
-    /**
-     * to avoid security vunerability only use https
-     */
-    function getDefaultProtocol() {
-        return 'https:';
-    }
 
     /**
      * Make an HTTP Request
@@ -82,8 +71,7 @@ define(['streamhub-sdk/jquery'], function($) {
      */
     LivefyreHttpClient.prototype._getUrlBase = function (opts) {
         return [
-            this._protocol,
-            '//',
+            'https://',
             this._getHost(opts)
         ].join('');
     };

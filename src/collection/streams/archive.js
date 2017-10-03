@@ -205,7 +205,7 @@ inherits) {
      * Convert a bootstrapDocument to an array of Content models
      * @private
      * @param bootstrapDocument {object} an object with content and authors keys
-     *     e.g. http://bootstrap.livefyre.com/bs3/livefyre.com/4/NTg0/0.json
+     *     e.g. https://bootstrap.livefyre.com/bs3/livefyre.com/4/NTg0/0.json
      * @return {Content[]} An array of Content models
      */
     CollectionArchive.prototype._contentsFromBootstrapDoc = function (bootstrapDoc, opts) {

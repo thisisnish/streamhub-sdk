@@ -11,7 +11,7 @@ function (Collection, ListView, auth) {
     //         });
     //     }
     // });
-    auth.delegate(auth.createDelegate('http://livefyre.com'));
+    auth.delegate(auth.createDelegate('https://www.livefyre.com'));
 
     var opts = {
         "network": "livefyre.com",
