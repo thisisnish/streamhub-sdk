@@ -70,10 +70,7 @@ define(['streamhub-sdk/jquery'], function($) {
      * @param opts.environment {string=} StreamHub environment
      */
     LivefyreHttpClient.prototype._getUrlBase = function (opts) {
-        return [
-            'https://',
-            this._getHost(opts)
-        ].join('');
+        return 'https://' + this._getHost(opts);
     };
 
     /**
