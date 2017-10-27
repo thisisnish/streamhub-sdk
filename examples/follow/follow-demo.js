@@ -15,7 +15,7 @@ $, ListView, Collection, Content, Auth, Followers) {
     var log = debug('streamhub-sdk/auth-demo');
     var authButton = createAuthButton(auth, document.getElementById('auth-button'));
 
-    var delegate = window.delegate = livefyreAuthDelegate('http://qa-ext.livefyre.com');
+    var delegate = window.delegate = livefyreAuthDelegate('https://qa-ext.livefyre.com');
     auth.delegate(delegate);
 
 

@@ -36,7 +36,7 @@ You can use streamhub-sdk either by including a built version from Livefyre.js o
 
 To include it in your page from the CDN, add a script tag to your HTML file.
 
-    <script src="http://cdn.livefyre.com/Livefyre.js"></script>
+    <script src="https://cdn.livefyre.com/Livefyre.js"></script>
 
 Then use `Livefyre.require` to load streamhub-sdk
 
@@ -63,10 +63,6 @@ Run a web server for the project
     npm start
 
 Then check out [http://localhost:8080/examples/listview](http://localhost:8080/examples/listview) for an example of `streamhub-sdk/views/list-view`
-
-## API Documentation
-
-The full jsdoc documentation can be found at http://livefyre.github.io/streamhub-sdk
 
 ## Streams
 
