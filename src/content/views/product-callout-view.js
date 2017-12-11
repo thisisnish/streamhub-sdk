@@ -9,6 +9,9 @@ var Popover = require('streamhub-ui/popover');
 'use strict';
 
 function ProductCalloutView(opts) {
+    if (!opts.hasOwnProperty('popoverEnabled')) {
+        opts.popoverEnabled = true;
+    }
     opts.dataAttr = opts.dataAttr || {};
     View.call(this, opts);
 }
@@ -37,7 +40,7 @@ ProductCalloutView.prototype.createPopover = function () {
         return;
     }
 
-    var product_popup = new ProductCarouselView($.extend({cardsInView: 2}, this.opts));
+    var product_popup = new ProductCarouselView($.extend({ cardsInView: 2 }, this.opts));
     product_popup.render();
 
     var $el = $(document.createElement('div'));
@@ -50,21 +53,35 @@ ProductCalloutView.prototype.createPopover = function () {
     this.popover = new Popover({
         el: $childEl
     });
-    
+
     this.popover.$el.addClass(this.productPopoverClass);
     this.popover._position = Popover.POSITIONS.SMART_TOP;
     this.popover.setContentNode(product_popup.el);
 
     this.sizeAndPosition();
 
-    this.popover.$el.on('mouseleave', function() {
+    this.popover.$el.on('mouseleave', function () {
         $(this).detach();
     });
 };
 
+ProductCalloutView.prototype.setNewOpts = function (newOpts) {
+    var opts = newOpts;
+    opts.el = this.opts.el;
+    opts.dataAttr = this.opts.dataAttr;
+    opts.popoverEnabled = this.opts.hasOwnProperty('popoverEnabled') ? this.opts.popoverEnabled : true;
+}
+
 ProductCalloutView.prototype.render = function () {
-    View.prototype.render.call(this);
-    return this;
+    var productOptions = this.opts.productOptions;
+    var hasProducts = this.opts.content && this.opts.content.hasProducts();
+    if (hasProducts && productOptions && productOptions.show && productOptions.showCallout) {
+        View.prototype.render.call(this);
+        return this;
+    } else {
+        this.el.innerHTML = '';
+    }
+    return;
 };
 
 ProductCalloutView.prototype.sizeAndPosition = function () {
@@ -77,21 +94,21 @@ ProductCalloutView.prototype.sizeAndPosition = function () {
         this.popover.positionArrowSmart(shopBtn);
         return;
     }
-
-    this.popover.resizeAndReposition(this.el);
+    
+    this.popover.resizeAndReposition(shopBtn);
     this.popover.setProductPopoverWidth(this.el);
-    this.popover.positionArrowSmart(this.el);
+    this.popover.positionArrowSmart(shopBtn);
 };
 
 ProductCalloutView.prototype.events = View.prototype.events.extended({
-    'mouseover .product-shop-button': function(e) {
-         if (!this.opts.popoverEnabled) {
+    'mouseover .product-shop-button': function (e) {
+        if (!this.opts.popoverEnabled) {
             return;
         }
         this.createPopover();
     },
 
-    'mouseleave': function(e) {
+    'mouseleave': function (e) {
         if (!this.popover) {
             return;
         }
@@ -100,9 +117,9 @@ ProductCalloutView.prototype.events = View.prototype.events.extended({
 
         }).bind(this.popover.$el);
 
-        var tOut = setTimeout(function() {hidePopover()}, 100);
-        
-        $(this.popover.$el).mouseover(function() { clearTimeout(tOut); });
+        var tOut = setTimeout(function () { hidePopover() }, 100);
+
+        $(this.popover.$el).mouseover(function () { clearTimeout(tOut); });
     }
 });
 
