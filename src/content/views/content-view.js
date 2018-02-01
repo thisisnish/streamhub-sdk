@@ -6,6 +6,7 @@ var ContentFooterView = require('streamhub-sdk/content/views/content-footer-view
 var ContentHeaderView = require('streamhub-sdk/content/views/content-header-view');
 var ContentHeaderViewFactory = require('streamhub-sdk/content/content-header-view-factory');
 var ContentThumbnailViewFactory = require('streamhub-sdk/content/content-thumbnail-view-factory');
+var ProductCalloutView = require('streamhub-sdk/content/views/product-callout-view');
 var debug = require('debug');
 var get = require('mout/object/get');
 var hasSpectrum = require('streamhub-sdk/content/views/mixins/spectrum-content-view-mixin');
@@ -48,7 +49,7 @@ var ContentView = function (opts) {
     impressionUtil.recordImpression(opts.content);
 
     if (this.content) {
-        this.content.on("change:visibility", function(newVis, oldVis) {
+        this.content.on("change:visibility", function (newVis, oldVis) {
             this._handleVisibilityChange(newVis, oldVis);
         }.bind(this));
 
@@ -56,11 +57,11 @@ var ContentView = function (opts) {
             this._handleFeaturedChange(newVal, oldVal);
         }.bind(this));
 
-        this.content.on("change:body", function(newVal, oldVal){
+        this.content.on("change:body", function (newVal, oldVal) {
             this._handleBodyChange();
         }.bind(this));
 
-        this.content.on("change:attachments", function(newVal, oldVal){
+        this.content.on("change:attachments", function (newVal, oldVal) {
             this._handleAttachmentsChange();
         }.bind(this));
 
@@ -86,14 +87,14 @@ ContentView.prototype.attachmentsElSelector = '.content-attachments';
 ContentView.prototype.attachmentFrameElSelector = '.content-attachment-frame';
 
 ContentView.prototype.events = CompositeView.prototype.events.extended({
-    'imageLoaded.hub': function(e) {
+    'imageLoaded.hub': function (e) {
         this.$el.addClass(this.contentWithImageClass);
         this.$el.removeClass(this.imageLoadingClass);
 
         e.stopPropagation();
         this.$el.parent().trigger('imageLoaded.hub', { contentView: this });
     },
-    'imageError.hub': function(e, oembed) {
+    'imageError.hub': function (e, oembed) {
         this.content.removeAttachment(oembed);
 
         if (this._thumbnailAttachmentsView && !this._thumbnailAttachmentsView.tileableCount()) {
@@ -111,10 +112,13 @@ ContentView.prototype.events = CompositeView.prototype.events.extended({
  * @param {boolean=} shouldRender
  */
 ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
-    var renderOpts = {render: !!shouldRender};
+    var renderOpts = { render: !!shouldRender };
 
     this._headerView = opts.headerView || this._headerViewFactory.createHeaderView(opts.content);
     this.add(this._headerView, renderOpts);
+
+    this._calloutView = opts.calloutView || new ProductCalloutView(opts);
+    this.add(this._calloutView, renderOpts);
 
     this._thumbnailAttachmentsView = this._thumbnailViewFactory.createThumbnailView(opts);
     this._blockAttachmentsView = new BlockAttachmentListView(opts);
@@ -131,6 +135,7 @@ ContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
 ContentView.prototype._removeInitialChildViews = function () {
     this._headerView && this.remove(this._headerView);
     this._attachmentsView && this.remove(this._attachmentsView);
+    this._calloutView && this.remove(this._calloutView);
     this._bodyView && this.remove(this._bodyView);
     this._footerView && this.remove(this._footerView);
 };
@@ -183,7 +188,7 @@ ContentView.prototype.remove = function () {
  * @param oldVis {string} Content.enum.visibility
  * @param newVis {string} Content.enum.visibility
  */
-ContentView.prototype._handleVisibilityChange = function(newVis, oldVis) {
+ContentView.prototype._handleVisibilityChange = function (newVis, oldVis) {
     if (newVis !== 'EVERYONE') {
         this.remove();
     }
@@ -207,6 +212,14 @@ ContentView.prototype.destroy = function () {
     this.content = null;
 };
 
+ContentView.prototype.setNewOpts = function (newOpts) {
+    var opts = newOpts;
+    opts.spectrum = this.opts.spectrum && hasSpectrum(this);
+    opts.el = this.opts.el;
+
+    this.opts = opts;
+};
+
 /**
  * Render the content inside of the ContentView's element.
  * @returns {ContentView}
@@ -225,6 +238,13 @@ ContentView.prototype.render = function () {
      */
     if (hasInnerHtmlBug = testHasInnerHtmlBug()) {
         this._footerView._detachButtons();
+    }
+
+    for (var i = 0; i < this._childViews.length; i++) {
+        var view = this._childViews[i];
+        if (view.setNewOpts) {
+            view.setNewOpts(this.opts);
+        }
     }
 
     CompositeView.prototype.render.call(this);
