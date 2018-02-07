@@ -75,7 +75,10 @@ ProductCalloutView.prototype.setNewOpts = function (newOpts) {
 ProductCalloutView.prototype.render = function () {
     var productOptions = this.opts.productOptions;
     var hasProducts = this.opts.content && this.opts.content.hasProducts();
-    if (hasProducts && productOptions && productOptions.show && productOptions.showCallout) {
+    var hasRights = productOptions &&
+        ((productOptions.requireRights && this.opts.content.hasRightsGranted()) ||
+            !productOptions.requireRights);
+    if (hasProducts && hasRights && productOptions.show && productOptions.showCallout) {
         View.prototype.render.call(this);
         return this;
     } else {
@@ -94,7 +97,7 @@ ProductCalloutView.prototype.sizeAndPosition = function () {
         this.popover.positionArrowSmart(shopBtn);
         return;
     }
-    
+
     this.popover.resizeAndReposition(shopBtn);
     this.popover.setProductPopoverWidth(this.el);
     this.popover.positionArrowSmart(shopBtn);
