@@ -1,8 +1,9 @@
 var $ = require('streamhub-sdk/jquery');
-var CompositeView = require('view/composite-view');
+var asMediaMaskMixin = require('streamhub-sdk/content/views/mixins/media-mask-mixin');
 var CarouselAttachmentListView = require('streamhub-sdk/content/views/carousel-attachment-list-view');
-var SingleAttachmentView = require('streamhub-sdk/content/views/single-attachment-view');
+var CompositeView = require('view/composite-view');
 var inherits = require('inherits');
+var SingleAttachmentView = require('streamhub-sdk/content/views/single-attachment-view');
 
 'use strict';
 
@@ -22,6 +23,7 @@ var AttachmentCarouselView = function (opts) {
     opts.carouselElementWidth = opts.carouselElementWidth || 90;
     CompositeView.call(this, opts);
     this._addInitialChildViews(opts);
+    asMediaMaskMixin(this, opts);
 };
 inherits(AttachmentCarouselView, CompositeView);
 
@@ -46,8 +48,11 @@ AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extende
 
 AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
     var index = $(this.attachmentSelector).index(e.currentTarget);
+    var oembedView = this._singleAttachmentView.oembedViews[index];
     this._singleAttachmentView.retile(index);
-    this._insertVideo(this._singleAttachmentView.oembedViews[index]);
+    this.renderMediaMask(oembedView.oembed, true, function () {
+        this._insertVideo(oembedView);
+    }.bind(this));
 };
 
 AttachmentCarouselView.prototype._insertVideo = function (oembedView) {
@@ -171,8 +176,14 @@ AttachmentCarouselView.prototype.render = function (view, opts) {
     CompositeView.prototype.render.call(this);
 
     this.$el.find(this.leftSelector).addClass(this.hideClass);
-    this._insertVideo(this._singleAttachmentView.oembedViews[0]);
     this._jsPositioning();
+
+    var oembedView = this._singleAttachmentView.oembedViews[0];
+
+    this.renderMediaMask(oembedView.oembed, true, function () {
+        this._insertVideo(oembedView);
+    }.bind(this));
+
     return this;
 };
 

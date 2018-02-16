@@ -116,6 +116,7 @@ CarouselContentView.prototype.events = View.prototype.events.extended({}, functi
 CarouselContentView.prototype.addContentToDOM = function (content) {
     this.view = new ModalContentCardView({
         content: content,
+        doNotTrack: this.opts.doNotTrack,
         hideSocialBrandingWithRights: this.opts.hideSocialBrandingWithRights,
         productOptions: this.opts.productOptions
     });

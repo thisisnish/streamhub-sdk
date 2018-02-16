@@ -59,14 +59,13 @@ inherits(ContentListView, ListView);
 // get initial value for this._maxVisibleItems
 // can be provided expliticly, or defaults to 'initial' || DEFAULT
 function maxVisibleItemsFromOpts(opts) {
-    var DEFAULT = 50;
     if ('maxVisibleItems' in opts) {
         return opts.maxVisibleItems;
-    } else if ('initial' in opts) {
-        return opts.initial
-    } else {
-        return DEFAULT
     }
+    if ('initial' in opts) {
+        return opts.initial;
+    }
+    return 50;
 };
 
 ContentListView.prototype.contentContainerClassName = 'hub-content-container';
@@ -205,10 +204,7 @@ ContentListView.prototype._extract = function (view) {
  * @returns {Boolean} Whether a content item can be displayed
  */
 ContentListView.prototype._hasVisibleVacancy = function () {
-    if (this.views.length > this._maxVisibleItems) {
-        return false;
-    }
-    return true;
+    return this.views.length <= this._maxVisibleItems;
 };
 
 /**
@@ -266,11 +262,16 @@ ContentListView.prototype.getContentView = function (newContent) {
  * @returns {ContentView} A new content view object for the given piece of content.
  */
 ContentListView.prototype.createContentView = function (content) {
-    var view = this.contentViewFactory.createContentView(content, {
+    return this.contentViewFactory.createContentView(content, {
+        doNotTrack: this.opts.doNotTrack || {},
         liker: this._liker,
-        sharer: this._sharer
+        sharer: this._sharer,
+        // For the DNT maps integration. Normally, content list views don't show
+        // the masks because the content lives within a modal. But since maps
+        // is an odd case, it needs to know if it can show the mask or not.
+        showMask: !!this.opts.showMask,
+        spectrum: !!this.opts.spectrum
     });
-    return view;
 };
 
 ContentListView.prototype.destroy = function () {

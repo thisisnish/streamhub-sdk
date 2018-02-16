@@ -156,10 +156,7 @@ function($, View, OembedView, AttachmentListTemplate, inherits) {
      * @returns {OembedView}
      */
     AttachmentListView.prototype._createOembedView = function(oembed) {
-        var oembedView = new OembedView({
-            oembed: oembed
-        });
-        return oembedView;
+        return new OembedView({oembed: oembed});
     };
 
     /**
