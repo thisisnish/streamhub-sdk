@@ -20,6 +20,7 @@ SpectrumContentHeaderView.prototype.getTemplateContext = function () {
     if (this.createdAt) {
         context.formattedCreatedAt = util.formatDate(this.createdAt);
         context.createdAtUrl = this.createdAtUrl;
+        context.isoCreatedAt = this.createdAt.toISOString();
     }
     return context;
 };

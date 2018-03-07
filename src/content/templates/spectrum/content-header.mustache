@@ -39,7 +39,8 @@
             {{#createdAtUrl}}
             <a href="{{createdAtUrl}}" target="_blank">
             {{/createdAtUrl}}
-            {{{formattedCreatedAt}}}
+             <span class="short-content-timestamp" aria-hidden="true">{{{formattedCreatedAt}}}</span>
+             <span class="readable-content-timestamp">{{{isoCreatedAt}}}</span>
             {{#createdAtUrl}}
             </a>
             {{/createdAtUrl}}
