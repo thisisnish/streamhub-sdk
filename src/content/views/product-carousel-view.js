@@ -1,4 +1,5 @@
 var $ = require('streamhub-sdk/jquery');
+var filter = require('mout/array/filter');
 var get = require('mout/object/get');
 var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
@@ -31,6 +32,12 @@ var ProductCarouselView = function (opts) {
      * @type {Array.<Object>}
      */
     this.products = get(opts, 'content.links.product') || [];
+
+    // The product filter will filter out products from the list.
+    var productFilter = opts.productOptions.filter;
+    if (typeof productFilter === 'function') {
+        this.products = filter(this.products, productFilter);
+    }
 
     /**
      * Left-most index within `this.products` of products that are currently
@@ -149,14 +156,15 @@ ProductCarouselView.prototype.navigate = function (dir) {
 
 /** @override */
 ProductCarouselView.prototype.render = function (view, opts) {
+    // No products, nothing to do.
+    if (!this.products || !this.products.length) {
+        this.$el.hide();
+        return this;
+    }
+
     this.$el.addClass(this.sizePrefixClass + this.cardsInView);
     this.$el.html(this.template(this.getTemplateContext()));
     this.updateNavigationButtons();
-
-    // No products, nothing to do.
-    if (!this.products || !this.products.length) {
-        return this;
-    }
 
     var numProducts = this.products.length;
     var cardsToShow = this.cardsInView > numProducts ? numProducts : this.cardsInView;
