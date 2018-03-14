@@ -12,6 +12,16 @@ define(['streamhub-sdk/jquery'], function($) {
     var LivefyreHttpClient = function (opts) {
         opts = opts || {};
         this._serviceName = opts.serviceName;
+
+        /**
+         * If the user has requested not to be tracked by web sites, content,
+         * or advertising. This can either be determined by the Livefyre
+         * property being set by a customer or by the `doNotTrack` property
+         * being set by the browser.
+         * @type {boolean}
+         * @private
+         */
+        this._doNotTrack = (window.Livefyre || {}).userPrivacyOptOut || window.navigator.doNotTrack === '1';
     };
 
     /**
@@ -27,6 +37,7 @@ define(['streamhub-sdk/jquery'], function($) {
         callback = callback || function() {};
         var xhr = $.ajax({
             type: opts.method || 'GET',
+            headers: this._getHeaders(opts),
             url: opts.url,
             data: opts.data,
             dataType: opts.dataType || this._getDataType()
@@ -54,13 +65,26 @@ define(['streamhub-sdk/jquery'], function($) {
     };
 
     /**
-     * Get the $.ajax dataType to use
+     * Get the $.ajax dataType to use.
+     * @return {string}
      */
     LivefyreHttpClient.prototype._getDataType = function () {
-        if ($.support.cors) {
-            return 'json';
+        return $.support.cors ? 'json' : 'jsonp';
+    };
+
+    /**
+     * Get headers for the request.
+     * @param {Object} opts
+     * @return {Object}
+     */
+    LivefyreHttpClient.prototype._getHeaders = function (opts) {
+        var headers = {};
+
+        // Add Do Not Track (DNT) header only if it's set to not track.
+        if (this._doNotTrack) {
+            headers['X-DNT'] = 1;
         }
-        return 'jsonp';
+        return headers;
     };
 
     /**

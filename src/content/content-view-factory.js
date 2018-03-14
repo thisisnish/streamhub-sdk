@@ -80,9 +80,14 @@ ContentViewFactory.prototype.contentRegistry = [
         typeUrn: TYPE_URNS.LIVEFYRE_YOUTUBE, mixin: function(view) { return ThemeMixin(view, 'content-youtube') }  }
 ];
 
-ContentViewFactory.prototype._createAttachmentsView = function (content) {
-    var opts = { content: content };
-    return new CompositeView(new TiledAttachmentListView(opts), new BlockAttachmentListView(opts))
+ContentViewFactory.prototype._createAttachmentsView = function (content, opts) {
+    opts = opts || {};
+    var cfg = {
+        content: content,
+        doNotTrack: opts.doNotTrack,
+        showMask: opts.showMask
+    };
+    return new CompositeView(new TiledAttachmentListView(cfg), new BlockAttachmentListView(cfg));
 };
 
 /**
@@ -95,7 +100,7 @@ ContentViewFactory.prototype._createAttachmentsView = function (content) {
 ContentViewFactory.prototype.createContentView = function(content, opts) {
     opts = opts || {};
 
-    var attachmentsView = this._createAttachmentsView(content);
+    var attachmentsView = this._createAttachmentsView(content, opts);
     var ContentViewType = this._getViewTypeForContent(content, opts);
     var likeCommand = opts.likeCommand || this._createLikeCommand(content, opts.liker);
     var shareCommand = opts.shareCommand || this._createShareCommand(content, opts.sharer);
@@ -103,11 +108,13 @@ ContentViewFactory.prototype.createContentView = function(content, opts) {
     return new ContentViewType({
         attachmentsView: opts.attachmentsView,
         content: content,
+        doNotTrack: opts.doNotTrack || {},
         expandCommand: opts.expandCommand,
         likeCommand: likeCommand,
         productOptions: opts.productOptions || {},
         shareCommand: shareCommand,
         showExpandButton: this.showExpandButton,
+        showMask: opts.showMask,
         useSingleMediaView: this._useSingleMediaView,
         spectrum: opts.spectrum
     });

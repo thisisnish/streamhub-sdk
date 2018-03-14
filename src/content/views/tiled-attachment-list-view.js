@@ -1,8 +1,9 @@
 var $ = require('streamhub-sdk/jquery');
+var asMediaMaskMixin = require('streamhub-sdk/content/views/mixins/media-mask-mixin');
 var AttachmentListView = require('streamhub-sdk/content/views/attachment-list-view');
+var inherits = require('inherits');
 var OembedView = require('streamhub-sdk/content/views/oembed-view');
 var TiledAttachmentListTemplate = require('hgn!streamhub-sdk/content/templates/tiled-attachment-list');
-var inherits = require('inherits');
 
 'use strict';
 
@@ -20,6 +21,7 @@ var inherits = require('inherits');
 var TiledAttachmentListView = function (opts) {
     opts = opts || {};
     this.oembedViews = [];
+    asMediaMaskMixin(this, opts);
     AttachmentListView.call(this, opts);
 };
 inherits(TiledAttachmentListView, AttachmentListView);
@@ -113,9 +115,10 @@ TiledAttachmentListView.prototype.add = function (oembed) {
 };
 
 TiledAttachmentListView.prototype._insert = function (oembedView) {
-    var tiledAttachmentsEl = this.$el.find(this.tiledAttachmentsSelector);
+    this.renderMediaMask(oembedView.oembed, !!this.opts.showMask);
+
     if (this.isTileableAttachment(oembedView.oembed)) {
-        oembedView.$el.appendTo(tiledAttachmentsEl);
+        oembedView.$el.appendTo(this.$el.find(this.tiledAttachmentsSelector));
     }
 };
 

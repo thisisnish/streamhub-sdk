@@ -19,6 +19,16 @@ function($, LivefyreHttpClient, inherits) {
 
     LivefyreTranslationClient.prototype._serviceName = 'bootstrap';
 
+    /**
+     * Do not want to send `X-DNT` header to the stream server.
+     * @override
+     */
+    LivefyreTranslationClient.prototype._getHeaders = function (opts) {
+        var headers = LivefyreHttpClient.prototype._getHeaders.call(this, opts);
+        delete headers['X-DNT'];
+        return headers;
+    };
+
     /** @override */
     LivefyreTranslationClient.prototype._getHost = function (opts) {
         var environment = opts.environment || 'livefyre.com';

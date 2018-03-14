@@ -29,6 +29,16 @@ function(LivefyreHttpClient, inherits) {
     };
 
     /**
+     * Do not want to send `X-DNT` header to the stream server.
+     * @override
+     */
+    LivefyreStreamClient.prototype._getHeaders = function (opts) {
+        var headers = LivefyreHttpClient.prototype._getHeaders.call(this, opts);
+        delete headers['X-DNT'];
+        return headers;
+    };
+
+    /**
      * Get the generated stream path.
      * @param {Object} opts Content request config.
      * @returns {string}

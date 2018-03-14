@@ -44,3 +44,39 @@ a.content-body-title {
 .content-header {
     word-wrap: break-word;
 }
+
+.content-attachments-tiled {
+    position: relative;
+}
+
+.media-mask {
+    background: rgba(0, 0, 0, 0.84);
+    color: #fff;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 11;
+
+    .media-mask-container {
+        box-sizing: border-box;
+        padding: 0 10%;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+
+        p:first-child {
+            margin-top: 0;
+        }
+
+        .show-embed {
+            border: 1px solid #fff;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 20px;
+        }
+    }
+}
