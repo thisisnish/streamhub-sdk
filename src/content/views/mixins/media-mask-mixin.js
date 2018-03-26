@@ -20,7 +20,7 @@ module.exports = function (view, opts) {
      * @param {function} callback
      */
     view.renderMediaMask = function (oembed, canShow, callback) {
-        canShow = canShow && opts.doNotTrack.enabled;
+        canShow = canShow && opts.doNotTrack.browser;
         if (!MediaMask.shouldShowMask(oembed, canShow)) {
             callback && callback();
             return;
