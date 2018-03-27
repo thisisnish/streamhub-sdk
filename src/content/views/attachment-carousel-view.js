@@ -178,10 +178,9 @@ AttachmentCarouselView.prototype.render = function (view, opts) {
     this.$el.find(this.leftSelector).addClass(this.hideClass);
     this._jsPositioning();
 
-    var oembedView = this._singleAttachmentView.oembedViews[0];
-
-    this.renderMediaMask(oembedView.oembed, true, function () {
-        this._insertVideo(oembedView);
+    var oembedViews = this._singleAttachmentView.oembedViews;
+    oembedViews.length && this.renderMediaMask(oembedViews[0].oembed, true, function () {
+        this._insertVideo(oembedViews[0]);
     }.bind(this));
 
     return this;

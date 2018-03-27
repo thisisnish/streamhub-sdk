@@ -15,6 +15,13 @@ function SortedCollection() {
     this.contents = [];
 
     /**
+     * Whether the collection is media only.
+     * @type {boolean}
+     * @private
+     */
+    this._mediaOnly = false;
+
+    /**
      * Sort order for the contents within this collection.
      * @type {string}
      * @private
@@ -41,12 +48,23 @@ SortedCollection.prototype.add = function (content) {
     if (find(this.contents, {id: content.id})) {
         return;
     }
+    if (this._mediaOnly && !content.attachments.length) {
+        return;
+    }
     util.binaryInsert({
         array: this.contents,
         prop: 'meta.content.' + this._order,
         value: content
     });
     this.emit('added', content);
+};
+
+/**
+ * Sets whether the sorted collection is media only or not.
+ * @param {boolean} value
+ */
+SortedCollection.prototype.setMediaOnly = function (value) {
+    this._mediaOnly = !!value;
 };
 
 /**
