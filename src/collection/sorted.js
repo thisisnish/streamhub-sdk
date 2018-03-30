@@ -1,5 +1,6 @@
 var enums = require('streamhub-sdk/enums');
 var EventEmitter = require('event-emitter');
+var filter = require('mout/array/filter');
 var find = require('mout/array/find');
 var get = require('mout/object/get');
 var inherits = require('inherits');
@@ -41,6 +42,17 @@ function getSortOrder(order) {
 }
 
 /**
+ * Filter attachments by media only. Means only photos and videos.
+ * @param {Array.<object>} attachments
+ * @return {Array.<object>}
+ */
+function filterMediaOnly(attachments) {
+    return filter(attachments, function (oembed) {
+        return ['video', 'photo'].indexOf(oembed.type) > -1;
+    });
+}
+
+/**
  * Add the content to the list by createdAt order.
  * @param {Content} content Content to add.
  */
@@ -48,7 +60,7 @@ SortedCollection.prototype.add = function (content) {
     if (find(this.contents, {id: content.id})) {
         return;
     }
-    if (this._mediaOnly && !content.attachments.length) {
+    if (this._mediaOnly && !filterMediaOnly(content.attachments).length) {
         return;
     }
     util.binaryInsert({
