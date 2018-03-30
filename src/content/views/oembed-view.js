@@ -95,6 +95,21 @@ define([
             done(1);
         };
 
+        OembedView.prototype.getTemplateContext = function () {
+            var context = $.extend({}, this.oembed);
+
+            if (['photo', 'video'].indexOf(this.oembed.type) > -1 && context.title) {
+                var div = document.createElement('div');
+                try {
+                    div.innerHTML = context.title;
+                    context.title = div.textContent || div.innerText || '';
+                } catch (e) {
+                    // Just incase someone gives up some bad html
+                }
+            }
+            return context;
+        };
+
         /**
          * Renders the template and appends itself to this.el
          * For oembed types with thumbnails attach image load/error handlers
@@ -109,19 +124,8 @@ define([
                     this.oembed.thumbnail_url = this.oembed.thumbnail_url.replace(re, 'mqdefault.jpg');
                 }
             }
-            var context = $.extend({}, this.oembed);
 
-            if (this.oembed.type === 'photo' && context.title) {
-                var div = document.createElement('div');
-                try {
-                    div.innerHTML = context.title;
-                    context.title = div.textContent || div.innerText || "";
-                } catch (e) {
-                    // Just incase someone gives up some bad html
-                }
-            }
-
-            this.$el.html(this.template(context));
+            this.$el.html(this.template(this.getTemplateContext()));
 
             if (this.oembed.type !== 'photo' && this.oembed.type !== 'video') {
                 return;
