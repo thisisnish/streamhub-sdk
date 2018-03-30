@@ -142,7 +142,10 @@ AttachmentCarouselView.prototype.updateItemsInView = function () {
         var outOfViewLeft = (offset + attachmentEl.width()) < parentOffset;
         var outOfViewRight = offset > (parentOffset + visibleWidth);
         var idx = outOfViewLeft || outOfViewRight ? -1 : 0;
-        attachmentEl.attr('tabindex', idx);
+        attachmentEl
+            .attr('aria-label', 'Thumbnail')
+            .attr('role', 'button')
+            .attr('tabindex', idx);
     });
 };
 
