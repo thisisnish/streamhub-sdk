@@ -84,6 +84,7 @@ module.exports = function (view, opts) {
         }
 
         this.$el.find('.content-body-main p:last-child').append($.trim(template({
+            aria: truncated ? 'Expand content' : 'Collapse content',
             cls: truncated ? 'view-more' : 'view-less',
             text: truncated ? i18n.get('viewMore', 'View More') : i18n.get('viewLess', 'View Less')
         })));

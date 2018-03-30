@@ -41,6 +41,19 @@ function getSortOrder(order) {
 }
 
 /**
+ * Determines if the content is media only. The trick here is that only the
+ * first attachment is being checked. This is because the first attachment is
+ * the only one that is displayed on the main view of the apps and it determines
+ * how the modal view will look. If it's not a photo or video, the carousel
+ * won't show up and it'll look like there is no media.
+ * @param {Array.<object>} attachments
+ * @return {boolean}
+ */
+function isMediaOnly(attachments) {
+    return attachments.length && ['video', 'photo'].indexOf(attachments[0].type) > -1;
+}
+
+/**
  * Add the content to the list by createdAt order.
  * @param {Content} content Content to add.
  */
@@ -48,7 +61,7 @@ SortedCollection.prototype.add = function (content) {
     if (find(this.contents, {id: content.id})) {
         return;
     }
-    if (this._mediaOnly && !content.attachments.length) {
+    if (this._mediaOnly && !isMediaOnly(content.attachments)) {
         return;
     }
     util.binaryInsert({

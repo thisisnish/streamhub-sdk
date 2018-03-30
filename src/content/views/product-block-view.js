@@ -61,6 +61,7 @@ ProductBlockView.prototype.buildProductUrl = function () {
 /** @override */
 ProductBlockView.prototype.getTemplateContext = function () {
     var context = $.extend({}, this.opts);
+    context.aria = this.opts.product.title;
     context.productButtonText = i18n.get('productButtonText', 'Buy Now');
     context.productDetailPriceShow = this.opts.productOptions.detail.price;
     context.productDetailTitleShow = this.opts.productOptions.detail.title;

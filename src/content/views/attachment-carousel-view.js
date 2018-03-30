@@ -7,6 +7,24 @@ var SingleAttachmentView = require('streamhub-sdk/content/views/single-attachmen
 
 'use strict';
 
+
+/**
+ * Keypress wrapper that only calls the wrapped function when the enter key is
+ * pressed. Otherwise, nothing happens.
+ * @param {function} wrappedFn Function to call when enter is pressed.
+ * @return {function} Function that handles the keypress events.
+ */
+function enterKeypressWrapper(wrappedFn) {
+    return function (e) {
+        if (e.which !== 13) {
+            return;
+        }
+        e.stopPropagation();
+        wrappedFn(e);
+    };
+}
+
+
 /**
  * A version of the tiled attachement list view that only shows a single image
  * @param opts {Object} A set of options to config the view with
@@ -44,6 +62,9 @@ AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extende
     events['click ' + this.attachmentSelector] = this._onThumbnailClick.bind(this);
     events['click ' + this.leftSelector] = this._onCarouselNavigate.bind(this, false);
     events['click ' + this.rightSelector] = this._onCarouselNavigate.bind(this, true);
+    events['keypress ' + this.attachmentSelector] = enterKeypressWrapper(this._onThumbnailClick.bind(this));
+    events['keypress ' + this.leftSelector] = enterKeypressWrapper(this._onCarouselNavigate.bind(this, false));
+    events['keypress ' + this.rightSelector] = enterKeypressWrapper(this._onCarouselNavigate.bind(this, true));
 });
 
 AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
@@ -114,11 +135,57 @@ AttachmentCarouselView.prototype._getAttachmentVideoHtml = function (attachment)
     return attachment.html;
 };
 
+/**
+ * Update the thumbnail items that are in view. This keeps the tabindex value
+ * up to date on the thumbnails depending on if they are in view or not. If not
+ * in view, we don't want users tabbing to items that they can't see.
+ */
+AttachmentCarouselView.prototype.updateItemsInView = function () {
+    var listEl = this.$el.find(this.stackedAttachmentsSelector);
+    var visibleWidth = listEl.parent().width();
+    var parentOffset = listEl.parent().offset().left;
+
+    // Loops through all of the attachment thumbnails in the carousel and
+    // updates the tabindex on each of them depending on if they are in view
+    // or not.
+    this._attachmentsListView.oembedViews.forEach(function (view) {
+        var attachmentEl = view.$el.find('.content-attachment');
+        var offset = attachmentEl.offset().left;
+        var outOfViewLeft = (offset + attachmentEl.width()) < parentOffset;
+        var outOfViewRight = offset > (parentOffset + visibleWidth);
+        var idx = outOfViewLeft || outOfViewRight ? -1 : 0;
+        attachmentEl
+            .attr('aria-label', 'Thumbnail')
+            .attr('role', 'button')
+            .attr('tabindex', idx);
+    });
+};
+
+/**
+ * Update the navigation buttons to toggle their visibility depending on if
+ * there are any items to scroll to in their direction.
+ */
+AttachmentCarouselView.prototype.updateNavigationButtons = function () {
+    var leftArrow = this.$el.find(this.leftSelector);
+    var rightArrow = this.$el.find(this.rightSelector);
+    var listEl = this.$el.find(this.stackedAttachmentsSelector);
+
+    var leftPos = parseInt(listEl.css('left').split('px'), 10) || 0;
+    leftArrow.toggleClass(this.hideClass, leftPos >= 0);
+
+    var listWidth = listEl.width();
+    var visibleWidth = listEl.parent().width();
+    rightArrow.toggleClass(this.hideClass, listWidth <= (visibleWidth + Math.abs(leftPos)));
+};
+
+/**
+ * Handle the carousel navigation by updating the left offset of the list
+ * element so that the thumbnails can be navigated.
+ * @param {boolean} right If navigating to the right, left otherwise.
+ * @param {Event} e Navigation click event.
+ */
 AttachmentCarouselView.prototype._onCarouselNavigate = function (right, e) {
     e.stopPropagation();
-
-    var leftSelector = this.$el.find(this.leftSelector);
-    var rightSelector = this.$el.find(this.rightSelector);
 
     var direction = right ? -1 : 1;
     var listEl = this.$el.find(this.stackedAttachmentsSelector);
@@ -126,29 +193,8 @@ AttachmentCarouselView.prototype._onCarouselNavigate = function (right, e) {
     // the arrow that was pressed.
     listEl.offset({left: listEl.offset().left + (direction * this.opts.carouselElementWidth)});
 
-    // Remove the hide class from the arrow in the opposite direction since
-    // there is at least one thumbnail in that direction.
-    (right ? leftSelector : rightSelector).removeClass(this.hideClass);
-
-    // Get the current left position that has been shifted so far. This will be
-    // used to determine whether we can hide arrows or not.
-    var leftPos = parseInt(listEl.css('left').split('px'), 10) || 0;
-
-    // We are back to the original left position of 0, so we can hide the left
-    // arrow since there aren't any more thumbnails to see.
-    if (leftPos >= 0) {
-        leftSelector.addClass(this.hideClass);
-        return;
-    }
-
-    var listWidth = listEl.width();
-    var visibleWidth = listEl.parent().width();
-    // If the visible portion of the carousel + amount that has been shifted is
-    // greater than the width of the entire carousel, there are no more
-    // thumbnails to the right.
-    if (listWidth <= (visibleWidth + Math.abs(leftPos))) {
-        rightSelector.addClass(this.hideClass);
-    }
+    this.updateItemsInView();
+    this.updateNavigationButtons();
 };
 
 /**
@@ -182,6 +228,18 @@ AttachmentCarouselView.prototype.render = function (view, opts) {
     oembedViews.length && this.renderMediaMask(oembedViews[0].oembed, true, function () {
         this._insertVideo(oembedViews[0]);
     }.bind(this));
+
+    if (!this.$el.find(this.stackedAttachmentsSelector).length) {
+        return this;
+    }
+
+    // Since it's being loaded before all of the view has settled, the sizes of
+    // the list view and it's parent are higher than they should be. Using
+    // setTimeout cleans it up so that it's the right sizing.
+    setTimeout(function () {
+        this.updateItemsInView();
+        this.updateNavigationButtons();
+    }.bind(this), 0);
 
     return this;
 };
