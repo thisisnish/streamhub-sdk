@@ -1,6 +1,5 @@
 var enums = require('streamhub-sdk/enums');
 var EventEmitter = require('event-emitter');
-var filter = require('mout/array/filter');
 var find = require('mout/array/find');
 var get = require('mout/object/get');
 var inherits = require('inherits');
@@ -42,14 +41,16 @@ function getSortOrder(order) {
 }
 
 /**
- * Filter attachments by media only. Means only photos and videos.
+ * Determines if the content is media only. The trick here is that only the
+ * first attachment is being checked. This is because the first attachment is
+ * the only one that is displayed on the main view of the apps and it determines
+ * how the modal view will look. If it's not a photo or video, the carousel
+ * won't show up and it'll look like there is no media.
  * @param {Array.<object>} attachments
- * @return {Array.<object>}
+ * @return {boolean}
  */
-function filterMediaOnly(attachments) {
-    return filter(attachments, function (oembed) {
-        return ['video', 'photo'].indexOf(oembed.type) > -1;
-    });
+function isMediaOnly(attachments) {
+    return attachments.length && ['video', 'photo'].indexOf(attachments[0].type) > -1;
 }
 
 /**
@@ -60,7 +61,7 @@ SortedCollection.prototype.add = function (content) {
     if (find(this.contents, {id: content.id})) {
         return;
     }
-    if (this._mediaOnly && !filterMediaOnly(content.attachments).length) {
+    if (this._mediaOnly && !isMediaOnly(content.attachments)) {
         return;
     }
     util.binaryInsert({
