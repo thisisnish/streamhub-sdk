@@ -8,11 +8,18 @@ var SingleAttachmentView = require('streamhub-sdk/content/views/single-attachmen
 'use strict';
 
 
-function keypressWrapper(wrappedFn) {
-    return function(e) {
+/**
+ * Keypress wrapper that only calls the wrapped function when the enter key is
+ * pressed. Otherwise, nothing happens.
+ * @param {function} wrappedFn Function to call when enter is pressed.
+ * @return {function} Function that handles the keypress events.
+ */
+function enterKeypressWrapper(wrappedFn) {
+    return function (e) {
         if (e.which !== 13) {
             return;
         }
+        e.stopPropagation();
         wrappedFn(e);
     };
 }
@@ -55,9 +62,9 @@ AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extende
     events['click ' + this.attachmentSelector] = this._onThumbnailClick.bind(this);
     events['click ' + this.leftSelector] = this._onCarouselNavigate.bind(this, false);
     events['click ' + this.rightSelector] = this._onCarouselNavigate.bind(this, true);
-    events['keypress ' + this.attachmentSelector] = keypressWrapper(this._onThumbnailClick.bind(this));
-    events['keypress ' + this.leftSelector] = keypressWrapper(this._onCarouselNavigate.bind(this, false));
-    events['keypress ' + this.rightSelector] = keypressWrapper(this._onCarouselNavigate.bind(this, true));
+    events['keypress ' + this.attachmentSelector] = enterKeypressWrapper(this._onThumbnailClick.bind(this));
+    events['keypress ' + this.leftSelector] = enterKeypressWrapper(this._onCarouselNavigate.bind(this, false));
+    events['keypress ' + this.rightSelector] = enterKeypressWrapper(this._onCarouselNavigate.bind(this, true));
 });
 
 AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
@@ -128,6 +135,11 @@ AttachmentCarouselView.prototype._getAttachmentVideoHtml = function (attachment)
     return attachment.html;
 };
 
+/**
+ * Update the thumbnail items that are in view. This keeps the tabindex value
+ * up to date on the thumbnails depending on if they are in view or not. If not
+ * in view, we don't want users tabbing to items that they can't see.
+ */
 AttachmentCarouselView.prototype.updateItemsInView = function () {
     var listEl = this.$el.find(this.stackedAttachmentsSelector);
     var visibleWidth = listEl.parent().width();
@@ -149,6 +161,10 @@ AttachmentCarouselView.prototype.updateItemsInView = function () {
     });
 };
 
+/**
+ * Update the navigation buttons to toggle their visibility depending on if
+ * there are any items to scroll to in their direction.
+ */
 AttachmentCarouselView.prototype.updateNavigationButtons = function () {
     var leftArrow = this.$el.find(this.leftSelector);
     var rightArrow = this.$el.find(this.rightSelector);
@@ -162,6 +178,12 @@ AttachmentCarouselView.prototype.updateNavigationButtons = function () {
     rightArrow.toggleClass(this.hideClass, listWidth <= (visibleWidth + Math.abs(leftPos)));
 };
 
+/**
+ * Handle the carousel navigation by updating the left offset of the list
+ * element so that the thumbnails can be navigated.
+ * @param {boolean} right If navigating to the right, left otherwise.
+ * @param {Event} e Navigation click event.
+ */
 AttachmentCarouselView.prototype._onCarouselNavigate = function (right, e) {
     e.stopPropagation();
 
