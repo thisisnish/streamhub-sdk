@@ -204,6 +204,10 @@ AttachmentCarouselView.prototype.render = function (view, opts) {
         this._insertVideo(oembedViews[0]);
     }.bind(this));
 
+    if (!this.$el.find(this.stackedAttachmentsSelector).length) {
+        return this;
+    }
+
     // Since it's being loaded before all of the view has settled, the sizes of
     // the list view and it's parent are higher than they should be. Using
     // setTimeout cleans it up so that it's the right sizing.
