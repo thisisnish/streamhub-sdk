@@ -47,6 +47,17 @@ function getContentPermalink(provider, content) {
     }
 }
 
+function getTextContent(html) {
+    var div = document.createElement('div');
+    try {
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
+    } catch (e) {
+        // Just incase someone gives up some bad html
+    }
+    return '';
+}
+
 /**
  * Truncate a string that may or may not contain html. Recursively traverses
  * through the DOM nodes and truncates the text node that is over the provided
@@ -120,5 +131,6 @@ function truncateHtml(htmlString, len) {
 module.exports = {
     enterKeypressWrapper: enterKeypressWrapper,
     getContentPermalink: getContentPermalink,
+    getTextContent: getTextContent,
     truncateHtml: truncateHtml
 };
