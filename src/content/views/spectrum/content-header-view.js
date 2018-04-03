@@ -18,8 +18,9 @@ SpectrumContentHeaderView.prototype.template = template;
 SpectrumContentHeaderView.prototype.getTemplateContext = function () {
     var context = ContentHeaderView.prototype.getTemplateContext.call(this);
     if (this.createdAt) {
-        context.formattedCreatedAt = util.formatDate(this.createdAt);
+        context.ariaCreatedAt = util.formatDate(this.createdAt, null, true);
         context.createdAtUrl = this.createdAtUrl;
+        context.formattedCreatedAt = util.formatDate(this.createdAt);
         context.isoCreatedAt = this.createdAt.toISOString();
     }
     return context;

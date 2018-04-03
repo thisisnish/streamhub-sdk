@@ -37,10 +37,10 @@
     {{#formattedCreatedAt}}
         <div class="content-created-at">
             {{#createdAtUrl}}
-            <a href="{{createdAtUrl}}" target="_blank">
+            <a href="{{createdAtUrl}}" target="_blank" aria-label="Created {{ariaCreatedAt}}">
             {{/createdAtUrl}}
-             <span class="short-content-timestamp" aria-hidden="true">{{{formattedCreatedAt}}}</span>
-             <span class="readable-content-timestamp">{{{isoCreatedAt}}}</span>
+                <span class="short-content-timestamp" aria-hidden="true">{{{formattedCreatedAt}}}</span>
+                <span class="readable-content-timestamp">{{{isoCreatedAt}}}</span>
             {{#createdAtUrl}}
             </a>
             {{/createdAtUrl}}
