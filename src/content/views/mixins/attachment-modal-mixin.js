@@ -31,6 +31,7 @@ function hasAttachmentModal(view, opts) {
                     doNotTrack: opts.doNotTrack,
                     hideSocialBrandingWithRights: opts.hideSocialBrandingWithRights,
                     listView: this,
+                    modal: true,
                     productOptions: opts.productOptions || {}
                 }));
             } else {
