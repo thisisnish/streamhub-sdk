@@ -8,6 +8,22 @@ var SUPPORTED_PERMALINK_PROVIDERS = {
 };
 
 /**
+ * Keypress wrapper that only calls the wrapped function when the enter key is
+ * pressed. Otherwise, nothing happens.
+ * @param {function} wrappedFn Function to call when enter is pressed.
+ * @return {function} Function that handles the keypress events.
+ */
+function enterKeypressWrapper(wrappedFn) {
+    return function (e) {
+        if (e.which !== 13) {
+            return;
+        }
+        e.stopPropagation();
+        wrappedFn(e);
+    };
+}
+
+/**
  * Generate permalink for content based on the provider.
  * @param {string} provider The provider of the content.
  * @param {Content} content The content to generate the permalink for.
@@ -102,6 +118,7 @@ function truncateHtml(htmlString, len) {
 }
 
 module.exports = {
+    enterKeypressWrapper: enterKeypressWrapper,
     getContentPermalink: getContentPermalink,
     truncateHtml: truncateHtml
 };
