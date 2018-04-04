@@ -68,11 +68,17 @@ TiledAttachmentListView.prototype.render = function () {
         }
     }
 
-
     if (oembed) {
         this.el.setAttribute('tabindex', 0);
-        this.el.setAttribute('role', 'button');
-        this.el.setAttribute('aria-label', 'Clicking this button expands the ' + oembed.provider_name + ' ' + oembed.type + ' in a modal');
+
+        // When not in a modal, which might just be Filmstrip, clicking on the
+        // media opens a modal, so the aria label and role should reflect that.
+        if (!this.opts.modal) {
+            this.el.setAttribute('role', 'button');
+            this.el.setAttribute('aria-label', 'Clicking this button expands the ' + oembed.provider_name + ' ' + oembed.type + ' in a modal');
+        } else {
+            this.el.setAttribute('aria-label', 'Media from ' + oembed.provider_name);
+        }
     }
 };
 

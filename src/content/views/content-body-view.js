@@ -3,6 +3,7 @@ var canTruncateBody = require('streamhub-sdk/content/views/mixins/body-truncate-
 var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
 var template = require('hgn!streamhub-sdk/content/templates/content-body');
+var util = require('streamhub-sdk/content/util/main');
 var View = require('streamhub-sdk/view');
 
 'use strict';
@@ -37,6 +38,8 @@ ContentBodyView.prototype.getTemplateContext = function () {
     if (!/^<p/.test($.trim(body))) {
         context.body = '<p>' + $.trim(body) + '</p>';
     }
+
+    context.text = util.getTextContent(context.body);
 
     // If there an duplicate link title + content title, then
     // remove the content title for display purposes.

@@ -5,6 +5,7 @@ var i18n = require('streamhub-sdk/i18n');
 var inherits = require('inherits');
 var ProductBlockView = require('streamhub-sdk/content/views/product-block-view');
 var template = require('hgn!streamhub-sdk/content/templates/product-carousel');
+var util = require('streamhub-sdk/content/util/main');
 var View = require('view');
 
 'use strict';
@@ -66,6 +67,8 @@ ProductCarouselView.prototype.events = View.prototype.events.extended({}, functi
     }
     events['click ' + this.leftSelector] = handleClick.bind(this, -1);
     events['click ' + this.rightSelector] = handleClick.bind(this, 1);
+    events['keypress ' + this.leftSelector] = util.enterKeypressWrapper(handleClick.bind(this, -1));
+    events['keypress ' + this.rightSelector] = util.enterKeypressWrapper(handleClick.bind(this, 1));
 });
 
 /**
@@ -164,7 +167,6 @@ ProductCarouselView.prototype.render = function (view, opts) {
 
     this.$el.addClass(this.sizePrefixClass + this.cardsInView);
     this.$el.html(this.template(this.getTemplateContext()));
-    this.updateNavigationButtons();
 
     var numProducts = this.products.length;
     var cardsToShow = this.cardsInView > numProducts ? numProducts : this.cardsInView;
@@ -174,6 +176,7 @@ ProductCarouselView.prototype.render = function (view, opts) {
         this.addViewToDOM(this.createProductView(this.products[i]), 1);
     }
 
+    this.updateNavigationButtons();
     return this;
 };
 
@@ -182,8 +185,16 @@ ProductCarouselView.prototype.render = function (view, opts) {
  * more available to the right or left of the current visible set.
  */
 ProductCarouselView.prototype.updateNavigationButtons = function () {
-    this.$el.find(this.leftSelector).toggleClass(this.hideClass, !this.hasMore('left'));
-    this.$el.find(this.rightSelector).toggleClass(this.hideClass, !this.hasMore('right'));
+    function updateSide(side) {
+        var hasMore = this.hasMore(side);
+        var elem = this.$el.find(this[side + 'Selector']);
+        var arrowElem = elem.find('.product-arrow');
+        elem.toggleClass(this.hideClass, !hasMore);
+        arrowElem.attr('tabindex', hasMore ? 0 : -1);
+    }
+
+    updateSide.call(this, 'left');
+    updateSide.call(this, 'right');
 };
 
 module.exports = ProductCarouselView;

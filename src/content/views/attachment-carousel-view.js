@@ -4,26 +4,9 @@ var CarouselAttachmentListView = require('streamhub-sdk/content/views/carousel-a
 var CompositeView = require('view/composite-view');
 var inherits = require('inherits');
 var SingleAttachmentView = require('streamhub-sdk/content/views/single-attachment-view');
+var util = require('streamhub-sdk/content/util/main');
 
 'use strict';
-
-
-/**
- * Keypress wrapper that only calls the wrapped function when the enter key is
- * pressed. Otherwise, nothing happens.
- * @param {function} wrappedFn Function to call when enter is pressed.
- * @return {function} Function that handles the keypress events.
- */
-function enterKeypressWrapper(wrappedFn) {
-    return function (e) {
-        if (e.which !== 13) {
-            return;
-        }
-        e.stopPropagation();
-        wrappedFn(e);
-    };
-}
-
 
 /**
  * A version of the tiled attachement list view that only shows a single image
@@ -62,9 +45,9 @@ AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extende
     events['click ' + this.attachmentSelector] = this._onThumbnailClick.bind(this);
     events['click ' + this.leftSelector] = this._onCarouselNavigate.bind(this, false);
     events['click ' + this.rightSelector] = this._onCarouselNavigate.bind(this, true);
-    events['keypress ' + this.attachmentSelector] = enterKeypressWrapper(this._onThumbnailClick.bind(this));
-    events['keypress ' + this.leftSelector] = enterKeypressWrapper(this._onCarouselNavigate.bind(this, false));
-    events['keypress ' + this.rightSelector] = enterKeypressWrapper(this._onCarouselNavigate.bind(this, true));
+    events['keypress ' + this.attachmentSelector] = util.enterKeypressWrapper(this._onThumbnailClick.bind(this));
+    events['keypress ' + this.leftSelector] = util.enterKeypressWrapper(this._onCarouselNavigate.bind(this, false));
+    events['keypress ' + this.rightSelector] = util.enterKeypressWrapper(this._onCarouselNavigate.bind(this, true));
 });
 
 AttachmentCarouselView.prototype._onThumbnailClick = function (e) {

@@ -118,6 +118,7 @@ CarouselContentView.prototype.addContentToDOM = function (content) {
         content: content,
         doNotTrack: this.opts.doNotTrack,
         hideSocialBrandingWithRights: this.opts.hideSocialBrandingWithRights,
+        modal: this.opts.modal,
         productOptions: this.opts.productOptions
     });
     this.$el.find(this.containerSelector).html('').append(this.view.$el);

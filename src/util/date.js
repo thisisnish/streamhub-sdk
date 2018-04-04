@@ -24,38 +24,53 @@ var MONTH_STRINGS = [
 ];
 
 /**
+ * Aria formatted relative time labels.
+ * @enum {string}
+ */
+var ARIA_LABELS = {
+    justNow: 'just now',
+    secondsAgo: '{number} seconds ago',
+    minutesAgo: '{number} minutes ago',
+    hoursAgo: '{number} hours ago'
+};
+
+/**
  * Format a date object to be displayed to humans
  * @param {Date} date - A JavaScript Date object.
  * @param {Date=} relativeTo - Optional JavaScript Date to compare `date` to.
  * @return {string} A formatted timestamp like "5/27//06 • 3:26 AM"
  */
-function formatDate(date, relativeTo) {
+function formatDate(date, relativeTo, aria) {
     relativeTo = relativeTo || new Date();
     var diffMs = date.getTime() - relativeTo.getTime();
-    
+
+    function getReplacement(key, defaultValue) {
+        return (aria ? ARIA_LABELS[key] : defaultValue) || defaultValue;
+    }
+
     // Future
     if (diffMs > 0) {
         return '';
     }
     // Just now (0s)
     if (diffMs > -1000) {
-        return getDateTranslation(date, 'justNow', '1s');
+        return getDateTranslation(date, 'justNow', getReplacement('justNow', '1s'));
     }
     // Less than 60s ago -> 5s
     if (diffMs > -60 * 1000) {
-        return getDateTranslation(date, 'secondsAgo', '{number}s', {
+        return getDateTranslation(date, 'secondsAgo', getReplacement('secondsAgo', '{number}s'), {
             number: Math.round( -1 * diffMs / 1000)
         });
     }
     // Less than 1h ago -> 5m
     if (diffMs > -60 * 60 * 1000) {
-        return getDateTranslation(date, 'minutesAgo', '{number}m', {
+        return getDateTranslation(date, 'minutesAgo', getReplacement('minutesAgo', '{number}m'), {
             number: Math.round( -1 * diffMs / (1000 * 60))
         });
     }
     // Less than 24h ago -> 5h
     if (diffMs > -60 * 60 * 24 * 1000) {
-        return getDateTranslation(date, 'hoursAgo', '{number}h', {
+        return getDateTranslation(date, 'hoursAgo', getReplacement('hoursAgo', '{number}h'), {
             number: Math.round( -1 * diffMs / (1000 * 60 * 60))
         });
     }
