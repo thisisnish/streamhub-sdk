@@ -24,7 +24,10 @@ inherits(MediaMask, View);
 
 MediaMask.prototype.containerSelector = '.media-mask-container';
 MediaMask.prototype.elClass = 'media-mask';
-MediaMask.prototype.events = {'click .show-embed': 'onClick'};
+MediaMask.prototype.events = {
+    'click': 'onBodyClick',
+    'click .show-embed': 'onShowClick'
+};
 MediaMask.prototype.showBtnSelector = '.show-embed';
 MediaMask.prototype.template = require('hgn!streamhub-sdk/content/templates/media-mask');
 
@@ -35,12 +38,22 @@ MediaMask.prototype.template = require('hgn!streamhub-sdk/content/templates/medi
 var SUPPORTED_TYPES = ['video'];
 
 /**
- * Handle the click event on the entire element. If an anchor was clicked,
+ * Handle the click event on the mask body. Don't allow the event to bubble,
+ * because that will cause the mask to be removed.
+ * @param {Event} evt
+ */
+MediaMask.prototype.onBodyClick = function (evt) {
+    evt.stopPropagation();
+};
+
+/**
+ * Handle the click event on the show button. If an anchor was clicked,
  * don't allow the event to bubble, because that will cause the mask to be
  * removed.
  * @param {Event} evt
  */
-MediaMask.prototype.onClick = function (evt) {
+MediaMask.prototype.onShowClick = function (evt) {
+    evt.stopPropagation();
     this.opts.oembed.viewed = true;
     this._showMask = false;
     this.render();
