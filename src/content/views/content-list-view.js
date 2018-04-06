@@ -59,10 +59,10 @@ inherits(ContentListView, ListView);
 // get initial value for this._maxVisibleItems
 // can be provided expliticly, or defaults to 'initial' || DEFAULT
 function maxVisibleItemsFromOpts(opts) {
-    if ('maxVisibleItems' in opts) {
+    if (opts.maxVisibleItems != null) {
         return opts.maxVisibleItems;
     }
-    if ('initial' in opts) {
+    if (opts.initial != null) {
         return opts.initial;
     }
     return 50;
