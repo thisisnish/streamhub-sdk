@@ -49,11 +49,12 @@ function getContentPermalink(provider, content) {
 
 function getTextContent(html) {
     var div = document.createElement('div');
+    var stripHashTagRegex = new RegExp('#([^\\s]*)', 'g');
     try {
         div.innerHTML = html;
-        return div.textContent || div.innerText || '';
+        return (div.textContent || div.innerText || '').replace(stripHashTagRegex, '');
     } catch (e) {
-        // Just incase someone gives up some bad html
+        // Just incase someone gives us some bad html
     }
     return '';
 }
