@@ -47,12 +47,14 @@ function getContentPermalink(provider, content) {
     }
 }
 
-function getTextContent(html) {
+function getTextContent(html, removeHashTags) {
     var div = document.createElement('div');
     var stripHashTagRegex = new RegExp('#([^\\s]*)', 'g');
     try {
         div.innerHTML = html;
-        return (div.textContent || div.innerText || '').replace(stripHashTagRegex, '');
+        return removeHashTags ?
+            (div.textContent || div.innerText || '').replace(stripHashTagRegex)
+            : (div.textContent || div.innerText || '');
     } catch (e) {
         // Just incase someone gives us some bad html
     }
