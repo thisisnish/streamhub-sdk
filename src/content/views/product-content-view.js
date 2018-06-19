@@ -193,11 +193,7 @@ ProductContentView.prototype.render = function () {
 
     if (this.opts.isInstagramVideo) {
         this.$el.closest(this.modalSelector).addClass('instagram-video');
-
-        // Remove the instagram embed script to avoid load order issues
-        var scriptRemovalRegex = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi;
-        var html = this.content.attachments[0].html.replace(scriptRemovalRegex, '');
-        this.el.insertAdjacentHTML('afterbegin', html);
+        this.el.insertAdjacentHTML('afterbegin', this.content.attachments[0].html);
 
         var placeholder = this.$el.find('blockquote');
         this.renderMediaMask(this.opts.content.attachments[0], true, function () {
