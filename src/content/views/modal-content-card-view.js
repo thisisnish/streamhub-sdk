@@ -3,10 +3,10 @@ var AttachmentCarouselView = require('streamhub-sdk/content/views/attachment-car
 var CompositeView = require('view/composite-view');
 var debug = require('debug');
 var find = require('mout/array/find');
+var get = require('mout/object/get');
 var impressionUtil = require('streamhub-sdk/impressionUtil');
 var inherits = require('inherits');
 var ProductContentView = require('streamhub-sdk/content/views/product-content-view');
-var Sandbox = require('streamhub-sdk/content/views/sandbox');
 
 'use strict';
 
@@ -66,6 +66,7 @@ ModalContentCardView.prototype.imageLoadingClass = 'hub-content-image-loading';
 ModalContentCardView.prototype.instagramVideoClass = 'content-ig-video';
 ModalContentCardView.prototype.invalidClass = 'content-invalid';
 ModalContentCardView.prototype.modalAnnotationClass = 'modal-content-card';
+ModalContentCardView.prototype.modalInstagramVideoClass = 'modal-instagram-video';
 ModalContentCardView.prototype.modalSelector = '.hub-modal';
 ModalContentCardView.prototype.rightsGrantedClass = 'content-rights-granted';
 ModalContentCardView.prototype.textOnlyClass = 'text-only';
@@ -200,8 +201,12 @@ ModalContentCardView.prototype._resizeModalImage = function () {
 ModalContentCardView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
     this.content = null;
-    this.$el.closest(this.modalSelector).removeClass(this.modalAnnotationClass);
+    this.$el.closest(this.modalSelector).removeClass(this.modalAnnotationClass).removeClass(this.modalInstagramVideoClass).removeClass('instagram-video');
     window.removeEventListener('resize', this._resizeModalImage);
+    this._attachmentsView && this._attachmentsView.destroy();
+    this._attachmentsView = null;
+    this._productContentView && this._productContentView.destroy();
+    this._productContentView = null;
 };
 
 /**
@@ -212,9 +217,16 @@ ModalContentCardView.prototype.render = function () {
     CompositeView.prototype.render.call(this);
 
     this.$el.toggleClass(this.textOnlyClass, this._isTextOnly());
-    this.$el.closest(this.modalSelector).addClass(this.modalAnnotationClass);
-    this._resizeModalImage();
+    
+    var modalEl = this.$el.closest(this.modalSelector);
+    modalEl.addClass(this.modalAnnotationClass);
 
+    // Add instagram video class on top level modal class so that it's possible
+    // to manipulate all of the appropriate descendents within the modal.
+    if (this.content.source === 'instagram' && get(this.content, 'attachments.0.type') === 'video') {
+        modalEl.addClass(this.modalInstagramVideoClass).addClass('instagram-video');
+    }
+    this._resizeModalImage();
     return this;
 };
 

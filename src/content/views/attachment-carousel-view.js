@@ -28,9 +28,7 @@ var AttachmentCarouselView = function (opts) {
     this._addInitialChildViews(opts);
     asMediaMaskMixin(this, opts);
 
-    window.addEventListener('resize', function () {
-        this.sandboxView && this.sandboxView.resize(this.$el.width());
-    }.bind(this));
+    window.addEventListener('resize', this._onWindowResize.bind(this));
 };
 inherits(AttachmentCarouselView, CompositeView);
 
@@ -48,6 +46,7 @@ AttachmentCarouselView.prototype.stackedAttachmentsSelector = '.' +
     CarouselAttachmentListView.prototype.stackedAttachmentsSelector;
 
 AttachmentCarouselView.prototype.events = CompositeView.prototype.events.extended({}, function (events) {
+    events['modalSize.hub'] = this.handleModalSize.bind(this);
     events['click ' + this.attachmentSelector] = this._onThumbnailClick.bind(this);
     events['click ' + this.leftSelector] = this._onCarouselNavigate.bind(this, false);
     events['click ' + this.rightSelector] = this._onCarouselNavigate.bind(this, true);
@@ -63,6 +62,10 @@ AttachmentCarouselView.prototype._onThumbnailClick = function (e) {
     this.renderMediaMask(oembedView.oembed, true, function () {
         this._insertMedia(oembedView);
     }.bind(this));
+};
+
+AttachmentCarouselView.prototype._onWindowResize = function () {
+    this.sandboxView && this.sandboxView.resize(this.$el.width());
 };
 
 AttachmentCarouselView.prototype._insertMedia = function (oembedView) {
@@ -83,6 +86,11 @@ AttachmentCarouselView.prototype._insertMedia = function (oembedView) {
     if (oembed.type === 'video' && oembed.provider_name === 'instagram') {
         this.sandboxView = new Sandbox({embed: oembed});
         mediaContentEl.append(this.sandboxView.render().$el);
+        this.handleModalSize();
+
+        this.sandboxView.$el.one('sandboxLoaded', function () {
+            this.sandboxView.resize();
+        }.bind(this));
         return mediaContentEl.show();
     }
 
@@ -99,6 +107,16 @@ AttachmentCarouselView.prototype._insertMedia = function (oembedView) {
         }
     }
     mediaContentEl.show();
+};
+
+AttachmentCarouselView.prototype.handleModalSize = function (evt, data) {
+    data = data || {};
+    this.$el.find('.content-attachment').each(function () {
+        if (!data.height) {
+            return this.style.removeProperty('height');
+        }
+        this.style.setProperty('height', data.height + 'px', 'important');
+    });
 };
 
 AttachmentCarouselView.prototype._getAttachmentHtml = function (attachment) {
@@ -272,7 +290,9 @@ AttachmentCarouselView.prototype.getTemplateContext = function () {
 
 AttachmentCarouselView.prototype.destroy = function () {
     CompositeView.prototype.destroy.call(this);
+    window.removeEventListener('resize', this._onWindowResize.bind(this));
     this.sandboxView && this.sandboxView.destroy();
+    this.sandboxView = null;
 };
 
 module.exports = AttachmentCarouselView;

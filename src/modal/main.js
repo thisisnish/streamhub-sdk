@@ -126,13 +126,18 @@ define([
         this.visible = false;
         $('body').css('overflow', 'auto');
         this.$el.trigger('hidden');
-        if (this._modalSubView && this._modalSubView.opts.content) {
-            var elInApp = document.querySelector('[data-content-id="' + this._modalSubView.opts.content.id + '"]');
-            if (elInApp) {
-                // Moves up to the top most level of the content card
-                elInApp.parentElement.focus();
-                elInApp.parentElement.scrollIntoView();
+
+        if (this._modalSubView) {
+            if (this._modalSubView.opts.content) {
+                var elInApp = document.querySelector('[data-content-id="' + this._modalSubView.opts.content.id + '"]');
+                if (elInApp) {
+                    // Moves up to the top most level of the content card
+                    elInApp.parentElement.focus();
+                    elInApp.parentElement.scrollIntoView();
+                }
             }
+            // Destroy the subview so that things can be properly disposed of.
+            typeof this._modalSubView.destroy === 'function' && this._modalSubView.destroy();
         }
     };
 

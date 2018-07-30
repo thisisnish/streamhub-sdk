@@ -105,7 +105,7 @@ CarouselContentView.prototype.instagramVideoClass = 'ig-video';
 
 /** @override */
 CarouselContentView.prototype.events = View.prototype.events.extended({}, function (events) {
-    events['modalWidth.hub'] = this.handleModalWidth.bind(this);
+    events['modalSize.hub'] = this.handleModalSize.bind(this);
     events['click .hub-modal-arrow-left'] = this.navigate.bind(this, 0);
     events['click .hub-modal-arrow-right'] = this.navigate.bind(this, 1);
     events['click'] = this.handleClick.bind(this);
@@ -118,7 +118,7 @@ CarouselContentView.prototype.events = View.prototype.events.extended({}, functi
 CarouselContentView.prototype.addContentToDOM = function (content) {
     var attachments = content.attachments || [];
     if (!attachments.length || !(attachments[0].provider_name === 'instagram' && attachments[0].type === 'video')) {
-        this.handleModalWidth();
+        this.handleModalSize();
     }
 
     this.view = new ModalContentCardView({
@@ -166,11 +166,13 @@ CarouselContentView.prototype.handleClick = function (evt) {
     }
 };
 
-CarouselContentView.prototype.handleModalWidth = function (evt, data) {
-    if (!data) {
-        return this.el.style.removeProperty('width');
+CarouselContentView.prototype.handleModalSize = function (evt, data) {
+    data = data || {};
+    var style = this.el.style;
+    if (!data.height) {
+        return style.removeProperty('height');
     }
-    this.el.style.setProperty('width', data.width + 'px', 'important');
+    style.setProperty('height', data.height + 'px', 'important');
 };
 
 /**
@@ -270,7 +272,7 @@ CarouselContentView.prototype.repositionView = function () {
             if (cardHeight < minHeight) {
                 newPadding = ((minHeight - cardHeight) / 2) + 'px';
             }
-            self.$el.find(self.containerSelector).css('paddingTop', newPadding);
+            self.el.style.setProperty('margin-top', newPadding, 'important');
 
             // Update the min-height of the modal if it's in horizontal mode and the
             // card height is greater than 600. This solves for the case when the screen
@@ -290,6 +292,13 @@ CarouselContentView.prototype.repositionView = function () {
  */
 CarouselContentView.prototype.updateContentIndex = function () {
     this.contentIdx = findIndex(this.collection.contents, { id: this.content.id });
+};
+
+/** @override */
+CarouselContentView.prototype.destroy = function () {
+    View.prototype.destroy.call(this);
+    this.view && this.view.destroy();
+    this.view = null;
 };
 
 module.exports = CarouselContentView;

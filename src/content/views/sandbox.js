@@ -23,6 +23,8 @@ function Sandbox(opts) {
 }
 inherits(Sandbox, View);
 
+var MAX_WIDTH = 658;
+
 /**
  * Sandbox iframe src.
  * @const {string}
@@ -75,11 +77,12 @@ Sandbox.prototype.onMessage = function (evt) {
         case 'ready':
             this.injectHtml();
             break;
+        case 'loaded':
+            this.$el.trigger('sandboxLoaded');
+            break;
         case 'size':
             this.iframe.height = evt.data.height;
-            this.iframe.width = evt.data.width || this.iframe.width;
-            this.ratio = this.iframe.height / this.iframe.width;
-            this.$el.trigger('modalWidth.hub', {width: this.iframe.width});
+            this.$el.trigger('modalSize.hub', {height: this.iframe.height});
             break;
         default:
             // pass
@@ -95,8 +98,9 @@ Sandbox.prototype.render = function () {
 };
 
 Sandbox.prototype.resize = function (width) {
-    this.iframe.height = this.ratio * width;
+    var width = this.iframe.parentElement.clientWidth;
     this.iframe.width = width;
+    this.iframe.contentWindow.postMessage({type: 'resize', width: width}, '*');
 };
 
 module.exports = Sandbox;
