@@ -45,33 +45,49 @@ CallToActionBar.prototype.insightsVerb = 'CustomCtaButtonClick';
 
 CallToActionBar.prototype.events = View.prototype.events.extended({}, function (events) {
     events['click ' + this.buttonSelector] = this.onButtonClick.bind(this);
+    events['click a'] = this.onAnchor.bind(this);
     events['keyup ' + this.buttonSelector] = this.onButtonClick.bind(this);
-    events['keyup a'] = this.onAnchorKeyUp.bind(this);
+    events['keyup a'] = this.onAnchor.bind(this);
 });
+
+CallToActionBar.prototype.setParent = function (parentEl) {
+    this.parentEl = (parentEl && parentEl instanceof HTMLElement) ? parentEl : null;
+}
 
 CallToActionBar.prototype.render = function () {
     if (!this.opts.showCTA || !(get(this, 'opts.content.links.cta') || []).length) {
         return;
     }
-
     View.prototype.render.call(this);
 };
 
 CallToActionBar.prototype.onButtonClick = function (e) {
     if (!e.keyCode || e.keyCode === 13 || e.keyCode === 32) {
-        this.togglePopover();
+        this.togglePopover(e);
     }
 };
 
-CallToActionBar.prototype.onAnchorKeyUp = function (e) {
-    if (e.keyCode === 13 || e.keyCode === 32) {
-        this.$el.trigger('insights:local', { type: this.insightsVerb });
+CallToActionBar.prototype.onAnchor = function (e) {
+    if (e.keyCode === 13 || e.keyCode === 32 || e.type === 'click') {
+        this.$el.trigger('insights:local', {type: this.insightsVerb});
+        this.dismissAllPopovers(e);
     }
 };
 
-CallToActionBar.prototype.togglePopover = function () {
-    this.$el.find(this.popoverSelector).toggleClass(this.showClass);
-    this.$el.find(this.buttonIconSelector).toggleClass([this.buttonOpenClass, this.buttonClosedClass].join(' '));
+CallToActionBar.prototype.togglePopover = function (e) {
+    // Check isOpen before dismissAllPopovers removes all buttonOpenClasses
+    var isOpen = $(e.target).hasClass(this.buttonOpenClass);
+    this.dismissAllPopovers(e);
+    if (!isOpen) {
+        this.$el.find(this.popoverSelector).toggleClass(this.showClass);
+        this.$el.find(this.buttonIconSelector).toggleClass([this.buttonOpenClass, this.buttonClosedClass].join(' '));
+    }
+}
+
+CallToActionBar.prototype.dismissAllPopovers = function (e) {
+    e.stopPropagation();
+    $(this.buttonIconSelector + "." + this.buttonOpenClass).toggleClass([this.buttonOpenClass, this.buttonClosedClass].join(' '));
+    $(this.popoverSelector + "." + this.showClass).toggleClass(this.showClass);
 }
 
 CallToActionBar.prototype.getTemplateContext = function () {
@@ -79,7 +95,7 @@ CallToActionBar.prototype.getTemplateContext = function () {
 
     additionalContext.ctas = this.opts.content.links.cta.slice();
 
-    var parentContentCardEl = this.el.parentElement || document.querySelector('[data-content-id="' + this.opts.content.id + '"]');
+    var parentContentCardEl = this.parentEl || this.el.parentElement || document.querySelector('[data-content-id="' + this.opts.content.id + '"]');
     var numOfCtas = additionalContext.ctas.length;
 
     if (parentContentCardEl) {
