@@ -2,7 +2,7 @@ define([
     'streamhub-sdk/collection/clients/http-client',
     'inherits',
     'base64'],
-function(LivefyreHttpClient, inherits, base64) {
+function (LivefyreHttpClient, inherits, base64) {
     'use strict';
 
     /**
@@ -21,7 +21,7 @@ function(LivefyreHttpClient, inherits, base64) {
     LivefyreBootstrapClient.prototype._serviceName = 'data';
     var BS_ENVS = ['livefyre.com', 't402.livefyre.com'];
 
-    LivefyreBootstrapClient.prototype._getHost = function(opts) {
+    LivefyreBootstrapClient.prototype._getHost = function (opts) {
         var environment = opts.environment || 'livefyre.com';
         // use bootstrap directly for custom networks in prod and UAT
         // use data/Fastly if qa or if network == livefyre.com
@@ -69,8 +69,8 @@ function(LivefyreHttpClient, inherits, base64) {
      * @param callback {function} A callback that is called upon success/failure of the
      *     bootstrap request. Callback signature is 'function(error, data)'.
      */
-    LivefyreBootstrapClient.prototype.getContent = function(opts, callback) {
-        this._request({url: this._getPath(opts)}, callback || function() {});
+    LivefyreBootstrapClient.prototype.getContent = function (opts, callback) {
+        this._request({url: this._getPath(opts)}, callback || function () {}, 3);
     };
 
     return LivefyreBootstrapClient;
