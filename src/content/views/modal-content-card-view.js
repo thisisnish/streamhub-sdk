@@ -29,7 +29,7 @@ var ModalContentCardView = function (opts) {
     opts = opts || {};
 
     this.content = opts.content;
-    this._isInstagram = this.content.source === 'instagram' && this.content.attachments.length > 0;
+    this._isInstagramVideo = this.content.source === "instagram" && this.content.attachments.length > 0 && this.content.attachments[0].type === 'video';
     this.createdAt = new Date(); // store construction time to use for ordering if this.content has no dates
 
     CompositeView.call(this, opts);
@@ -96,9 +96,9 @@ ModalContentCardView.prototype.events = CompositeView.prototype.events.extended(
  */
 ModalContentCardView.prototype._addInitialChildViews = function (opts, shouldRender) {
     var renderOpts = {render: !!shouldRender};
-    opts.isInstagram = this._isInstagram;
+    opts.isInstagramVideo = this._isInstagramVideo;
 
-    if (!opts.isInstagram) {
+    if (!opts.isInstagramVideo) {
         this._attachmentsView = opts.attachmentsView || new AttachmentCarouselView(opts);
         this.add(this._attachmentsView, renderOpts);
     }
