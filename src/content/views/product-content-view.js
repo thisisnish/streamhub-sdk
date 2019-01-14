@@ -12,6 +12,7 @@ var CTABarView = require('streamhub-sdk/content/views/call-to-action-bar-view');
 var debug = require('debug');
 var get = require('mout/object/get');
 var inherits = require('inherits');
+var InstagramClient = require('streamhub-sdk/content/clients/instagram-client');
 var ProductCarouselView = require('streamhub-sdk/content/views/product-carousel-view');
 var util = require('streamhub-sdk/util');
 
@@ -19,6 +20,8 @@ var util = require('streamhub-sdk/util');
 
 var hasInnerHtmlBug = null;
 var log = debug('streamhub-sdk/content/views/content-view');
+
+var IG_HTML_REGEX = /<blockquote class=\\"instagram-media\\"/g;
 
 /**
  * Defines the base class for all content-views. Handles updates to attachments
@@ -72,7 +75,7 @@ ProductContentView.prototype.modalSelector = '.hub-modal';
 ProductContentView.prototype._addInitialChildViews = function (opts, shouldRender) {
     var renderOpts = {render: !!shouldRender};
 
-    if (!opts.isInstagramVideo) {
+    if (!opts.isInstagram) {
         this._headerView = opts.headerView || new ContentHeaderView(
             this._headerViewFactory.getHeaderViewOptsForContent(opts.content));
         this.add(this._headerView, renderOpts);
@@ -170,6 +173,37 @@ ProductContentView.prototype.destroy = function () {
 };
 
 /**
+ * Render native Instagram embed from the first attachment, as long as it has
+ * the html property. Loads the instagram embed javascript necessary to load
+ * the native embed, if it doesn't already exist.
+ */
+ProductContentView.prototype.renderInstagramNative = function () {
+    var attachment = this.content.attachments[0];
+    // Ensure the attachment html is available and matches the native embed
+    // regex. It's possible the content is very old and has `html` field but
+    // contains embedly code to play the video (won't work).
+    if (!attachment.html || !IG_HTML_REGEX.test(attachment.html)) {
+        return false;
+    }
+    this.$el.closest(this.modalSelector).addClass('instagram-content');
+    this.el.insertAdjacentHTML('afterbegin', attachment.html);
+
+    if (!window.instgrm) {
+        var script = document.createElement('script');
+        script.src = '//instagram.com/embed.js';
+        this.el.append(script);
+    } else {
+        window.instgrm.Embeds.process();
+    }
+
+    if (this.iframeInterval) {
+        clearInterval(this.iframeInterval);
+    }
+    setInterval(this.removeIframeStyles.bind(this), 500);
+    return true;
+};
+
+/**
  * Render the content inside of the ProductContentView's element.
  * @returns {ProductContentView}
  */
@@ -191,24 +225,25 @@ ProductContentView.prototype.render = function () {
 
     CompositeView.prototype.render.call(this);
 
-    if (this.opts.isInstagramVideo) {
-        this.$el.closest(this.modalSelector).addClass('instagram-video');
-        this.el.insertAdjacentHTML('afterbegin', this.content.attachments[0].html);
-
+    if (this.opts.isInstagram) {
+        var attachment = this.content.attachments[0];
         var placeholder = this.$el.find('blockquote');
-        this.renderMediaMask(this.opts.content.attachments[0], true, function () {
-            if (!window.instgrm) {
-                var script = document.createElement('script');
-                script.src = '//instagram.com/embed.js';
-                this.el.appendChild(script);
-            } else {
-                window.instgrm.Embeds.process();
-            }
 
-            if (this.iframeInterval) {
-                clearInterval(this.iframeInterval);
+        this.renderMediaMask(attachment, true, function () {
+            // If rendering the native embed worked, don't need to fetch the
+            // embed data.
+            if (this.renderInstagramNative()) {
+                return;
             }
-            setInterval(this.removeIframeStyles.bind(this), 500);
+            // The attachment does not contain the html property yet. Fetch the
+            // oembed data from Instagram and assign the html property.
+            (new InstagramClient()).getOembed(attachment.link, function (err, oembed) {
+                if (err) {
+                    return;
+                }
+                attachment.html = oembed.html;
+                this.renderInstagramNative();
+            }.bind(this));
 
         }.bind(this), placeholder);
     }
