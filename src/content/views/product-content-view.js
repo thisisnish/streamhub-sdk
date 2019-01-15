@@ -21,7 +21,7 @@ var util = require('streamhub-sdk/util');
 var hasInnerHtmlBug = null;
 var log = debug('streamhub-sdk/content/views/content-view');
 
-var IG_HTML_REGEX = /<blockquote class=\\"instagram-media\\"/g;
+var IG_HTML_REGEX = /<blockquote class=\"instagram-media\"/g;
 
 /**
  * Defines the base class for all content-views. Handles updates to attachments

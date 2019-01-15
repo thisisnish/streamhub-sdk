@@ -280,6 +280,7 @@ ContentListView.prototype.createContentView = function (content) {
 
 ContentListView.prototype.destroy = function () {
     ListView.prototype.destroy.call(this);
+    this.modal && this.modal.destroy();
     this.contentViewFactory = null;
 };
 

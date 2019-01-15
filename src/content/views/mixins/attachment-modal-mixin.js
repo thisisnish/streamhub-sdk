@@ -30,16 +30,16 @@ function hasAttachmentModal(view, opts) {
                 if (typeof get(view, 'attachmentsView.focus') === 'function') {
                     view.attachmentsView.focus(context.attachmentToFocus);
                 }
-            } else if (modal.opts.useNewModal) {
+            } else if (opts.useNewModal) {
                 modal.show(new CarouselContentView({
                     collection: (this._collection || {}).internalCollection,
                     content: context.content,
-                    doNotTrack: modal.opts.doNotTrack,
-                    hideSocialBrandingWithRights: modal.opts.hideSocialBrandingWithRights,
+                    doNotTrack: opts.doNotTrack,
+                    hideSocialBrandingWithRights: opts.hideSocialBrandingWithRights,
                     listView: this,
                     modal: true,
                     productOptions: modal.opts.productOptions || {},
-                    showCTA: modal.opts.showCTA
+                    showCTA: opts.showCTA
                 }));
             } else {
                 modal.show(new GalleryAttachmentListView(context));
