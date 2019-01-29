@@ -81,6 +81,24 @@ ContentListView.prototype.elClass += ' streamhub-content-list-view';
 ContentListView.prototype.events = ListView.prototype.events.extended({
     'removeContentView.hub': function(e, data) {
         return this.remove(data.contentView);
+    }, 
+    'imageError.hub': function (e, args) {
+        if (!args.contentView) {
+            return;
+        }
+        this.remove(args.contentView);
+
+        var collection;
+        if (this.modal.opts.collection && this.modal.opts.collection.internalCollection) {
+            collection = this.modal.opts.collection.internalCollection;
+        } else if (this.opts.collection && this.opts.collection.internalCollection) { 
+            collection = this.opts.collection.internalCollection;
+        } else {
+            return;
+        }
+
+        var idx = collection.contents.indexOf(args.contentView.content);
+        idx > -1 && collection.contents.splice(idx, 1);
     }
 });
 
