@@ -392,10 +392,13 @@
   }
 }
 
-.hub-modal .lf-popover {
+.hub-modal .lf-popover.lf-cta-popover,
+.hub-modal .lf-popover.lf-product-popover {
   left: auto !important;
   top: 75px !important;
+}
 
+.hub-modal .lf-popover {
   &.lf-cta-popover,
   &.lf-product-popover {
     background: white;
@@ -411,6 +414,10 @@
   &.lf-product-popover {
     right: -270px !important;
   }
+}
+
+.hub-modal .product-cta-callout.mobile + #popover-div > .lf-popover {
+  top: 130px !important;
 }
 
 /**
