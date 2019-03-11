@@ -30,6 +30,7 @@ var TYPES = {
 
 ProductCTACalloutView.prototype.template = template;
 ProductCTACalloutView.prototype.elClass = 'product-cta-callout';
+ProductCTACalloutView.prototype.mobileClass = 'mobile';
 ProductCTACalloutView.prototype.popoverDivClass = 'popover-div';
 
 ProductCTACalloutView.prototype.getTemplateContext = function () {
@@ -96,6 +97,7 @@ ProductCTACalloutView.prototype.setNewOpts = function (newOpts) {
 
 ProductCTACalloutView.prototype.render = function () {
     View.prototype.render.call(this);
+    this._isMobile && this.$el.addClass(this.mobileClass);
     return this;
 };
 
