@@ -402,26 +402,15 @@
 
 .hub-modal .lf-popover.lf-cta-popover,
 .hub-modal .lf-popover.lf-product-popover {
-  left: auto !important;
+  background: white;
+  .border-radius(3px);
+  left: 100% !important;
+  margin-left: -10px;
   top: 75px !important;
   width: inherit !important;
-}
 
-.hub-modal .lf-popover {
-  &.lf-cta-popover,
-  &.lf-product-popover {
-    background: white;
-    .border-radius(3px);
-
-    > .lf-popover-content {
-      padding: 0;
-    }
-  }
-  &.lf-cta-popover {
-    right: -168px !important;
-  }
-  &.lf-product-popover {
-    right: -270px !important;
+  > .lf-popover-content {
+    padding: 0;
   }
 }
 
@@ -435,6 +424,7 @@
  */
 @media (max-width: 840px) {
   .hub-modal #popover-div > .lf-popover.lf-cta-popover {
+    left: auto !important;
     right: 20px !important;
     top: 100px !important;
 
@@ -450,6 +440,7 @@
  */
 @media (max-width: 1070px) {
   .hub-modal #popover-div > .lf-popover.lf-product-popover {
+    left: auto !important;
     right: 20px !important;
     top: 100px !important;
 
