@@ -24,6 +24,14 @@
   position: relative;
   width: inherit;
 
+  &.product-carousel-size-1 {
+    max-width: 200px;
+
+    .product-block {
+      width: 100%;
+    }
+  }
+
   &.product-carousel-size-2 {
     .product-block {
       width: 50%;
@@ -396,6 +404,7 @@
 .hub-modal .lf-popover.lf-product-popover {
   left: auto !important;
   top: 75px !important;
+  width: inherit !important;
 }
 
 .hub-modal .lf-popover {

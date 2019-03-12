@@ -41,6 +41,13 @@ var ProductCarouselView = function (opts) {
     }
 
     /**
+     * Show less than the max number of cards in view. This just means that it
+     * can show 1 card if thats all products that are available.
+     * @type {boolean}
+     */
+    this.showLessThanMax = opts.showLessThanMax || false;
+
+    /**
      * Left-most index within `this.products` of products that are currently
      * displayed within the carousel.
      * @type {number}
@@ -165,10 +172,13 @@ ProductCarouselView.prototype.render = function (view, opts) {
         return this;
     }
 
-    this.$el.addClass(this.sizePrefixClass + this.cardsInView);
+    var numProducts = this.products.length;
+
+    this.$el.addClass(this.sizePrefixClass + (this.showLessThanMax ?
+        Math.min(this.cardsInView, numProducts) :
+        this.cardsInView));
     this.$el.html(this.template(this.getTemplateContext()));
 
-    var numProducts = this.products.length;
     var cardsToShow = this.cardsInView > numProducts ? numProducts : this.cardsInView;
     cardsToShow += this.visibleIndex;
 

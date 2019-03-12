@@ -57,7 +57,10 @@ ProductCTACalloutView.prototype.createPopover = function () {
 
     var popupContent;
     if (this.ctaType === TYPES.PRODUCT) {
-        popupContent = new ProductCarouselView($.extend({cardsInView: 2}, this.opts));
+        popupContent = new ProductCarouselView($.extend({
+            cardsInView: 2,
+            showLessThanMax: true
+        }, this.opts));
     } else {
         popupContent = new CallToActionStackView($.extend({
             ctas: get(this, 'opts.content.links.cta') || []
