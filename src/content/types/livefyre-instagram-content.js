@@ -4,7 +4,7 @@ define([
         'use strict';
 
         var MEDIA_THUMBNAIL_SUFFIX = 'media/?size=m"';
-        var MEDIA_URL_SUFFIX = 'media/?size=l';
+        var MEDIA_URL_SUFFIX = 'media/?size=1';
 
         /**
          * An instagram Content constructed from a StreamHub state of of 'feed' type
@@ -36,11 +36,19 @@ define([
                     attachment.html = attachment.html.replace(scriptRemovalRegex, '');
                 }
 
-                if (attachment.link) {
-                    var splitUrl = attachment.link.split('/');
-                    // Remove username if present in link url
-                    if(splitUrl.lenght === 7) {
-                        splitUrl.splice(4,1);
+                // Stale CDN urls use a different domain than media compatible urls
+                var isThumbnailCdn = !attachment.thumbnail_url.includes('www.instagram.com');
+                var isUrlCdn = !attachment.url.includes('www.instagram.com');
+
+                var splitUrl = attachment.link.split('/');
+                var linkContainsUsername = splitUrl.length === 7;
+                var thumbnailContainsUsername = isThumbnailCdn && attachment.thumbnail_url.split('/').length === 7;
+                var urlContainsUsername = isUrlCdn && attachment.url.split('/').length === 7;
+
+                if (attachment.link && (isThumbnailCdn || isUrlCdn || linkContainsUsername || thumbnailContainsUsername || urlContainsUsername)) {
+                    // Remove username if present in link
+                    if (linkContainsUsername) {
+                        splitUrl.splice(4, 1);
                     }
                     splitUrl = splitUrl.join('/');
                     
