@@ -42,8 +42,8 @@ define([
 
                 var splitUrl = attachment.link.split('/');
                 var linkContainsUsername = splitUrl.length === 7;
-                var thumbnailContainsUsername = isThumbnailCdn && attachment.thumbnail_url.split('/').length === 7;
-                var urlContainsUsername = isUrlCdn && attachment.url.split('/').length === 7;
+                var thumbnailContainsUsername = !isThumbnailCdn && attachment.thumbnail_url.split('/').length === 7;
+                var urlContainsUsername = !isUrlCdn && attachment.url.split('/').length === 7;
 
                 if (attachment.link && (isThumbnailCdn || isUrlCdn || linkContainsUsername || thumbnailContainsUsername || urlContainsUsername)) {
                     // Remove username if present in link
