@@ -65,6 +65,7 @@ QueryCollectionArchive.prototype._contentsFromBootstrapDoc = function (bootstrap
             content.content.sortOrder = content.content.createdAt;
         }
         content.content.sortOrder += 10e12 * this._queryModifier;
+        content.content.annotations.sortOrder = content.content.sortOrder;
     }.bind(this));
     return CollectionArchive.prototype._contentsFromBootstrapDoc.call(this, bootstrapDoc, opts);
 };
