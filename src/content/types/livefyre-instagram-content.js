@@ -3,8 +3,8 @@ define([
     function (LivefyreContent, inherits) {
         'use strict';
 
-        var MEDIA_THUMBNAIL_SUFFIX = 'media/?size=m"';
-        var MEDIA_URL_SUFFIX = 'media/?size=1';
+        var MEDIA_THUMBNAIL_SUFFIX = 'media/?size=m';
+        var MEDIA_URL_SUFFIX = 'media/?size=l';
 
         /**
          * An instagram Content constructed from a StreamHub state of of 'feed' type
@@ -51,7 +51,7 @@ define([
                         splitUrl.splice(4, 1);
                     }
                     splitUrl = splitUrl.join('/');
-                    
+
                     attachment.thumbnail_url = splitUrl + MEDIA_THUMBNAIL_SUFFIX;
                     attachment.url = splitUrl + MEDIA_URL_SUFFIX;
                 }
