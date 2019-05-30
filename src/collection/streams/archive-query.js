@@ -65,6 +65,7 @@ QueryCollectionArchive.prototype._contentsFromBootstrapDoc = function (bootstrap
             content.content.sortOrder = content.content.createdAt;
         }
         content.content.sortOrder += 10e12 * this._queryModifier;
+        content.content.annotations.sortOrder = content.content.sortOrder;
     }.bind(this));
     return CollectionArchive.prototype._contentsFromBootstrapDoc.call(this, bootstrapDoc, opts);
 };
@@ -75,6 +76,16 @@ QueryCollectionArchive.prototype._getBootstrapClientOptions = function () {
     opts.queryId = this._queries[0];
     $.extend(opts, this._getPagination());
     return opts;
+};
+
+/**
+ * Overrides the CollectionArchive version to only return the sort order instead
+ * of converting it to a date first which is problematic due to the query modifier
+ * applied in the query version.
+ * @override
+ */
+QueryCollectionArchive.prototype.getContentSortDate = function (content) {
+    return content.sortOrder;
 };
 
 /**
